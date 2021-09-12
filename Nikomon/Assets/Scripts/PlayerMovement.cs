@@ -6,36 +6,25 @@ using UnityEngine.InputSystem;
 public class PlayerMovement : MonoBehaviour
 {
     public Animator animator;
+    public PlayerInput playerInput;
 
     // Start is called before the first frame update
     void Start()
     {
         animator = GetComponent<Animator>();
+        playerInput = GetComponent<PlayerInput>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        // if (Keyboard.current!=null)
-        // {
-        //     if(Keyboard.current.wKey.wasPressedThisFrame)
-        //         animator?.SetBool("IsWalking",true);
-        //     else
-        //         animator?.SetBool("IsWalking",false);
-        // }
-        // else
-        // {
-        //     animator?.SetBool("IsWalking",false);
-        // }
-    }
-
-    public void OnMove(InputAction.CallbackContext context)
-    {
-        if (context.action.triggered)
+        
+        if (isWalking)
         {
+            if (move.magnitude < 0.03f) return;
             float cameraForward =
                 Camera.main.transform.rotation.eulerAngles.y;
-            Vector2 move = context.ReadValue<Vector2>();
+            
             float theta = 0;
             if(move.y>0)
                 theta = Mathf.Atan(move.x / move.y);
@@ -47,12 +36,29 @@ public class PlayerMovement : MonoBehaviour
             }
             theta = Mathf.Rad2Deg * theta;
             transform.rotation = Quaternion.Euler(0, cameraForward + theta, 0);
-            animator?.SetBool("IsWalking", true);
+            animator?.SetBool("IsWalking",true);
+        }
+        else
+        {
+            animator?.SetBool("IsWalking",false);
+        }
+    }
+
+    private bool isWalking;
+    private Vector2 move;
+    public void OnMove(InputAction.CallbackContext context)
+    {
+        if (context.action.triggered)
+        {
+            isWalking = true;
+            move = context.ReadValue<Vector2>();
             
         }
         else
         {
-            animator?.SetBool("IsWalking", false);
+            isWalking = false;
+            move=Vector2.zero;
+            
         }
     }
 }
