@@ -1,9 +1,10 @@
 ﻿
-using UnityEngine.UI;
+using System;
 
 namespace PokemonCore.Attack.Data
 {
     //记录宝可梦的招式信息，暂不考虑加入华丽大赛内容
+    [Serializable]
     public struct MoveData
     {
         public int MoveID { get; private set; }
