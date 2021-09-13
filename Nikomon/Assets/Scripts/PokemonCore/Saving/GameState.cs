@@ -8,45 +8,45 @@ using PokemonCore.Utility;
 
 namespace PokemonCore.Saving
 {
+    [Serializable]
     public struct GameState:IEquatable<GameState>,IEqualityComparer<GameState>
     {
-        public DateTime TimeCreated { get; private set; }
-        public string PlayerName { get; private set; }
-        public int TrainerID { get; private set; }
-        public int SecretID { get; private set; }
-        public bool IsMale { get; private set; }
-        public TimeSpan PlayTime { get; private set; }
-        public byte[][] Pokedex { get; private set; }
-        public int PlayerMoney { get; private set; }
-        public int PlayerSavings { get; private set; }
-        public int PokeCenterID { get; private set; }
-        public int ActiveMapID { get; private set; }
-        public Vector PlayerPosition { get; private set; }
-        public byte FollowerPokemonID { get; private set; }
-        public IPokemon PokemonParty { get; private set; }
+        // public DateTime TimeCreated { get; private set; }
+        public Trainer Trainer { get; private set; }
         public PC PlayerPC { get; private set; }
-        public int[] PlayerBag { get; private set; }//存储每个item的id！
-//TODO：Not Finish yet!
-        // public GameState(
-        //     Trainer trainer,
-        //     PC pc
-        //     )
-        // {
-        //     PlayerPC = pc;
-        // }
-        public bool Equals(GameState other)
+        // public int[] PlayerBag { get; private set; }
+//TODO：Player Bag,Time Created
+        public GameState(
+            Trainer trainer,
+            PC pc
+            )
         {
-            throw new NotImplementedException();
+            
+            Trainer = trainer;
+            PlayerPC = pc;
+        }
+        public bool Equals(GameState obj)
+        {
+            return Equals(obj);
         }
 
+        public override bool Equals(object obj)
+        {
+            if (obj == null) return false;
+            if (typeof(Game) == obj.GetType()) return this.Equals(obj);
+            if (typeof(GameState) == obj.GetType()) return this.Equals(obj);
+            return base.Equals(obj);
+        }
+
+        
         public bool Equals(GameState x, GameState y)
         {
-            throw new NotImplementedException();
+            return x.Equals(y);
         }
 
         public int GetHashCode(GameState obj)
         {
-            throw new NotImplementedException();
+            return Trainer.id.GetHashCode();
         }
     }
 }

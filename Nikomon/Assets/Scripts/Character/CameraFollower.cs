@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CameraFollower : MonoBehaviour
 {
-    public bool enabled;
+    public bool mEnabled;
     public Transform Target;
     public Vector3 Offset;
     
@@ -17,7 +17,7 @@ public class CameraFollower : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (enabled)
+        if (mEnabled)
         {
             if (Target != null)
             {
