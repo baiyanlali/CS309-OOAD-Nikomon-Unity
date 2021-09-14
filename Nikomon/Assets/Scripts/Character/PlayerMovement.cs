@@ -21,7 +21,11 @@ public class PlayerMovement : MonoBehaviour
         
         if (isWalking)
         {
+            
+            DebugUIHandler.Instance.InsertInfo(move.ToString());
+            Debug.Log(move.ToString());
             if (move.magnitude < 0.03f) return;
+            move.Normalize();
             float cameraForward =
                 Camera.main.transform.rotation.eulerAngles.y;
             
