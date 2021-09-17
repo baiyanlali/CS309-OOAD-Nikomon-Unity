@@ -12,34 +12,40 @@ namespace PokemonCore.Attack.Data
 
     //记录宝可梦的招式信息，暂不考虑加入华丽大赛内容
     [Serializable]
-    public struct MoveData
+    public class MoveData
     {
-        public int MoveID { get; private set; }
-        public int? Accuracy { get; private set; }
-        public int? Power { get; private set; }
-        public byte PP { get; private set; }
-        public int Priority { get; private set; }
-        public Targets Target { get; private set; }
-        public Types Type { get; private set; }
-        public int EffectID { get; private set; }
-        public int? EffectChance { get; private set; }
+        public int MoveID { get;  set; }
+        public int? Accuracy { get;  set; }
+        public int? Power { get;  set; }
+        public byte PP { get;  set; }
+        public int Priority { get;  set; }
+        public Targets Target { get;  set; }
+        public int Type { get;  set; }
+        public int EffectID { get;  set; }
+        public int? EffectChance { get;  set; }
+        
+        public string innerName { get;  set; }
 
+        public Category Category { get; set; }
         public string Name => this.ToString(TextScripts.Name);
+
         public string Description => this.ToString(TextScripts.Description);
 
         public MoveData(
             int moveID = 0,
-            int? accuracy = null,
-            int? power = null,
+            string innerName="",
+            int? accuracy = 0,
+            int? power = 0,
             byte pp = 0,
             int priority = 0,
             Targets target = Targets.USER,
-            Types? type = null,
+            int type = 0,
             int effectID = 0,
-            int? effectChance = null
+            int? effectChance = 0
         )
         {
             this.MoveID = moveID;
+            this.innerName = innerName;
             this.Accuracy = accuracy;
             this.Power = power;
             this.PP = pp;

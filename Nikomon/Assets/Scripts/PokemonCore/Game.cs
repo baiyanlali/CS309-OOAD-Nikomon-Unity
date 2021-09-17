@@ -21,7 +21,7 @@ namespace PokemonCore
      }
     public class Game
     {
-        private static string loadDataPath = "..//..//Data//";
+        public static string DataPath => "..//..//Data//";
 
         public static Dictionary<int,Types> TypesMap { get; private set; }
         
@@ -72,20 +72,20 @@ namespace PokemonCore
             }
         }
 
-        public async void LoadTypes(LoadDataType type = LoadDataType.Json)
+        public void LoadTypes(LoadDataType type = LoadDataType.Json)
         {
             if (type == LoadDataType.Json)
             {
-                using FileStream openStream = File.OpenRead(loadDataPath+"Types.json");
+                // using FileStream openStream = File.OpenRead(DataPath+"Types.json");
                 // TypesMap = await JsonSerializer.DeserializeAsync<Dictionary<int,Types>>(openStream);
             }
         }
         
-        public async void LoadAbilities(LoadDataType type = LoadDataType.Json)
+        public void LoadAbilities(LoadDataType type = LoadDataType.Json)
         {
             if (type == LoadDataType.Json)
             {
-                using FileStream openStream = File.OpenRead(loadDataPath+"Abilities.json");
+                // using FileStream openStream = File.OpenRead(DataPath+"Abilities.json");
                 // AbilitiesData = await JsonSerializer.DeserializeAsync<Dictionary<int,Ability>>(openStream);
             }
         }
