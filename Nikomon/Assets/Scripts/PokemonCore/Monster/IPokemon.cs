@@ -22,6 +22,7 @@ namespace PokemonCore.Monster
     //不搞什么宝可梦病毒了，暂时也不搞能力、勋章什么的
     public interface IPokemon
     {
+        #region BasicStatus
         int TotalHp { get; }
         int HP { get; }//血量
         int ATK { get; }//攻击
@@ -31,9 +32,10 @@ namespace PokemonCore.Monster
         int SPE { get; }//特防
         int[] IV { get; }//个体值
         byte[] EV { get; }//努力值
+        #endregion
         int Happiness { get; }
         Move[] moves { get; }
-        string TrainerID { get; }
+        int TrainerID { get; }
         string Name { get; }
         int ballUsed { get; }
         int Exp { get; }
@@ -45,5 +47,11 @@ namespace PokemonCore.Monster
         bool IsNicknamed { get; }
         int Type1 { get; }
         int Type2 { get; }
+        
+
+        string ObtainMap { get; }
+        int ObtainLevel { get; }
+        
+        int AbilityID { get; }
     }
 }

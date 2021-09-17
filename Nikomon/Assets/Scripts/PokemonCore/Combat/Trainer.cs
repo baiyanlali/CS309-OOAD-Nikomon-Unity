@@ -10,6 +10,8 @@ namespace PokemonCore.Combat
         public int money { get; private set; }
         public Pokemon[] party { get; set; }
 
+        public int pokedexNums;
+
         public Trainer(string name)
         {
             this.name = name;
@@ -17,6 +19,7 @@ namespace PokemonCore.Combat
             this.id = 0;
             this.money = 3000;
             this.party = new Pokemon[6];
+            pokedexNums = 0;
         }
 
         public int Money

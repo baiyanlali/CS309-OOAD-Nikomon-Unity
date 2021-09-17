@@ -41,7 +41,7 @@ public class Pokemon : IPokemon, IEquatable<Pokemon>, IEqualityComparer<Pokemon>
     public byte[] EV { get; private set; }
     public int Happiness { get; private set; }
     public Move[] moves { get; private set; }
-    public string TrainerID { get; }
+    public int TrainerID { get; }
     public string Name { get; }
     public int ballUsed { get; set; }
     public int Exp { get; }
@@ -53,7 +53,10 @@ public class Pokemon : IPokemon, IEquatable<Pokemon>, IEqualityComparer<Pokemon>
     public bool IsNicknamed { get; }
     public int Type1 { get; }
     public int Type2 { get; }
-    
+    public string ObtainMap { get; }
+    public int ObtainLevel { get; }
+    public int AbilityID { get; }
+
     public Experience Experience { get; private set; }
 
     

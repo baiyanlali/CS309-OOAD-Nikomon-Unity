@@ -10,7 +10,9 @@ namespace PokemonCore.Monster.Data
 
         private int? type2;
         //TODO: Add Abilities
-
+        public int Ability1 { get; private set; }
+        public int Ability2 { get; private set; }
+        public int AbilityHidden { get; private set; }
         public int ID { get; private set; }
         public int EvoChainID { get; private set; }
         public int? EvolveFrom { get; private set; }
@@ -62,6 +64,9 @@ namespace PokemonCore.Monster.Data
             int? type1 = null,
             int? type2 = null,
             int catchRate = 50,
+            int ability1=0,
+            int ability2=0,
+            int abilityHidden=0,
             float height = 0f,
             float weight = 0f,
             int baseFriendship = 0,
@@ -109,6 +114,10 @@ namespace PokemonCore.Monster.Data
             this.evYieldSPD = evYieldSPD;
             this.evYieldSPE = evYieldSPE;
             this.GrowthRate = growthRate;
+
+            this.Ability1 = ability1;
+            this.Ability2 = ability2;
+            this.AbilityHidden = abilityHidden;
         }
 
         public bool Equals(PokemonData other)
