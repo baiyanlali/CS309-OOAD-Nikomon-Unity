@@ -16,15 +16,6 @@ namespace Editor
         public List<MoveData> movedatas;
         public string fileName;
         public int MoveID ;
-        
-        // public int? Accuracy ;
-        // public int? Power ;
-        // public byte PP ;
-        // public int Priority ;
-        // public Targets Target ;
-        // public int Type ;
-        // public int EffectID ;
-        // public int? EffectChance;
         public List<Types> types;
 
         private MoveData CurrentMove
@@ -203,14 +194,5 @@ namespace Editor
             
         }
 
-        public void Save()
-        {
-            
-        }
-
-        public void Load()
-        {
-            
-        }
     }
 }

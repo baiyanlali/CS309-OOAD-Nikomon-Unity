@@ -3,55 +3,83 @@ using System.Collections.Generic;
 
 namespace PokemonCore.Monster.Data
 {
-    [Serializable]
-    public struct PokemonData:IEquatable<PokemonData>,IEqualityComparer<PokemonData>
-    {
-        private int? type1;
 
-        private int? type2;
-        //TODO: Add Abilities
-        public int Ability1 { get; private set; }
-        public int Ability2 { get; private set; }
-        public int AbilityHidden { get; private set; }
-        public int ID { get; private set; }
-        public int EvoChainID { get; private set; }
-        public int? EvolveFrom { get; private set; }
-        public int Order { get; private set; }
+    public enum Gender
+    {
+        Male,
+        Female,
+        Gerderless
+    }
+
+    public enum EvolutionMethod
+    {
+        
+    }
+    [Serializable]
+    public class PokemonData:IEquatable<PokemonData>,IEqualityComparer<PokemonData>
+    {
+        public string innerName { get; set; }
+        
+        public int? type1;
+
+        public int? type2;
+         
+         public Gender Gender { get; set; }
+        public int Ability1 { get;  set; }
+        public int Ability2 { get;  set; }
+        public int AbilityHidden { get;  set; }
+        public int ID { get;  set; }
+        public int EvoChainID { get;  set; }
         public int?[] Type => new int?[2] {type1, type2};
 
-        public int CatchRate { get; private set; }
-        public float Height { get; private set; }
-        public float Weight { get; private set; }
-
-        public int BaseFriendship { get; private set; }
-
-        public int BaseExpYield { get; private set; }
-
-        public int BaseStatsHP { get; private set; }
-
-        public int BaseStatsATK { get; private set; }
-
-        public int BaseStatsDEF { get; private set; }
-
-        public int BaseStatsSPA { get; private set; }
-
-        public int BaseStatsSPD { get; private set; }
-
-        public int BaseStatsSPE { get; private set; }
-
-        public int evYieldHP { get; private set; }
-
-        public int evYieldATK { get; private set; }
-
-        public int evYieldDEF { get; private set; }
-
-        public int evYieldSPA { get; private set; }
-
-        public int evYieldSPD { get; private set; }
-
-        public int evYieldSPE { get; private set; }
+        public int CatchRate { get;  set; }
+        public float Height { get;  set; }
+        public float Weight { get;  set; }
         
-        public int GrowthRate { get; private set; }
+        public int BaseFriendship { get;  set; }
+        
+        public Dictionary<int,int> LevelMoves { get; set; }
+        /// <summary>
+        /// the percent of male in this kind of pokemon
+        /// </summary>
+        public int MaleRatio { get; set; }
+        
+
+        #region Stats
+
+        public int BaseExpYield { get;  set; }
+
+        public int BaseStatsHP { get;  set; }
+
+        public int BaseStatsATK { get;  set; }
+
+        public int BaseStatsDEF { get;  set; }
+
+        public int BaseStatsSPA { get;  set; }
+
+        public int BaseStatsSPD { get;  set; }
+
+        public int BaseStatsSPE { get;  set; }
+
+        public int evYieldHP { get;  set; }
+
+        public int evYieldATK { get;  set; }
+
+        public int evYieldDEF { get;  set; }
+
+        public int evYieldSPA { get;  set; }
+
+        public int evYieldSPD { get;  set; }
+
+        public int evYieldSPE { get;  set; }
+        #endregion
+
+        
+        public int GrowthRate { get;  set; }
+        
+        public int Species { get; set; }
+        
+        public EvolutionMethod EvolutionMethod { get; set; }
 
         public int[] EVYield => new int[6]
         {
@@ -61,8 +89,8 @@ namespace PokemonCore.Monster.Data
 
         public PokemonData(
             int ID = -1,
-            int? type1 = null,
-            int? type2 = null,
+            int? type1 = -1,
+            int? type2 = -1,
             int catchRate = 50,
             int ability1=0,
             int ability2=0,
@@ -84,8 +112,6 @@ namespace PokemonCore.Monster.Data
             int evYieldSPD = 0,
             int evYieldSPE = 0,
             int evoChainID = 0,
-            int? EvolveFrom = null,
-            int order = -1,
             int growthRate=0
         )
         {
@@ -93,8 +119,6 @@ namespace PokemonCore.Monster.Data
             this.type1 = type1;
             this.type2 = type2;
             this.EvoChainID = evoChainID;
-            this.EvolveFrom = EvolveFrom;
-            this.Order = order;
             this.CatchRate = catchRate;
             this.Height = height;
             this.Weight = weight;
@@ -118,6 +142,10 @@ namespace PokemonCore.Monster.Data
             this.Ability1 = ability1;
             this.Ability2 = ability2;
             this.AbilityHidden = abilityHidden;
+
+            Gender = Gender.Gerderless;
+
+            LevelMoves = new Dictionary<int, int>();
         }
 
         public bool Equals(PokemonData other)
