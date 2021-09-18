@@ -38,7 +38,7 @@ namespace PokemonCore.Monster.Data
         
         public int BaseFriendship { get;  set; }
         
-        public Dictionary<int,int> LevelMoves { get; set; }
+        public Dictionary<int,List<int>> LevelMoves { get; set; }
         /// <summary>
         /// the percent of male in this kind of pokemon
         /// </summary>
@@ -145,7 +145,7 @@ namespace PokemonCore.Monster.Data
 
             Gender = Gender.Gerderless;
 
-            LevelMoves = new Dictionary<int, int>();
+            LevelMoves = new Dictionary<int, List<int>>();
         }
 
         public bool Equals(PokemonData other)
