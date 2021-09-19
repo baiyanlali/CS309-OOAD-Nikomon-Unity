@@ -10,6 +10,7 @@ using PokemonCore.Monster.Data;
 using PokemonCore.Utility;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
+using Random = UnityEngine.Random;
 using Types = PokemonCore.Types;
 
 namespace ConsoleDebug
@@ -48,23 +49,31 @@ namespace ConsoleDebug
             Trainer t2 = new Trainer("Nope!", 10);
             Game.trainer = t1;
 
-            Debug.Log("Please Choose Your Pokemon:");
             var keys= Game.PokemonsData.Keys;
             foreach (var v in keys.OrEmptyIfNull())
             {
                 Debug.Log($"No.{v} {Game.PokemonsData[v].innerName}");
             }
-            
+
+            Debug.Log("Please Choose Your Pokemon:");
             yield return new WaitUntil(()=>orders.Count != 0);
             int Poke = int.Parse(orders[0]);
             orders.Remove(Poke.ToString());
 
             Pokemon p1 = new Pokemon(Game.PokemonsData[Poke], "",t1, 50, 0);
-            Pokemon p2 = new Pokemon(Game.PokemonsData[4], "",t2, 30, 0);
+            
+            Debug.Log("Please Choose Your Pokemon:");
+            yield return new WaitUntil(()=>orders.Count != 0);
+            Poke = int.Parse(orders[0]);
+            orders.Remove(Poke.ToString());
+            Pokemon p11 = new Pokemon(Game.PokemonsData[Poke], "",t1, 50, 0);
+
+            Pokemon p2 = new Pokemon(Game.PokemonsData[4], "",t2, 50, 0);
+            Pokemon p22 = new Pokemon(Game.PokemonsData[17], "",t2, 50, 0);
 
             battle = new Battle(true);
             BattleReporter battleReporter = new BattleReporter(battle);
-            battle.StartBattle(new List<Pokemon>(){p1},new List<Pokemon>(){p2},
+            battle.StartBattle(new List<Pokemon>(){p1,p11},new List<Pokemon>(){p2,p22},
                 new List<Trainer>(){t1},new List<Trainer>(){t2});
             Debug.Log(battle.GetBattleInfo());
             while (true)
@@ -84,14 +93,25 @@ namespace ConsoleDebug
                     yield return new WaitUntil(()=>orders.Count != 0);
                     int move = int.Parse(orders[0]);
                     orders.Remove(move.ToString());
+
+                    Debug.Log("Choose for a target:");
+                    foreach (var po in battle.opponentsPokemons)
+                    {
+                        Debug.Log($"Target ${po.CombatID}, {po.Name}");
+                    }
+
+                    yield return new WaitUntil(()=>orders.Count != 0);
+                    int target = int.Parse(orders[0]);
+                    orders.Clear();
+
                     battle.ReceiveInstruction(new Instruction(p.CombatID,Command.Move,move,
-                                                                       new List<int>(){battle.opponentsPokemons[0].CombatID}));
+                                                                       new List<int>(){target}));
                 }
 
                 foreach (var otherPoke in battle.Pokemons.Except(myPoke))
                 {
                     battle.ReceiveInstruction(new Instruction(battle.opponentsPokemons[0].CombatID,Command.Move,0,
-                                        new List<int>(){battle.alliesPokemons[0].CombatID}));
+                                        new List<int>(){battle.alliesPokemons[Random.Range(0,battle.alliesPokemons.Count)].CombatID}));
                 }
 
                 
