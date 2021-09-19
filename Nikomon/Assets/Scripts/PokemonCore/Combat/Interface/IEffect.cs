@@ -31,15 +31,12 @@ namespace PokemonCore.Combat.Interface
         /// <param name="battle"></param>
         /// <param name="attacker"></param>
         /// <returns></returns>
-        public Damage OnHit(Battle battle, CombatPokemon attacker);
+        public Damage OnHit(Damage damage);
         /// <summary>
         /// 再招式即将攻击到对方的时候使用
         /// </summary>
-        /// <param name="battle"></param>
-        /// <param name="attacker"></param>
-        /// <param name="defender"></param>
         /// <returns></returns>
-        public Damage BeHurt(Battle battle, CombatPokemon attacker,CombatPokemon defender);
+        public Damage BeHurt(Damage damage);
         /// <summary>
         /// 在招式已经造成伤害后使用
         /// </summary>
@@ -47,6 +44,8 @@ namespace PokemonCore.Combat.Interface
         /// <param name="attacker"></param>
         /// <param name="defender"></param>
         public void OnDamaged(Battle battle, CombatPokemon attacker,CombatPokemon defender);
+
+        public bool OnSwitchPokemon(CombatPokemon poke);
 
 
     }

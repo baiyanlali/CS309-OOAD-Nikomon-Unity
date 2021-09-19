@@ -80,6 +80,11 @@ namespace PokemonCore.Monster.Data
         public int Species { get; set; }
         
         public EvolutionMethod EvolutionMethod { get; set; }
+        /// <summary>
+        /// 基础经验值
+        /// </summary>
+        /// <returns></returns>
+        public int BasicExp { get; set; }
 
         public int[] EVYield => new int[6]
         {
@@ -112,7 +117,8 @@ namespace PokemonCore.Monster.Data
             int evYieldSPD = 0,
             int evYieldSPE = 0,
             int evoChainID = 0,
-            int growthRate=0
+            int growthRate=0,
+            int baseExp=100
         )
         {
             this.ID = ID;
@@ -144,6 +150,8 @@ namespace PokemonCore.Monster.Data
             this.AbilityHidden = abilityHidden;
 
             Gender = Gender.Gerderless;
+
+            this.BasicExp= baseExp;
 
             LevelMoves = new Dictionary<int, List<int>>();
         }

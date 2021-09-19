@@ -12,13 +12,13 @@ namespace PokemonCore.Combat
 
         public int pokedexNums;
 
-        public Trainer(string name)
+        public Trainer(string name,int ID)
         {
             this.name = name;
             //TODO:Change the id to normal value
-            this.id = 0;
+            this.id = ID;
             this.money = 3000;
-            this.party = new Pokemon[6];
+            this.party = new Pokemon[Game.MaxPartyNums];
             pokedexNums = 0;
         }
 

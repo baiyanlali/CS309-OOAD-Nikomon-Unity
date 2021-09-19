@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace PokemonCore.Utility
 {
@@ -15,8 +16,24 @@ namespace PokemonCore.Utility
             return String.Join(", ", i);
         }
         
-        
-        
-        
     }
+
+    public static class TypesExtension
+    {
+        public static TypeRelationship CompareTypes(this Types t1,Types t2)
+        {
+            return Types.CompareTypes(t1, t2);
+        }
+        public static TypeRelationship CompareTypes(this Types t1,int? t2)
+        {
+            return Types.CompareTypes(t1, t2);
+        }
+        
+        public static IEnumerable<T> OrEmptyIfNull<T>(this IEnumerable<T> source)
+            {
+            return source ?? Enumerable.Empty<T>();
+            }
+    }
+    
+    
 }

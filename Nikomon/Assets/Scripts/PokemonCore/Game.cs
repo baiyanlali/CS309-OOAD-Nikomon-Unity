@@ -21,9 +21,13 @@ namespace PokemonCore
 
         public static string DataPath => "Assets//Data//";
 
+        public static readonly int MaxMovesPerPokemon = 4;
+        public static readonly int MaxPartyNums = 6;
+
         public static readonly string TypeFile = "types.json";
         public static readonly string MoveFile = "moves.json";
         public static readonly string PokemonFile = "pokemons.json";
+        public static readonly string ExpTableFile = "levelingRate.json";
 
         #endregion
         
@@ -42,7 +46,7 @@ namespace PokemonCore
         public static Dictionary<int,Item> ItemsData{get;private set;}
         
 
-        public Trainer trainer;
+        public static Trainer trainer;
 
         private LoadDataType loadDataType { get; set; }
         
@@ -65,6 +69,9 @@ namespace PokemonCore
             LoadTypes();
             LoadMoves();
             LoadPokemons();
+            LoadExperienceTable();
+            NatureData = new Dictionary<int, Nature>();
+            NatureData.Add(0,new Nature(0,new float[]{0,0,0,0,0}));
         }
 
         #region LoadDataToDictionary
@@ -73,9 +80,11 @@ namespace PokemonCore
 
         public void LoadExperienceTable(LoadDataType type = LoadDataType.Json)
         {
-            if (type == LoadDataType.Json)
+            List<int[]> tmp=SaveLoad.Load<List<int[]>>(ExpTableFile);
+            ExperienceTable = new Dictionary<int, int[]>();
+            for (int i = 0; i < tmp.Count; i++)
             {
-                
+                ExperienceTable.Add(i,tmp[i]);
             }
         }
 

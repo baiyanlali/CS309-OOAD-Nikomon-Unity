@@ -33,20 +33,19 @@ namespace PokemonCore.Monster
         int[] IV { get; }//个体值
         byte[] EV { get; }//努力值
         #endregion
-        int Happiness { get; }
+        int FriendShip { get; }
         Move[] moves { get; }
         int TrainerID { get; }
         string Name { get; }
         int ballUsed { get; }
-        int Exp { get; }
         int StatusID { get; }
         int SpeciesID { get; }
         int Item { get; }
         int ItemInitial { get; }
         ObtainMethod ObtainMode { get; }
         bool IsNicknamed { get; }
-        int Type1 { get; }
-        int Type2 { get; }
+        int? Type1 { get; }
+        int? Type2 { get; }
         
 
         string ObtainMap { get; }

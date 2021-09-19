@@ -230,6 +230,8 @@ namespace Editor
                     CurrentPokemon.CatchRate = EditorGUILayout.IntSlider(CurrentPokemon.CatchRate, 0, 100);
                     GUILayout.EndHorizontal();
 
+                    CurrentPokemon.BasicExp = EditorGUILayout.IntField("Basic Experience:", CurrentPokemon.BasicExp);
+
                     if (levelingRate == null || levelingRate.Count==0)
                     {
                         GUILayout.BeginHorizontal();
@@ -565,7 +567,7 @@ namespace Editor
                     fileName = EditorGUILayout.TextField(fileName);
                     if (GUILayout.Button("Save"))
                     {
-                        SaveLoad.Save(fileName, levelingRateName);
+                        SaveLoad.Save(fileName, levelingRate);
                     }
 
                     GUILayout.Space(20);

@@ -70,6 +70,25 @@ namespace PokemonCore
             return "";
         }
 
+        //TODO: Could be more faster
+        public static TypeRelationship CompareTypes(Types t1, Types t2)
+        {
+            if(t2==null)return TypeRelationship.Effective;
+            if (t1.SEType.Contains(t2.ID)) return TypeRelationship.SuperEffective;
+            if (t1.NVEType.Contains(t2.ID)) return TypeRelationship.NotVeryEffective;
+            if (t1.NEType.Contains(t2.ID)) return TypeRelationship.NotEffective;
+            return TypeRelationship.Effective;
+        }
+
+        public static TypeRelationship CompareTypes(Types t1, int? t2)
+        {
+            if(t2==null)return TypeRelationship.Effective;
+            if (t1.SEType.Contains(t2.Value)) return TypeRelationship.SuperEffective;
+            if (t1.NVEType.Contains(t2.Value)) return TypeRelationship.NotVeryEffective;
+            if (t1.NEType.Contains(t2.Value)) return TypeRelationship.NotEffective;
+            return TypeRelationship.Effective;
+        }
+
         
     }
 }

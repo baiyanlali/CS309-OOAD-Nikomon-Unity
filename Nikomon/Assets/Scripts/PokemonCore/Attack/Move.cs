@@ -7,7 +7,7 @@ namespace PokemonCore.Attack
     //This class used to describe 技能
     public class Move
     {
-        private MoveData _baseData { get; set; }
+        public MoveData _baseData { get;private set; }
         private byte pp { get; set; }
 
         public byte PP

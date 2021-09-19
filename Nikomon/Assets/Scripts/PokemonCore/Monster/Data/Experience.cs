@@ -9,7 +9,7 @@ namespace PokemonCore.Monster.Data
         public int Total { get; private set; }
         public int Current => this.Total - Experience.GetExperience(levelingRate, level);
 
-        private byte level => Experience.GetLevelFromExperience(levelingRate, Total);
+        public byte level => Experience.GetLevelFromExperience(levelingRate, Total);
 
         public int NextLevelExp => Experience.GetExperience(levelingRate, level + 1);
 
@@ -57,6 +57,7 @@ namespace PokemonCore.Monster.Data
             this.levelingRate = rate;
             Total = initialValue;
         }
+        
 
     }
 }
