@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using PokemonCore.Attack;
 using PokemonCore.Attack.Data;
 using PokemonCore.Monster;
 using PokemonCore.Monster.Data;
@@ -13,6 +14,7 @@ namespace Editor
     public class PokemonEditor : EditorWindow
     {
         public List<PokemonCore.Types> types;
+        public List<MoveData> moves;
         public string fileName;
 
         #region PokemonVar
@@ -48,6 +50,7 @@ namespace Editor
             levelingRate = new List<int[]>();
 
             types = SaveLoad.Load<List<PokemonCore.Types>>("types.json");
+            moves = SaveLoad.Load<List<MoveData>>("moves.json");
             // types = null;
         }
 
@@ -89,8 +92,7 @@ namespace Editor
             GUILayout.BeginVertical(GUILayout.MaxWidth(100));
             {
                 GUILayout.BeginHorizontal();
-                GUILayout.Label("Pokemon ID:");
-                PokemonID = EditorGUILayout.IntField(PokemonID);
+                PokemonID = EditorGUILayout.IntField("Pokemon ID:",PokemonID);
                 if (GUILayout.Button("Add"))
                 {
                     //这里是计算是否有重复的moveID，如果没有才加入
@@ -160,21 +162,15 @@ namespace Editor
 
                     GUILayout.EndHorizontal();
 
-                    GUILayout.BeginHorizontal();
-                    GUILayout.Label("inner Name:");
-                    CurrentPokemon.innerName = EditorGUILayout.TextField(CurrentPokemon.innerName);
-                    GUILayout.EndHorizontal();
+                    CurrentPokemon.innerName = EditorGUILayout.TextField("Inner Name:",CurrentPokemon.innerName);
 
                     if (types == null || types.Count == 0)
                     {
-                        GUILayout.BeginHorizontal();
-                        GUILayout.Label("Type1:");
                         CurrentPokemon.type1 =
-                            EditorGUILayout.IntField(CurrentPokemon.type1.HasValue ? CurrentPokemon.type1.Value : 0);
+                            EditorGUILayout.IntField("Type1:",CurrentPokemon.type1.HasValue ? CurrentPokemon.type1.Value : 0);
                         if (CurrentPokemon.type1 == -1) CurrentPokemon.type1 = null;
-                        GUILayout.Label("Type2:");
                         CurrentPokemon.type2 =
-                            EditorGUILayout.IntField(CurrentPokemon.type2.HasValue ? CurrentPokemon.type2.Value : 0);
+                            EditorGUILayout.IntField("Type2:",CurrentPokemon.type2.HasValue ? CurrentPokemon.type2.Value : 0);
                         if (CurrentPokemon.type2 == -1) CurrentPokemon.type2 = null;
                         GUILayout.EndHorizontal();
                     }
@@ -197,20 +193,11 @@ namespace Editor
                         GUILayout.EndHorizontal();
                     }
 
-                    GUILayout.BeginHorizontal();
-                    GUILayout.Label("1st Ability:");
-                    CurrentPokemon.Ability1 = EditorGUILayout.IntField(CurrentPokemon.Ability1);
-                    GUILayout.EndHorizontal();
+                    CurrentPokemon.Ability1 = EditorGUILayout.IntField("1st Ability:",CurrentPokemon.Ability1);
 
-                    GUILayout.BeginHorizontal();
-                    GUILayout.Label("2st Ability:");
-                    CurrentPokemon.Ability2 = EditorGUILayout.IntField(CurrentPokemon.Ability2);
-                    GUILayout.EndHorizontal();
+                    CurrentPokemon.Ability2 = EditorGUILayout.IntField("2st Ability:",CurrentPokemon.Ability2);
 
-                    GUILayout.BeginHorizontal();
-                    GUILayout.Label("Hidden Ability:");
-                    CurrentPokemon.AbilityHidden = EditorGUILayout.IntField(CurrentPokemon.AbilityHidden);
-                    GUILayout.EndHorizontal();
+                    CurrentPokemon.AbilityHidden = EditorGUILayout.IntField("Hidden Ability:",CurrentPokemon.AbilityHidden);
                 }
                 // GUILayout.EndVertical();
                 //
@@ -221,66 +208,42 @@ namespace Editor
                     GUILayout.Label("Ratio's and Value's");
 
                     GUILayout.BeginHorizontal();
-                    GUILayout.Label("Male Ratio:");
-                    CurrentPokemon.MaleRatio = EditorGUILayout.IntSlider(CurrentPokemon.MaleRatio, 0, 100);
+                    CurrentPokemon.MaleRatio = EditorGUILayout.IntSlider("Maile Ratio:",CurrentPokemon.MaleRatio, 0, 100);
                     GUILayout.EndHorizontal();
 
-                    GUILayout.BeginHorizontal();
-                    GUILayout.Label("Catch Rate:");
-                    CurrentPokemon.CatchRate = EditorGUILayout.IntSlider(CurrentPokemon.CatchRate, 0, 100);
-                    GUILayout.EndHorizontal();
+                    CurrentPokemon.CatchRate = EditorGUILayout.IntSlider("Catch Rate:",CurrentPokemon.CatchRate, 0, 255);
 
                     CurrentPokemon.BasicExp = EditorGUILayout.IntField("Basic Experience:", CurrentPokemon.BasicExp);
 
                     if (levelingRate == null || levelingRate.Count==0)
                     {
-                        GUILayout.BeginHorizontal();
-                        GUILayout.Label("Leveling Rate:");
-                        CurrentPokemon.GrowthRate = EditorGUILayout.IntField(CurrentPokemon.GrowthRate);
-                        GUILayout.EndHorizontal();
+                        CurrentPokemon.GrowthRate = EditorGUILayout.IntField("Leveling Rate: ",CurrentPokemon.GrowthRate);
                     }
                     else
                     {
-                        GUILayout.BeginHorizontal();
-                        GUILayout.Label("Leveling Rate:");
                         string[] levelingRateName =
                             (from levelingRate in Enumerable.Range(0, levelingRate.Count)
                                 select levelingRate.ToString()).ToArray();
-                        CurrentPokemon.GrowthRate = EditorGUILayout.Popup(CurrentPokemon.GrowthRate,levelingRateName);
-                        GUILayout.EndHorizontal();
+                        CurrentPokemon.GrowthRate = EditorGUILayout.Popup("Leveling Rate:",CurrentPokemon.GrowthRate,levelingRateName);
                     }
 
                     GUILayout.Space(30);
                     GUILayout.Label("Pokedex Info");
 
                     GUILayout.BeginHorizontal();
-                    GUILayout.Label("Height:");
-                    CurrentPokemon.Height = EditorGUILayout.FloatField(CurrentPokemon.Height);
-                    GUILayout.Label("Weight:");
-                    CurrentPokemon.Weight = EditorGUILayout.FloatField(CurrentPokemon.Weight);
+                    CurrentPokemon.Height = EditorGUILayout.FloatField("Height:",CurrentPokemon.Height);
+                    CurrentPokemon.Weight = EditorGUILayout.FloatField("Weight:",CurrentPokemon.Weight);
                     GUILayout.EndHorizontal();
 
 
-                    GUILayout.BeginHorizontal();
-                    GUILayout.Label("Species:");
-                    CurrentPokemon.Species = EditorGUILayout.IntField(CurrentPokemon.Species);
-                    GUILayout.EndHorizontal();
+                    CurrentPokemon.Species = EditorGUILayout.IntField("Species:",CurrentPokemon.Species);
 
-                    GUILayout.BeginHorizontal();
-                    GUILayout.Label("Base Friendship:");
-                    CurrentPokemon.BaseFriendship = EditorGUILayout.IntField(CurrentPokemon.BaseFriendship);
-                    GUILayout.EndHorizontal();
+                    CurrentPokemon.BaseFriendship = EditorGUILayout.IntField("Base Friendship:",CurrentPokemon.BaseFriendship);
 
-                    GUILayout.BeginHorizontal();
-                    GUILayout.Label("Evolution ID:");
-                    CurrentPokemon.EvoChainID = EditorGUILayout.IntField(CurrentPokemon.EvoChainID);
-                    GUILayout.EndHorizontal();
+                    CurrentPokemon.EvoChainID = EditorGUILayout.IntField("Evolution ID:",CurrentPokemon.EvoChainID);
 
-                    GUILayout.BeginHorizontal();
-                    GUILayout.Label("Evolution Method:");
                     CurrentPokemon.EvolutionMethod =
-                        (EvolutionMethod)EditorGUILayout.EnumPopup(CurrentPokemon.EvolutionMethod);
-                    GUILayout.EndHorizontal();
+                        (EvolutionMethod)EditorGUILayout.EnumPopup("Evolution Method:",CurrentPokemon.EvolutionMethod);
                 }
                 GUILayout.EndVertical();
 
@@ -289,59 +252,14 @@ namespace Editor
                     GUILayout.Space(30);
                     GUILayout.Label("Base stats");
 
-                    GUILayout.BeginHorizontal();
-                    GUILayout.Label("HP:");
-                    CurrentPokemon.BaseStatsHP = EditorGUILayout.IntField(CurrentPokemon.BaseStatsHP);
-                    GUILayout.EndHorizontal();
-                    GUILayout.BeginHorizontal();
-                    GUILayout.Label("Attack:");
-                    CurrentPokemon.BaseStatsATK = EditorGUILayout.IntField(CurrentPokemon.BaseStatsATK);
-                    GUILayout.EndHorizontal();
-                    GUILayout.BeginHorizontal();
-                    GUILayout.Label("Defense:");
-                    CurrentPokemon.BaseStatsDEF = EditorGUILayout.IntField(CurrentPokemon.BaseStatsDEF);
-                    GUILayout.EndHorizontal();
-                    GUILayout.BeginHorizontal();
-                    GUILayout.Label("SP Atk:");
-                    CurrentPokemon.BaseStatsSPA = EditorGUILayout.IntField(CurrentPokemon.BaseStatsSPA);
-                    GUILayout.EndHorizontal();
-                    GUILayout.BeginHorizontal();
-                    GUILayout.Label("SP def:");
-                    CurrentPokemon.BaseStatsSPD = EditorGUILayout.IntField(CurrentPokemon.BaseStatsSPD);
-                    GUILayout.EndHorizontal();
-                    GUILayout.BeginHorizontal();
-                    GUILayout.Label("Speed:");
-                    CurrentPokemon.BaseStatsSPE = EditorGUILayout.IntField(CurrentPokemon.BaseStatsSPE);
-                    GUILayout.EndHorizontal();
+                    CurrentPokemon.BaseStatsHP = EditorGUILayout.IntField("HP:",CurrentPokemon.BaseStatsHP);
+                    CurrentPokemon.BaseStatsATK = EditorGUILayout.IntField("Attack:",CurrentPokemon.BaseStatsATK);
+                    CurrentPokemon.BaseStatsDEF = EditorGUILayout.IntField("Defense:",CurrentPokemon.BaseStatsDEF);
+                    CurrentPokemon.BaseStatsSPA = EditorGUILayout.IntField("SP Atk:",CurrentPokemon.BaseStatsSPA);
+                    CurrentPokemon.BaseStatsSPD = EditorGUILayout.IntField("SP def:",CurrentPokemon.BaseStatsSPD);
+                    CurrentPokemon.BaseStatsSPE = EditorGUILayout.IntField("Speed:",CurrentPokemon.BaseStatsSPE);
 
 
-                    GUILayout.Space(20);
-                    GUILayout.Label("ev yield stats");
-
-                    GUILayout.BeginHorizontal();
-                    GUILayout.Label("HP:");
-                    CurrentPokemon.evYieldHP = EditorGUILayout.IntField(CurrentPokemon.evYieldHP);
-                    GUILayout.EndHorizontal();
-                    GUILayout.BeginHorizontal();
-                    GUILayout.Label("Attack:");
-                    CurrentPokemon.evYieldATK = EditorGUILayout.IntField(CurrentPokemon.evYieldATK);
-                    GUILayout.EndHorizontal();
-                    GUILayout.BeginHorizontal();
-                    GUILayout.Label("Defense:");
-                    CurrentPokemon.evYieldDEF = EditorGUILayout.IntField(CurrentPokemon.evYieldDEF);
-                    GUILayout.EndHorizontal();
-                    GUILayout.BeginHorizontal();
-                    GUILayout.Label("SP Atk:");
-                    CurrentPokemon.evYieldSPA = EditorGUILayout.IntField(CurrentPokemon.evYieldSPA);
-                    GUILayout.EndHorizontal();
-                    GUILayout.BeginHorizontal();
-                    GUILayout.Label("SP def:");
-                    CurrentPokemon.evYieldSPD = EditorGUILayout.IntField(CurrentPokemon.evYieldSPD);
-                    GUILayout.EndHorizontal();
-                    GUILayout.BeginHorizontal();
-                    GUILayout.Label("Speed:");
-                    CurrentPokemon.evYieldSPE = EditorGUILayout.IntField(CurrentPokemon.evYieldSPE);
-                    GUILayout.EndHorizontal();
                 }
                 GUILayout.EndVertical();
 
@@ -356,12 +274,22 @@ namespace Editor
                             List<int> levelMoves;
                             if (CurrentPokemon.LevelMoves.TryGetValue(level, out levelMoves))
                             {
-                                levelMoves.Add(move);
+                                if(moves!=null)
+                                    levelMoves.Add(moves[move].MoveID);
+                                else
+                                {
+                                    levelMoves.Add(move);
+                                }
                             }
                         }
                         else
                         {
-                            CurrentPokemon.LevelMoves.Add(level, new List<int>(new int[] { move }));
+                            if(moves==null)
+                                CurrentPokemon.LevelMoves.Add(level, new List<int>(new int[] { move }));
+                            else
+                            {
+                                CurrentPokemon.LevelMoves.Add(level, new List<int>(new int[] { moves[move].MoveID }));
+                            }
                         }
                     }
 
@@ -391,7 +319,15 @@ namespace Editor
                 GUILayout.BeginVertical();
                 {
                     GUILayout.Label("");
-                    move = EditorGUILayout.IntField("Move", move);
+                    if (moves==null ||moves.Count==0)
+                    {
+                        move = EditorGUILayout.IntField("Move", move);
+                    }
+                    else
+                    {
+                        string[] strs = (from m in moves select $"{m.MoveID}||{m.innerName}").ToArray();
+                        move = EditorGUILayout.Popup(move,strs);
+                    }
                     GUILayout.Label("");
                     GUILayout.Label("Remove Moves");
                     GUILayout.BeginScrollView(levelMoveScroll);

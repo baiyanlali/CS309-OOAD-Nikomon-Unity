@@ -35,7 +35,7 @@ namespace PokemonCore.Combat
             this.Targets = targets;
             this.types = Game.TypesMap[move._baseData.Type];
             this.TotalPP = move.TotalPP;
-            this.pp = move.PP;
+            this.pp = (byte)(move.PP-1);
             this.Accuracy = move._baseData.Accuracy;
             this.Priority = move._baseData.Priority;
             this.power = move._baseData.Power;

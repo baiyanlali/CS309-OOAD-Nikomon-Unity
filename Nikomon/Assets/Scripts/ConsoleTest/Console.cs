@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading.Tasks;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
 
@@ -120,7 +121,7 @@ namespace ConsoleDebug
             {
                 if (!(e is SocketException))
                 {
-                    return;
+                    return ;
                 }
             }
 
@@ -129,11 +130,12 @@ namespace ConsoleDebug
             {
                 ParseReceive(strs);
             }
+
         }
 
         static void ParseReceive(string strs)
         {
-            OnMessageEntered(strs);
+            OnMessageEntered?.Invoke(strs);
             // UnityEngine.Debug.Log(strs);
         }
 

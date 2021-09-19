@@ -24,7 +24,10 @@ namespace PokemonCore.Combat
         public int SPD { get; private set; }
         public int SPE { get; private set; }
 
-        public string Name { get; private set; }
+        public string Name
+        {
+            get =>pokemon==null?"":pokemon.Name;
+        }
 
         // public CombatMove[] moves { get; private set; }
         public int Exp { get; }
@@ -62,22 +65,23 @@ namespace PokemonCore.Combat
             this.SPE = pokemon.SPE;
             this.SPD = pokemon.SPD;
 
+            this.Type1 = pokemon.Type1;
+            this.Type2 = pokemon.Type2;
+            this.Type3 = null;
+
             Accuracy = 100;
             Evasion = 0;
 
             //TODO:Add ability
+
+            TrainerID = pokemon.TrainerID;
+
+            lastMove = null;
             
             battle.OnThisTurnEnd += () => this.pokemon.HP = this.HP;
             
-            // InitCombatMove();
-
         }
 
-        private void InitCombatMove()
-        {
-            // moves = (from mo in pokemon.moves select new CombatMove(mo,battle)).ToArray();
-            
-        }
 
         public Instruction OnChoosing()
         {

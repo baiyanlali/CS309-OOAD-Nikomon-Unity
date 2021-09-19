@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using PokemonCore;
 using PokemonCore.Attack;
+using PokemonCore.Combat;
 using PokemonCore.Monster;
 using PokemonCore.Monster.Data;
 
@@ -65,7 +66,7 @@ public class Pokemon : IPokemon, IEquatable<Pokemon>, IEqualityComparer<Pokemon>
 
     public int GrowthRate => this._base.GrowthRate;
 
-    public Pokemon(PokemonData pd,string nickName="",int initLevel=1,int ballUsed=0,string obtainMap="NoWhere",int statusID=0)
+    public Pokemon(PokemonData pd,string nickName="",Trainer trainer=null,int initLevel=1,int ballUsed=0,string obtainMap="NoWhere",int statusID=0)
     {
         _base = pd;
         
@@ -77,9 +78,9 @@ public class Pokemon : IPokemon, IEquatable<Pokemon>, IEqualityComparer<Pokemon>
         EV = new byte[6];
         HP = TotalHp;
 
-        FriendShip = _base.BaseFriendship;
+        this.TrainerID = trainer.id;
 
-        TrainerID = Game.trainer.id;
+        FriendShip = _base.BaseFriendship;
 
         if (!String.IsNullOrEmpty(nickName))
         {

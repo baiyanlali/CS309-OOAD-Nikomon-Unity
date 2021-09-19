@@ -58,6 +58,7 @@ namespace Editor
                             {
                                 MoveData md = new MoveData(MoveID);
                                 movedatas.Add(md);
+                                movedatas.Sort((o1, o2) => {return o1.MoveID - o2.MoveID;});
                                 MoveID++;
                                 this.Repaint();
                             }
@@ -92,6 +93,7 @@ namespace Editor
                         if (GUILayout.Button("Load"))
                         {
                             movedatas = SaveLoad.Load<List<MoveData>>(fileName);
+                            movedatas.Sort((o1, o2) => {return o1.MoveID - o2.MoveID;});
                         }
                     GUILayout.EndHorizontal();
                     
@@ -113,42 +115,29 @@ namespace Editor
                         if (GUILayout.Button("Remove"))
                         {
                             movedatas.Remove(CurrentMove);
+                            return;
                             this.Repaint();
                         }
 
                         GUILayout.EndHorizontal();
-
-                        GUILayout.BeginHorizontal();
-                        GUILayout.Label("inner Name:");
-                        CurrentMove.innerName = EditorGUILayout.TextField(CurrentMove.innerName);
-                        GUILayout.EndHorizontal();
                         
-                        GUILayout.BeginHorizontal();
-                        GUILayout.Label("Category:");
-                        CurrentMove.Category = (Category) EditorGUILayout.EnumPopup(CurrentMove.Category);
-                        GUILayout.EndHorizontal();
+                        
+                        CurrentMove.innerName = EditorGUILayout.TextField("inner Name:",CurrentMove.innerName);
+                        
+                        CurrentMove.Category = (Category) EditorGUILayout.EnumPopup("Category",CurrentMove.Category);
 
                         if (types == null || types.Count == 0)
                         {
-                            GUILayout.BeginHorizontal();
-                            GUILayout.Label("Type:");
-                            CurrentMove.Type = EditorGUILayout.IntField(CurrentMove.Type);
-                            GUILayout.EndHorizontal();
+                            CurrentMove.Type = EditorGUILayout.IntField("Type",CurrentMove.Type);
                         }
                         else
                         {
-                            GUILayout.BeginHorizontal();
-                            GUILayout.Label("Type:");
                             string[] strs = (from type in types select type.Name).ToArray();
-                            CurrentMove.Type = EditorGUILayout.Popup(CurrentMove.Type,strs);
-                            GUILayout.EndHorizontal();
+                            CurrentMove.Type = EditorGUILayout.Popup("Type",CurrentMove.Type,strs);
                         }
 
-                        GUILayout.BeginHorizontal();
-                        GUILayout.Label("Target:");
                         CurrentMove.Target =
-                            (PokemonCore.Attack.Data.Targets) EditorGUILayout.EnumPopup(CurrentMove.Target);
-                        GUILayout.EndHorizontal();
+                            (PokemonCore.Attack.Data.Targets) EditorGUILayout.EnumPopup("Target",CurrentMove.Target);
 
                         GUILayout.BeginHorizontal();
                         GUILayout.Label("Accuracy:");

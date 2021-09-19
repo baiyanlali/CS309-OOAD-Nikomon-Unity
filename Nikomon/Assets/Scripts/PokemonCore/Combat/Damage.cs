@@ -12,7 +12,7 @@ namespace PokemonCore.Combat
             get =>(int)Math.Floor(damage * damageMultiplyingPower);
         }
         
-        float damageMultiplyingPower = 1;
+        public float damageMultiplyingPower { get; private set; }
         
         public CombatPokemon target;
         public CombatPokemon sponsor;
@@ -25,9 +25,7 @@ namespace PokemonCore.Combat
                 damage = combatMove.power.Value;
             this.target = target;
             this.sponsor = sponsor;
-            
-            
-            //TODO:我个人感觉不应该把属性相克的判断写在这里，到时候再说
+            damageMultiplyingPower = 1;
             
             if (combatMove.types.CompareTypes(target.Type1)==TypeRelationship.NotEffective ||
                 combatMove.types.CompareTypes(target.Type2)==TypeRelationship.NotEffective ||

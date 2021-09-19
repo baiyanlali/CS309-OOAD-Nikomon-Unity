@@ -34,11 +34,11 @@ namespace PokemonCore.Attack.Data
         public MoveData(
             int moveID = 0,
             string innerName="",
-            int? accuracy = 0,
+            int? accuracy = 100,
             int? power = 0,
             byte pp = 0,
             int priority = 0,
-            Targets target = Targets.USER,
+            Targets target = Targets.SELECTED_OPPONENT_POKEMON,
             int type = 0,
             int effectID = 0,
             int? effectChance = 0

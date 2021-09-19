@@ -63,6 +63,8 @@ namespace PokemonCore.Combat
     /// </summary>
     public class Battle
     {
+        public static Battle Instance;
+        
         public List<CombatPokemon> alliesPokemons { get; private set; }
         public List<CombatPokemon> opponentsPokemons { get; private set; }
 
@@ -92,10 +94,12 @@ namespace PokemonCore.Combat
         /// 招式效果结束后的效果；可以用于一些附加效果，比如寄生种子
         /// </summary>
         public List<IEffect> MovedEffect { get; private set; }
-
-        public Action<Damage> OnHit;
+        
+        public Func<Damage,string> OnHit;
 
         public Action OnThisTurnEnd;
+
+        public Action OnTurnBegin;
 
         #endregion
 
@@ -106,6 +110,11 @@ namespace PokemonCore.Combat
         public List<CombatPokemon> Pokemons
         {
             get => alliesPokemons.Union(opponentsPokemons).ToList();
+        }
+
+        public List<CombatPokemon> MyPokemons
+        {
+            get => (from myPokes in Pokemons where myPokes.TrainerID == UserTrainer.id select myPokes).ToList();
         }
 
         private BattleResults mBattleResults;
@@ -141,6 +150,7 @@ namespace PokemonCore.Combat
             IEffect[] damagedEffect = null,
             IEffect[] movedEffect = null)
         {
+            Instance = this;
             #region init pokemons and trainers
 
             this.alliesPokemons = (from poke in alliesPokemons select new CombatPokemon(poke,this)).ToList();
@@ -210,6 +220,7 @@ namespace PokemonCore.Combat
                     break;
                 case BattleActions.Moved:
                     mBattleActions = BattleActions.Choosing;
+                    OnTurnBegin?.Invoke();
                     Choosing();
                     break;
             }
@@ -260,9 +271,8 @@ namespace PokemonCore.Combat
 
         void Damaging(Damage dmg)
         {
-            
-            OnHit?.Invoke(dmg);
             dmg = dmg.sponsor.OnHit(dmg);
+            OnHit?.Invoke(dmg);
             dmg.target.BeHurt(dmg);
             
         }
