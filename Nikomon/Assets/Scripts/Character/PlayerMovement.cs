@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -13,6 +14,8 @@ public class PlayerMovement : MonoBehaviour
     {
         animator = GetComponent<Animator>();
         playerInput = GetComponent<PlayerInput>();
+        
+        
     }
 
     // Update is called once per frame
@@ -22,8 +25,8 @@ public class PlayerMovement : MonoBehaviour
         if (isWalking)
         {
             
-            DebugUIHandler.Instance.InsertInfo(move.ToString());
-            Debug.Log(move.ToString());
+            // DebugUIHandler.Instance.InsertInfo(move.ToString());
+            // Debug.Log("Move vector: "+move.ToString());
             if (move.magnitude < 0.03f) return;
             move.Normalize();
             float cameraForward =

@@ -147,6 +147,7 @@ namespace PokemonCore.Monster.Data
 
             LevelMoves = new Dictionary<int, List<int>>();
         }
+        
 
         public bool Equals(PokemonData other)
         {
@@ -162,5 +163,24 @@ namespace PokemonCore.Monster.Data
         {
             return this.ID;
         }
+        
+        private string Type1Name
+        {
+            get => type1.HasValue ? Game.TypesMap[type1.Value].Name : "";
+        }
+        private string Type2Name
+        {
+            get => type2.HasValue ? Game.TypesMap[type2.Value].Name : "";
+        }
+
+        public override string ToString()
+        {
+            return $"Pokemon ID: {ID}\n" +
+                   $"Pokemon inner Name: {innerName}\n" +
+                   $"Poekmon Type {Type1Name},{Type2Name}";
+        }
+        
+        
+        
     }
 }

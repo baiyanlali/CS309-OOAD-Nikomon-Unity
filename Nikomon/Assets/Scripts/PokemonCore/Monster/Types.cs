@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using PokemonCore.Utility;
 
 namespace PokemonCore
 {
@@ -28,9 +30,46 @@ namespace PokemonCore
             NEType = new HashSet<int>();
         }
 
+        public override string ToString()
+        {
+            List<string> se_names = new List<string>();
+            foreach (var se in SEType)
+            {
+                se_names.Add(Game.TypesMap[se].ToString(TextScripts.Name));
+            }
+
+            List<string> nve_names = new List<string>();
+            foreach (var nev in NVEType)
+            {
+                nve_names.Add(Game.TypesMap[nev].ToString(TextScripts.Name));
+            }
+            List<string> ne_names = new List<string>();
+            foreach (var ne in NVEType)
+            {
+                ne_names.Add(Game.TypesMap[ne].ToString(TextScripts.Name));
+            }
+
+            
+            
+            return $"\nTypes ID:{ID}\nName:{Name}\n" +
+                   $"Super Effect Type ID: {se_names.ConverToString()}\n" +
+                   $"Not Very Effective Type ID: {nve_names.ConverToString()}\n" +
+                   $"No Effect Type ID: {ne_names.ConverToString()}";
+        }
+
         public string ToString(TextScripts ts)
         {
-            return base.ToString();
+            switch (ts)
+            {
+                case TextScripts.Name:
+                    return Name;
+                case TextScripts.Description:
+                    return this.ToString();
+            }
+
+            return "";
         }
+
+        
     }
 }

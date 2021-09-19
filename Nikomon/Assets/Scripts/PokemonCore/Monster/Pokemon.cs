@@ -11,7 +11,7 @@ public class Pokemon : IPokemon, IEquatable<Pokemon>, IEqualityComparer<Pokemon>
         ? 1 + this.EV[0] / 4
         : (2 * _base.BaseStatsHP + this.IV[0] + this.EV[0] / 4) * this.Level / 100 + this.Level + 10;
 
-    protected PokemonData _base => Game.PokemonData[0];
+    protected PokemonData _base => Game.PokemonsData[0];
     public int HP { get; }
     private int hp { get; set; }
     public int NatureID { get; private set; }

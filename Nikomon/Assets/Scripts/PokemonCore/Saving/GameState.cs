@@ -48,5 +48,10 @@ namespace PokemonCore.Saving
         {
             return Trainer.id.GetHashCode();
         }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
     }
 }

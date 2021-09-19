@@ -10,6 +10,8 @@ namespace PokemonCore.Utility
         {
             if (!fileName.Contains(".")) fileName += ".json";
             string filePath = path + fileName;
+            
+            
             if (!File.Exists(filePath)) return default(T);
             StreamReader sr = File.OpenText(filePath);
             string data = sr.ReadToEnd();

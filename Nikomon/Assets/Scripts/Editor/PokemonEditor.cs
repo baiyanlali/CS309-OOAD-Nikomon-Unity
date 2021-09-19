@@ -12,14 +12,11 @@ namespace Editor
 {
     public class PokemonEditor : EditorWindow
     {
-
-
-
-
         public List<PokemonCore.Types> types;
         public string fileName;
-        
+
         #region PokemonVar
+
         public List<PokemonData> PokemonDatas;
         public Vector2 pokemonScrollBar;
         public int PokemonID;
@@ -27,13 +24,14 @@ namespace Editor
         public Vector2 levelMoveScroll;
         public int level;
         public int move;
-         public PokemonData CurrentPokemon
-                {
-                    get => PokemonIndex < PokemonDatas.Count && PokemonIndex >= 0 ? PokemonDatas[PokemonIndex] : null;
-                }
+
+        public PokemonData CurrentPokemon
+        {
+            get => PokemonIndex < PokemonDatas.Count && PokemonIndex >= 0 ? PokemonDatas[PokemonIndex] : null;
+        }
+
         #endregion
 
-       
 
         [MenuItem("PokemonTools/Edit Pokemon")]
         private static void ShowWindow()
@@ -47,12 +45,14 @@ namespace Editor
         {
             PokemonDatas = new List<PokemonData>();
             SpeciesList = new List<Species>();
+            levelingRate = new List<int[]>();
+
             types = SaveLoad.Load<List<PokemonCore.Types>>("types.json");
             // types = null;
         }
 
         public int CurrentSelectIndex;
-        public string[] ToolBars = {"Pokemon", "Species", "Ability", "Leveling Rate", "Evolution"};
+        public string[] ToolBars = { "Pokemon", "Species", "Ability", "Leveling Rate", "Evolution", "Nature" };
 
         private void OnGUI()
         {
@@ -72,8 +72,11 @@ namespace Editor
                     case 2:
                         break;
                     case 3:
+                        LevelingRate();
                         break;
                     case 4:
+                        break;
+                    case 5:
                         break;
                 }
             }
@@ -179,8 +182,8 @@ namespace Editor
                     {
                         GUILayout.BeginHorizontal();
                         List<string> strs = new List<string>();
-                        strs.Add("NULL");
                         strs.AddRange((from type in types select type.Name).ToArray());
+                        strs.Add("NULL");
                         // Debug.Log($"String len: {strs.Length}");
                         GUILayout.Label("Type1:");
                         CurrentPokemon.type1 = EditorGUILayout.Popup(
@@ -188,9 +191,9 @@ namespace Editor
                             strs.Where(s => !s.Equals("NULL")).ToArray());
                         GUILayout.Label("Type2:");
                         CurrentPokemon.type2 =
-                            EditorGUILayout.Popup(CurrentPokemon.type2.HasValue ? CurrentPokemon.type2.Value : 0,
+                            EditorGUILayout.Popup(CurrentPokemon.type2.HasValue ? CurrentPokemon.type2.Value : strs.Count-1,
                                 strs.ToArray());
-                        if (CurrentPokemon.type2 == 0) CurrentPokemon.type2 = null;
+                        if (CurrentPokemon.type2 >= types.Count) CurrentPokemon.type2 = null;
                         GUILayout.EndHorizontal();
                     }
 
@@ -227,10 +230,23 @@ namespace Editor
                     CurrentPokemon.CatchRate = EditorGUILayout.IntSlider(CurrentPokemon.CatchRate, 0, 100);
                     GUILayout.EndHorizontal();
 
-                    GUILayout.BeginHorizontal();
-                    GUILayout.Label("Leveling Rate:");
-                    CurrentPokemon.GrowthRate = EditorGUILayout.IntField(CurrentPokemon.GrowthRate);
-                    GUILayout.EndHorizontal();
+                    if (levelingRate == null || levelingRate.Count==0)
+                    {
+                        GUILayout.BeginHorizontal();
+                        GUILayout.Label("Leveling Rate:");
+                        CurrentPokemon.GrowthRate = EditorGUILayout.IntField(CurrentPokemon.GrowthRate);
+                        GUILayout.EndHorizontal();
+                    }
+                    else
+                    {
+                        GUILayout.BeginHorizontal();
+                        GUILayout.Label("Leveling Rate:");
+                        string[] levelingRateName =
+                            (from levelingRate in Enumerable.Range(0, levelingRate.Count)
+                                select levelingRate.ToString()).ToArray();
+                        CurrentPokemon.GrowthRate = EditorGUILayout.Popup(CurrentPokemon.GrowthRate,levelingRateName);
+                        GUILayout.EndHorizontal();
+                    }
 
                     GUILayout.Space(30);
                     GUILayout.Label("Pokedex Info");
@@ -261,7 +277,7 @@ namespace Editor
                     GUILayout.BeginHorizontal();
                     GUILayout.Label("Evolution Method:");
                     CurrentPokemon.EvolutionMethod =
-                        (EvolutionMethod) EditorGUILayout.EnumPopup(CurrentPokemon.EvolutionMethod);
+                        (EvolutionMethod)EditorGUILayout.EnumPopup(CurrentPokemon.EvolutionMethod);
                     GUILayout.EndHorizontal();
                 }
                 GUILayout.EndVertical();
@@ -343,7 +359,7 @@ namespace Editor
                         }
                         else
                         {
-                            CurrentPokemon.LevelMoves.Add(level, new List<int>(new int[] {move}));
+                            CurrentPokemon.LevelMoves.Add(level, new List<int>(new int[] { move }));
                         }
                     }
 
@@ -407,14 +423,16 @@ namespace Editor
 
         #region SpeciesVar
 
-            public List<Species> SpeciesList;
-            public int SpeciesID;
-            public int SpeciesIndex;
-            public Vector2 SpeciesScrollBar;
-            public Species CurrentSpecies
-            {
-                get => SpeciesIndex < SpeciesList.Count && SpeciesIndex >= 0 ? SpeciesList[SpeciesIndex] : null;
-            } 
+        public List<Species> SpeciesList;
+        public int SpeciesID;
+        public int SpeciesIndex;
+        public Vector2 SpeciesScrollBar;
+
+        public Species CurrentSpecies
+        {
+            get => SpeciesIndex < SpeciesList.Count && SpeciesIndex >= 0 ? SpeciesList[SpeciesIndex] : null;
+        }
+
         #endregion
 
         void Species()
@@ -482,9 +500,9 @@ namespace Editor
                     if (CurrentSpecies != null)
                     {
                         GUILayout.Label($"Species ID: {SpeciesID}");
-                        CurrentSpecies.Description = EditorGUILayout.TextField("Description:",CurrentSpecies.Description);
+                        CurrentSpecies.Description =
+                            EditorGUILayout.TextField("Description:", CurrentSpecies.Description);
                     }
-                    
                 }
                 GUILayout.EndVertical();
             }
@@ -492,6 +510,114 @@ namespace Editor
         }
 
         void Ability()
+        {
+        }
+
+        #region LevelVar
+
+        private List<int[]> levelingRate;
+        public int levelingRateID;
+        public int levelingRateIndex;
+        public Vector2 levelingRateScroll;
+
+        public int[] CurrentLevelingRate
+        {
+            get => levelingRateIndex < levelingRate.Count && levelingRateIndex >= 0
+                ? levelingRate[levelingRateIndex]
+                : null;
+        }
+
+        #endregion
+
+        void LevelingRate()
+        {
+            GUILayout.BeginHorizontal();
+            {
+                GUILayout.BeginVertical(GUILayout.MaxWidth(100));
+                {
+                    GUILayout.BeginHorizontal();
+                    GUILayout.Label($"LevelingRate ID:{levelingRate.Count}");
+                    if (GUILayout.Button("Add"))
+                    {
+                        levelingRate.Add(new int[100]);
+                        this.Repaint();
+                    }
+
+                    GUILayout.EndHorizontal();
+
+                    SpeciesScrollBar = GUILayout.BeginScrollView(SpeciesScrollBar);
+
+                    //也是列举有多少中Leveling Rate
+                    string[] levelingRateName =
+                        (from levelingRate in Enumerable.Range(0, levelingRate.Count)
+                            select levelingRate.ToString()).ToArray();
+                    
+                    if (levelingRateName.Length != 0)
+                        levelingRateIndex = GUILayout.SelectionGrid(levelingRateIndex, levelingRateName, 1);
+
+                    GUILayout.EndScrollView();
+
+
+                    GUILayout.FlexibleSpace();
+
+                    GUILayout.BeginHorizontal();
+                    GUILayout.Label("File Name:");
+                    fileName = EditorGUILayout.TextField(fileName);
+                    if (GUILayout.Button("Save"))
+                    {
+                        SaveLoad.Save(fileName, levelingRateName);
+                    }
+
+                    GUILayout.Space(20);
+                    if (GUILayout.Button("Load"))
+                    {
+                        levelingRate = SaveLoad.Load<List<int[]>>(fileName);
+                    }
+
+                    GUILayout.EndHorizontal();
+                }
+                GUILayout.EndVertical();
+
+                if (CurrentLevelingRate == null)
+                {
+                    
+                }
+                else
+                {
+                     GUILayout.BeginVertical();
+                    {
+                        GUILayout.BeginHorizontal();
+                        GUILayout.Label($"Leveling Rate : {levelingRateIndex}");
+                        if (GUILayout.Button("Remove"))
+                        {
+                            levelingRate.Remove(CurrentLevelingRate);
+                            return;
+                        }
+                        GUILayout.EndHorizontal();
+                        levelingRateScroll = GUILayout.BeginScrollView(levelingRateScroll);
+
+                        for (int i = 0; i < CurrentLevelingRate.Length; i++)
+                        {
+                            CurrentLevelingRate[i] =
+                                EditorGUILayout.IntField($"Level {i + 1}:", CurrentLevelingRate[i]);
+                        }
+                        
+                        GUILayout.EndScrollView();
+                    }
+                    GUILayout.EndVertical();
+                }
+                
+               
+            }
+            GUILayout.EndHorizontal();
+        }
+
+        void Evolution()
+        {
+            
+        }
+
+        void Nature()
         {
             
         }

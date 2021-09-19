@@ -1,9 +1,12 @@
-﻿using PokemonCore.Attack;
+﻿using System.Collections.Generic;
+using PokemonCore.Attack;
+using PokemonCore.Combat.Interface;
 
 namespace PokemonCore.Combat
 {
     public class CombatPokemon
     {
+        public int CombatID { get; set; }
         private Pokemon pokemon { get; set; }
         public int HP { get; private set; }
         public int TotalHP { get; private set; }
@@ -34,6 +37,8 @@ namespace PokemonCore.Combat
         /// Used only in battle
         /// </summary>
         public int Evasion { get; private set; }
+        
+        public List<IEffect> Effects { get; set; }
 
         public CombatPokemon(Pokemon pokemon)
         {
@@ -48,6 +53,8 @@ namespace PokemonCore.Combat
 
             Accuracy = 100;
             Evasion = 0;
+
+            CombatID = this.pokemon.GetHashCode()+Name.GetHashCode();
 
         }
 

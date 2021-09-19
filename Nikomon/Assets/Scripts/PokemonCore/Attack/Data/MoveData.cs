@@ -56,6 +56,15 @@ namespace PokemonCore.Attack.Data
             this.EffectChance = effectChance;
         }
 
+        public override string ToString()
+        {
+            return $"Move Name: {innerName}\n" +
+                   $"Type: {Game.TypesMap[Type].Name}\n" +
+                   $"Category: {Category}\n" +
+                   $"Power: {Power}\n" +
+                   $"Accuracy: {Accuracy}";
+        }
+
         //TODO:FIX TO STRING FUNCTION
         public string ToString(TextScripts ts)
         {

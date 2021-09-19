@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using PokemonCore.Combat.Interface;
+using UnityEngine.Serialization;
 
 namespace PokemonCore.Combat
 {
@@ -32,21 +33,26 @@ namespace PokemonCore.Combat
         Items,
         SwitchPokemon,
         GoPokemon,
-        Run
+        Run,
+        Skip
     }
 
     [Serializable]
     public class Instruction
     {
-        public int TrainerID;
+        public int CombatPokemonID;
         public Command command;
         public int ID;
+        public List<int> target;
 
-        Instruction(int trainerID,Command command, int id)
+        
+        Instruction(int combatPokemonID,Command command, int id,List<int> target) 
         {
-            this.TrainerID = trainerID;
+            this.CombatPokemonID = combatPokemonID;
             this.command = command;
             this.ID = id;
+            this.target = target;
+            
         }
     }
 
@@ -86,6 +92,10 @@ namespace PokemonCore.Combat
         /// </summary>
         public List<IEffect> MovedEffect { get; private set; }
 
+        public Action<Damage> OnHit;
+
+        public Action OnThisTurnEnd;
+
         #endregion
 
         public Trainer UserTrainer { get; private set; }
@@ -99,16 +109,29 @@ namespace PokemonCore.Combat
         private int turnCount;
 
         private int currentPokemonIndex;
+
+        public Dictionary<int, CombatPokemon> pokemons;
+
+
+
+        /// <summary>
+        /// For internet connection. When in local, isHost is true.
+        /// In the Internet, if you are the host, you have to transmit your data to the others.
+        /// If you are not the host, you have to wait for the data transmit back to you;
+        /// </summary>
+        public bool isHost;
         
         private Pokemon CurrentPokemon
         {
             get => Pokemons[currentPokemonIndex];
+            
         }
 
         public Battle(
-            
+            bool isHost=true
         )
         {
+            this.isHost = isHost;
             
         }
 
@@ -235,11 +258,12 @@ namespace PokemonCore.Combat
         }
         
         #endregion
-
+        
+        
+        
         public bool ReceiveInstruction(Instruction ins)
         {
-            if (ins.TrainerID != CurrentPokemon.TrainerID || mBattleActions!=BattleActions.Choosing)
-                return false;
+            
             switch (ins.command)
             {
                 case Command.Move:
