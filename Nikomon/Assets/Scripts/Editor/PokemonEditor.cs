@@ -103,6 +103,7 @@ namespace Editor
                     {
                         PokemonData md = new PokemonData(PokemonID);
                         PokemonDatas.Add(md);
+                        PokemonDatas.Sort((o1,o2)=>o1.ID-o2.ID);
                         PokemonID++;
                         this.Repaint();
                     }
@@ -131,6 +132,7 @@ namespace Editor
                 fileName = EditorGUILayout.TextField(fileName);
                 if (GUILayout.Button("Save"))
                 {
+                    PokemonDatas.Sort((o1,o2)=>o1.ID-o2.ID);
                     SaveLoad.Save(fileName, PokemonDatas);
                 }
 
@@ -138,6 +140,7 @@ namespace Editor
                 if (GUILayout.Button("Load"))
                 {
                     PokemonDatas = SaveLoad.Load<List<PokemonData>>(fileName);
+                    PokemonDatas.Sort((o1,o2)=>o1.ID-o2.ID);
                 }
 
                 GUILayout.EndHorizontal();

@@ -116,7 +116,6 @@ namespace Editor
                         {
                             movedatas.Remove(CurrentMove);
                             return;
-                            this.Repaint();
                         }
 
                         GUILayout.EndHorizontal();
