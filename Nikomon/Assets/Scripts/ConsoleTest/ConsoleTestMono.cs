@@ -118,9 +118,6 @@ namespace ConsoleDebug
             }
 
             
-
-            Debug.Log(battle.GetBattleInfo());
-
         }
 
         private List<string> orders;

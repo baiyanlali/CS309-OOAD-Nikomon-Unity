@@ -1,6 +1,5 @@
 ﻿using System;
 using PokemonCore.Combat;
-using UnityEngine.InputSystem;
 
 namespace PokemonCore.Character
 {
