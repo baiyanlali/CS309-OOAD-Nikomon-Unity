@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Reflection;
 using PokemonCore.Attack;
 using PokemonCore.Attack.Data;
 using PokemonCore.Combat.Interface;
@@ -8,7 +10,7 @@ namespace PokemonCore.Combat
     /// <summary>
     /// 战斗使用的Move方法,为什么要把属性复制一遍->便于在战斗中修改
     /// </summary>
-    public class CombatMove
+    public class CombatMove:IPropertyModify
     {
         public Battle battle;
         public Move move { get; private set; }
@@ -44,6 +46,20 @@ namespace PokemonCore.Combat
                 move.PP = pp;
             };
         }
-        
+        public object this[string propertyName]
+        {
+            get
+            {
+                Type t = this.GetType();
+                PropertyInfo pi = t.GetProperty(propertyName);
+                return pi.GetValue(this, null);
+            }
+            set
+            {
+                Type t = this.GetType();
+                PropertyInfo pi = t.GetProperty(propertyName);
+                pi.SetValue(this, value, null);
+            }
+        }
     }
 }

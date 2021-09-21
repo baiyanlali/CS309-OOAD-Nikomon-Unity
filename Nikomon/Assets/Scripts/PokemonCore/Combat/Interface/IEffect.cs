@@ -1,5 +1,6 @@
 ﻿
 
+using System;
 using System.Collections.Generic;
 using PokemonCore.Utility;
 using UnityEngine.InputSystem.Controls;
@@ -40,7 +41,10 @@ namespace PokemonCore.Combat.Interface
         Damaged,
         Moved,
         Hit,
-        BeHurt
+        BeHurt,
+        EnterBattle,
+        BeSwitched,
+        BeFainted
     }
 
     public enum EffectType
@@ -91,11 +95,14 @@ namespace PokemonCore.Combat.Interface
     {
         public string innerName;
 
+        public List<Condition> Conditions;
+
         #region Define Type
 
         private EffectTargetType m_TargetType;
 
         private EffectTargetType m_DependType;
+        
 
         public EffectTargetType TargetType { get=>m_TargetType;
             set => ChangeTargetType(value);
@@ -107,8 +114,8 @@ namespace PokemonCore.Combat.Interface
             set => ChangeDependType(value);
         }
 
-        private System.Type targetType;
-        private System.Type dependType;
+        public System.Type targetType;
+        public System.Type dependType;
 
         #endregion
 
@@ -132,8 +139,11 @@ namespace PokemonCore.Combat.Interface
         public int EffectElementChance;
         /// <summary>
         /// 用来表示造成数值的变化大小，当有Depend依赖时，Result Type只能为Ratio，表示对于依赖数值的倍率（倍率/100）
+        /// 当Effect是random时，代表最大的那个数字
         /// </summary>
         public int value;
+
+        public int minValue;
 
         public EffectElement(string innerName="Give an explanation",string property="",string valueDependProperty="",EffectTargetType targetType=EffectTargetType.Move,EffectTargetType dependType=EffectTargetType.Damage)
         {
@@ -147,6 +157,110 @@ namespace PokemonCore.Combat.Interface
             EffectElementChance = 100;
             EffectType = EffectType.Damage;
             value = 0;
+            minValue = value;
+            Conditions = new List<Condition>();
+        }
+
+        public EffectElement(EffectElement ee)
+        {
+            this.innerName = ee.innerName;
+            this.Property = ee.Property;
+            this.ValueDependProperty = ee.ValueDependProperty;
+            this.TargetType = ee.TargetType;
+            this.DependType = ee.DependType;
+            this.ResultType = ee.ResultType;
+            this.EffectElementChance = ee.EffectElementChance;
+            this.EffectType = ee.EffectType;
+            this.value = ee.value;
+            Conditions = new List<Condition>();
+        }
+
+        /// <summary>
+        /// 利用反射来对物体的属性进行修改，这里的damage和heal并不是只针对生命值，也包括对于任何数字的增减的修改
+        /// </summary>
+        /// <param name="target">被修改的物体</param>
+        /// <param name="depend">被修改的数值所依赖的物体</param>
+        /// <exception cref="Exception">感觉会有一堆bug</exception>
+        public void Perform(IPropertyModify target,IPropertyModify depend)
+        {
+            
+            if (target.GetType() != targetType)
+                throw new Exception("Target type is not correct");
+            if (dependType != null)
+            {
+                if (depend.GetType() != dependType)
+                    throw new Exception("Depend type is not correct");
+                if (dependType.GetProperty(ValueDependProperty) == null)
+                    throw new Exception("I don't know where the wrong happened");
+                float num = (float)depend[ValueDependProperty];
+                //此时一定是Depend的Ratio类型
+                switch (EffectType)
+                {
+                    case EffectType.Damage:
+                        target[Property] = Math.Floor((float)target[Property] - num * value / 100f);
+                        break;
+                    case EffectType.Heal:
+                        target[Property] =  Math.Floor((float)target[Property] + num * value / 100f);
+                        break;
+                    case EffectType.StatusChange:
+                        target[Property] =  Math.Floor(num * value / 100f);
+                        break;
+
+                }
+
+            }
+            else
+            {
+                if (ResultType == EffectResultType.ConstantValue)
+                {
+                    switch (EffectType)
+                    {
+                        //TODO：简化赋值语句
+                        case EffectType.Damage:
+                            targetType.GetProperty(Property).SetValue(((float)targetType.GetProperty(Property).GetValue(target) - value),target);
+                            break;
+                        case EffectType.Heal:
+                            targetType.GetProperty(Property).SetValue(((float)targetType.GetProperty(Property).GetValue(target) + value),target);
+                            break;
+                        case EffectType.StatusChange:
+                            targetType.GetProperty(Property).SetValue((value),target);
+                            break;
+    
+                    }
+                }else if (ResultType == EffectResultType.RandomValue)
+                {
+                    switch (EffectType)
+                    {
+                        case EffectType.Damage:
+                            targetType.GetProperty(Property).SetValue(((float)targetType.GetProperty(Property).GetValue(target)-(Game.Random.Next(minValue,value))),target);
+                            break;
+                        case EffectType.Heal:
+                            targetType.GetProperty(Property).SetValue(((float)targetType.GetProperty(Property).GetValue(target)+(Game.Random.Next(minValue,value))),target);
+                            break;
+                        case EffectType.StatusChange:
+                            targetType.GetProperty(Property).SetValue((Game.Random.Next(minValue,value)),target);
+                            break;
+
+                    }
+                    
+                }else if (ResultType==EffectResultType.RatioValue)
+                {
+                    switch (EffectType)
+                    {
+                        case EffectType.Damage:
+                            targetType.GetProperty(Property).SetValue(((float)targetType.GetProperty(Property).GetValue(target)*(1 - value/100f)),target);
+                            break;
+                        case EffectType.Heal:
+                            targetType.GetProperty(Property).SetValue(((float)targetType.GetProperty(Property).GetValue(target)*(1 + value/100f)),target);
+                            break;
+                        case EffectType.StatusChange:
+                            targetType.GetProperty(Property).SetValue(((float)targetType.GetProperty(Property).GetValue(target) *value/100f),target);
+                            break;
+
+                    }
+                }
+                
+            }
         }
 
         public void ChangeTargetType(EffectTargetType type)
@@ -168,14 +282,19 @@ namespace PokemonCore.Combat.Interface
     public interface IEffect
     {
         public string innerName { get; set; }
-        
-        public List<EffectElement> EffectElements { get; set; }
+
 
         public EffectLastType EffectLastType { get; set; }
-        
+        public int RoundNum { get; set; }
+
         public int EffectChance { get; set; }
 
+        public void BeSwitched();
+
+        public void BeFainted();
+        
         public void OnEffectBegin();
+        public List<EffectElement> EffectElements { get; set; }
 
         public List<Condition> TriggerConditions { get; set; }
 

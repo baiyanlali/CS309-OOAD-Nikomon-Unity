@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Reflection;
+using PokemonCore.Combat.Interface;
 using PokemonCore.Utility;
 
 namespace PokemonCore.Combat
 {
-    public class Damage
+    public class Damage:IPropertyModify
     {
         public CombatMove combatMove { get; private set; }
         private int damage { get; set; }

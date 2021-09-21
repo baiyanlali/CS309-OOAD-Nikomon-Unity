@@ -12,6 +12,7 @@ namespace PokemonCore.Utility
         Less,
         LessEqual,
         Equal,
+        NotEqual,
         GreaterEqual,
         Greater
     }
@@ -70,7 +71,8 @@ namespace PokemonCore.Utility
                 case ConditionMode.IfNot: return !(num == treshhold);
                 case ConditionMode.Less: return num < treshhold;
                 case ConditionMode.LessEqual: return num <= treshhold;
-                case ConditionMode.Equal: return num == treshhold;
+                case ConditionMode.Equal: return  num == treshhold;
+                case ConditionMode.NotEqual: return num != treshhold;
                 case ConditionMode.GreaterEqual: return num >= treshhold;
                 case ConditionMode.Greater: return num > treshhold;
             }

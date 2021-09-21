@@ -18,7 +18,7 @@ namespace Editor
 
         private Effect CurrentEffect
         {
-            get => EffectID >= Effects.Count ? null : EffectID < 0 ? null : Effects[EffectID];
+            get => Effects==null? null: EffectID >= Effects.Count ? null : EffectID < 0 ? null : Effects[EffectID];
         }
 
         private Vector2 EffectScrollBar;
@@ -65,7 +65,7 @@ namespace Editor
 
             EffectScrollBar = GUILayout.BeginScrollView(EffectScrollBar);
 
-            if (Effects.Count > 0)
+            if (Effects!=null && Effects.Count > 0)
             {
                 string[] movesName =
                     (from effect in Effects select effect.EffectID + "||" + effect.innerName).ToArray();
@@ -143,37 +143,17 @@ namespace Editor
         {
             GUILayout.BeginVertical();
             
-            GUILayout.BeginHorizontal();
-            GUILayout.Label($"Effect Trigger Conditions: {conditions.Count}");
-            if (GUILayout.Button("+",GUILayout.Width(50)))
-            {
-                conditions.Add(new Condition());
-            }
-            GUILayout.Space(50);
-            if (GUILayout.Button("-",GUILayout.Width(50)))
-            {
-                conditions.RemoveAt(conditions.Count - 1);
-            }
-            
-            GUILayout.EndHorizontal();
             
             
-            for (int i = 0; i < conditions.Count; i++)
-            {
-                GUILayout.BeginHorizontal();
-                Condition con = conditions[i];
-                con.TargetType = (EffectTargetType)EditorGUILayout.EnumPopup(con.TargetType);
-                con.property = EditorGUILayout.TextField(con.property);
-                con.mode = (ConditionMode)EditorGUILayout.EnumPopup(con.mode);
-                con.treshhold = EditorGUILayout.FloatField(con.treshhold);
-                con.effectResultType = (EffectResultType)EditorGUILayout.EnumPopup(con.effectResultType);
-                GUILayout.EndHorizontal();
-            }
+            
+            EditorUtil.EditConditions(conditions);
 
             GUILayout.EndVertical();
         }
 
         private Vector2 EffectElementScroll;
+        private int EffectElementTargetIndex;
+        private int EffectElementDependIndex;
         private void EditEffectElements(List<EffectElement> eff)
         {
             GUILayout.BeginVertical();
@@ -184,7 +164,10 @@ namespace Editor
             
             if (GUILayout.Button("+",GUILayout.Width(50)))
             {
-                eff.Add(new EffectElement("innerName"));
+                if(eff.Count==0)
+                    eff.Add(new EffectElement("innerName"));
+                else
+                    eff.Add(eff[eff.Count-1]);
             }
             GUILayout.Space(50);
             if (GUILayout.Button("-",GUILayout.Width(50)))
@@ -210,27 +193,45 @@ namespace Editor
 
                 GUILayout.BeginHorizontal();
                 eff[i].TargetType=(EffectTargetType)EditorGUILayout.EnumPopup("Target Type:", eff[i].TargetType);
-                eff[i].Property=EditorGUILayout.TextField("Property:", eff[i].Property);
+                if (eff[i].targetType!=null)
+                {
+                    string[] strs = (from property in eff[i].targetType.GetProperties() select property.Name).ToArray();
+                    EffectElementTargetIndex=EditorGUILayout.Popup(EffectElementTargetIndex,strs);
+                    eff[i].Property = strs[EffectElementTargetIndex];
+                }
+                else
+                    eff[i].Property=EditorGUILayout.TextField("Property:", eff[i].Property);
                 GUILayout.EndHorizontal();
                 GUILayout.BeginHorizontal();
                 eff[i].DependType=(EffectTargetType)EditorGUILayout.EnumPopup("Depend Type:", eff[i].DependType);
-                eff[i].ValueDependProperty=EditorGUILayout.TextField("Property:", eff[i].ValueDependProperty);
+                if (eff[i].dependType!=null)
+                {
+                    string[] strs = (from property in eff[i].dependType.GetProperties() select property.Name).ToArray();
+                    EffectElementDependIndex=EditorGUILayout.Popup(EffectElementDependIndex,strs);
+                    eff[i].ValueDependProperty = strs[EffectElementDependIndex];
+                }
+                else
+                    eff[i].ValueDependProperty=EditorGUILayout.TextField("Property:", eff[i].ValueDependProperty);
                 GUILayout.EndHorizontal();
                 
                 GUILayout.BeginHorizontal();
                 eff[i].value = EditorGUILayout.IntField("value:", eff[i].value);
-                if (eff[i].DependType != EffectTargetType.NULL)
+                if (eff[i].DependType == EffectTargetType.NULL)
                     eff[i].ResultType = (EffectResultType)EditorGUILayout.EnumPopup("Result Type:", eff[i].ResultType);
                 else
                 {
                     eff[i].ResultType = EffectResultType.RatioValue;
-                    GUILayout.Label($"Result Type: {eff[i].ResultType}");
+                    eff[i].ResultType = (EffectResultType)EditorGUILayout.EnumPopup("Result Type:", eff[i].ResultType);
                 }
+                
                 GUILayout.EndHorizontal();
+                GUILayout.Space(5);
+                GUILayout.Label("Edit Conditions:");
+                EditorUtil.EditConditions(eff[i].Conditions);
                 GUILayout.Space(10);
             }
             GUILayout.EndScrollView();
-            GUILayout.Space(50);
+            // GUILayout.Space(20);
             // EditorGUILayout.Foldout();
             GUILayout.EndVertical();
         }

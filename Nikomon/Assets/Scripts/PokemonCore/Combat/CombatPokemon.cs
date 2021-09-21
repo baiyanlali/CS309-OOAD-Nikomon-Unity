@@ -2,17 +2,21 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Newtonsoft.Json;
 using PokemonCore.Attack;
 using PokemonCore.Combat.Interface;
 using PokemonCore.Utility;
 
 namespace PokemonCore.Combat
 {
-    public class CombatPokemon
+    public class CombatPokemon:IPropertyModify
     {
+        [JsonIgnore]
         public Battle battle;
         public int TrainerID { get; set; }
 
+        
+        //TODO:改变一种方法
         public int CombatID
         {
             get => TrainerID * 100 + pokemon._base.ID;
@@ -26,6 +30,11 @@ namespace PokemonCore.Combat
         public int SPA { get; private set; }
         public int SPD { get; private set; }
         public int SPE { get; private set; }
+        
+        public int Level
+        {
+            get => pokemon.Level;
+        }
 
         /// <summary>
         /// Used only in battle

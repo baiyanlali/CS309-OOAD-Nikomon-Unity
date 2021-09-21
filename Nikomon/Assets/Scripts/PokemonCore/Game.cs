@@ -1,6 +1,5 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using PokemonCore.Attack;
+﻿using System;
+using System.Collections.Generic;
 using PokemonCore.Attack.Data;
 using PokemonCore.Combat;
 using PokemonCore.Combat.Interface;
@@ -9,9 +8,6 @@ using PokemonCore.Monster;
 using PokemonCore.Monster.Data;
 using PokemonCore.Utility;
 
-// using System.Text.Json;
-// using System.Text.Json.Serialization;
-// using Newtonsoft.Json;
 
 namespace PokemonCore
 {
@@ -48,7 +44,10 @@ namespace PokemonCore
 
         public static Trainer trainer;
 
+        public static Random Random;
+
         private LoadDataType loadDataType { get; set; }
+        
         
         public static Game Instance
         {

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Newtonsoft.Json;
 using PokemonCore;
 using PokemonCore.Attack;
 using PokemonCore.Combat;
@@ -12,8 +13,19 @@ public class Pokemon : IPokemon, IEquatable<Pokemon>, IEqualityComparer<Pokemon>
     public int TotalHp => _base.BaseStatsHP == 1
         ? 1 + this.EV[0] / 4
         : (2 * _base.BaseStatsHP + this.IV[0] + this.EV[0] / 4) * this.Level / 100 + this.Level + 10;
-
+    
+    [JsonIgnore]
     public PokemonData _base { get; private set; }
+    
+    public int ID
+    {
+        get => _base.ID;
+        set
+        {
+            ID = value;
+            _base = Game.PokemonsData[ID];
+        }
+    }
     public int HP { get; set; }
     public int NatureID { get; private set; }
 

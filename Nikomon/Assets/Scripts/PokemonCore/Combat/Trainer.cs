@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Reflection;
+using PokemonCore.Combat.Interface;
 
 namespace PokemonCore.Combat
 {
     [Serializable]
-    public class Trainer
+    public class Trainer:IPropertyModify
     {
         public string name { get; private set; }
         public int id { get; private set; }

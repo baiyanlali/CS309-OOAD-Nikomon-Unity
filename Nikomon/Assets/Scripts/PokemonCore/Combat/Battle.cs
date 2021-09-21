@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using PokemonCore.Combat.Interface;
 using PokemonCore.Utility;
@@ -61,7 +62,7 @@ namespace PokemonCore.Combat
     /// <summary>
     /// Battle类，集中处理所有战斗逻辑
     /// </summary>
-    public class Battle
+    public class Battle:IPropertyModify
     {
         public static Battle Instance;
         
@@ -384,5 +385,21 @@ namespace PokemonCore.Combat
 
         #endregion
 
+        
+        public object this[string propertyName]
+        {
+            get
+            {
+                Type t = this.GetType();
+                PropertyInfo pi = t.GetProperty(propertyName);
+                return pi.GetValue(this, null);
+            }
+            set
+            {
+                Type t = this.GetType();
+                PropertyInfo pi = t.GetProperty(propertyName);
+                pi.SetValue(this, value, null);
+            }
+        }
     }
 }
