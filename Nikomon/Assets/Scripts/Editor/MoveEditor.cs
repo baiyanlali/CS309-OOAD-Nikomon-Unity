@@ -143,6 +143,9 @@ namespace Editor
                         CurrentMove.Accuracy = EditorGUILayout.IntField((int) CurrentMove.Accuracy);
                         if (CurrentMove.Accuracy == -1) CurrentMove.Accuracy = null;
                         GUILayout.EndHorizontal();
+                        
+                        
+                        CurrentMove.CriticalLevel=EditorGUILayout.IntField("Critical Level",(int) CurrentMove.Accuracy);
 
                         GUILayout.BeginHorizontal();
                         GUILayout.Label("Power:");

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using PokemonCore.Utility;
 
 namespace PokemonCore.Combat
@@ -7,6 +8,9 @@ namespace PokemonCore.Combat
     {
         public CombatMove combatMove { get; private set; }
         private int damage { get; set; }
+        //用来计算Critical Level的等级
+        public int criticalHitLevel { get; set; }
+
         public int finalDamage
         {
             get =>(int)Math.Floor(damage * damageMultiplyingPower);
@@ -25,6 +29,7 @@ namespace PokemonCore.Combat
                 damage = combatMove.power.Value;
             this.target = target;
             this.sponsor = sponsor;
+            this.criticalHitLevel = combatMove.move._baseData.CriticalLevel;
             damageMultiplyingPower = 1;
             
             if (combatMove.types.CompareTypes(target.Type1)==TypeRelationship.NotEffective ||
@@ -61,6 +66,23 @@ namespace PokemonCore.Combat
                 }
                 
                 
+            }
+        }
+        
+        
+        public object this[string propertyName]
+        {
+            get
+            {
+                Type t = this.GetType();
+                PropertyInfo pi = t.GetProperty(propertyName);
+                return pi.GetValue(this, null);
+            }
+            set
+            {
+                Type t = this.GetType();
+                PropertyInfo pi = t.GetProperty(propertyName);
+                pi.SetValue(this, value, null);
             }
         }
 

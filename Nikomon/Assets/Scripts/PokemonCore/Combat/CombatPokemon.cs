@@ -140,13 +140,13 @@ namespace PokemonCore.Combat
         {
             get
             {
-                Type t = typeof(CombatPokemon);
+                Type t = this.GetType();
                 PropertyInfo pi = t.GetProperty(propertyName);
                 return pi.GetValue(this, null);
             }
             set
             {
-                Type t = typeof(CombatPokemon);
+                Type t = this.GetType();
                 PropertyInfo pi = t.GetProperty(propertyName);
                 pi.SetValue(this, value, null);
             }

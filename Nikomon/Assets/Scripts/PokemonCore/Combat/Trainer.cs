@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 
 namespace PokemonCore.Combat
 {
@@ -58,6 +59,23 @@ namespace PokemonCore.Combat
 
         public Pokemon firstParty => party[0];
         public Pokemon lastParty => party[party.Length-1];
+        
+        
+        public object this[string propertyName]
+        {
+            get
+            {
+                Type t = this.GetType();
+                PropertyInfo pi = t.GetProperty(propertyName);
+                return pi.GetValue(this, null);
+            }
+            set
+            {
+                Type t = this.GetType();
+                PropertyInfo pi = t.GetProperty(propertyName);
+                pi.SetValue(this, value, null);
+            }
+        }
 
     }
 }

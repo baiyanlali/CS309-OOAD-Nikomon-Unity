@@ -1,5 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Reflection;
 using PokemonCore.Combat.Interface;
+using PokemonCore.Utility;
 
 namespace PokemonCore.Combat
 {
@@ -18,12 +21,15 @@ namespace PokemonCore.Combat
             this.EffectLastType = lastType;
             this.EffectChance = effectChance;
             EffectElements = new List<EffectElement>();
+            TriggerConditions = new List<Condition>();
         }
         
         public void OnEffectBegin()
         {
             throw new System.NotImplementedException();
         }
+
+        public List<Condition> TriggerConditions { get; set; }
 
         public Instruction OnChoosing(Battle battle, CombatPokemon pokemon)
         {
@@ -58,6 +64,22 @@ namespace PokemonCore.Combat
         public bool OnEffectEnd()
         {
             throw new System.NotImplementedException();
+        }
+        
+        public object this[string propertyName]
+        {
+            get
+            {
+                Type t = this.GetType();
+                PropertyInfo pi = t.GetProperty(propertyName);
+                return pi.GetValue(this, null);
+            }
+            set
+            {
+                Type t = this.GetType();
+                PropertyInfo pi = t.GetProperty(propertyName);
+                pi.SetValue(this, value, null);
+            }
         }
     }
 }

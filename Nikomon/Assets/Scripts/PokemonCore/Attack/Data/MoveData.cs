@@ -19,6 +19,8 @@ namespace PokemonCore.Attack.Data
         public int? Power { get;  set; }
         public byte PP { get;  set; }
         public int Priority { get;  set; }
+        
+        public int CriticalLevel { get;  set; }
         public Targets Target { get;  set; }
         public int Type { get;  set; }
         public int EffectID { get;  set; }
@@ -41,7 +43,8 @@ namespace PokemonCore.Attack.Data
             Targets target = Targets.SELECTED_OPPONENT_POKEMON,
             int type = 0,
             int effectID = 0,
-            int? effectChance = 0
+            int? effectChance = 0,
+            int criticalLevel=0
         )
         {
             this.MoveID = moveID;
@@ -54,6 +57,7 @@ namespace PokemonCore.Attack.Data
             this.Type = type;
             this.EffectID = effectID;
             this.EffectChance = effectChance;
+            this.CriticalLevel = criticalLevel;
         }
 
         public override string ToString()
