@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using PokemonCore;
 using PokemonCore.Attack;
 using PokemonCore.Attack.Data;
@@ -34,8 +35,18 @@ namespace ConsoleDebug
         private void Start()
         {
             orders = new List<string>();
+            // Type type = typeof(CombatPokemon);
             StartCoroutine(StartBattle());
+            // var member = type.GetMembers();
+            // foreach (var memberInfo in member)
+            // {
+                // Debug.Log(memberInfo.Name);
+                
+            // }
+
+            // CombatPokemon pokemonn;
             
+            // Debug.Log(type.GetMembers());
         }
 
 
@@ -110,7 +121,7 @@ namespace ConsoleDebug
 
                 foreach (var otherPoke in battle.Pokemons.Except(myPoke))
                 {
-                    battle.ReceiveInstruction(new Instruction(battle.opponentsPokemons[0].CombatID,Command.Move,0,
+                    battle.ReceiveInstruction(new Instruction(otherPoke.CombatID,Command.Move,0,
                                         new List<int>(){battle.alliesPokemons[Random.Range(0,battle.alliesPokemons.Count)].CombatID}));
                 }
 

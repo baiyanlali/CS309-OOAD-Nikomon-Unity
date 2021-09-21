@@ -1,5 +1,7 @@
 ﻿
 
+using System.Collections.Generic;
+
 namespace PokemonCore.Combat.Interface
 {
     public enum EffectLastType
@@ -8,8 +10,54 @@ namespace PokemonCore.Combat.Interface
         ROUND,//last for a few rounds
         UNTIL_SWITCH_POKEMON//until switch to another pokemon
     }
+
+    public enum EffectTargetType
+    {
+        PokemonSponsor,
+        PokemonTarget,
+        Move,
+        Trainer,
+        BattleField
+    }
+
+    public enum EffectResultType
+    {
+        ConstantValue,//固定数字
+        RandomValue,//随机一个数字
+        RatioValue//按照百分比来
+    }
+
+    public enum EffectActTime
+    {
+        Choosing,
+        Moving,
+        Damaging,
+        Damaged,
+        Moved,
+        Hit,
+        BeHurt
+    }
+    
+    public struct EffectElement
+    {
+        public EffectTargetType TargetType;
+        public string Property;
+        public EffectActTime WhenToAct;
+        public EffectResultType ResultType;
+    }
+    
     public interface IEffect
     {
+        public string innerName { get; set; }
+        
+        public List<EffectElement> EffectElements { get; set; }
+
+        public EffectLastType EffectLastType { get; set; }
+        
+        public int EffectChance { get; set; }
+
+        public void OnEffectBegin();
+
         /// <summary>
         /// 在选取指令的时候使用
         /// </summary>
@@ -46,6 +94,9 @@ namespace PokemonCore.Combat.Interface
         public void OnDamaged(Battle battle, CombatPokemon attacker,CombatPokemon defender);
 
         public bool OnSwitchPokemon(CombatPokemon poke);
+
+        public bool OnEffectEnd();
+
 
 
     }
