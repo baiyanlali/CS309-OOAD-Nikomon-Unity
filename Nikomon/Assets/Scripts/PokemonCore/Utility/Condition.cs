@@ -22,12 +22,26 @@ namespace PokemonCore.Utility
         /// <summary>
         /// 利用反射通过属性名来找到对应属性
         /// </summary>
-        public string property;
+        public string property
+        {
+            get => m_property;
+            set
+            {
+                if (string.IsNullOrEmpty(value)) return;
+                m_property = value;
+                PropertyType = type.GetProperty(m_property).DeclaringType;
+            }
+        }
+
+        private string m_property;
 
         /// <summary>
-        /// 使条件成立的阈值,如果是IF和IFNOT，0代表false，1代表true
+        /// 使条件成立的阈值,可能有很多种->string,int,float,bool
         /// </summary>
-        public float treshhold;
+        public float treshholdFloat;
+        public int treshholdInt;
+        public string treshholdString;
+        public bool treshholdBool;
 
         /// <summary>
         /// 条件模式
@@ -44,17 +58,25 @@ namespace PokemonCore.Utility
 
         public EffectResultType effectResultType;
 
-
+        /// <summary>
+        /// 这里的type指的是target的type，不是target的property的type
+        /// </summary>
         public Type type;
 
+        public Type PropertyType;
 
-        public Condition(EffectTargetType targetType=EffectTargetType.PokemonSponsor,ConditionMode mode=ConditionMode.Equal, string property="HP", float treshhold=1f,EffectResultType effectResultType=EffectResultType.ConstantValue)
+
+        public Condition(EffectTargetType targetType=EffectTargetType.PokemonSponsor,ConditionMode mode=ConditionMode.Equal, string property="HP",EffectResultType effectResultType=EffectResultType.ConstantValue)
         {
             this.property = property;
-            this.treshhold = treshhold;
+            
             this.mode = mode;
-            ChangeType(m_TargetType);
+            TargetType = targetType;
             this.effectResultType = effectResultType;
+            treshholdBool = false;
+            treshholdFloat = 0;
+            treshholdInt = 0;
+            treshholdString = "";
         }
 
         public void ChangeType(EffectTargetType targetType)
@@ -62,28 +84,73 @@ namespace PokemonCore.Utility
             m_TargetType = targetType;
             type = TypeTranslator.Translate(targetType);
         }
+        
+        
+        public bool Satisfied(bool num)
+        {
+            switch (mode)
+            {
+                case ConditionMode.If: return treshholdBool == num;
+                case ConditionMode.IfNot: return treshholdBool != num;
+            }
+            return false;
+        }
+        
+        public bool Satisfied(string num)
+        {
+            switch (mode)
+            {
+                case ConditionMode.Equal: return treshholdString.Equals(num);
+                case ConditionMode.NotEqual: return treshholdString.Equals(num);
+            }
+            return false;
+        }
 
+        public bool Satisfied(int num)
+        {
+            switch (mode)
+            {
+                case ConditionMode.Less: if(effectResultType==EffectResultType.ConstantValue) return num < treshholdInt;
+                    break;
+                case ConditionMode.LessEqual: return num <= treshholdInt;
+                case ConditionMode.Equal: return  num == treshholdInt;
+                case ConditionMode.NotEqual: return num != treshholdInt;
+                case ConditionMode.GreaterEqual: return num >= treshholdInt;
+                case ConditionMode.Greater: return num > treshholdInt;
+            }
+            return false;
+        }
+        
         public bool Satisfied(float num)
         {
             switch (mode)
             {
-                case ConditionMode.If: return num == treshhold;
-                case ConditionMode.IfNot: return !(num == treshhold);
-                case ConditionMode.Less: return num < treshhold;
-                case ConditionMode.LessEqual: return num <= treshhold;
-                case ConditionMode.Equal: return  num == treshhold;
-                case ConditionMode.NotEqual: return num != treshhold;
-                case ConditionMode.GreaterEqual: return num >= treshhold;
-                case ConditionMode.Greater: return num > treshhold;
+                case ConditionMode.Less: return num < treshholdFloat;
+                case ConditionMode.LessEqual: return num <= treshholdFloat;
+                case ConditionMode.Equal: return  num == treshholdFloat;
+                case ConditionMode.NotEqual: return num != treshholdFloat;
+                case ConditionMode.GreaterEqual: return num >= treshholdFloat;
+                case ConditionMode.Greater: return num > treshholdFloat;
             }
 
             return false;
         }
 
-        public bool Satisfied(object obj)
+        //TODO:没有支持到ResultType
+        public bool Satisfied(IPropertyModify obj)
         {
-            PropertyInfo p = type.GetProperty(property);
-            return Satisfied(p.GetValue(obj));
+            if(PropertyType==typeof(int))
+                return Satisfied((int)obj[property]);
+            else if (PropertyType == typeof(byte))
+                return Satisfied((byte)obj[property]);
+            else if (PropertyType== typeof(float))
+                return Satisfied((float)obj[property]);
+            else if(PropertyType==typeof(bool))
+                return Satisfied((bool)obj[property]);
+            else if (PropertyType == typeof(string))
+                return Satisfied((string)obj[property]);
+
+            throw new Exception("Other type have not been build");
         }
     }
 }
