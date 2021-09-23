@@ -16,6 +16,12 @@ namespace PokemonCore.Utility
         {
             return String.Join(", ", i);
         }
+        public static string ConvertToString<T,K>(this Dictionary<T,K> i)
+        {
+            return String.Join(",", i);
+        }
+        
+        
 
         /// <summary>
         /// 两个参数的List的count必须相同
@@ -34,6 +40,8 @@ namespace PokemonCore.Utility
 
             return true;
         }
+
+
     }
 
     public static class TypesExtension

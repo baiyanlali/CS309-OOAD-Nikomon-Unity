@@ -8,6 +8,7 @@ using PokemonCore.Attack;
 using PokemonCore.Attack.Data;
 using PokemonCore.Combat;
 using PokemonCore.Monster.Data;
+using PokemonCore.Network;
 using PokemonCore.Utility;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
@@ -22,6 +23,13 @@ namespace ConsoleDebug
         private Battle battle;
         private void Awake()
         {
+            InitConsole();
+            
+            StartNetworkTest();
+        }
+
+        public void InitConsole()
+        {
             ConsoleDebug.Console.Init();
 
             ConsoleDebug.Console.OnMessageEntered += OnReceiveInstruction;
@@ -34,24 +42,56 @@ namespace ConsoleDebug
 
         private void Start()
         {
-            orders = new List<string>();
+            // NetworkLocal networkLocal = new NetworkLocal();
+            // networkLocal.StartToBroadCast();
+            // Application.quitting += () =>
+            // {
+            //     networkLocal.StopBroadCast();
+            // };
             // Type type = typeof(CombatPokemon);
-            StartCoroutine(StartBattle());
+            // StartCoroutine(StartBattle());
             // var member = type.GetMembers();
             // foreach (var memberInfo in member)
             // {
-                // Debug.Log(memberInfo.Name);
-                
+            // Debug.Log(memberInfo.Name);
+
             // }
 
             // CombatPokemon pokemonn;
-            
+
             // Debug.Log(type.GetMembers());
         }
 
 
+        public void StartNetworkTest()
+        {
+            Debug.Log("Start to use network");
+            
+            NetworkLogic.StartLocalNetwork();
+
+            StartCoroutine(Network());
+
+            Application.quitting += () =>
+            {
+                NetworkLogic.CloseLocalNetwork();
+            };
+        }
+
+        IEnumerator Network()
+        {
+            while (true)
+            {
+                yield return new WaitForSeconds(2);
+                Debug.Log(NetworkLogic.usersBroadcast.ConvertToString());
+                
+            }
+        }
+        
+
         public IEnumerator StartBattle()
         {
+            orders = new List<string>();
+
             game = new Game();
             Debug.Log("-------Game Start----------");
 
