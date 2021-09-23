@@ -28,7 +28,7 @@ namespace ConsoleDebug
         public static void Init()
         {
             if (!is_OpenDebug) return;
-            if (Application.platform == RuntimePlatform.WindowsPlayer ||
+            if (
                 Application.platform == RuntimePlatform.WindowsEditor)
             {
                 RunPythonConsole();

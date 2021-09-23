@@ -69,7 +69,7 @@ namespace ConsoleDebug
         {
             Debug.Log("Start to use network");
             
-            NetworkLogic.StartLocalNetwork();
+            NetworkLogic.StartLocalNetwork("WuYifan");
 
             StartCoroutine(Network());
 

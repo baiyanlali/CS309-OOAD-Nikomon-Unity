@@ -232,9 +232,11 @@ namespace PokemonCore.Network
             string AddressIP = string.Empty;
             foreach (IPAddress _IPAddress in Dns.GetHostEntry(Dns.GetHostName()).AddressList)
             {
+                //TODO: 找办法识别wsl和ether net
                 if (_IPAddress.AddressFamily.ToString() == "InterNetwork")
                 {
                     AddressIP = _IPAddress.ToString();
+                    break;
                 }
             }
 
