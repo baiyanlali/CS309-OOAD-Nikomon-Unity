@@ -14,9 +14,9 @@ namespace PokemonCore.Network
         public static float TimeToFlush = 2;
         public static Dictionary<IPAddress,string> usersBroadcast=new Dictionary<IPAddress, string>();
 
-        public static void StartLocalNetwork()
+        public static void StartLocalNetwork(string name="Baron")
         {
-            NetworkLocal.StartToBroadCast("Baron");
+            NetworkLocal.StartToBroadCast(name);
             NetworkLocal.OnDetectBroadcast += OnDetectedBroadcast;
             NetworkLocal.StartToDetect();
             NetworkLocal.OnClientReceiveMessage += (str)=>UnityEngine.Debug.Log(Encoding.UTF8.GetString(str));

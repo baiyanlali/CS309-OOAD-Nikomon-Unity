@@ -21,7 +21,7 @@ public class DebugUIHandler : MonoBehaviour
 
     public Text DebugInfoText { get; private set; }
     public List<string> DebugInfo;
-    public float removeTime = 1f;
+    public float removeTime = 5f;
     private void Awake()
     {
         if (s_instance == null) s_instance = this;
@@ -34,7 +34,7 @@ public class DebugUIHandler : MonoBehaviour
     /// 插入debug信息
     /// </summary>
     /// <param name="info"></param>
-    public void InsertInfo(string info)
+    public void InsertInfo(string info,string s="",LogType logType=LogType.Log)
     {
         DebugInfo.Add(info);
         refreshDebugText();
