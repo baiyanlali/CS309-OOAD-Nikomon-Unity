@@ -48,21 +48,21 @@ namespace PokemonCore.Combat
 
         #region State Change
 
-        private int m_HPStateChange;
-
-        public int HPStateChange
-        {
-            get { return m_HPStateChange; }
-            set { m_HPStateChange = Math.Max(Math.Min(6, value), -6); }
-        }
-
-        private int m_TotalHPStateChange;
-
-        public int TotalHPStateChange
-        {
-            get { return m_TotalHPStateChange; }
-            set { m_TotalHPStateChange = Math.Max(Math.Min(6, value), -6); }
-        }
+        // private int m_HPStateChange;
+        //
+        // public int HPStateChange
+        // {
+        //     get { return m_HPStateChange; }
+        //     set { m_HPStateChange = Math.Max(Math.Min(6, value), -6); }
+        // }
+        //
+        // private int m_TotalHPStateChange;
+        //
+        // public int TotalHPStateChange
+        // {
+        //     get { return m_TotalHPStateChange; }
+        //     set { m_TotalHPStateChange = Math.Max(Math.Min(6, value), -6); }
+        // }
 
         private int m_ATKStateChange;
 

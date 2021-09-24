@@ -1,16 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using PokemonCore.Attack.Data;
+using PokemonCore.Character;
 using PokemonCore.Combat;
 using PokemonCore.Combat.Interface;
 using PokemonCore.Inventory;
 using PokemonCore.Monster;
 using PokemonCore.Monster.Data;
+using PokemonCore.Saving;
 using PokemonCore.Utility;
 
 
 namespace PokemonCore
 {
+    /// <summary>
+    /// 整个宝可梦逻辑的类
+    /// </summary>
     public class Game
     {
         #region DataPath
@@ -24,6 +30,7 @@ namespace PokemonCore
         public static readonly string MoveFile = "moves.json";
         public static readonly string PokemonFile = "pokemons.json";
         public static readonly string ExpTableFile = "levelingRate.json";
+        public static readonly string SaveFile = "Save.json";
 
         #endregion
         
@@ -47,6 +54,12 @@ namespace PokemonCore
         public static Random Random;
 
         private LoadDataType loadDataType { get; set; }
+
+        #region 触发事件
+
+        public Action OnDoNotHaveSaveFile;
+
+        #endregion
         
         
         public static Game Instance
@@ -63,14 +76,48 @@ namespace PokemonCore
             Init();
         }
 
+        //TODO:目前只存档Trainer信息，剩下的以后再说
+        public bool HaveSave => SaveLoad.Load<Trainer>(SaveFile) != null;
+
+        public void SaveData()
+        {
+            SaveLoad.Save(SaveFile, trainer);
+        }
+
         public void Init()
         {
+            Random = new Random();
             LoadTypes();
             LoadMoves();
             LoadPokemons();
             LoadExperienceTable();
             NatureData = new Dictionary<int, Nature>();
             NatureData.Add(0,new Nature(0,new float[]{0,0,0,0,0}));
+            if (HaveSave)
+                trainer = SaveLoad.Load<Trainer>(SaveFile);
+            else
+                OnDoNotHaveSaveFile?.Invoke();
+
+            // PC pc = new PC();
+        }
+
+        public void CreateNewSaveFile(string name,bool isMale)
+        {
+            trainer = new Trainer(name,isMale);
+            SaveData();
+        }
+
+        public static Battle battle { get; private set; }
+        public static BattleReporter battleReporter { get; private set; }
+        public void StartBattle(List<Trainer> allies,List<Trainer> opponent, bool isHost=true)
+        {
+            battle = new Battle(isHost);
+            if (allies == null) allies = new List<Trainer>();
+            allies.Add(trainer);
+            var alliesPoke = (from pokea in allies select pokea.firstParty).ToList();
+            var oppoPoke = (from pokea in opponent select pokea.firstParty).ToList();
+            battle.StartBattle(alliesPoke, oppoPoke, allies, opponent);
+            battleReporter = new BattleReporter(battle);
         }
 
         #region LoadDataToDictionary

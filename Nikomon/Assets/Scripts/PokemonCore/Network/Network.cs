@@ -54,9 +54,9 @@ namespace PokemonCore.Network
         /// <summary>
         /// 广播时用
         /// </summary>
-        private static void BroadCast(object name)
+        private static void BroadCast(object password)
         {
-            string na = name as string;
+            string na = password as string;
             byte[] buf = Encoding.Default.GetBytes($"Trainer: {na}");
             IPEndPoint endPoint = new IPEndPoint(IPAddress.Parse("255.255.255.255"), BroadPort);
             // UnityEngine.Debug.Log($"Broad From IP:{UDPsend.Client}");
@@ -64,7 +64,7 @@ namespace PokemonCore.Network
             {
                 UnityEngine.Debug.Log("I'm sending message");
                 UDPsend.Send(buf, buf.Length, endPoint);
-                Thread.Sleep(1000);
+                Thread.Sleep(200);
             }
         }
 
@@ -119,8 +119,9 @@ namespace PokemonCore.Network
         /// <summary>
         /// 建立一个Host
         /// </summary>
-        public static void BuildHost()
+        public static void BuildHost(int players=2)
         {
+            maxPlayers = players;
             ServerSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             ServerSocket.Bind(new IPEndPoint(IPAddress.Parse(GetAddressIP()), ServerPort));
             ServerSocket.Listen(maxPlayers - 1);
@@ -227,7 +228,7 @@ namespace PokemonCore.Network
         /// 获取本地IP，通用方法
         /// </summary>
         /// <returns></returns>
-        private static string GetAddressIP()
+        public static string GetAddressIP()
         {
             string AddressIP = string.Empty;
             foreach (IPAddress _IPAddress in Dns.GetHostEntry(Dns.GetHostName()).AddressList)

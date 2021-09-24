@@ -21,7 +21,7 @@ namespace ConsoleDebug
     {
         private Game game;
         private Battle battle;
-        private void Awake()
+        private void Start()
         {
             InitConsole();
             
@@ -41,28 +41,7 @@ namespace ConsoleDebug
                 ConsoleDebug.Console.OnDestroy();
             };
         }
-
-        private void Start()
-        {
-            // NetworkLocal networkLocal = new NetworkLocal();
-            // networkLocal.StartToBroadCast();
-            // Application.quitting += () =>
-            // {
-            //     networkLocal.StopBroadCast();
-            // };
-            // Type type = typeof(CombatPokemon);
-            // StartCoroutine(StartBattle());
-            // var member = type.GetMembers();
-            // foreach (var memberInfo in member)
-            // {
-            // Debug.Log(memberInfo.Name);
-
-            // }
-
-            // CombatPokemon pokemonn;
-
-            // Debug.Log(type.GetMembers());
-        }
+        
 
 
         public void StartNetworkTest()
@@ -98,8 +77,8 @@ namespace ConsoleDebug
             Debug.Log("-------Game Start----------");
 
 
-            Trainer t1 = new Trainer("Yes!", 10086);
-            Trainer t2 = new Trainer("Nope!", 10);
+            Trainer t1 = new Trainer("Yes!",true);
+            Trainer t2 = new Trainer("Nope!",false);
             Game.trainer = t1;
 
             var keys= Game.PokemonsData.Keys;

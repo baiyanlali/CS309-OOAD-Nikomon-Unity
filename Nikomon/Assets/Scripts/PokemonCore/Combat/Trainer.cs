@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using Newtonsoft.Json;
 using PokemonCore.Combat.Interface;
 
 namespace PokemonCore.Combat
@@ -12,13 +13,16 @@ namespace PokemonCore.Combat
         public int money { get; private set; }
         public Pokemon[] party { get; set; }
 
+        public bool isMale;
+
         public int pokedexNums;
 
-        public Trainer(string name,int ID)
+        public Trainer(string name,bool isMale)
         {
             this.name = name;
+            this.isMale = isMale;
             //TODO:Change the id to normal value
-            this.id = ID;
+            this.id = Game.Random.Next();
             this.money = 3000;
             this.party = new Pokemon[Game.MaxPartyNums];
             pokedexNums = 0;
@@ -29,7 +33,7 @@ namespace PokemonCore.Combat
             get => this.money;
             set => this.money = Math.Max(value, 0);
         }
-
+        [JsonIgnore]
         public int pokemonCount
         {
             get
@@ -43,7 +47,7 @@ namespace PokemonCore.Combat
                 return num;
             }
         }
-        
+        [JsonIgnore]
         public int ablePokemonCount
         {
             get
@@ -57,11 +61,12 @@ namespace PokemonCore.Combat
                 return num;
             }
         }
-
+        [JsonIgnore]
         public Pokemon firstParty => party[0];
+        [JsonIgnore]
         public Pokemon lastParty => party[party.Length-1];
-        
-        
+        [Obsolete]
+        //TODO:删除所有反射属性，支持IOS端
         public object this[string propertyName]
         {
             get
