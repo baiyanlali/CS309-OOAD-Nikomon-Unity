@@ -1,8 +1,10 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using PokemonCore;
 using PokemonCore.Combat;
 using UnityEngine;
+using Debug = PokemonCore.Debug;
 
 public class BattleHandler : MonoBehaviour
 {
@@ -11,9 +13,9 @@ public class BattleHandler : MonoBehaviour
     public List<CombatPokemon> AlliesPokemons => battle == null ? null : battle.alliesPokemons;
     public List<CombatPokemon> OpponentPokemons => battle == null ? null : battle.opponentsPokemons;
 
-    public CombatPokemon CurrentPokemon;
-    
-    private Battle battle;
+    public CombatPokemon CurrentPokemon=>CurrentMyPokemonIndex>=userPokemons.Count?null:userPokemons[CurrentMyPokemonIndex];
+    [SerializeField]
+    public Battle battle;
 
     public static BattleHandler Instance
     {
@@ -29,6 +31,13 @@ public class BattleHandler : MonoBehaviour
 
     private static BattleHandler s_Instance;
 
+    private void Awake()
+    {
+        if (s_Instance && s_Instance != this)
+        {
+            Destroy(this.gameObject);
+        }
+    }
 
     private static BattleHandler CreateBattleHandler()
     {
@@ -42,15 +51,53 @@ public class BattleHandler : MonoBehaviour
         return s_Instance;
     }
 
-
+    private int CurrentMyPokemonIndex = 0;
     public void StartBattle(Battle battle)
     {
         this.battle = battle;
-        CurrentPokemon = userPokemons[0];
+        battle.OnThisTurnEnd += OnTurnEnd;
+        battle.OnTurnBegin += OnTurnBegin;
+        battle.OnPokemonChooseHandled += OnPokemonChooseHandled;
         BattleUIHandler.Instance.Init(this);
-        BattleUIHandler.Instance.ShowMoves();
+        OnTurnBegin();
     }
 
+    public void OnTurnEnd()
+    {
+        UnityEngine.Debug.Log("Turn End");
+        BattleUIHandler.Instance.UpdateUI(this);
+    }
+    
+    public void OnTurnBegin()
+    {
+        UnityEngine.Debug.Log("Your move");
+
+        CurrentMyPokemonIndex = 0;
+        BattleUIHandler.Instance.ShowMoves();
+        print($"Current Pokemon Index: {CurrentMyPokemonIndex}");
+    }
+
+    //TODO: 增加当宝可梦回合跳过
+    public void OnPokemonChooseHandled(int combatID)
+    {
+        
+    }
+
+    public void ReceiveInstruction(Instruction instruction)
+    {
+        if (CurrentMyPokemonIndex + 1 == userPokemons.Count)
+        {
+            battle.ReceiveInstruction(instruction);//很多时候用了这个命令就直接进入到下一个TurnEnd和TurnBegin了，所以要提前考虑
+
+        }
+        else
+        {
+            battle.ReceiveInstruction(instruction);
+            CurrentMyPokemonIndex++;
+
+            BattleUIHandler.Instance.ShowMoves();
+        }
+    }
     public void EndBattle()
     {
     }

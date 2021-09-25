@@ -13,9 +13,10 @@ public class BattlePokemonStateUI : MonoBehaviour
     public Text HealthText;
     public Slider HealthSlider;
     public Slider ExpSlider;
-    
+    private CombatPokemon pokemon;
     public void Init(CombatPokemon pokemon)
     {
+        this.pokemon = pokemon;
         NameText.text = pokemon.Name;
         LevelText.text = "Lv." + pokemon.Level;
         HealthText.text = pokemon.HP + "/" + pokemon.TotalHP;
@@ -23,7 +24,7 @@ public class BattlePokemonStateUI : MonoBehaviour
         ExpSlider.value = pokemon.pokemon.Exp.Current / (float)pokemon.pokemon.Exp.NextLevelExp;
     }
 
-    public void UpdateState(CombatPokemon pokemon)
+    public void UpdateState()
     {
         LevelText.text = "Lv." + pokemon.Level;
         HealthText.text = pokemon.HP + "/" + pokemon.TotalHP;

@@ -12,7 +12,7 @@ namespace PokemonCore.Combat
         public int id { get; private set; }
         public int money { get; private set; }
         public Pokemon[] party { get; set; }
-
+        
         public bool isMale;
 
         public int pokedexNums;

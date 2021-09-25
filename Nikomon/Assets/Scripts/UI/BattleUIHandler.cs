@@ -3,9 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using PokemonCore;
 using PokemonCore.Attack;
+using PokemonCore.Attack.Data;
 using PokemonCore.Combat;
+using UnityEditor.Experimental;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
+
 
 public class BattleUIHandler : MonoBehaviour
 {
@@ -20,6 +24,8 @@ public class BattleUIHandler : MonoBehaviour
     public GameObject MoveUI;
 
     #endregion
+
+    private BattleHandler battleHandler;
 
     public static BattleUIHandler Instance
     {
@@ -36,6 +42,7 @@ public class BattleUIHandler : MonoBehaviour
 
     public void Init(BattleHandler bh)
     {
+        battleHandler = bh;
         List<CombatPokemon> allies = bh.AlliesPokemons;
         List<CombatPokemon> opponents = bh.OpponentPokemons;
         foreach (var ally in allies)
@@ -59,14 +66,72 @@ public class BattleUIHandler : MonoBehaviour
         }
     }
 
+
+    public void UpdateUI(BattleHandler bh)
+    {
+        BattleUI.SetActive(true);
+        int count = AlliesState.transform.childCount;
+        for (int i = 0; i < count; i++)
+        {
+            AlliesState.transform.GetChild(i).GetComponent<BattlePokemonStateUI>()?.UpdateState();
+        }
+        
+        count = OpponentState.transform.childCount;
+        for (int i = 0; i < count; i++)
+        {
+            OpponentState.transform.GetChild(i).GetComponent<BattlePokemonStateUI>()?.UpdateState();
+        }
+    }
+
     public void ShowMoves()
     {
         Move[] moves = BattleHandler.Instance.CurrentPokemon.pokemon.moves;
 
+        //有一个back按钮
         for (int i = 0; i < moves.Length; i++)
         {
-            if (moves[i] == null) break;
-            MoveUI.transform.GetChild(i).GetComponentInChildren<Text>().text = moves[i]._baseData.innerName;
+            if (moves[i] == null)
+            {
+                MoveUI.transform.GetChild(i + 1).gameObject.SetActive(false);
+            }
+            else
+            {
+                GameObject obj = MoveUI.transform.GetChild(i + 1).gameObject;
+                obj.SetActive(true);
+                obj.GetComponent<MoveUI>().Init(moves[i], i);
+            }
         }
+
+        MoveUI.SetActive(false);
+    }
+
+
+    public void HideInstruction()
+    {
+        UnityEngine.Debug.Log("Hide Instruction");
+    }
+
+    //TODO: 加入target chooser
+    public void ChooseMove(Move move, int index)
+    {
+        //如果技能效果是针对对面宝可梦而且宝可梦只有一个的话
+        if (move._baseData.Target == Targets.SELECTED_OPPONENT_POKEMON &&
+            BattleHandler.Instance.OpponentPokemons.Count == 1)
+        {
+            Instruction instruction =
+                new Instruction(BattleHandler.Instance.CurrentPokemon.CombatID, Command.Move, index,
+                    BattleHandler.Instance.OpponentPokemons[0].CombatID);
+            BuildInstrustruction(instruction);
+        }
+        else
+        {
+            throw new Exception("Target Chooser:This should be implemented later");
+        }
+    }
+
+
+    public void BuildInstrustruction(Instruction instruction)
+    {
+        BattleHandler.Instance.ReceiveInstruction(instruction);
     }
 }

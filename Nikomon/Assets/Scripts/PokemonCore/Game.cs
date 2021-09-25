@@ -119,6 +119,20 @@ namespace PokemonCore
             battle.StartBattle(alliesPoke, oppoPoke, allies, opponent);
             battleReporter = new BattleReporter(battle);
         }
+        
+        public void StartBattle(List<Trainer> allies,List<Trainer> opponent,List<Trainer> AI,List<Trainer> UserInternet=null, bool isHost=true)
+        {
+            battle = new Battle(isHost);
+            if (allies == null) allies = new List<Trainer>();
+            allies.Add(trainer);
+            var alliesPoke = (from pokea in allies select pokea.firstParty).ToList();
+            var oppoPoke = (from pokea in opponent select pokea.firstParty).ToList();
+            BattleAI ai;
+            battle.StartBattle(alliesPoke, oppoPoke, allies, opponent);
+            if (AI != null)
+                ai= new BattleAI(battle,AI);
+            battleReporter = new BattleReporter(battle);
+        }
 
         #region LoadDataToDictionary
 

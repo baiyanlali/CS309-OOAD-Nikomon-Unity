@@ -20,7 +20,7 @@ namespace PokemonCore.Combat
         Captured,
     }
 
-    
+
     public enum BattleActions
     {
         Choosing,
@@ -29,6 +29,7 @@ namespace PokemonCore.Combat
         Damaged,
         Moved
     }
+
     [Serializable]
     public enum Command
     {
@@ -45,27 +46,39 @@ namespace PokemonCore.Combat
     {
         public int CombatPokemonID;
         public Command command;
+        /// <summary>
+        /// 这里的ID指的是不同Command下的ID，比如对于Move这里的id就是0，1，2，3代表宝可梦不同招式；对于Items就是Items本身的ID
+        /// </summary>
         public int ID;
         public List<int> target;
 
-        
-        public Instruction(int combatPokemonID,Command command, int id,List<int> target) 
+
+        public Instruction(int combatPokemonID, Command command, int id, List<int> target)
         {
             this.CombatPokemonID = combatPokemonID;
             this.command = command;
             this.ID = id;
             this.target = target;
-            
+        }
+
+        public Instruction(int combatPokemonID, Command command, int id, int target)
+        {
+            this.CombatPokemonID = combatPokemonID;
+            this.command = command;
+            this.ID = id;
+
+            this.target = new List<int>();
+            this.target.Add(target);
         }
     }
 
     /// <summary>
     /// Battle类，集中处理所有战斗逻辑
     /// </summary>
-    public class Battle:IPropertyModify
+    public class Battle : IPropertyModify
     {
         public static Battle Instance;
-        
+
         public List<CombatPokemon> alliesPokemons { get; private set; }
         public List<CombatPokemon> opponentsPokemons { get; private set; }
 
@@ -95,19 +108,24 @@ namespace PokemonCore.Combat
         /// 招式效果结束后的效果；可以用于一些附加效果，比如寄生种子
         /// </summary>
         public List<IEffect> MovedEffect { get; private set; }
-        
-        public Func<Damage,string> OnHit;
+
+        public Func<Damage, string> OnHit;
 
         public Action OnThisTurnEnd;
 
         public Action OnTurnBegin;
+        
+        /// <summary>
+        /// 比如说宝可梦这回合跳过，就会调用这个方法，参数是宝可梦的Combat ID
+        /// </summary>
+        public Action<int> OnPokemonChooseHandled;
 
         #endregion
 
         public Trainer UserTrainer { get; private set; }
         public List<Trainer> alliesTrainers { get; private set; }
         public List<Trainer> opponentTrainers { get; private set; }
-        
+
         public List<CombatPokemon> Pokemons
         {
             get => alliesPokemons.Union(opponentsPokemons).ToList();
@@ -125,17 +143,16 @@ namespace PokemonCore.Combat
         private int turnCount;
 
 
-
         /// <summary>
         /// For internet connection. When in local, isHost is true.
         /// In the Internet, if you are the host, you have to transmit your data to the others.
         /// If you are not the host, you have to wait for the data transmit back to you;
         /// </summary>
         public bool isHost;
-        
+
 
         public Battle(
-            bool isHost=true
+            bool isHost = true
         )
         {
             this.isHost = isHost;
@@ -152,36 +169,39 @@ namespace PokemonCore.Combat
             IEffect[] movedEffect = null)
         {
             Instance = this;
+
             #region init pokemons and trainers
 
-            this.alliesPokemons = (from poke in alliesPokemons select new CombatPokemon(poke,this)).ToList();
-            this.opponentsPokemons=(from poke in opponentsPokemons select new CombatPokemon(poke,this)).ToList();
+            this.alliesPokemons = (from poke in alliesPokemons select new CombatPokemon(poke, this)).ToList();
+            this.opponentsPokemons = (from poke in opponentsPokemons select new CombatPokemon(poke, this)).ToList();
             this.UserTrainer = Game.trainer;
             this.alliesTrainers = alliesTrainers;
             this.opponentTrainers = opponentTrainers;
+
             #endregion
 
             #region init effects
 
             this.ChoosingEffect = new List<IEffect>();
-            if(choosingEffect!=null)
+            if (choosingEffect != null)
                 this.ChoosingEffect.AddRange(choosingEffect);
-           
+
             this.MovingEffect = new List<IEffect>();
-            if(movingEffect!=null)
+            if (movingEffect != null)
                 this.MovingEffect.AddRange(movingEffect);
-            
+
             this.DamagingEffect = new List<IEffect>();
-            if(damagingEffect!=null)
+            if (damagingEffect != null)
                 this.DamagingEffect.AddRange(damagingEffect);
-            
+
             this.DamagedEffect = new List<IEffect>();
-            if(damagedEffect!=null)
+            if (damagedEffect != null)
                 this.DamagedEffect.AddRange(damagedEffect);
-            
+
             this.MovedEffect = new List<IEffect>();
-            if(movedEffect!=null)
+            if (movedEffect != null)
                 this.MovedEffect.AddRange(movedEffect);
+
             #endregion
 
             Instructions = new List<Instruction>();
@@ -190,6 +210,8 @@ namespace PokemonCore.Combat
             turnCount = 0;
             mBattleResults = BattleResults.Continue;
             mBattleActions = BattleActions.Choosing;
+
+            OnTurnBegin?.Invoke();
         }
 
         void NextAction()
@@ -226,7 +248,7 @@ namespace PokemonCore.Combat
                     break;
             }
         }
-        
+
 
         #region MoveAction
 
@@ -239,11 +261,12 @@ namespace PokemonCore.Combat
         /// </summary>
         void Choosing()
         {
-            List<Instruction> inss =(from instruction in (from pokemon in Pokemons select pokemon.OnChoosing())
+            List<Instruction> inss = (from instruction in (from pokemon in Pokemons select pokemon.OnChoosing())
                 where instruction != null
                 select instruction).ToList();
             foreach (var ins in inss.OrEmptyIfNull())
             {
+                OnPokemonChooseHandled?.Invoke(ins.CombatPokemonID);
                 ReceiveInstruction(ins);
             }
         }
@@ -259,6 +282,7 @@ namespace PokemonCore.Combat
             {
                 Damages.AddRange(GenerateDamages(c));
             }
+
             return Damages;
         }
 
@@ -275,7 +299,6 @@ namespace PokemonCore.Combat
             dmg = dmg.sponsor.OnHit(dmg);
             OnHit?.Invoke(dmg);
             dmg.target.BeHurt(dmg);
-            
         }
 
         void Damaged()
@@ -288,16 +311,19 @@ namespace PokemonCore.Combat
             turnCount++;
             OnThisTurnEnd?.Invoke();
         }
-        
+
         #endregion
 
 
         //TODO: 目前按照接受收到的Instruction数量来判断是否进入下一个阶段，不是很合理
         public bool ReceiveInstruction(Instruction ins)
         {
-            
+            //判断有没有重复输入的
+            if ((from instru in Instructions where ins.CombatPokemonID == instru.CombatPokemonID select instru)
+                .Count() != 0) return false;
+
             Instructions.Add(ins);
-            
+
             switch (ins.command)
             {
                 case Command.Move:
@@ -315,10 +341,10 @@ namespace PokemonCore.Combat
 
             if (Instructions.Count == Pokemons.Count)
             {
-                NextAction();
                 Instructions.Clear();
+                NextAction();
             }
-            
+
             return true;
         }
 
@@ -330,10 +356,10 @@ namespace PokemonCore.Combat
             CombatPokemon sponsor =
                 (from poke in Pokemons where poke.CombatID == ins.CombatPokemonID select poke).ToArray()[0];
             List<CombatPokemon> target =
-            (from poke in Pokemons
-                join combatPokemonID in ins.target on poke.CombatID equals combatPokemonID
-                select poke).ToList();
-            CombatMove move =new CombatMove(sponsor.pokemon.moves[ins.ID],this,sponsor,target);
+                (from poke in Pokemons
+                    join combatPokemonID in ins.target on poke.CombatID equals combatPokemonID
+                    select poke).ToList();
+            CombatMove move = new CombatMove(sponsor.pokemon.moves[ins.ID], this, sponsor, target);
             return move;
         }
 
@@ -341,7 +367,7 @@ namespace PokemonCore.Combat
         {
             if (cms != null && cms.Count != 0)
             {
-                cms.Sort((o1,o2)=>
+                cms.Sort((o1, o2) =>
                     {
                         if (o1.Priority != o2.Priority) return o1.Priority - o2.Priority;
                         else return o1.Sponsor.SPE - o2.Sponsor.SPE;
@@ -350,17 +376,18 @@ namespace PokemonCore.Combat
             }
         }
 
-        
+
         public List<Damage> GenerateDamages(CombatMove cmove)
         {
             List<Damage> dmgs = new List<Damage>();
             foreach (var target in cmove.Targets)
             {
-                dmgs.Add(new Damage(cmove,cmove.Sponsor,target));
+                dmgs.Add(new Damage(cmove, cmove.Sponsor, target));
             }
 
             return dmgs;
         }
+
         #endregion
 
 
@@ -375,17 +402,19 @@ namespace PokemonCore.Combat
             {
                 sb.AppendLine(p.ToString());
             }
+
             sb.AppendLine("-----------Opponents-----------");
             foreach (var p in opponentsPokemons)
             {
                 sb.AppendLine(p.ToString());
             }
+
             return sb.ToString();
         }
 
         #endregion
 
-        
+
         public object this[string propertyName]
         {
             get

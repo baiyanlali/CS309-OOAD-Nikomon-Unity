@@ -54,16 +54,14 @@ public class GlobalManager : MonoBehaviour
         game = new Game();
         game.OnDoNotHaveSaveFile +=StartPanel;
         game.Init();
-        // GameObject.Find("StartCanvas").SetActive(false);
-        // GameObject.Find("Start").SetActive(true);
     }
 
     void StartPanel()
     {
-        // Debug.Log("No Save data found");
-        // GameObject obj=GameObject.Find("Canvas");
-        // obj.transform.Find("StartCanvas").gameObject.SetActive(true);
-        // GameObject.Find("Start").SetActive(false);
+        Debug.Log("No Save data found");
+        GameObject obj=GameObject.Find("Canvas");
+        obj.transform.Find("StartCanvas").gameObject.SetActive(true);
+        obj.transform.Find("Start").gameObject.SetActive(false);
     }
 
     public void CreateNewTrainer(bool isMale)
@@ -77,22 +75,28 @@ public class GlobalManager : MonoBehaviour
     public void StartGame()
     {
         SceneManager.LoadScene(1);
-        SceneManager.sceneLoaded += OnSecenLoaded;
+        SceneManager.sceneLoaded += OnSceneLoaded;
         
     }
 
-    void OnSecenLoaded(Scene scene, LoadSceneMode mode)
+    //TODO：目前无法实现主角控制双打情况！
+    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         Game.trainer.party[0]=new Pokemon(Game.PokemonsData[4], "",Game.trainer, 50, 0);
         Trainer trainer = new Trainer("Computer",false);
         trainer.party[0] = new Pokemon(Game.PokemonsData[17], "",trainer, 50, 0);
-        
-        StartBattle(trainer);
+        // Trainer trainer2 = new Trainer("Computer",false);
+
+        // trainer2.party[0] = new Pokemon(Game.PokemonsData[7], "",trainer2, 50, 0);
+        List<Trainer> trainers = new List<Trainer>();
+        trainers.Add(trainer);
+        // trainers.Add(trainer2);
+        StartBattle(null,trainers,true);
     }
 
     public void StartBattle(List<Trainer> allies,List<Trainer> oppo,bool isHost)
     {
-        game.StartBattle(allies,oppo,isHost);
+        game.StartBattle(allies,oppo,oppo,null,isHost);
         BattleHandler.Instance.StartBattle(Game.battle);
     }
 

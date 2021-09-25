@@ -21,11 +21,13 @@ namespace ConsoleDebug
     {
         private Game game;
         private Battle battle;
+
+        public bool enable;
         private void Start()
         {
-            InitConsole();
-            
-            StartNetworkTest();
+            if(enable)
+                InitConsole();
+            // StartNetworkTest();
         }
 
         public void InitConsole()
@@ -34,7 +36,7 @@ namespace ConsoleDebug
 
             ConsoleDebug.Console.OnMessageEntered += OnReceiveInstruction;
 
-            Application.logMessageReceived += DebugUIHandler.Instance.InsertInfo;
+            // Application.logMessageReceived += DebugUIHandler.Instance.InsertInfo;
                     
             Application.quitting += () =>
             {
