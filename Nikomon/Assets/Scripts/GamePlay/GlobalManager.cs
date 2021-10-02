@@ -1,11 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using PokemonCore;
+using PokemonCore.Attack.Data;
 using PokemonCore.Combat;
+using PokemonCore.Monster;
+using PokemonCore.Monster.Data;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using UnityEngine.Windows;
 using Debug = UnityEngine.Debug;
+using Types = PokemonCore.Types;
+
+using Newtonsoft.Json;
 
 
 /// <summary>
@@ -31,7 +38,7 @@ public class GlobalManager : MonoBehaviour
 
     #region 存储各种美术资源
 
-    // public Dictionary<int,GameObject> 
+    public Dictionary<int, GameObject> Pokemons;
 
     #endregion
 
@@ -55,11 +62,32 @@ public class GlobalManager : MonoBehaviour
             Destroy(this.gameObject);
         }
         s_Instance = this;
-        
+
+
         DontDestroyOnLoad(this);
+        InitGame();
+        // Game.DataPath = Application.dataPath+@"/Data/";
+        // print(Game.DataPath);
+        // game = new Game();
+        // game.OnDoNotHaveSaveFile +=StartPanel;
+        // game.Init();
+    }
+
+    private void InitGame()
+    {
+        Game.DataPath = Application.persistentDataPath;
+
         game = new Game();
+        // var types = JsonConvert.DeserializeObject<Dictionary<int, Types>>(Resources.Load<TextAsset>("PokemonData/" + Game.TypeFile)
+        //     .text);
+        // var moves = JsonConvert.DeserializeObject<Dictionary<int,MoveData>>(Resources.Load<TextAsset>("PokemonData/" + Game.MoveFile).text);
+        // var pokes = JsonConvert.DeserializeObject<Dictionary<int,PokemonData>>(Resources.Load<TextAsset>("PokemonData/" + Game.PokemonsData).text);
+        // var exps = JsonConvert.DeserializeObject<Dictionary<int,int[]>>(Resources.Load<TextAsset>("PokemonData/" + Game.ExpTableFile).text);
+        var natures = new Dictionary<int, Nature>();
+        natures.Add(0, new Nature(0, new float[] {0, 0, 0, 0, 0}));
+
         game.OnDoNotHaveSaveFile +=StartPanel;
-        game.Init();
+        game.Init(LoadTypes(),null,LoadPokemons(),LoadExperienceTable(),natures,null,LoadMoves(),null);
     }
 
     void StartPanel()
@@ -110,6 +138,92 @@ public class GlobalManager : MonoBehaviour
         trainers.Add(oppo);
         StartBattle(null,trainers,true);
     }
+    
+    
+    
+    
+    #region LoadDataToDictionary
+
+        public Dictionary<int,int[]> LoadExperienceTable()
+        {
+            List<int[]> tmp = JsonConvert.DeserializeObject<List<int[]>>(Resources.Load<TextAsset>("PokemonData/"+Game.ExpTableFile).text);
+            var ExperienceTable = new Dictionary<int, int[]>();
+            for (int i = 0; i < tmp.Count; i++)
+            {
+                ExperienceTable.Add(i, tmp[i]);
+            }
+
+            return ExperienceTable;
+        }
+
+        public Dictionary<int,Types> LoadTypes()
+        {
+            List<Types> tmp = JsonConvert.DeserializeObject<List<Types>>(Resources.Load<TextAsset>("PokemonData/"+Game.TypeFile).text);
+            var TypesMap = new Dictionary<int, Types>();
+            foreach (var t in tmp)
+            {
+                TypesMap.Add(t.ID, t);
+            }
+
+            return TypesMap;
+        }
+
+        public void LoadAbilities(LoadDataType type = LoadDataType.Json)
+        {
+            if (type == LoadDataType.Json)
+            {
+                // using FileStream openStream = File.OpenRead(DataPath+"Abilities.json");
+                // AbilitiesData = await JsonSerializer.DeserializeAsync<Dictionary<int,Ability>>(openStream);
+            }
+        }
+
+        public void LoadNature(LoadDataType type = LoadDataType.Json)
+        {
+            if (type == LoadDataType.Json)
+            {
+            }
+        }
+
+        public void LoadEffect(LoadDataType type = LoadDataType.Json)
+        {
+            if (type == LoadDataType.Json)
+            {
+            }
+        }
+
+        public Dictionary<int,MoveData> LoadMoves()
+        {
+            List<MoveData> tmp = JsonConvert.DeserializeObject<List<MoveData>>(Resources.Load<TextAsset>("PokemonData/"+Game.MoveFile).text );
+            var MovesData = new Dictionary<int, MoveData>();
+            foreach (var t in tmp)
+            {
+                MovesData.Add(t.MoveID, t);
+            }
+
+            return MovesData;
+        }
+
+        public void LoadItems(LoadDataType type = LoadDataType.Json)
+        {
+            if (type == LoadDataType.Json)
+            {
+            }
+        }
+
+
+        public Dictionary<int,PokemonData> LoadPokemons()
+        {
+            List<PokemonData> tmp =JsonConvert.DeserializeObject<List<PokemonData>>(Resources.Load<TextAsset>("PokemonData/"+Game.PokemonFile).text);
+            var PokemonsData = new Dictionary<int, PokemonData>();
+            foreach (var t in tmp)
+            {
+                PokemonsData.Add(t.ID, t);
+            }
+
+            return PokemonsData;
+        }
+
+        #endregion
     
     
 }

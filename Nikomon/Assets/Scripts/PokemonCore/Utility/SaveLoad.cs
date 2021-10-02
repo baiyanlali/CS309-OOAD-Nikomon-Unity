@@ -5,10 +5,10 @@ namespace PokemonCore.Utility
 {
     public static class SaveLoad
     {
-        public static readonly string path = "Assets//Data//";
+        public static string path=>Game.DataPath ;
         public static T Load<T>(string fileName)
         {
-            if (!fileName.Contains(".")) fileName += ".json";
+            if (!fileName.Contains(".")) fileName += @".json";
             string filePath = path + fileName;
             
             

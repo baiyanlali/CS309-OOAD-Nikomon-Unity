@@ -21,33 +21,33 @@ namespace PokemonCore
     {
         #region DataPath
 
-        public static string DataPath => "Assets//Data//";
+        public static string DataPath { get; set; }
 
         public static readonly int MaxMovesPerPokemon = 4;
         public static readonly int MaxPartyNums = 6;
 
-        public static readonly string TypeFile = "types.json";
-        public static readonly string MoveFile = "moves.json";
-        public static readonly string PokemonFile = "pokemons.json";
-        public static readonly string ExpTableFile = "levelingRate.json";
+        public static readonly string TypeFile = "types";
+        public static readonly string MoveFile = "moves";
+        public static readonly string PokemonFile = "pokemons";
+        public static readonly string ExpTableFile = "levelingRate";
         public static readonly string SaveFile = "Save.json";
 
         #endregion
-        
 
-        public static Dictionary<int,Types> TypesMap { get; private set; }
-        
-        public static Dictionary<int,Ability> AbilitiesData { get; private set; }
-        public static Dictionary<int,PokemonData> PokemonsData { get; private set; }
-        public static Dictionary<int,int[]> ExperienceTable { get; private set; }
-        public static Dictionary<int,Nature> NatureData { get; private set; }
-        
-        public static Dictionary<int,List<IEffect>> EffectsData { get; private set; }
-        
-        public static Dictionary<int,MoveData> MovesData { get; private set; }
-        
-        public static Dictionary<int,Item> ItemsData{get;private set;}
-        
+
+        public static Dictionary<int, Types> TypesMap { get; private set; }
+
+        public static Dictionary<int, Ability> AbilitiesData { get; private set; }
+        public static Dictionary<int, PokemonData> PokemonsData { get; private set; }
+        public static Dictionary<int, int[]> ExperienceTable { get; private set; }
+        public static Dictionary<int, Nature> NatureData { get; private set; }
+
+        public static Dictionary<int, List<IEffect>> EffectsData { get; private set; }
+
+        public static Dictionary<int, MoveData> MovesData { get; private set; }
+
+        public static Dictionary<int, Item> ItemsData { get; private set; }
+
 
         public static Trainer trainer;
 
@@ -60,12 +60,13 @@ namespace PokemonCore
         public Action OnDoNotHaveSaveFile;
 
         #endregion
-        
-        
+
+
         public static Game Instance
         {
             get { return sInstance; }
         }
+
         private static Game sInstance;
 
         public Game()
@@ -73,7 +74,7 @@ namespace PokemonCore
             if (sInstance == null)
                 sInstance = this;
 
-            Init();
+            // Init();
         }
 
         //TODO:目前只存档Trainer信息，剩下的以后再说
@@ -84,6 +85,7 @@ namespace PokemonCore
             SaveLoad.Save(SaveFile, trainer);
         }
 
+        [Obsolete]
         public void Init()
         {
             Random = new Random();
@@ -92,7 +94,7 @@ namespace PokemonCore
             LoadPokemons();
             LoadExperienceTable();
             NatureData = new Dictionary<int, Nature>();
-            NatureData.Add(0,new Nature(0,new float[]{0,0,0,0,0}));
+            NatureData.Add(0, new Nature(0, new float[] {0, 0, 0, 0, 0}));
             if (HaveSave)
                 trainer = SaveLoad.Load<Trainer>(SaveFile);
             else
@@ -101,15 +103,55 @@ namespace PokemonCore
             // PC pc = new PC();
         }
 
-        public void CreateNewSaveFile(string name,bool isMale)
+
+        public void Init(
+            Dictionary<int, Types> typesMap, 
+            Dictionary<int, Ability> abilities,
+            Dictionary<int, PokemonData> pokemonDatas, 
+            Dictionary<int, int[]> experienceTable,
+            Dictionary<int, Nature> natures,
+            Dictionary<int, List<IEffect>> effectsData, 
+            Dictionary<int, MoveData> moveDatas,
+            Dictionary<int, Item> items)
         {
-            trainer = new Trainer(name,isMale);
+            Random = new Random();
+            TypesMap = typesMap;
+            MovesData = moveDatas;
+            PokemonsData = pokemonDatas;
+            ExperienceTable = experienceTable;
+
+            AbilitiesData = abilities;
+
+            NatureData = natures;
+
+            EffectsData = effectsData;
+
+            ItemsData = items;
+            
+            if (HaveSave)
+                trainer = SaveLoad.Load<Trainer>(SaveFile);
+            else
+                OnDoNotHaveSaveFile?.Invoke();
+            // NatureData = new Dictionary<int, Nature>();
+            // NatureData.Add(0, new Nature(0, new float[] {0, 0, 0, 0, 0}));
+            // if (HaveSave)
+            //     trainer = SaveLoad.Load<Trainer>(SaveFile);
+            // else
+            //     OnDoNotHaveSaveFile?.Invoke();
+
+            // PC pc = new PC();
+        }
+
+        public void CreateNewSaveFile(string name, bool isMale)
+        {
+            trainer = new Trainer(name, isMale);
             SaveData();
         }
 
         public static Battle battle { get; private set; }
         public static BattleReporter battleReporter { get; private set; }
-        public void StartBattle(List<Trainer> allies,List<Trainer> opponent, bool isHost=true)
+
+        public void StartBattle(List<Trainer> allies, List<Trainer> opponent, bool isHost = true)
         {
             battle = new Battle(isHost);
             if (allies == null) allies = new List<Trainer>();
@@ -119,20 +161,21 @@ namespace PokemonCore
             battle.StartBattle(alliesPoke, oppoPoke, allies, opponent);
             battleReporter = new BattleReporter(battle);
         }
-        
-        public void StartBattle(List<Trainer> allies,List<Trainer> opponent,List<Trainer> AI,List<Trainer> UserInternet=null, bool isHost=true,int pokemonPerTrainer=1)
+
+        public void StartBattle(List<Trainer> allies, List<Trainer> opponent, List<Trainer> AI,
+            List<Trainer> UserInternet = null, bool isHost = true, int pokemonPerTrainer = 1)
         {
             battle = new Battle(isHost);
             if (allies == null) allies = new List<Trainer>();
             allies.Add(trainer);
-            List<Pokemon> alliesPoke =null;
-            List<Pokemon> oppoPoke =null;
+            List<Pokemon> alliesPoke = null;
+            List<Pokemon> oppoPoke = null;
             if (pokemonPerTrainer == 1)
             {
                 alliesPoke = (from pokea in allies select pokea.firstParty).ToList();
                 oppoPoke = (from pokea in opponent select pokea.firstParty).ToList();
             }
-            else if(pokemonPerTrainer>1)
+            else if (pokemonPerTrainer > 1)
             {
                 alliesPoke = new List<Pokemon>();
                 oppoPoke = new List<Pokemon>();
@@ -146,21 +189,19 @@ namespace PokemonCore
             BattleAI ai;
             battle.StartBattle(alliesPoke, oppoPoke, allies, opponent);
             if (AI != null)
-                ai= new BattleAI(battle,AI);
+                ai = new BattleAI(battle, AI);
             battleReporter = new BattleReporter(battle);
         }
 
         #region LoadDataToDictionary
 
-        
-
         public void LoadExperienceTable(LoadDataType type = LoadDataType.Json)
         {
-            List<int[]> tmp=SaveLoad.Load<List<int[]>>(ExpTableFile);
+            List<int[]> tmp = SaveLoad.Load<List<int[]>>(ExpTableFile);
             ExperienceTable = new Dictionary<int, int[]>();
             for (int i = 0; i < tmp.Count; i++)
             {
-                ExperienceTable.Add(i,tmp[i]);
+                ExperienceTable.Add(i, tmp[i]);
             }
         }
 
@@ -170,10 +211,10 @@ namespace PokemonCore
             TypesMap = new Dictionary<int, Types>();
             foreach (var t in tmp)
             {
-                TypesMap.Add(t.ID,t);
+                TypesMap.Add(t.ID, t);
             }
         }
-        
+
         public void LoadAbilities(LoadDataType type = LoadDataType.Json)
         {
             if (type == LoadDataType.Json)
@@ -182,60 +223,57 @@ namespace PokemonCore
                 // AbilitiesData = await JsonSerializer.DeserializeAsync<Dictionary<int,Ability>>(openStream);
             }
         }
+
         public void LoadNature(LoadDataType type = LoadDataType.Json)
         {
             if (type == LoadDataType.Json)
             {
-                
             }
         }
+
         public void LoadEffect(LoadDataType type = LoadDataType.Json)
         {
             if (type == LoadDataType.Json)
             {
-                
             }
         }
-        
+
         public void LoadMoves(LoadDataType type = LoadDataType.Json)
         {
             List<MoveData> tmp = SaveLoad.Load<List<MoveData>>(MoveFile);
             MovesData = new Dictionary<int, MoveData>();
             foreach (var t in tmp)
             {
-                MovesData.Add(t.MoveID,t);
+                MovesData.Add(t.MoveID, t);
             }
         }
+
         public void LoadItems(LoadDataType type = LoadDataType.Json)
         {
             if (type == LoadDataType.Json)
             {
-                
             }
         }
-        
 
-        public void LoadPokemons(LoadDataType type=LoadDataType.Json)
+
+        public void LoadPokemons(LoadDataType type = LoadDataType.Json)
         {
-            List<PokemonData> tmp = SaveLoad.Load<List<PokemonData>>( PokemonFile);
+            List<PokemonData> tmp = SaveLoad.Load<List<PokemonData>>(PokemonFile);
             PokemonsData = new Dictionary<int, PokemonData>();
             foreach (var t in tmp)
             {
-                PokemonsData.Add(t.ID,t);
+                PokemonsData.Add(t.ID, t);
             }
         }
-        
-        #endregion
 
-        
-        
+        #endregion
     }
 
     public enum LoadDataType
-     {
-         Json,
-         CSV,
-         XML,
-         Database
-     }
+    {
+        Json,
+        CSV,
+        XML,
+        Database
+    }
 }
