@@ -143,7 +143,7 @@ public class BattleUIHandler : MonoBehaviour
                     new Instruction(BattleHandler.Instance.CurrentPokemon.CombatID, Command.Move, index,
                         target);
                     BuildInstrustruction(instruction);
-                    MoveUI.SetActive(true);//TODO:这里有bug！
+                    BattleUI.SetActive(true);//TODO:这里有bug！
                 }
                 ;
         }

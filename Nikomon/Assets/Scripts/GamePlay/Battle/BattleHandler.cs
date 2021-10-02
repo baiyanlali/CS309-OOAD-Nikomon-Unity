@@ -8,10 +8,10 @@ using Debug = PokemonCore.Debug;
 
 public class BattleHandler : MonoBehaviour
 {
-    public List<CombatPokemon> userPokemons => battle == null ? null : battle.MyPokemons;
-    public List<CombatPokemon> Pokemons => battle == null ? null : battle.Pokemons;
-    public List<CombatPokemon> AlliesPokemons => battle == null ? null : battle.alliesPokemons;
-    public List<CombatPokemon> OpponentPokemons => battle == null ? null : battle.opponentsPokemons;
+    public List<CombatPokemon> userPokemons => battle?.MyPokemons;
+    public List<CombatPokemon> Pokemons => battle?.Pokemons;
+    public List<CombatPokemon> AlliesPokemons => battle?.alliesPokemons;
+    public List<CombatPokemon> OpponentPokemons => battle?.opponentsPokemons;
 
     public CombatPokemon CurrentPokemon=>CurrentMyPokemonIndex>=userPokemons.Count?null:userPokemons[CurrentMyPokemonIndex];
     [SerializeField]

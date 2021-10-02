@@ -8,6 +8,12 @@ using PokemonCore.Utility;
 
 namespace PokemonCore.Network
 {
+
+    public class NetworkData
+    {
+        
+    }
+    
     /// <summary>
     /// NetworkLocal只提供最基础的链接方法，不提供游戏中具体的连接逻辑
     /// </summary>

@@ -29,6 +29,12 @@ public class GlobalManager : MonoBehaviour
     
     private Game game;
 
+    #region 存储各种美术资源
+
+    // public Dictionary<int,GameObject> 
+
+    #endregion
+
     private static GlobalManager CreateGlobalManager()
     {
         GameObject obj = GameObject.Find("Global");
