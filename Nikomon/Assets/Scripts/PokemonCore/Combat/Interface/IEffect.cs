@@ -3,7 +3,6 @@
 using System;
 using System.Collections.Generic;
 using PokemonCore.Utility;
-using UnityEngine.InputSystem.Controls;
 
 namespace PokemonCore.Combat.Interface
 {

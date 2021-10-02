@@ -83,20 +83,18 @@ public class GlobalManager : MonoBehaviour
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         Game.trainer.party[0]=new Pokemon(Game.PokemonsData[4], "",Game.trainer, 50, 0);
+        Game.trainer.party[1]=new Pokemon(Game.PokemonsData[1], "",Game.trainer, 50, 0);
         Trainer trainer = new Trainer("Computer",false);
         trainer.party[0] = new Pokemon(Game.PokemonsData[17], "",trainer, 50, 0);
-        // Trainer trainer2 = new Trainer("Computer",false);
-
-        // trainer2.party[0] = new Pokemon(Game.PokemonsData[7], "",trainer2, 50, 0);
+        trainer.party[1] = new Pokemon(Game.PokemonsData[7], "",trainer, 50, 0);
         List<Trainer> trainers = new List<Trainer>();
         trainers.Add(trainer);
-        // trainers.Add(trainer2);
-        StartBattle(null,trainers,true);
+        StartBattle(null,trainers,true,2);
     }
 
-    public void StartBattle(List<Trainer> allies,List<Trainer> oppo,bool isHost)
+    public void StartBattle(List<Trainer> allies,List<Trainer> oppo,bool isHost,int pokemonPerTrainer=1)
     {
-        game.StartBattle(allies,oppo,oppo,null,isHost);
+        game.StartBattle(allies,oppo,oppo,null,isHost,pokemonPerTrainer);
         BattleHandler.Instance.StartBattle(Game.battle);
     }
 

@@ -120,13 +120,29 @@ namespace PokemonCore
             battleReporter = new BattleReporter(battle);
         }
         
-        public void StartBattle(List<Trainer> allies,List<Trainer> opponent,List<Trainer> AI,List<Trainer> UserInternet=null, bool isHost=true)
+        public void StartBattle(List<Trainer> allies,List<Trainer> opponent,List<Trainer> AI,List<Trainer> UserInternet=null, bool isHost=true,int pokemonPerTrainer=1)
         {
             battle = new Battle(isHost);
             if (allies == null) allies = new List<Trainer>();
             allies.Add(trainer);
-            var alliesPoke = (from pokea in allies select pokea.firstParty).ToList();
-            var oppoPoke = (from pokea in opponent select pokea.firstParty).ToList();
+            List<Pokemon> alliesPoke =null;
+            List<Pokemon> oppoPoke =null;
+            if (pokemonPerTrainer == 1)
+            {
+                alliesPoke = (from pokea in allies select pokea.firstParty).ToList();
+                oppoPoke = (from pokea in opponent select pokea.firstParty).ToList();
+            }
+            else if(pokemonPerTrainer>1)
+            {
+                alliesPoke = new List<Pokemon>();
+                oppoPoke = new List<Pokemon>();
+                for (int i = 0; i < pokemonPerTrainer; i++)
+                {
+                    alliesPoke.AddRange(from pokea in allies select pokea.party[i]);
+                    oppoPoke.AddRange(from pokea in opponent select pokea.party[i]);
+                }
+            }
+
             BattleAI ai;
             battle.StartBattle(alliesPoke, oppoPoke, allies, opponent);
             if (AI != null)

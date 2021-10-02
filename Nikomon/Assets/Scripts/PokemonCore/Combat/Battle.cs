@@ -172,8 +172,8 @@ namespace PokemonCore.Combat
 
             #region init pokemons and trainers
 
-            this.alliesPokemons = (from poke in alliesPokemons select new CombatPokemon(poke, this)).ToList();
-            this.opponentsPokemons = (from poke in opponentsPokemons select new CombatPokemon(poke, this)).ToList();
+            this.alliesPokemons = (from poke in alliesPokemons where poke!=null select new CombatPokemon(poke, this)).ToList();
+            this.opponentsPokemons = (from poke in opponentsPokemons where poke!=null select new CombatPokemon(poke, this)).ToList();
             this.UserTrainer = Game.trainer;
             this.alliesTrainers = alliesTrainers;
             this.opponentTrainers = opponentTrainers;

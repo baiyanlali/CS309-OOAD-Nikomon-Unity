@@ -5,10 +5,12 @@ using PokemonCore;
 using PokemonCore.Attack;
 using PokemonCore.Attack.Data;
 using PokemonCore.Combat;
+using PokemonCore.Utility;
 using UnityEditor.Experimental;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
+using Debug = PokemonCore.Debug;
 
 
 public class BattleUIHandler : MonoBehaviour
@@ -22,6 +24,8 @@ public class BattleUIHandler : MonoBehaviour
     public GameObject AlliesState;
     public GameObject OpponentState;
     public GameObject MoveUI;
+
+    public TargetChooserHandler TargetChooserHandler;
 
     #endregion
 
@@ -64,6 +68,10 @@ public class BattleUIHandler : MonoBehaviour
             GameObject state = Instantiate(MoveUIPrefab, MoveUI.transform);
             state.GetComponentInChildren<Text>().text = "";
         }
+        
+        
+        TargetChooserHandler.Init(opponents,allies);
+
     }
 
 
@@ -111,7 +119,6 @@ public class BattleUIHandler : MonoBehaviour
         UnityEngine.Debug.Log("Hide Instruction");
     }
 
-    //TODO: 加入target chooser
     public void ChooseMove(Move move, int index)
     {
         //如果技能效果是针对对面宝可梦而且宝可梦只有一个的话
@@ -125,7 +132,20 @@ public class BattleUIHandler : MonoBehaviour
         }
         else
         {
-            throw new Exception("Target Chooser:This should be implemented later");
+            TargetChooserHandler.ShowTargetChooser(move._baseData.Target);
+            TargetChooserHandler.OnCancelChoose = () => { MoveUI.SetActive(true); };
+
+            MoveUI.SetActive(false);
+            TargetChooserHandler.OnChooseTarget=(target)=>
+                {
+                    UnityEngine.Debug.Log(target.ConverToString());
+                    Instruction instruction =
+                    new Instruction(BattleHandler.Instance.CurrentPokemon.CombatID, Command.Move, index,
+                        target);
+                    BuildInstrustruction(instruction);
+                    MoveUI.SetActive(true);//TODO:这里有bug！
+                }
+                ;
         }
     }
 
