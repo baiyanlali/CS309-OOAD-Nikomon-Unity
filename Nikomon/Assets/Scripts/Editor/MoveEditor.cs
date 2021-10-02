@@ -37,7 +37,7 @@ namespace Editor
             movedatas = new List<MoveData>();
             moveIndex = 0;
 
-            types = SaveLoad.Load<List<Types>>("types.json");
+            types = SaveLoad.Load<List<Types>>("types.json",@"Assets\Resources\PokemonData\");
         }
 
         private void OnGUI()
@@ -87,12 +87,12 @@ namespace Editor
                         fileName = EditorGUILayout.TextField(fileName);
                         if (GUILayout.Button("Save"))
                         {
-                            SaveLoad.Save(fileName,movedatas);
+                            SaveLoad.Save(fileName,movedatas,@"Assets\Resources\PokemonData\");
                         }
                         GUILayout.Space(20);
                         if (GUILayout.Button("Load"))
                         {
-                            movedatas = SaveLoad.Load<List<MoveData>>(fileName);
+                            movedatas = SaveLoad.Load<List<MoveData>>(fileName,@"Assets\Resources\PokemonData\");
                             movedatas.Sort((o1, o2) => {return o1.MoveID - o2.MoveID;});
                         }
                     GUILayout.EndHorizontal();

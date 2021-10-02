@@ -7,6 +7,7 @@ using UnityEditor;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
 using Newtonsoft.Json;
+using PokemonCore.Utility;
 using Types = PokemonCore.Types;
 
 namespace Editor
@@ -51,10 +52,11 @@ namespace Editor
                     GUILayout.EndHorizontal();
                     if (GUILayout.Button("Load"))
                     {
-                        if (!File.Exists(filePath)) return;
-                        StreamReader sr = File.OpenText(filePath);
-                        string data = sr.ReadToEnd();
-                        Types[] typesArray = JsonConvert.DeserializeObject<Types[]>(data);
+                        // if (!File.Exists(filePath)) return;
+                        // StreamReader sr = File.OpenText(filePath);
+                        // string data = sr.ReadToEnd();
+                        Types[] typesArray = SaveLoad.Load<Types[]>("types.json",@"Assets\Resources\PokemonData\");
+                        // JsonConvert.DeserializeObject<Types[]>(data);
                         typeNum = typesArray.Length;
                         types = new TypeRelationship[typeNum, typeNum];
                         TypeName = new string[typeNum];
@@ -105,23 +107,24 @@ namespace Editor
                             
                         }
 
-                        string data = JsonConvert.SerializeObject(typesList.ToArray());
-                        FileStream fs;
-                        if (File.Exists(filePath))
-                        {
-                             fs = File.Create(filePath);
-                        }
-                        else
-                        {
-                            fs = File.OpenWrite(filePath);
-                        }
-
-                        StreamWriter sw = new StreamWriter(fs);
-                        sw.Write(data);
-                        sw.Flush();
-                        sw.Close();
-                        fs.Close();
-                        Debug.Log($"Type json write to {filePath} successfully");
+                        SaveLoad.Save("types", typesList, @"Assets\Resources\PokemonData\");
+                        // string data = JsonConvert.SerializeObject(typesList.ToArray());
+                        // FileStream fs;
+                        // if (File.Exists(filePath))
+                        // {
+                        //      fs = File.Create(filePath);
+                        // }
+                        // else
+                        // {
+                        //     fs = File.OpenWrite(filePath);
+                        // }
+                        //
+                        // StreamWriter sw = new StreamWriter(fs);
+                        // sw.Write(data);
+                        // sw.Flush();
+                        // sw.Close();
+                        // fs.Close();
+                        // Debug.Log($"Type json write to {filePath} successfully");
                     }
 
                     if (GUILayout.Button("Add Type"))

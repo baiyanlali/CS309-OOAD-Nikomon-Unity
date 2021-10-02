@@ -38,7 +38,7 @@ public class GlobalManager : MonoBehaviour
 
     #region 存储各种美术资源
 
-    public Dictionary<int, GameObject> Pokemons;
+    public Dictionary<int, GameObject[]> Pokemons;
 
     #endregion
 
@@ -66,11 +66,6 @@ public class GlobalManager : MonoBehaviour
 
         DontDestroyOnLoad(this);
         InitGame();
-        // Game.DataPath = Application.dataPath+@"/Data/";
-        // print(Game.DataPath);
-        // game = new Game();
-        // game.OnDoNotHaveSaveFile +=StartPanel;
-        // game.Init();
     }
 
     private void InitGame()
@@ -78,16 +73,17 @@ public class GlobalManager : MonoBehaviour
         Game.DataPath = Application.persistentDataPath;
 
         game = new Game();
-        // var types = JsonConvert.DeserializeObject<Dictionary<int, Types>>(Resources.Load<TextAsset>("PokemonData/" + Game.TypeFile)
-        //     .text);
-        // var moves = JsonConvert.DeserializeObject<Dictionary<int,MoveData>>(Resources.Load<TextAsset>("PokemonData/" + Game.MoveFile).text);
-        // var pokes = JsonConvert.DeserializeObject<Dictionary<int,PokemonData>>(Resources.Load<TextAsset>("PokemonData/" + Game.PokemonsData).text);
-        // var exps = JsonConvert.DeserializeObject<Dictionary<int,int[]>>(Resources.Load<TextAsset>("PokemonData/" + Game.ExpTableFile).text);
         var natures = new Dictionary<int, Nature>();
         natures.Add(0, new Nature(0, new float[] {0, 0, 0, 0, 0}));
+        
+        Pokemons = new Dictionary<int, GameObject[]>();
+
 
         game.OnDoNotHaveSaveFile +=StartPanel;
         game.Init(LoadTypes(),null,LoadPokemons(),LoadExperienceTable(),natures,null,LoadMoves(),null);
+        
+        
+        
     }
 
     void StartPanel()
@@ -109,12 +105,11 @@ public class GlobalManager : MonoBehaviour
     public void StartGame()
     {
         SceneManager.LoadScene(1);
-        SceneManager.sceneLoaded += OnSceneLoaded;
+        SceneManager.sceneLoaded += StartBattleFastTest;
         
     }
 
-    //TODO：目前无法实现主角控制双打情况！
-    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    void StartBattleFastTest(Scene scene, LoadSceneMode mode)
     {
         Game.trainer.party[0]=new Pokemon(Game.PokemonsData[4], "",Game.trainer, 50, 0);
         Game.trainer.party[1]=new Pokemon(Game.PokemonsData[1], "",Game.trainer, 50, 0);
@@ -215,9 +210,24 @@ public class GlobalManager : MonoBehaviour
         {
             List<PokemonData> tmp =JsonConvert.DeserializeObject<List<PokemonData>>(Resources.Load<TextAsset>("PokemonData/"+Game.PokemonFile).text);
             var PokemonsData = new Dictionary<int, PokemonData>();
+
             foreach (var t in tmp)
             {
                 PokemonsData.Add(t.ID, t);
+
+
+                GameObject obj = Resources.Load<GameObject>("Prefabs/Pokemons/" + t.ID + t.innerName);
+                if (obj == null)
+                {
+                    obj = Resources.Load<GameObject>("Prefabs/Pokemons/" + t.ID + t.innerName + "M");
+                    if (obj == null) throw new Exception($"Pokemon Prefabs Not Found:{t.ID},{t.innerName}");
+                    var obj2 = Resources.Load<GameObject>("Prefabs/Pokemons/" + t.ID + t.innerName + "F");
+                    Pokemons.Add(t.ID,new []{obj,obj2});
+                }
+                else
+                {
+                    Pokemons.Add(t.ID,new []{obj});
+                }
             }
 
             return PokemonsData;

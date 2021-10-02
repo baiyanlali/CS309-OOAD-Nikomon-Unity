@@ -49,8 +49,8 @@ namespace Editor
             SpeciesList = new List<Species>();
             levelingRate = new List<int[]>();
 
-            types = SaveLoad.Load<List<PokemonCore.Types>>("types.json");
-            moves = SaveLoad.Load<List<MoveData>>("moves.json");
+            types = SaveLoad.Load<List<PokemonCore.Types>>("types.json",@"Assets\Resources\PokemonData\");
+            moves = SaveLoad.Load<List<MoveData>>("moves.json",@"Assets\Resources\PokemonData\");
             // types = null;
         }
 
@@ -133,13 +133,13 @@ namespace Editor
                 if (GUILayout.Button("Save"))
                 {
                     PokemonDatas.Sort((o1,o2)=>o1.ID-o2.ID);
-                    SaveLoad.Save(fileName, PokemonDatas);
+                    SaveLoad.Save(fileName, PokemonDatas,@"Assets\Resources\PokemonData\");
                 }
 
                 GUILayout.Space(20);
                 if (GUILayout.Button("Load"))
                 {
-                    PokemonDatas = SaveLoad.Load<List<PokemonData>>(fileName);
+                    PokemonDatas = SaveLoad.Load<List<PokemonData>>(fileName,@"Assets\Resources\PokemonData\");
                     PokemonDatas.Sort((o1,o2)=>o1.ID-o2.ID);
                 }
 
@@ -423,13 +423,13 @@ namespace Editor
                     fileName = EditorGUILayout.TextField(fileName);
                     if (GUILayout.Button("Save"))
                     {
-                        SaveLoad.Save(fileName, SpeciesList);
+                        SaveLoad.Save(fileName, SpeciesList,@"Assets\Resources\PokemonData\");
                     }
 
                     GUILayout.Space(20);
                     if (GUILayout.Button("Load"))
                     {
-                        SpeciesList = SaveLoad.Load<List<Species>>(fileName);
+                        SpeciesList = SaveLoad.Load<List<Species>>(fileName,@"Assets\Resources\PokemonData\");
                     }
 
                     GUILayout.EndHorizontal();
@@ -506,13 +506,13 @@ namespace Editor
                     fileName = EditorGUILayout.TextField(fileName);
                     if (GUILayout.Button("Save"))
                     {
-                        SaveLoad.Save(fileName, levelingRate);
+                        SaveLoad.Save(fileName, levelingRate,@"Assets\Resources\PokemonData\");
                     }
 
                     GUILayout.Space(20);
                     if (GUILayout.Button("Load"))
                     {
-                        levelingRate = SaveLoad.Load<List<int[]>>(fileName);
+                        levelingRate = SaveLoad.Load<List<int[]>>(fileName,@"Assets\Resources\PokemonData\");
                     }
 
                     GUILayout.EndHorizontal();

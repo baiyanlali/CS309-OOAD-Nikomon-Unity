@@ -5,11 +5,11 @@ namespace Editor
 {
     public class NatureEditor : EditorWindow
     {
-        [MenuItem("MENUITEM/MENUITEMCOMMAND")]
+        [MenuItem("PokemonTools/Edit Nature")]
         private static void ShowWindow()
         {
             var window = GetWindow<NatureEditor>();
-            window.titleContent = new GUIContent("TITLE");
+            window.titleContent = new GUIContent("Nature Editor");
             window.Show();
         }
 

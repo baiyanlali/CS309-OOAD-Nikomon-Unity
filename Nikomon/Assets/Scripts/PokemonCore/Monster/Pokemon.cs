@@ -71,6 +71,8 @@ public class Pokemon : IPokemon, IEquatable<Pokemon>, IEqualityComparer<Pokemon>
 
     public Experience Exp { get; private set; }
     
+    public bool isMale { get; private set; }
+    
     public int Level
     {
         get => Exp.level;

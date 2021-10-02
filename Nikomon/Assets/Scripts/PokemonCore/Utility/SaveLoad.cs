@@ -6,10 +6,14 @@ namespace PokemonCore.Utility
     public static class SaveLoad
     {
         public static string path=>Game.DataPath ;
-        public static T Load<T>(string fileName)
+        public static T Load<T>(string fileName,string dataFilePath="")
         {
             if (!fileName.Contains(".")) fileName += @".json";
-            string filePath = path + fileName;
+            string filePath = "";
+            if (string.IsNullOrEmpty(dataFilePath))
+                filePath = path + fileName;
+            else
+                filePath = dataFilePath + fileName;
             
             
             if (!File.Exists(filePath)) return default(T);
@@ -19,10 +23,14 @@ namespace PokemonCore.Utility
             return obj;
         }
 
-        public static bool Save<T>(string fileName,T data)
+        public static bool Save<T>(string fileName,T data,string dataFilePath="")
         {
             if (!fileName.Contains(".")) fileName += ".json";
-            string filePath = path + fileName;
+            string filePath = "";
+            if (string.IsNullOrEmpty(dataFilePath))
+                filePath = path + fileName;
+            else
+                filePath = dataFilePath + fileName;
             FileStream fs;
             if (File.Exists(filePath))
             {

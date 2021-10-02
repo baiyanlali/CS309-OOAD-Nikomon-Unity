@@ -84,13 +84,13 @@ namespace Editor
             fileName = EditorGUILayout.TextField(fileName);
             if (GUILayout.Button("Save"))
             {
-                SaveLoad.Save(fileName, Effects);
+                SaveLoad.Save(fileName, Effects,@"Assets\Resources\PokemonData\");
             }
 
             GUILayout.Space(20);
             if (GUILayout.Button("Load"))
             {
-                Effects = SaveLoad.Load<List<Effect>>(fileName);
+                Effects = SaveLoad.Load<List<Effect>>(fileName,@"Assets\Resources\PokemonData\");
                 // Effects.Sort((o1, o2) => {return o1.MoveID - o2.MoveID;});
             }
 

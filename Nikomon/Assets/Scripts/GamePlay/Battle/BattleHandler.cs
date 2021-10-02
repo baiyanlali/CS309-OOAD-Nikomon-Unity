@@ -14,6 +14,7 @@ public class BattleHandler : MonoBehaviour
     public List<CombatPokemon> OpponentPokemons => battle?.opponentsPokemons;
 
     public CombatPokemon CurrentPokemon=>CurrentMyPokemonIndex>=userPokemons.Count?null:userPokemons[CurrentMyPokemonIndex];
+
     [SerializeField]
     public Battle battle;
 
@@ -46,7 +47,6 @@ public class BattleHandler : MonoBehaviour
         {
             obj = new GameObject("Global");
         }
-
         s_Instance = obj.AddComponent<BattleHandler>();
         return s_Instance;
     }
@@ -59,6 +59,7 @@ public class BattleHandler : MonoBehaviour
         battle.OnTurnBegin += OnTurnBegin;
         battle.OnPokemonChooseHandled += OnPokemonChooseHandled;
         BattleUIHandler.Instance.Init(this);
+        BattleFieldHandler.Instance.Init(AlliesPokemons,OpponentPokemons);
         OnTurnBegin();
     }
 
