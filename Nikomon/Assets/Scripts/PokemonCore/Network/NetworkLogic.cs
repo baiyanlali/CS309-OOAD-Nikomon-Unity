@@ -174,11 +174,28 @@ namespace PokemonCore.Network
                 NetworkLocal.SendToClients(str);
                 UnityEngine.Debug.Log("Server Receive Message");
                 UnityEngine.Debug.Log(str);
-                Instruction ins = JsonConvert.DeserializeObject<Instruction>(str);
-                Battle.Instance.ReceiveInstruction(ins,false);
+                foreach (var s in ParseJson(str))
+                {
+                    Instruction ins = JsonConvert.DeserializeObject<Instruction>(s);
+                    Battle.Instance.ReceiveInstruction(ins,false);
+                }
             };
             
             NetworkLocal.BuildHost(_trainersNum);
+        }
+
+        /// <summary>
+        /// 用来解决一次性传了两或多个个Json字符串，编程：{}{}的情况
+        /// </summary>
+        /// <returns></returns>
+        private static string[] ParseJson(string str)
+        {
+            string[] strs = str.Split('}');
+            for (int i = 0; i < strs.Length; i++)
+            {
+                strs[i] = strs[i] + '}';
+            }
+            return strs;
         }
 
         static void BecomeClient(IPAddress ipAddress)
@@ -188,8 +205,11 @@ namespace PokemonCore.Network
                 string str = Encoding.UTF8.GetString(data);
                 UnityEngine.Debug.Log("Client Receive Message");
                 UnityEngine.Debug.Log(str);
-                Instruction ins = JsonConvert.DeserializeObject<Instruction>(str);
-                Battle.Instance.ReceiveInstruction(ins,false);
+                foreach (var s in ParseJson(str))
+                {
+                    Instruction ins = JsonConvert.DeserializeObject<Instruction>(s);
+                    Battle.Instance.ReceiveInstruction(ins,false);
+                }
             };
             
             new Thread(NetworkLocal.StartClient).Start(ipAddress);
