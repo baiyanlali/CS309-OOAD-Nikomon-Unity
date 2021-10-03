@@ -67,6 +67,7 @@ namespace PokemonCore.Network
             //TODO: 加入对方取消链接时的处理情况
             if (usersBroadcast.Count == _trainersNum-1)
             {
+                UnityEngine.Debug.Log("Have matched, start battle");
                 int maxRandom = (from d in usersBroadcast.Values select d.randomNum).Max();
                 bool isHost = false;
                 if (maxRandom < _randomNum)
@@ -85,10 +86,12 @@ namespace PokemonCore.Network
                     isHost = false;
                     BecomeClient(arr[0]);
                 }
+                NetworkLocal.StopDetect();
+
                 System.Threading.Timer t=new Timer(new TimerCallback((o) =>
                 {
-                    NetworkLocal.StopDetect();
                     NetworkLocal.StopBroadCast();
+                    UnityEngine.Debug.Log("Stop broadcast");
                 }),
                     null,1000,Timeout.Infinite);
                 
@@ -172,7 +175,7 @@ namespace PokemonCore.Network
                 UnityEngine.Debug.Log("Server Receive Message");
                 UnityEngine.Debug.Log(str);
                 Instruction ins = JsonConvert.DeserializeObject<Instruction>(str);
-                Battle.Instance.ReceiveInstruction(ins);
+                Battle.Instance.ReceiveInstruction(ins,false);
             };
         }
 
@@ -185,7 +188,7 @@ namespace PokemonCore.Network
                 UnityEngine.Debug.Log("Client Receive Message");
                 UnityEngine.Debug.Log(str);
                 Instruction ins = JsonConvert.DeserializeObject<Instruction>(str);
-                Battle.Instance.ReceiveInstruction(ins);
+                Battle.Instance.ReceiveInstruction(ins,false);
             };
         }
         static void ServerSendInstruction(Instruction instruction)
