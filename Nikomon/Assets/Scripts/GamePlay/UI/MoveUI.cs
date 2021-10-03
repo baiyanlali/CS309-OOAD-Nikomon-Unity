@@ -25,7 +25,7 @@ public class MoveUI:MonoBehaviour
 
     private void OnClick()
     {
-        print("Click");
+        // print("Click");
         BattleUIHandler.Instance.ChooseMove(move,index);
     }
 

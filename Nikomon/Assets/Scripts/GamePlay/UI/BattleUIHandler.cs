@@ -79,7 +79,7 @@ public class BattleUIHandler : MonoBehaviour
     public void UpdateUI(BattleHandler bh)
     {
         //因为只能从main thread调用set active，所以换成这种写法
-        EventPool.Schedule(() => { BattleUI.SetActive(true);});
+        BattleUI.SetActive(true);
         int count = AlliesState.transform.childCount;
         for (int i = 0; i < count; i++)
         {
