@@ -226,24 +226,24 @@ namespace PokemonCore.Network
         }
         static void ServerSendInstruction(Instruction instruction)
         {
-            new Thread((o1)=>{
+            // new Thread((o1)=>{
                 string str = JsonConvert.SerializeObject(instruction);
                 UnityEngine.Debug.Log("Server send Instruction");
                 UnityEngine.Debug.Log(str);
                 NetworkLocal.SendToClients(str);
-            }).Start();
+            // }).Start();
             
         }
         //TODO：不知道用线程能不能解决卡顿的问题
         static void ClientSendInstruction(Instruction instruction)
         {
-            new Thread(() =>
-            {
+            // new Thread(() =>
+            // {
                 string str = JsonConvert.SerializeObject(instruction);
                 UnityEngine.Debug.Log("Client send Instruction");
                 UnityEngine.Debug.Log(str);
                 NetworkLocal.SendToServer(str);
-            }).Start();
+            // }).Start();
             
         }
         
