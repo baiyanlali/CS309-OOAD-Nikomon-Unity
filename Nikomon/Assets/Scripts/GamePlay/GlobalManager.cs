@@ -156,8 +156,7 @@ public class GlobalManager : MonoBehaviour
 
     private void OnApplicationQuit()
     {
-        NetworkLocal.StopDetect();
-        NetworkLocal.StopBroadCast();
+        NetworkLogic.PairOff();
     }
 
 

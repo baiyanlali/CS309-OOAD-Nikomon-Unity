@@ -76,6 +76,8 @@ namespace PokemonCore.Network
                     Game.Random = new Random(_randomNum);
                     isHost = true;
                     BecomeHost();
+                    UnityEngine.Debug.Log("Become Host");
+
                 }
                 else
                 {
@@ -85,6 +87,8 @@ namespace PokemonCore.Network
                     if (arr.Length != 1) throw new Exception("Error occured");
                     isHost = false;
                     BecomeClient(arr[0]);
+                    UnityEngine.Debug.Log("Become Client");
+
                 }
                 NetworkLocal.StopDetect();
 
@@ -138,12 +142,10 @@ namespace PokemonCore.Network
             if (isHost)
             {
                 Battle.Instance.OnUserChooseInstruction += ServerSendInstruction;
-                UnityEngine.Debug.Log("Become Host");
             }
             else
             {
                 Battle.Instance.OnUserChooseInstruction += ClientSendInstruction;
-                UnityEngine.Debug.Log("Become Client");
             }
         }
         
