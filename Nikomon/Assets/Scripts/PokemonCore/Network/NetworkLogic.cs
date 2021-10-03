@@ -243,7 +243,7 @@ namespace PokemonCore.Network
                 UnityEngine.Debug.Log("Client send Instruction");
                 UnityEngine.Debug.Log(str);
                 NetworkLocal.SendToServer(str);
-            });
+            }).Start();
             
         }
         
