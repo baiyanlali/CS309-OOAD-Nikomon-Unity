@@ -153,10 +153,14 @@ public class GlobalManager : MonoBehaviour
     //     trainers.Add(oppo);
     //     StartBattle(null,trainers,true);
     // }
-    
-    
-    
-    
+
+    private void OnApplicationQuit()
+    {
+        NetworkLocal.StopDetect();
+        NetworkLocal.StopBroadCast();
+    }
+
+
     #region LoadDataToDictionary
 
         public Dictionary<int,int[]> LoadExperienceTable()
