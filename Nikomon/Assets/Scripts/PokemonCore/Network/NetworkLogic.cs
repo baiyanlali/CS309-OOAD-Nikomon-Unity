@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading;
 using Newtonsoft.Json;
 using PokemonCore.Combat;
+using PokemonCore.Utility;
 using UnityEditor;
 
 namespace PokemonCore.Network
@@ -163,6 +164,28 @@ namespace PokemonCore.Network
             if(address!=null)
                 usersBroadcast.Remove(address);
         }
+        
+        
+        /// <summary>
+        /// 用来解决一次性传了两或多个个Json字符串，编程：{}{}的情况
+        /// </summary>
+        /// <returns></returns>
+        private static string[] ParseJson(string str)
+        {
+            var strs = str.Split('}').ToList();
+            for (int i = 0; i < strs.Count; i++)
+            {
+                if (string.IsNullOrEmpty(strs[i]))
+                {
+                    strs.RemoveAt(i);
+                    continue;
+                }
+                strs[i] = strs[i] + '}';
+            }
+            UnityEngine.Debug.Log("Parse Json: "+strs.ConverToString());
+            return strs.ToArray();
+        }
+        
         /// <summary>
         /// 玩家无法通过游戏界面选择自己是Host还是Client,所有的配对都通过UDP广播来完成，然后由第一个UDP广播的作为Host
         /// </summary>
@@ -173,9 +196,9 @@ namespace PokemonCore.Network
                 string str = Encoding.UTF8.GetString(data);
                 NetworkLocal.SendToClients(str);
                 UnityEngine.Debug.Log("Server Receive Message");
-                UnityEngine.Debug.Log(str);
                 foreach (var s in ParseJson(str))
                 {
+                    UnityEngine.Debug.Log(s);
                     Instruction ins = JsonConvert.DeserializeObject<Instruction>(s);
                     Battle.Instance.ReceiveInstruction(ins,false);
                 }
@@ -184,19 +207,7 @@ namespace PokemonCore.Network
             NetworkLocal.BuildHost(_trainersNum);
         }
 
-        /// <summary>
-        /// 用来解决一次性传了两或多个个Json字符串，编程：{}{}的情况
-        /// </summary>
-        /// <returns></returns>
-        private static string[] ParseJson(string str)
-        {
-            string[] strs = str.Split('}');
-            for (int i = 0; i < strs.Length; i++)
-            {
-                strs[i] = strs[i] + '}';
-            }
-            return strs;
-        }
+        
 
         static void BecomeClient(IPAddress ipAddress)
         {
@@ -204,9 +215,9 @@ namespace PokemonCore.Network
             {
                 string str = Encoding.UTF8.GetString(data);
                 UnityEngine.Debug.Log("Client Receive Message");
-                UnityEngine.Debug.Log(str);
                 foreach (var s in ParseJson(str))
                 {
+                    UnityEngine.Debug.Log(s);
                     Instruction ins = JsonConvert.DeserializeObject<Instruction>(s);
                     Battle.Instance.ReceiveInstruction(ins,false);
                 }
