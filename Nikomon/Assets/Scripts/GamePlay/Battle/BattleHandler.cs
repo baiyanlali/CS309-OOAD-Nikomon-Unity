@@ -88,12 +88,11 @@ public class BattleHandler : MonoBehaviour
     {
         if (CurrentMyPokemonIndex + 1 == userPokemons.Count)
         {
-            battle.ReceiveInstruction(instruction);//很多时候用了这个命令就直接进入到下一个TurnEnd和TurnBegin了，所以要提前考虑
-
+            battle.ReceiveInstruction(instruction,true);//很多时候用了这个命令就直接进入到下一个TurnEnd和TurnBegin了，所以要提前考虑
         }
         else
         {
-            battle.ReceiveInstruction(instruction);
+            battle.ReceiveInstruction(instruction,true);
             CurrentMyPokemonIndex++;
 
             BattleUIHandler.Instance.ShowMoves();

@@ -8,11 +8,11 @@ using PokemonCore.Monster.Data;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using UnityEngine.Windows;
 using Debug = UnityEngine.Debug;
 using Types = PokemonCore.Types;
 
 using Newtonsoft.Json;
+using PokemonCore.Network;
 
 
 /// <summary>
@@ -81,9 +81,6 @@ public class GlobalManager : MonoBehaviour
 
         game.OnDoNotHaveSaveFile +=StartPanel;
         game.Init(LoadTypes(),null,LoadPokemons(),LoadExperienceTable(),natures,null,LoadMoves(),null);
-        
-        
-        
     }
 
     void StartPanel()
@@ -106,7 +103,22 @@ public class GlobalManager : MonoBehaviour
     {
         SceneManager.LoadScene(1);
         SceneManager.sceneLoaded += StartBattleFastTest;
-        
+    }
+
+    public void StartNetworkBattle(int trainersNum=2,int pokemonPerTrainer=1,string password="")
+    {
+        // NetworkLogic.StartLocalNetwork();
+        NetworkLogic.OnStartBattle = StartBattle;
+        NetworkLogic.PariOnBattle(trainersNum,pokemonPerTrainer,password);
+    }
+
+    public void StartFastNetworkBattle()
+    {
+        SceneManager.LoadScene(1);
+        SceneManager.sceneLoaded += (a,b) =>
+        {
+            StartNetworkBattle();
+        };
     }
 
     void StartBattleFastTest(Scene scene, LoadSceneMode mode)
@@ -118,6 +130,7 @@ public class GlobalManager : MonoBehaviour
         trainer.party[1] = new Pokemon(Game.PokemonsData[7], "",trainer, 50, 0);
         List<Trainer> trainers = new List<Trainer>();
         trainers.Add(trainer);
+        game.SaveData();
         StartBattle(null,trainers,true,2);
     }
 
@@ -127,12 +140,19 @@ public class GlobalManager : MonoBehaviour
         BattleHandler.Instance.StartBattle(Game.battle);
     }
 
-    public void StartBattle(Trainer oppo)
+    public void StartBattle(List<Trainer> allies, List<Trainer> oppos,List<Trainer> AI, List<Trainer> userInternet, bool isHost,
+        int pokemonPerTrainer)
     {
-        List<Trainer> trainers = new List<Trainer>();
-        trainers.Add(oppo);
-        StartBattle(null,trainers,true);
+        game.StartBattle(allies,oppos,AI,userInternet,isHost,pokemonPerTrainer);
+        BattleHandler.Instance.StartBattle(Game.battle);
     }
+
+    // public void StartBattle(Trainer oppo)
+    // {
+    //     List<Trainer> trainers = new List<Trainer>();
+    //     trainers.Add(oppo);
+    //     StartBattle(null,trainers,true);
+    // }
     
     
     

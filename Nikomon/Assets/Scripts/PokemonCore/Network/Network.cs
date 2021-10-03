@@ -4,13 +4,80 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
+using Newtonsoft.Json;
+using PokemonCore.Combat;
 using PokemonCore.Utility;
 
 namespace PokemonCore.Network
 {
 
-    public class NetworkData
+    public enum BroadcastType
     {
+        SwitchPokemon,
+        SearchForBattle
+    }
+    public class NetworkBroadcastData
+    {
+        public BroadcastType broadCastType;
+        public string password;
+        public Pokemon Pokemon;
+
+        public Trainer Trainer;
+        public int randomNum;
+        public int TrainersNum;
+        public int PokemonPerTrainer;
+
+        [JsonConstructor]
+        public NetworkBroadcastData(
+            BroadcastType broadcastType,
+            string password,
+            Pokemon pokemon,
+            Trainer trainer,
+            int randomNum,
+            int trainersNum,
+            int pokemonPerTrainer
+            )
+        {
+            this.broadCastType = broadcastType;
+            this.password = password;
+            this.Pokemon = pokemon;
+            this.Trainer = trainer;
+            this.randomNum = randomNum;
+            this.TrainersNum = trainersNum;
+            this.PokemonPerTrainer = pokemonPerTrainer;
+        }
+
+        public NetworkBroadcastData(
+            BroadcastType type,
+            int randomNum,
+            string password,
+            Pokemon pokemon=null,
+            Trainer trainer=null
+            )
+        {
+            this.broadCastType = type;
+            this.password = password;
+            this.Pokemon = pokemon;
+            this.randomNum = randomNum;
+            this.Trainer = trainer;
+        }
+
+        public NetworkBroadcastData(
+            BroadcastType type,
+            int randomNum,
+            string password,
+            Trainer trainer,
+            int TrainersNum,
+            int pokemonPerTrainer
+        )
+        {
+            this.broadCastType = type;
+            this.randomNum = randomNum;
+            this.password = password;
+            this.Trainer = trainer;
+            this.TrainersNum = TrainersNum;
+            this.PokemonPerTrainer = pokemonPerTrainer;
+        }
         
     }
     
@@ -45,14 +112,14 @@ namespace PokemonCore.Network
         /// <summary>
         /// 用于广播消息
         /// </summary>
-        public static void StartToBroadCast(string name)
+        public static void StartToBroadCast(NetworkBroadcastData data)
         {
             if (UDPsend == null)
                 UDPsend = new UdpClient(new IPEndPoint(IPAddress.Parse(GetAddressIP()), BroadPort));
             //用于广播
             _BroadcastThread = new Thread(BroadCast);
             _BroadcastThread.IsBackground = true;
-            _BroadcastThread.Start(name);
+            _BroadcastThread.Start(data);
             //用于接受广播信息
         }
 
@@ -62,10 +129,9 @@ namespace PokemonCore.Network
         /// </summary>
         private static void BroadCast(object password)
         {
-            string na = password as string;
-            byte[] buf = Encoding.Default.GetBytes($"Trainer: {na}");
+            NetworkBroadcastData na = password as NetworkBroadcastData;
+            byte[] buf = Encoding.Default.GetBytes(JsonConvert.SerializeObject(na));
             IPEndPoint endPoint = new IPEndPoint(IPAddress.Parse("255.255.255.255"), BroadPort);
-            // UnityEngine.Debug.Log($"Broad From IP:{UDPsend.Client}");
             while (true)
             {
                 UnityEngine.Debug.Log("I'm sending message");
@@ -205,12 +271,21 @@ namespace PokemonCore.Network
 
         #region 当作client时用
 
-        public static void StartClient(IPEndPoint ipEndPoint)
+        // public static void StartClient(IPEndPoint ipEndPoint)
+        // {
+        //     ClientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+        //     ClientSocket.Connect(ipEndPoint);
+        //     new Thread(ReceiveFromServer).Start();
+        // }
+        
+        public static void StartClient(IPAddress ipAddress)
         {
             ClientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            ClientSocket.Connect(ipEndPoint);
+            ClientSocket.Connect(new IPEndPoint(ipAddress,ServerPort));
             new Thread(ReceiveFromServer).Start();
         }
+        
+        
 
         public static void SendToServer(string strs)
         {

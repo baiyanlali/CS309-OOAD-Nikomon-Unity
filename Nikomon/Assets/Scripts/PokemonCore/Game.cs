@@ -85,23 +85,23 @@ namespace PokemonCore
             SaveLoad.Save(SaveFile, trainer);
         }
 
-        [Obsolete]
-        public void Init()
-        {
-            Random = new Random();
-            LoadTypes();
-            LoadMoves();
-            LoadPokemons();
-            LoadExperienceTable();
-            NatureData = new Dictionary<int, Nature>();
-            NatureData.Add(0, new Nature(0, new float[] {0, 0, 0, 0, 0}));
-            if (HaveSave)
-                trainer = SaveLoad.Load<Trainer>(SaveFile);
-            else
-                OnDoNotHaveSaveFile?.Invoke();
-
-            // PC pc = new PC();
-        }
+        // [Obsolete]
+        // public void Init()
+        // {
+        //     Random = new Random();
+        //     LoadTypes();
+        //     LoadMoves();
+        //     LoadPokemons();
+        //     LoadExperienceTable();
+        //     NatureData = new Dictionary<int, Nature>();
+        //     NatureData.Add(0, new Nature(0, new float[] {0, 0, 0, 0, 0}));
+        //     if (HaveSave)
+        //         trainer = SaveLoad.Load<Trainer>(SaveFile);
+        //     else
+        //         OnDoNotHaveSaveFile?.Invoke();
+        //
+        //     // PC pc = new PC();
+        // }
 
 
         public void Init(
@@ -162,6 +162,15 @@ namespace PokemonCore
             battleReporter = new BattleReporter(battle);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="allies">这里的ally是没有trainer的！</param>
+        /// <param name="opponent"></param>
+        /// <param name="AI"></param>
+        /// <param name="UserInternet"></param>
+        /// <param name="isHost"></param>
+        /// <param name="pokemonPerTrainer"></param>
         public void StartBattle(List<Trainer> allies, List<Trainer> opponent, List<Trainer> AI,
             List<Trainer> UserInternet = null, bool isHost = true, int pokemonPerTrainer = 1)
         {
@@ -195,76 +204,76 @@ namespace PokemonCore
 
         #region LoadDataToDictionary
 
-        public void LoadExperienceTable(LoadDataType type = LoadDataType.Json)
-        {
-            List<int[]> tmp = SaveLoad.Load<List<int[]>>(ExpTableFile);
-            ExperienceTable = new Dictionary<int, int[]>();
-            for (int i = 0; i < tmp.Count; i++)
-            {
-                ExperienceTable.Add(i, tmp[i]);
-            }
-        }
-
-        public void LoadTypes(LoadDataType type = LoadDataType.Json)
-        {
-            List<Types> tmp = SaveLoad.Load<List<Types>>(TypeFile);
-            TypesMap = new Dictionary<int, Types>();
-            foreach (var t in tmp)
-            {
-                TypesMap.Add(t.ID, t);
-            }
-        }
-
-        public void LoadAbilities(LoadDataType type = LoadDataType.Json)
-        {
-            if (type == LoadDataType.Json)
-            {
-                // using FileStream openStream = File.OpenRead(DataPath+"Abilities.json");
-                // AbilitiesData = await JsonSerializer.DeserializeAsync<Dictionary<int,Ability>>(openStream);
-            }
-        }
-
-        public void LoadNature(LoadDataType type = LoadDataType.Json)
-        {
-            if (type == LoadDataType.Json)
-            {
-            }
-        }
-
-        public void LoadEffect(LoadDataType type = LoadDataType.Json)
-        {
-            if (type == LoadDataType.Json)
-            {
-            }
-        }
-
-        public void LoadMoves(LoadDataType type = LoadDataType.Json)
-        {
-            List<MoveData> tmp = SaveLoad.Load<List<MoveData>>(MoveFile);
-            MovesData = new Dictionary<int, MoveData>();
-            foreach (var t in tmp)
-            {
-                MovesData.Add(t.MoveID, t);
-            }
-        }
-
-        public void LoadItems(LoadDataType type = LoadDataType.Json)
-        {
-            if (type == LoadDataType.Json)
-            {
-            }
-        }
-
-
-        public void LoadPokemons(LoadDataType type = LoadDataType.Json)
-        {
-            List<PokemonData> tmp = SaveLoad.Load<List<PokemonData>>(PokemonFile);
-            PokemonsData = new Dictionary<int, PokemonData>();
-            foreach (var t in tmp)
-            {
-                PokemonsData.Add(t.ID, t);
-            }
-        }
+        // public void LoadExperienceTable(LoadDataType type = LoadDataType.Json)
+        // {
+        //     List<int[]> tmp = SaveLoad.Load<List<int[]>>(ExpTableFile);
+        //     ExperienceTable = new Dictionary<int, int[]>();
+        //     for (int i = 0; i < tmp.Count; i++)
+        //     {
+        //         ExperienceTable.Add(i, tmp[i]);
+        //     }
+        // }
+        //
+        // public void LoadTypes(LoadDataType type = LoadDataType.Json)
+        // {
+        //     List<Types> tmp = SaveLoad.Load<List<Types>>(TypeFile);
+        //     TypesMap = new Dictionary<int, Types>();
+        //     foreach (var t in tmp)
+        //     {
+        //         TypesMap.Add(t.ID, t);
+        //     }
+        // }
+        //
+        // public void LoadAbilities(LoadDataType type = LoadDataType.Json)
+        // {
+        //     if (type == LoadDataType.Json)
+        //     {
+        //         // using FileStream openStream = File.OpenRead(DataPath+"Abilities.json");
+        //         // AbilitiesData = await JsonSerializer.DeserializeAsync<Dictionary<int,Ability>>(openStream);
+        //     }
+        // }
+        //
+        // public void LoadNature(LoadDataType type = LoadDataType.Json)
+        // {
+        //     if (type == LoadDataType.Json)
+        //     {
+        //     }
+        // }
+        //
+        // public void LoadEffect(LoadDataType type = LoadDataType.Json)
+        // {
+        //     if (type == LoadDataType.Json)
+        //     {
+        //     }
+        // }
+        //
+        // public void LoadMoves(LoadDataType type = LoadDataType.Json)
+        // {
+        //     List<MoveData> tmp = SaveLoad.Load<List<MoveData>>(MoveFile);
+        //     MovesData = new Dictionary<int, MoveData>();
+        //     foreach (var t in tmp)
+        //     {
+        //         MovesData.Add(t.MoveID, t);
+        //     }
+        // }
+        //
+        // public void LoadItems(LoadDataType type = LoadDataType.Json)
+        // {
+        //     if (type == LoadDataType.Json)
+        //     {
+        //     }
+        // }
+        //
+        //
+        // public void LoadPokemons(LoadDataType type = LoadDataType.Json)
+        // {
+        //     List<PokemonData> tmp = SaveLoad.Load<List<PokemonData>>(PokemonFile);
+        //     PokemonsData = new Dictionary<int, PokemonData>();
+        //     foreach (var t in tmp)
+        //     {
+        //         PokemonsData.Add(t.ID, t);
+        //     }
+        // }
 
         #endregion
     }

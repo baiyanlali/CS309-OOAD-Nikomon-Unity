@@ -46,19 +46,19 @@ namespace ConsoleDebug
         
 
 
-        public void StartNetworkTest()
-        {
-            Debug.Log("Start to use network");
-            
-            NetworkLogic.StartLocalNetwork("WuYifan");
-
-            StartCoroutine(Network());
-
-            Application.quitting += () =>
-            {
-                NetworkLogic.CloseLocalNetwork();
-            };
-        }
+        // public void StartNetworkTest()
+        // {
+        //     Debug.Log("Start to use network");
+        //     
+        //     NetworkLogic.StartLocalNetwork();
+        //
+        //     StartCoroutine(Network());
+        //
+        //     Application.quitting += () =>
+        //     {
+        //         NetworkLogic.CloseLocalNetwork();
+        //     };
+        // }
 
         IEnumerator Network()
         {

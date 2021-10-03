@@ -8,11 +8,10 @@ using PokemonCore.Combat;
 using PokemonCore.Monster;
 using PokemonCore.Monster.Data;
 
+[JsonObject(MemberSerialization.OptOut)]
 public class Pokemon : IPokemon, IEquatable<Pokemon>, IEqualityComparer<Pokemon>
 {
-    public int TotalHp => _base.BaseStatsHP == 1
-        ? 1 + this.EV[0] / 4
-        : (2 * _base.BaseStatsHP + this.IV[0] + this.EV[0] / 4) * this.Level / 100 + this.Level + 10;
+    
     
     [JsonIgnore]
     public PokemonData _base { get; private set; }
@@ -22,30 +21,37 @@ public class Pokemon : IPokemon, IEquatable<Pokemon>, IEqualityComparer<Pokemon>
         get => _base.ID;
         set
         {
-            ID = value;
-            _base = Game.PokemonsData[ID];
+            _base = Game.PokemonsData[value];
         }
     }
+
+    [JsonIgnore]
+    public int TotalHp => _base.BaseStatsHP == 1
+        ? 1 + this.EV[0] / 4
+        : (2 * _base.BaseStatsHP + this.IV[0] + this.EV[0] / 4) * this.Level / 100 + this.Level + 10;
     public int HP { get; set; }
     public int NatureID { get; private set; }
-
+    [JsonIgnore]
     public int ATK =>
         (int) Math.Floor(
             (double) ((2 * this._base.BaseStatsATK + this.IV[1] + (int) this.EV[1] / 4) * this.Level / 100 + 5) *
             (double) Game.NatureData[NatureID].ATK);
-
+    [JsonIgnore]
     public int DEF =>
         (int) Math.Floor(
             (double) ((2 * this._base.BaseStatsDEF + this.IV[2] + (int) this.EV[2] / 4) * this.Level / 100 + 5) *
             (double) Game.NatureData[NatureID].DEF);
+    [JsonIgnore]
     public int SPA =>
         (int) Math.Floor(
             (double) ((2 * this._base.BaseStatsSPA + this.IV[3] + (int) this.EV[3] / 4) * this.Level / 100 + 5) *
             (double) Game.NatureData[NatureID].SPA);
+    [JsonIgnore]
     public int SPD =>
         (int) Math.Floor(
             (double) ((2 * this._base.BaseStatsSPD + this.IV[4] + (int) this.EV[4] / 4) * this.Level / 100 + 5) *
             (double) Game.NatureData[NatureID].SPD);
+    [JsonIgnore]
     public int SPE =>
         (int) Math.Floor(
             (double) ((2 * this._base.BaseStatsSPE + this.IV[5] + (int) this.EV[5] / 4) * this.Level / 100 + 5) *
@@ -58,6 +64,7 @@ public class Pokemon : IPokemon, IEquatable<Pokemon>, IEqualityComparer<Pokemon>
     public string Name { get; set; }
     public int ballUsed { get; set; }
     public int StatusID { get; }
+    [JsonIgnore]
     public int SpeciesID => _base.Species;
     public int Item { get; set; }
     public int ItemInitial { get; set; }
@@ -73,18 +80,72 @@ public class Pokemon : IPokemon, IEquatable<Pokemon>, IEqualityComparer<Pokemon>
     
     public bool isMale { get; private set; }
     
+    [JsonIgnore]
     public int Level
     {
         get => Exp.level;
     }
 
+    [JsonIgnore]
     public int GrowthRate => this._base.GrowthRate;
+    [JsonConstructor]
+    public Pokemon(
+        int id,
+        int HP,
+        int NatureID,
+        int[] IV,
+        byte[] EV,
+        int FriendShip,
+        Move[] moves,
+        int TrainerID,
+        string name,
+        int ballUsed,
+        int statusID,
+        int Item,
+        int itemInitial,
+        ObtainMethod obtainMode,
+        bool isNicknamed,
+        int? Type1,
+        int? Type2,
+        string obtainMap,
+        int obtainLevel,
+        int abilityID,
+        Experience exp,
+        bool isMale
+    )
+    {
+        this.ID=id;
+        this.HP = HP;
+        this.NatureID = NatureID;
+        this.IV = IV;
+        this.EV = EV;
+        this.FriendShip = FriendShip;
+        this.moves = moves;
+        this.TrainerID = TrainerID;
+        this.Name = name;
+        this.ballUsed = ballUsed;
+        this.StatusID = statusID;
+        this.Item = Item;
+        this.ItemInitial = itemInitial;
+        this.ObtainMode = obtainMode;
+        this.IsNicknamed = isNicknamed;
 
+        this.Type1 = Type1;
+        this.Type2 = Type2;
+        this.ObtainMap = obtainMap;
+        this.ObtainLevel = obtainLevel;
+        this.AbilityID = abilityID;
+
+        Exp = exp;
+
+        this.isMale = isMale;
+    }
+    
     public Pokemon(PokemonData pd,string nickName="",Trainer trainer=null,int initLevel=1,int ballUsed=0,string obtainMap="NoWhere",int statusID=0)
     {
         _base = pd;
         
-        Exp = new Experience(_base.GrowthRate,Game.ExperienceTable[_base.GrowthRate][initLevel-1]);
+        Exp = new Experience(_base.GrowthRate,Game.ExperienceTable[_base.GrowthRate][initLevel-1],true);
         
         Type1 = pd.type1;
         Type2 = pd.type2;

@@ -1,18 +1,20 @@
 ﻿
 using System;
 using PokemonCore.Saving;
+using Newtonsoft.Json;
 
 namespace PokemonCore.Monster.Data
 {
     public class Experience
     {
         public int Total { get; private set; }
+        [JsonIgnore]
         public int Current => this.Total - Experience.GetExperience(levelingRate, level);
-
+        [JsonIgnore]
         public byte level => Experience.GetLevelFromExperience(levelingRate, Total);
-
+        [JsonIgnore]
         public int NextLevelExp => Experience.GetExperience(levelingRate, level + 1);
-
+        [JsonIgnore]
         public int PointsNeeded => NextLevelExp - Total;
         
         public int levelingRate;
@@ -52,12 +54,20 @@ namespace PokemonCore.Monster.Data
             return 0;
         }
 
-        public Experience(int rate,int initialValue=0)
+        public Experience(int rate,int initialValue,bool isTrue)
         {
             this.levelingRate = rate;
             Total = initialValue;
         }
+
         
+        [JsonConstructor]
+        public Experience(int levelingRate,int total)
+        {
+            this.levelingRate = levelingRate;
+            this.Total = total;
+        }
+
 
     }
 }

@@ -21,7 +21,7 @@ public class BattleFieldHandler : MonoBehaviour
         {
             if (sInstance==null)
             {
-                sInstance = GameObject.FindObjectOfType<BattleFieldHandler>();
+                sInstance = FindObjectOfType<BattleFieldHandler>();
             }
 
             if (sInstance == null)

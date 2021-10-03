@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Text;
 using PokemonCore.Combat.Interface;
 using PokemonCore.Utility;
+using Newtonsoft.Json;
 using UnityEngine.Serialization;
 
 namespace PokemonCore.Combat
@@ -52,7 +53,7 @@ namespace PokemonCore.Combat
         public int ID;
         public List<int> target;
 
-
+        [JsonConstructor]
         public Instruction(int combatPokemonID, Command command, int id, List<int> target)
         {
             this.CombatPokemonID = combatPokemonID;
@@ -119,6 +120,7 @@ namespace PokemonCore.Combat
         /// 比如说宝可梦这回合跳过，就会调用这个方法，参数是宝可梦的Combat ID
         /// </summary>
         public Action<int> OnPokemonChooseHandled;
+        public Action<Instruction> OnUserChooseInstruction;
 
         #endregion
 
@@ -267,7 +269,7 @@ namespace PokemonCore.Combat
             foreach (var ins in inss.OrEmptyIfNull())
             {
                 OnPokemonChooseHandled?.Invoke(ins.CombatPokemonID);
-                ReceiveInstruction(ins);
+                ReceiveInstruction(ins,true);
             }
         }
 
@@ -316,12 +318,16 @@ namespace PokemonCore.Combat
 
 
         //TODO: 目前按照接受收到的Instruction数量来判断是否进入下一个阶段，不是很合理
-        public bool ReceiveInstruction(Instruction ins)
+        public bool ReceiveInstruction(Instruction ins,bool fromUser=false)
         {
             //判断有没有重复输入的
             if ((from instru in Instructions where ins.CombatPokemonID == instru.CombatPokemonID select instru)
                 .Count() != 0) return false;
 
+            if (fromUser)
+            {
+                OnUserChooseInstruction?.Invoke(ins);
+            }
             Instructions.Add(ins);
 
             switch (ins.command)

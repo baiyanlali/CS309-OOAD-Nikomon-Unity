@@ -17,6 +17,17 @@ namespace PokemonCore.Combat
 
         public int pokedexNums;
 
+        [JsonConstructor]
+        public Trainer(string name, int id, int money, Pokemon[] party, bool isMale, int pokedexNums)
+        {
+            this.name = name;
+            this.id = id;
+            this.money = money;
+            this.party = party;
+            this.isMale = isMale;
+            this.pokedexNums = pokedexNums;
+        }
+        
         public Trainer(string name,bool isMale)
         {
             this.name = name;
@@ -27,12 +38,7 @@ namespace PokemonCore.Combat
             this.party = new Pokemon[Game.MaxPartyNums];
             pokedexNums = 0;
         }
-
-        public int Money
-        {
-            get => this.money;
-            set => this.money = Math.Max(value, 0);
-        }
+        
         [JsonIgnore]
         public int pokemonCount
         {
