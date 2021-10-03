@@ -47,7 +47,7 @@ public class BattleUIHandler : MonoBehaviour
 
     public void Init(BattleHandler bh)
     {
-        // s_Instance = this;
+        s_Instance = this;
         battleHandler = bh;
         List<CombatPokemon> allies = bh.AlliesPokemons;
         List<CombatPokemon> opponents = bh.OpponentPokemons;
