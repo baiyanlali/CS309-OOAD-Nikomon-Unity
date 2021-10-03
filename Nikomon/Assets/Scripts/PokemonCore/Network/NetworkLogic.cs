@@ -10,6 +10,7 @@ using Newtonsoft.Json;
 using PokemonCore.Combat;
 using PokemonCore.Utility;
 using UnityEditor;
+using UnityEngine.UI;
 
 namespace PokemonCore.Network
 {
@@ -172,14 +173,16 @@ namespace PokemonCore.Network
         /// <returns></returns>
         private static string[] ParseJson(string str)
         {
-            var strs = str.Split('}').ToList();
-            strs.RemoveAt(strs.Count-1);
-            for (int i = 0; i < strs.Count; i++)
-            {
-                strs[i] = strs[i] + '}';
-            }
-            UnityEngine.Debug.Log("Parse Json: "+strs.ConverToString());
-            return strs.ToArray();
+            //TODO:解决一次性传两个json的问题
+            // var strs = str.Split('}').ToList();
+            // strs.RemoveAt(strs.Count-1);
+            // for (int i = 0; i < strs.Count; i++)
+            // {
+            //     strs[i] = strs[i] + '}';
+            // }
+            // UnityEngine.Debug.Log("Parse Json: "+strs.ConverToString());
+            // return strs.ToArray();
+            return new[] {str};
         }
         
         /// <summary>
@@ -223,17 +226,25 @@ namespace PokemonCore.Network
         }
         static void ServerSendInstruction(Instruction instruction)
         {
-            string str = JsonConvert.SerializeObject(instruction);
-            UnityEngine.Debug.Log("Server send Instruction");
-            UnityEngine.Debug.Log(str);
-            NetworkLocal.SendToClients(str);
+            new Thread((o1)=>{
+                string str = JsonConvert.SerializeObject(instruction);
+                UnityEngine.Debug.Log("Server send Instruction");
+                UnityEngine.Debug.Log(str);
+                NetworkLocal.SendToClients(str);
+            }).Start();
+            
         }
+        //TODO：不知道用线程能不能解决卡顿的问题
         static void ClientSendInstruction(Instruction instruction)
         {
-            string str = JsonConvert.SerializeObject(instruction);
-            UnityEngine.Debug.Log("Client send Instruction");
-            UnityEngine.Debug.Log(str);
-            NetworkLocal.SendToServer(str);
+            new Thread(() =>
+            {
+                string str = JsonConvert.SerializeObject(instruction);
+                UnityEngine.Debug.Log("Client send Instruction");
+                UnityEngine.Debug.Log(str);
+                NetworkLocal.SendToServer(str);
+            });
+            
         }
         
 

@@ -39,6 +39,11 @@ public class BattleHandler : MonoBehaviour
         {
             Destroy(this.gameObject);
         }
+
+        if (s_Instance == null)
+        {
+            s_Instance = this;
+        }
     }
 
     private static BattleHandler CreateBattleHandler()
