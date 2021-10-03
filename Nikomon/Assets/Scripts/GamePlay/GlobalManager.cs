@@ -109,7 +109,7 @@ public class GlobalManager : MonoBehaviour
     {
         // NetworkLogic.StartLocalNetwork();
         NetworkLogic.OnStartBattle = StartBattle;
-        NetworkLogic.PariOnBattle(trainersNum,pokemonPerTrainer,password);
+        NetworkLogic.PairOnBattle(trainersNum,pokemonPerTrainer,password);
     }
 
     public void StartFastNetworkBattle()

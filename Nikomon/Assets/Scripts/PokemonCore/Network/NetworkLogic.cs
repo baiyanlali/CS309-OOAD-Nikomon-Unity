@@ -20,7 +20,7 @@ namespace PokemonCore.Network
         public static float TimeToFlush = 5;
         public static Dictionary<IPAddress,NetworkBroadcastData> usersBroadcast=new Dictionary<IPAddress, NetworkBroadcastData>();
         
-        public static void PariOnBattle(int trainersNum=2,int pokemonsPerTrainer=1,string password="")
+        public static void PairOnBattle(int trainersNum=2,int pokemonsPerTrainer=1,string password="")
         {
             _password = password;
             _broadcastType = BroadcastType.SearchForBattle;
@@ -168,9 +168,7 @@ namespace PokemonCore.Network
         /// </summary>
         static void BecomeHost()
         {
-            NetworkLocal.BuildHost();
-
-            NetworkLocal.OnServerReceiveMessage += (data) =>
+            NetworkLocal.OnServerReceiveMessage = (data) =>
             {
                 string str = Encoding.UTF8.GetString(data);
                 NetworkLocal.SendToClients(str);
@@ -179,11 +177,13 @@ namespace PokemonCore.Network
                 Instruction ins = JsonConvert.DeserializeObject<Instruction>(str);
                 Battle.Instance.ReceiveInstruction(ins,false);
             };
+            
+            NetworkLocal.BuildHost(_trainersNum);
         }
 
         static void BecomeClient(IPAddress ipAddress)
         {
-            NetworkLocal.OnClientReceiveMessage += (data) =>
+            NetworkLocal.OnClientReceiveMessage = (data) =>
             {
                 string str = Encoding.UTF8.GetString(data);
                 UnityEngine.Debug.Log("Client Receive Message");
@@ -193,7 +193,6 @@ namespace PokemonCore.Network
             };
             
             new Thread(NetworkLocal.StartClient).Start(ipAddress);
-
         }
         static void ServerSendInstruction(Instruction instruction)
         {

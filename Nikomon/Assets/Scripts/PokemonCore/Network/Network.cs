@@ -209,8 +209,10 @@ namespace PokemonCore.Network
         {
             while (currentPlayerNum < maxPlayers)
             {
+                UnityEngine.Debug.Log($"Start to listen: {currentPlayerNum}/{maxPlayers}");
                 Socket client = ServerSocket.Accept();
                 currentPlayerNum++;
+                UnityEngine.Debug.Log($"Listened successfully: {currentPlayerNum}/{maxPlayers}");
                 Clients.Add(client);
                 Thread receiveThread = new Thread(ReceiveMessageFromClient);
                 receiveThread.Start(client);
@@ -275,6 +277,7 @@ namespace PokemonCore.Network
         
         public static void StartClient(object obj)
         {
+            Thread.Sleep(100);
             IPAddress ipAddress=obj as IPAddress;
             ClientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             UnityEngine.Debug.Log("Start to connect to the host.");
