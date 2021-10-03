@@ -196,6 +196,7 @@ namespace PokemonCore.Network
         {
             maxPlayers = players;
             ServerSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            UnityEngine.Debug.Log($"{GetAddressIP()},{ServerPort},listen num : {maxPlayers-1}");
             ServerSocket.Bind(new IPEndPoint(IPAddress.Parse(GetAddressIP()), ServerPort));
             ServerSocket.Listen(maxPlayers - 1);
             Clients = new List<Socket>();
@@ -280,7 +281,7 @@ namespace PokemonCore.Network
             Thread.Sleep(100);
             IPAddress ipAddress=obj as IPAddress;
             ClientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            UnityEngine.Debug.Log("Start to connect to the host.");
+            UnityEngine.Debug.Log($"Start to connect to the host.{ipAddress},{ServerPort}");
             ClientSocket.Connect(new IPEndPoint(ipAddress,ServerPort));
             UnityEngine.Debug.Log("Connect to the host successfully!");
             new Thread(ReceiveFromServer).Start();
