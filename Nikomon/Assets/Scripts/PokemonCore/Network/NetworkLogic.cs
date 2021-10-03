@@ -173,13 +173,9 @@ namespace PokemonCore.Network
         private static string[] ParseJson(string str)
         {
             var strs = str.Split('}').ToList();
+            strs.RemoveAt(strs.Count-1);
             for (int i = 0; i < strs.Count; i++)
             {
-                if (string.IsNullOrEmpty(strs[i]))
-                {
-                    strs.RemoveAt(i);
-                    continue;
-                }
                 strs[i] = strs[i] + '}';
             }
             UnityEngine.Debug.Log("Parse Json: "+strs.ConverToString());
