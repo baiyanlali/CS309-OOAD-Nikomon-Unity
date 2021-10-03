@@ -13,6 +13,7 @@ using Types = PokemonCore.Types;
 
 using Newtonsoft.Json;
 using PokemonCore.Network;
+using Utility;
 
 
 /// <summary>
@@ -147,18 +148,16 @@ public class GlobalManager : MonoBehaviour
         BattleHandler.Instance.StartBattle(Game.battle);
     }
 
-    // public void StartBattle(Trainer oppo)
-    // {
-    //     List<Trainer> trainers = new List<Trainer>();
-    //     trainers.Add(oppo);
-    //     StartBattle(null,trainers,true);
-    // }
-
     private void OnApplicationQuit()
     {
         NetworkLogic.PairOff();
     }
 
+
+    public void Update()
+    {
+        EventPool.Tick();
+    }
 
     #region LoadDataToDictionary
 
