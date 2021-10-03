@@ -299,10 +299,13 @@ namespace PokemonCore.Network
         static void ReceiveFromServer()
         {
             if (ClientSocket == null) return;
-            byte[] data = new byte[TransMaxSize];
-            int len = ClientSocket.Receive(data, SocketFlags.None);
-            if(len>0)
-                OnClientReceiveMessage?.Invoke(data);
+            while (true)
+            {
+                byte[] data = new byte[TransMaxSize];
+                int len = ClientSocket.Receive(data, SocketFlags.None);
+                if(len>0)
+                    OnClientReceiveMessage?.Invoke(data);
+            }
         }
 
         #endregion
