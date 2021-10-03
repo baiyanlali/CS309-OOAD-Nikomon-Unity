@@ -122,6 +122,7 @@ namespace PokemonCore.Network
             _BroadcastThread.Start(data);
             //用于接受广播信息
         }
+        
 
 
         /// <summary>

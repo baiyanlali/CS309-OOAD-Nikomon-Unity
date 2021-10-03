@@ -328,6 +328,14 @@ namespace PokemonCore.Combat
             {
                 OnUserChooseInstruction?.Invoke(ins);
             }
+            else
+            {
+                //去除非用户的myPokemon的输入
+                if ((from p in MyPokemons where p.CombatID == ins.CombatPokemonID select p).Count() != 0)
+                {
+                    return false;
+                }
+            }
             Instructions.Add(ins);
 
             switch (ins.command)

@@ -133,9 +133,15 @@ namespace PokemonCore.Network
             OnStartBattle?.Invoke(allies,oppos,null,allies.Union(oppos).ToList(),isHost,_pokemonsPerTrainer);
             // Game.Instance.StartBattle(allies,oppos,null,allies.Union(oppos).ToList(),isHost,_pokemonsPerTrainer);
             if (isHost)
+            {
                 Battle.Instance.OnUserChooseInstruction += ServerSendInstruction;
+                UnityEngine.Debug.Log("Become Host");
+            }
             else
+            {
                 Battle.Instance.OnUserChooseInstruction += ClientSendInstruction;
+                UnityEngine.Debug.Log("Become Client");
+            }
         }
         
         static void FlushPairs()
