@@ -271,18 +271,15 @@ namespace PokemonCore.Network
         #endregion
 
         #region 当作client时用
-
-        // public static void StartClient(IPEndPoint ipEndPoint)
-        // {
-        //     ClientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-        //     ClientSocket.Connect(ipEndPoint);
-        //     new Thread(ReceiveFromServer).Start();
-        // }
         
-        public static void StartClient(IPAddress ipAddress)
+        
+        public static void StartClient(object obj)
         {
+            IPAddress ipAddress=obj as IPAddress;
             ClientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            UnityEngine.Debug.Log("Start to connect to the host.");
             ClientSocket.Connect(new IPEndPoint(ipAddress,ServerPort));
+            UnityEngine.Debug.Log("Connect to the host successfully!");
             new Thread(ReceiveFromServer).Start();
         }
         

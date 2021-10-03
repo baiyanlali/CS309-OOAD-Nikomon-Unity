@@ -183,7 +183,6 @@ namespace PokemonCore.Network
 
         static void BecomeClient(IPAddress ipAddress)
         {
-            NetworkLocal.StartClient(ipAddress);
             NetworkLocal.OnClientReceiveMessage += (data) =>
             {
                 string str = Encoding.UTF8.GetString(data);
@@ -192,6 +191,9 @@ namespace PokemonCore.Network
                 Instruction ins = JsonConvert.DeserializeObject<Instruction>(str);
                 Battle.Instance.ReceiveInstruction(ins,false);
             };
+            
+            new Thread(NetworkLocal.StartClient).Start(ipAddress);
+
         }
         static void ServerSendInstruction(Instruction instruction)
         {
