@@ -39,6 +39,7 @@ namespace PokemonCore.Combat
             pokedexNums = 0;
         }
         
+        
         [JsonIgnore]
         public int pokemonCount
         {

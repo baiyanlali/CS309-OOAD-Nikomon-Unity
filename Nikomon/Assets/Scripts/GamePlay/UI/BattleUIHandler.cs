@@ -10,6 +10,7 @@ using UnityEditor.Experimental;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
+using Utility;
 using Debug = PokemonCore.Debug;
 
 
@@ -46,6 +47,7 @@ public class BattleUIHandler : MonoBehaviour
 
     public void Init(BattleHandler bh)
     {
+        s_Instance = this;
         battleHandler = bh;
         List<CombatPokemon> allies = bh.AlliesPokemons;
         List<CombatPokemon> opponents = bh.OpponentPokemons;
@@ -77,6 +79,7 @@ public class BattleUIHandler : MonoBehaviour
 
     public void UpdateUI(BattleHandler bh)
     {
+        //因为只能从main thread调用set active，所以换成这种写法
         BattleUI.SetActive(true);
         int count = AlliesState.transform.childCount;
         for (int i = 0; i < count; i++)

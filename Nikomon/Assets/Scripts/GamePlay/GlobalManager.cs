@@ -13,6 +13,7 @@ using Types = PokemonCore.Types;
 
 using Newtonsoft.Json;
 using PokemonCore.Network;
+using Utility;
 
 
 /// <summary>
@@ -80,6 +81,10 @@ public class GlobalManager : MonoBehaviour
 
 
         game.OnDoNotHaveSaveFile +=StartPanel;
+        game.OnHaveSaveFile += ()=>
+        {
+            SceneManager.LoadScene(1);
+        };
         game.Init(LoadTypes(),null,LoadPokemons(),LoadExperienceTable(),natures,null,LoadMoves(),null);
     }
 
@@ -109,7 +114,7 @@ public class GlobalManager : MonoBehaviour
     {
         // NetworkLogic.StartLocalNetwork();
         NetworkLogic.OnStartBattle = StartBattle;
-        NetworkLogic.PariOnBattle(trainersNum,pokemonPerTrainer,password);
+        NetworkLogic.PairOnBattle(trainersNum,pokemonPerTrainer,password);
     }
 
     public void StartFastNetworkBattle()
@@ -140,6 +145,16 @@ public class GlobalManager : MonoBehaviour
         BattleHandler.Instance.StartBattle(Game.battle);
     }
 
+    /// <summary>
+    /// 适用于野外对战
+    /// </summary>
+    /// <param name="pokemon">野外对战遇到的仅有的一只宝可梦</param>
+    public void StartBattle(Pokemon pokemon)
+    {
+        Trainer trainer = new Trainer(pokemon.Name,pokemon.isMale); 
+        StartBattle(null,new List<Trainer>(new []{trainer}),true);
+    }
+
     public void StartBattle(List<Trainer> allies, List<Trainer> oppos,List<Trainer> AI, List<Trainer> userInternet, bool isHost,
         int pokemonPerTrainer)
     {
@@ -147,16 +162,17 @@ public class GlobalManager : MonoBehaviour
         BattleHandler.Instance.StartBattle(Game.battle);
     }
 
-    // public void StartBattle(Trainer oppo)
-    // {
-    //     List<Trainer> trainers = new List<Trainer>();
-    //     trainers.Add(oppo);
-    //     StartBattle(null,trainers,true);
-    // }
-    
-    
-    
-    
+    private void OnApplicationQuit()
+    {
+        NetworkLogic.PairOff();
+    }
+
+
+    public void Update()
+    {
+        EventPool.Tick();
+    }
+
     #region LoadDataToDictionary
 
         public Dictionary<int,int[]> LoadExperienceTable()
