@@ -81,6 +81,10 @@ public class GlobalManager : MonoBehaviour
 
 
         game.OnDoNotHaveSaveFile +=StartPanel;
+        game.OnHaveSaveFile += ()=>
+        {
+            SceneManager.LoadScene(1);
+        };
         game.Init(LoadTypes(),null,LoadPokemons(),LoadExperienceTable(),natures,null,LoadMoves(),null);
     }
 
@@ -139,6 +143,16 @@ public class GlobalManager : MonoBehaviour
     {
         game.StartBattle(allies,oppo,oppo,null,isHost,pokemonPerTrainer);
         BattleHandler.Instance.StartBattle(Game.battle);
+    }
+
+    /// <summary>
+    /// 适用于野外对战
+    /// </summary>
+    /// <param name="pokemon">野外对战遇到的仅有的一只宝可梦</param>
+    public void StartBattle(Pokemon pokemon)
+    {
+        Trainer trainer = new Trainer(pokemon.Name,pokemon.isMale); 
+        StartBattle(null,new List<Trainer>(new []{trainer}),true);
     }
 
     public void StartBattle(List<Trainer> allies, List<Trainer> oppos,List<Trainer> AI, List<Trainer> userInternet, bool isHost,

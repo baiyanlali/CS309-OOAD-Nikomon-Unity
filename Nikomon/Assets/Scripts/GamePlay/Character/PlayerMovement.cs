@@ -8,21 +8,23 @@ public class PlayerMovement : MonoBehaviour
 {
     public NicomonInputSystem nicoInput;
     private Animator animator;
-    private PlayerInput playerInput;
 
-    // Start is called before the first frame update
     void Start()
     {
         animator = GetComponent<Animator>();
-        playerInput = GetComponent<PlayerInput>();
+        if (nicoInput == null)
+            nicoInput = FindObjectOfType<NicomonInputSystem>();
     }
 
-    // Update is called once per frame
     void Update()
     {
-        this.move = nicoInput.move;
-        Movement();
-
+        if (nicoInput == null)
+            nicoInput = FindObjectOfType<NicomonInputSystem>();
+        else
+        {
+            this.move = nicoInput.move;
+            Movement();
+        }
     }
 
     public void Movement()

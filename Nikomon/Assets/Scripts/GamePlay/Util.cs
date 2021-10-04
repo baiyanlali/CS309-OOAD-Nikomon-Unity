@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Random = UnityEngine.Random;
 
 namespace GamePlay
 {
@@ -43,6 +44,11 @@ namespace GamePlay
             {
                 ui.Off();
             }
+        }
+
+        public static T RandomPickOne<T>(this T[] ts)
+        {
+            return ts[Random.Range(0,ts.Length)];
         }
         
     }

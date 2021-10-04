@@ -58,6 +58,7 @@ namespace PokemonCore
         #region 触发事件
 
         public Action OnDoNotHaveSaveFile;
+        public Action OnHaveSaveFile;
 
         #endregion
 
@@ -127,9 +128,12 @@ namespace PokemonCore
             EffectsData = effectsData;
 
             ItemsData = items;
-            
+
             if (HaveSave)
+            {
                 trainer = SaveLoad.Load<Trainer>(SaveFile);
+                OnHaveSaveFile?.Invoke();
+            }
             else
                 OnDoNotHaveSaveFile?.Invoke();
             // NatureData = new Dictionary<int, Nature>();
