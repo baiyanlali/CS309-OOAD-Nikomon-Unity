@@ -154,17 +154,7 @@ namespace PokemonCore
 
         public static Battle battle { get; private set; }
         public static BattleReporter battleReporter { get; private set; }
-
-        public void StartBattle(List<Trainer> allies, List<Trainer> opponent, bool isHost = true)
-        {
-            battle = new Battle(isHost);
-            if (allies == null) allies = new List<Trainer>();
-            allies.Add(trainer);
-            var alliesPoke = (from pokea in allies select pokea.firstParty).ToList();
-            var oppoPoke = (from pokea in opponent select pokea.firstParty).ToList();
-            battle.StartBattle(alliesPoke, oppoPoke, allies, opponent);
-            battleReporter = new BattleReporter(battle);
-        }
+        
 
         /// <summary>
         /// 
@@ -199,8 +189,13 @@ namespace PokemonCore
                 }
             }
 
-            BattleAI ai;
+            battle.OnBattleEnd += (o) =>
+            {
+                UnityEngine.Debug.Log($"Battle Results: {o}");
+                battle = null;
+            };
             battle.StartBattle(alliesPoke, oppoPoke, allies, opponent);
+            BattleAI ai;
             if (AI != null)
                 ai = new BattleAI(battle, AI);
             battleReporter = new BattleReporter(battle);

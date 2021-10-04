@@ -240,16 +240,38 @@ public class Pokemon : IPokemon, IEquatable<Pokemon>, IEqualityComparer<Pokemon>
 
     public bool Equals(Pokemon other)
     {
-        throw new NotImplementedException();
+        return
+            this.ID == other.ID &&
+            this.HP == other.HP &&
+            this.NatureID == other.NatureID &&
+            this.IV == other.IV &&
+            this.EV == other.EV &&
+            this.FriendShip == other.FriendShip &&
+            this.moves == other.moves &&
+            this.TrainerID == other.TrainerID &&
+            this.Name == other.Name &&
+            this.ballUsed == other.ballUsed &&
+            this.StatusID == other.StatusID &&
+            this.Item == other.Item &&
+            this.ItemInitial == other.ItemInitial &&
+            this.ObtainMode == other.ObtainMode &&
+            this.IsNicknamed == other.IsNicknamed &&
+            this.Type1 == other.Type1 &&
+            this.Type2 == other.Type2 &&
+            this.ObtainMap == other.ObtainMap &&
+            this.ObtainLevel == other.ObtainLevel &&
+            this.AbilityID == other.AbilityID &&
+            Exp == other.Exp &&
+            this.isMale == other.isMale;
     }
 
     public bool Equals(Pokemon x, Pokemon y)
     {
-        throw new NotImplementedException();
+        return x?.Equals(y) ?? false;
     }
 
     public int GetHashCode(Pokemon obj)
     {
-        throw new NotImplementedException();
+       return base.GetHashCode();
     }
 }

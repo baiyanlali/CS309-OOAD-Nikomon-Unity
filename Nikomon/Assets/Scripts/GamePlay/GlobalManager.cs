@@ -33,6 +33,8 @@ public class GlobalManager : MonoBehaviour
         }
     }
 
+    public static bool isBattling;
+
     private static GlobalManager s_Instance;
     
     private Game game;
@@ -86,6 +88,7 @@ public class GlobalManager : MonoBehaviour
             SceneManager.LoadScene(1);
         };
         game.Init(LoadTypes(),null,LoadPokemons(),LoadExperienceTable(),natures,null,LoadMoves(),null);
+        isBattling = false;
     }
 
     void StartPanel()
@@ -141,8 +144,7 @@ public class GlobalManager : MonoBehaviour
 
     public void StartBattle(List<Trainer> allies,List<Trainer> oppo,bool isHost,int pokemonPerTrainer=1)
     {
-        game.StartBattle(allies,oppo,oppo,null,isHost,pokemonPerTrainer);
-        BattleHandler.Instance.StartBattle(Game.battle);
+        StartBattle(allies,oppo,oppo,null,isHost,pokemonPerTrainer);
     }
 
     /// <summary>
@@ -151,14 +153,18 @@ public class GlobalManager : MonoBehaviour
     /// <param name="pokemon">野外对战遇到的仅有的一只宝可梦</param>
     public void StartBattle(Pokemon pokemon)
     {
-        Trainer trainer = new Trainer(pokemon.Name,pokemon.isMale); 
+        Trainer trainer = new Trainer(pokemon.Name,pokemon.isMale);
+        trainer.party[0] = pokemon;
+        pokemon.TrainerID = trainer.id;
         StartBattle(null,new List<Trainer>(new []{trainer}),true);
     }
 
     public void StartBattle(List<Trainer> allies, List<Trainer> oppos,List<Trainer> AI, List<Trainer> userInternet, bool isHost,
         int pokemonPerTrainer)
     {
+        isBattling = true;
         game.StartBattle(allies,oppos,AI,userInternet,isHost,pokemonPerTrainer);
+        Game.battle.OnBattleEnd += (o) => { BattleHandler.Instance.EndBattle(); };
         BattleHandler.Instance.StartBattle(Game.battle);
     }
 

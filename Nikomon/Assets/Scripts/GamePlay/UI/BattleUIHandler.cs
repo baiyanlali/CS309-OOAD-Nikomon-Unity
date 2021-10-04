@@ -30,7 +30,6 @@ public class BattleUIHandler : MonoBehaviour
 
     #endregion
 
-    private BattleHandler battleHandler;
 
     public static BattleUIHandler Instance
     {
@@ -47,8 +46,12 @@ public class BattleUIHandler : MonoBehaviour
 
     public void Init(BattleHandler bh)
     {
+        
         s_Instance = this;
-        battleHandler = bh;
+        for (int i = 0; i < transform.childCount; i++)
+        {
+            transform.GetChild(i).gameObject.SetActive(true);
+        }
         List<CombatPokemon> allies = bh.AlliesPokemons;
         List<CombatPokemon> opponents = bh.OpponentPokemons;
         foreach (var ally in allies)
@@ -76,10 +79,13 @@ public class BattleUIHandler : MonoBehaviour
 
     }
 
+    public void EndBattle()
+    {
+        BattleUI.SetActive(false);
+    }
 
     public void UpdateUI(BattleHandler bh)
     {
-        //因为只能从main thread调用set active，所以换成这种写法
         BattleUI.SetActive(true);
         int count = AlliesState.transform.childCount;
         for (int i = 0; i < count; i++)

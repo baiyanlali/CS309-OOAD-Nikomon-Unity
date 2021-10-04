@@ -26,6 +26,7 @@ namespace PokemonCore.Combat
             this.party = party;
             this.isMale = isMale;
             this.pokedexNums = pokedexNums;
+            pokemonOnTheBattle = new bool[party.Length];
         }
         
         public Trainer(string name,bool isMale)
@@ -36,9 +37,11 @@ namespace PokemonCore.Combat
             this.id = Game.Random.Next();
             this.money = 3000;
             this.party = new Pokemon[Game.MaxPartyNums];
+            pokemonOnTheBattle = new bool[party.Length];
             pokedexNums = 0;
         }
-        
+
+        [JsonIgnore] public bool[] pokemonOnTheBattle;
         
         [JsonIgnore]
         public int pokemonCount
@@ -54,6 +57,23 @@ namespace PokemonCore.Combat
                 return num;
             }
         }
+
+        /// <summary>
+        /// 这里传进来一个Pokemon，然后返回这个Pokemon在Trainer的party中的index
+        /// </summary>
+        public int PokemonIndex(Pokemon pokemon)
+        {
+            for (int i = 0; i < party.Length; i++)
+            {
+                if (party[i] != null)
+                {
+                    if (party[i] == pokemon) return i;
+                }
+            }
+
+            return -1;
+        }
+        
         [JsonIgnore]
         public int ablePokemonCount
         {
@@ -66,6 +86,22 @@ namespace PokemonCore.Combat
                 }
 
                 return num;
+            }
+        }
+
+        [JsonIgnore]
+        public int lastAblePokemonIndex
+        {
+            get
+            {
+                int index = 0;
+                for (int i = 0; i < party.Length; i++)
+                {
+                    //血量大于0而且不在战场上
+                    if (party[i] != null && party[i].HP > 0 && pokemonOnTheBattle[i] ==false) return i;
+                }
+
+                return -1;
             }
         }
         [JsonIgnore]

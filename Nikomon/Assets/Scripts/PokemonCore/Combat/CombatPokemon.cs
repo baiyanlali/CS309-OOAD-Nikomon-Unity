@@ -15,7 +15,6 @@ namespace PokemonCore.Combat
         public Battle battle;
         public int TrainerID { get; set; }
 
-        
         //TODO:改变一种方法
         public int CombatID
         {
@@ -47,23 +46,7 @@ namespace PokemonCore.Combat
         public int Evasion { get; private set; }
 
         #region State Change
-
-        // private int m_HPStateChange;
-        //
-        // public int HPStateChange
-        // {
-        //     get { return m_HPStateChange; }
-        //     set { m_HPStateChange = Math.Max(Math.Min(6, value), -6); }
-        // }
-        //
-        // private int m_TotalHPStateChange;
-        //
-        // public int TotalHPStateChange
-        // {
-        //     get { return m_TotalHPStateChange; }
-        //     set { m_TotalHPStateChange = Math.Max(Math.Min(6, value), -6); }
-        // }
-
+        
         private int m_ATKStateChange;
 
         public int ATKStateChange
@@ -145,6 +128,7 @@ namespace PokemonCore.Combat
 
         public Move lastMove;
 
+        #if UNITY_EDITOR
         public object this[string propertyName]
         {
             get
@@ -160,6 +144,7 @@ namespace PokemonCore.Combat
                 pi.SetValue(this, value, null);
             }
         }
+        #endif
 
         public CombatPokemon(Pokemon pokemon, Battle battle)
         {

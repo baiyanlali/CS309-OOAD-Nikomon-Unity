@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using PokemonCore.Combat;
 using PokemonCore.Combat.Interface;
 
 namespace PokemonCore.Utility
@@ -20,8 +21,17 @@ namespace PokemonCore.Utility
         {
             return String.Join(",", i);
         }
-        
-        
+
+        public static bool TrainerAllFaint(this List<Trainer> trainers)
+        {
+            int num = 0;
+            foreach (var trainer in trainers)
+            {
+                num += trainer.ablePokemonCount;
+            }
+
+            return num == 0;
+        }
 
         /// <summary>
         /// 两个参数的List的count必须相同

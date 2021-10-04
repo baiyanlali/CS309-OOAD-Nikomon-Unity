@@ -17,7 +17,7 @@ public class BattleHandler : MonoBehaviour
     public CombatPokemon CurrentPokemon =>
         CurrentMyPokemonIndex >= userPokemons.Count ? null : userPokemons[CurrentMyPokemonIndex];
 
-    [SerializeField] public Battle battle;
+    [SerializeField] public Battle battle => Game.battle;
 
     public static BattleHandler Instance
     {
@@ -62,7 +62,6 @@ public class BattleHandler : MonoBehaviour
 
     public void StartBattle(Battle battle)
     {
-        this.battle = battle;
         battle.OnThisTurnEnd += OnTurnEnd;
         battle.OnTurnBegin += OnTurnBegin;
         battle.OnPokemonChooseHandled += OnPokemonChooseHandled;
@@ -70,10 +69,18 @@ public class BattleHandler : MonoBehaviour
         BattleFieldHandler.Instance.Init(AlliesPokemons, OpponentPokemons);
         OnTurnBegin();
     }
+    
+    public void EndBattle()
+    {
+        BattleUIHandler.Instance.EndBattle();
+        BattleFieldHandler.Instance.EndBattle();
+    }
+    
 
     public void OnTurnEnd()
     {
         UnityEngine.Debug.Log("Turn End");
+        
         EventPool.Schedule(() => { BattleUIHandler.Instance.UpdateUI(this); });
     }
 
@@ -110,7 +117,5 @@ public class BattleHandler : MonoBehaviour
         }
     }
 
-    public void EndBattle()
-    {
-    }
+   
 }

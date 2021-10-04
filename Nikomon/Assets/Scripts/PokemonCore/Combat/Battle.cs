@@ -76,7 +76,7 @@ namespace PokemonCore.Combat
     /// <summary>
     /// Battle类，集中处理所有战斗逻辑
     /// </summary>
-    public class Battle : IPropertyModify
+    public class Battle
     {
         public static Battle Instance;
 
@@ -110,11 +110,21 @@ namespace PokemonCore.Combat
         /// </summary>
         public List<IEffect> MovedEffect { get; private set; }
 
+
+
+        #endregion
+        
         public Func<Damage, string> OnHit;
 
         public Action OnThisTurnEnd;
 
         public Action OnTurnBegin;
+
+        public Action<CombatPokemon, CombatPokemon> OnReplacePokemon;
+
+        public Action<BattleResults> OnBattleEnd;
+
+        public Action<CombatPokemon> OnPokemonFainting;
         
         /// <summary>
         /// 比如说宝可梦这回合跳过，就会调用这个方法，参数是宝可梦的Combat ID
@@ -122,7 +132,7 @@ namespace PokemonCore.Combat
         public Action<int> OnPokemonChooseHandled;
         public Action<Instruction> OnUserChooseInstruction;
 
-        #endregion
+        public Dictionary<int, Trainer> Trainers;
 
         public Trainer UserTrainer { get; private set; }
         public List<Trainer> alliesTrainers { get; private set; }
@@ -180,6 +190,26 @@ namespace PokemonCore.Combat
             this.alliesTrainers = alliesTrainers;
             this.opponentTrainers = opponentTrainers;
 
+            Trainers = new Dictionary<int, Trainer>();
+            foreach (var trainer in alliesTrainers)
+            {
+                Trainers.Add(trainer.id,trainer);
+                var pokes = (from a in Pokemons where a.TrainerID == trainer.id select a).ToArray();
+                for (int i = 0; i < pokes.Length; i++)
+                {
+                    trainer.pokemonOnTheBattle[trainer.PokemonIndex(pokes[i].pokemon)] = true;
+                }
+            }
+            foreach (var trainer in opponentTrainers)
+            {
+                Trainers.Add(trainer.id,trainer);
+                var pokes = (from a in Pokemons where a.TrainerID == trainer.id select a).ToArray();
+                for (int i = 0; i < pokes.Length; i++)
+                {
+                    trainer.pokemonOnTheBattle[trainer.PokemonIndex(pokes[i].pokemon)] = true;
+                }
+            }
+            
             #endregion
 
             #region init effects
@@ -213,6 +243,9 @@ namespace PokemonCore.Combat
             mBattleResults = BattleResults.Continue;
             mBattleActions = BattleActions.Choosing;
 
+            OnTurnBegin += () => { turnCount++; };
+
+            OnBattleEnd += (o) => { Instance = null; };
             OnTurnBegin?.Invoke();
         }
 
@@ -223,6 +256,7 @@ namespace PokemonCore.Combat
                 case BattleActions.Choosing:
                     mBattleActions = BattleActions.Moving;
                     SortCombatMoves(CombatMoves);
+                    ReplacePokemons(SwitchPokemons);
                     Moving(CombatMoves);
                     CombatMoves.Clear();
                     NextAction();
@@ -256,6 +290,7 @@ namespace PokemonCore.Combat
 
         public List<Instruction> Instructions;
         public List<CombatMove> CombatMoves;
+        public List<Tuple<CombatPokemon, Pokemon>> SwitchPokemons;
         public List<Damage> Damages;
 
         /// <summary>
@@ -310,14 +345,53 @@ namespace PokemonCore.Combat
 
         void Moved()
         {
-            turnCount++;
-            OnThisTurnEnd?.Invoke();
+            if (opponentTrainers.TrainerAllFaint())
+            {
+                OnBattleEnd?.Invoke(BattleResults.Succeed);
+            }
+            else if(alliesTrainers.TrainerAllFaint())
+            {
+                OnBattleEnd?.Invoke(BattleResults.Failed);
+            }
+            else
+            {
+                OnThisTurnEnd?.Invoke();
+            }
         }
 
         #endregion
 
+        public void ReplacePokemons(List<Tuple<CombatPokemon,Pokemon>> list)
+        {
+            foreach (var tuple in list.OrEmptyIfNull())
+            {
+                ReplacePokemon(tuple.Item1,tuple.Item2);
+            }
+            list.Clear();
+        }
+        
+        public void ReplacePokemon(CombatPokemon currentPokemon,Pokemon nextPokemon)
+        {
+            CombatPokemon nPoke = new CombatPokemon(nextPokemon, this);
+            
+            Trainer t = Trainers[currentPokemon.TrainerID];
+            t.pokemonOnTheBattle[t.PokemonIndex(currentPokemon.pokemon)] = false;
+            t.pokemonOnTheBattle[t.PokemonIndex(nextPokemon)] = true;
+            
+            if (alliesPokemons.Contains(currentPokemon))
+            {
+                alliesPokemons.Remove(currentPokemon);
+                alliesPokemons.Add(nPoke);
+            }
+            else if (opponentsPokemons.Contains(currentPokemon))
+            {
+                opponentsPokemons.Remove(currentPokemon);
+                opponentsPokemons.Add(nPoke);
+            }
+            OnReplacePokemon?.Invoke(currentPokemon,nPoke);
 
-        //TODO: 目前按照接受收到的Instruction数量来判断是否进入下一个阶段，不是很合理
+        }
+
         public bool ReceiveInstruction(Instruction ins,bool fromUser=false)
         {
             //判断有没有重复输入的
@@ -348,6 +422,8 @@ namespace PokemonCore.Combat
                 case Command.GoPokemon:
                     break;
                 case Command.SwitchPokemon:
+                    var combatPoke = (from p in Pokemons where p.CombatID == ins.CombatPokemonID select p).ToArray()[0];
+                    SwitchPokemons.Add(new Tuple<CombatPokemon, Pokemon>(combatPoke,Trainers[combatPoke.TrainerID].party[ins.ID]));
                     break;
                 case Command.Run:
                     break;
@@ -427,22 +503,5 @@ namespace PokemonCore.Combat
         }
 
         #endregion
-
-
-        public object this[string propertyName]
-        {
-            get
-            {
-                Type t = this.GetType();
-                PropertyInfo pi = t.GetProperty(propertyName);
-                return pi.GetValue(this, null);
-            }
-            set
-            {
-                Type t = this.GetType();
-                PropertyInfo pi = t.GetProperty(propertyName);
-                pi.SetValue(this, value, null);
-            }
-        }
     }
 }

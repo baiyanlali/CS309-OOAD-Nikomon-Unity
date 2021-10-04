@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using PokemonCore.Attack;
 using PokemonCore.Attack.Data;
@@ -23,6 +24,8 @@ namespace PokemonCore.Combat
                 select pokes).ToList();
 
             battle.OnTurnBegin += DoAI;
+            battle.OnBattleEnd += (o) => { battle = null;};
+            // battle.OnPokemonFainting += OnPokemonDied;
             DoAI();
         }
 
@@ -30,12 +33,30 @@ namespace PokemonCore.Combat
         {
             
         }
+        
+        
 
         public void DoAI()
         {
             foreach (var poke in pokes.OrEmptyIfNull())
             {
                 UnityEngine.Debug.Log("AI Move");
+                //TODO: 考虑有宝可梦已经上场，但是这里仍然会牵扯到
+                if (poke.HP <= 0)
+                {
+                    var trainer = battle.Trainers[poke.TrainerID];
+                    if (trainer.lastAblePokemonIndex != -1)
+                    {
+                        Instruction inss = new Instruction(poke.CombatID, Command.SwitchPokemon,trainer.lastAblePokemonIndex, null);
+                        battle.ReceiveInstruction(inss);
+                        return;
+                    }
+                    else
+                    {
+                        return;
+                    }
+                    
+                }
                 Move[] moves = (from m in poke.pokemon.moves where m != null select m).ToArray();
                 int id = Game.Random.Next(0, moves.Length);
                 Move move = moves[id];

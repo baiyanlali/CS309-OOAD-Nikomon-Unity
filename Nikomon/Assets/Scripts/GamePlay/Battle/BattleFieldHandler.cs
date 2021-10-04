@@ -10,6 +10,7 @@ public class BattleFieldHandler : MonoBehaviour
 {
 
     public CinemachineTargetGroup TargetGroup;
+    public CinemachineVirtualCamera Camera;
 
     public float padding = 15;
     public Transform allyPosition;
@@ -43,6 +44,7 @@ public class BattleFieldHandler : MonoBehaviour
 
     public void Init(List<CombatPokemon> allies,List<CombatPokemon> oppos)
     {
+        Camera.Priority = 12;
         for (int i = 0; i < allies.Count; i++)
         {
             var allyID = allies[i].pokemon.ID;
@@ -95,6 +97,23 @@ public class BattleFieldHandler : MonoBehaviour
             TargetGroup.AddMember(obj.transform,1,5);
         }
 
+    }
+
+    public void EndBattle()
+    {
+        Camera.Priority = 9;
+        for (int i = 0; i < allyPosition.childCount; i++)
+        {
+            var a = allyPosition.GetChild(i);
+            TargetGroup.RemoveMember(a);
+            Destroy(a.gameObject);
+        }
+        for (int i = 0; i < oppoPosition.childCount; i++)
+        {
+            var a = oppoPosition.GetChild(i);
+            TargetGroup.RemoveMember(a);
+            Destroy(a.gameObject);
+        }
     }
 
     /// <summary>

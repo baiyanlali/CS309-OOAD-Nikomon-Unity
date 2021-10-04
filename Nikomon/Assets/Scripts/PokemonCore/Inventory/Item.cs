@@ -2,6 +2,7 @@
 {
     public class Item
     {
+        public int Tag { get; private set; }
         public int ID { get; private set; }
         public string name { get; private set; }
         public string description { get; private set; }
