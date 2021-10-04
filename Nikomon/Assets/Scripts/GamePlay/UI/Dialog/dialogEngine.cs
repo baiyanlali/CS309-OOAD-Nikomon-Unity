@@ -9,12 +9,12 @@ public class dialogEngine : MonoBehaviour
 
     private Image dialogBox;
     private Text dialogBoxText;
-    private Text dialogBoxTextShadow;
+    // private Text dialogBoxTextShadow;
     private CanvasGroup dialogCanvasGroup;
 
     private Image choiceBox;
     private Text choiceBoxText;
-    private Text choiceBoxTextShadow;
+    // private Text choiceBoxTextShadow;
     private Image choiceBoxSelect;
 
     public AudioClip selectClip;
@@ -37,7 +37,7 @@ public class dialogEngine : MonoBehaviour
         dialogBoxTrn = transform.Find("DialogBox");
         dialogBox = dialogBoxTrn.Find("boxBG").GetComponent<Image>();
         dialogBoxText = dialogBoxTrn.Find("boxText").GetComponent<Text>();
-        dialogBoxTextShadow = dialogBoxTrn.Find("boxTextShadow").GetComponent<Text>();
+        // dialogBoxTextShadow = dialogBoxTrn.Find("boxTextShadow").GetComponent<Text>();
         dialogCanvasGroup = dialogBoxTrn.transform.GetComponent<CanvasGroup>();
 
 
@@ -182,7 +182,7 @@ public class dialogEngine : MonoBehaviour
                     added += (large) ? "</size>" : "";
 
                     dialogBoxText.text = currentText + added;
-                    dialogBoxTextShadow.text = dialogBoxText.text;
+                    // dialogBoxTextShadow.text = dialogBoxText.text;
 
                     while (Time.time < startTime + (secPerChar * (i + 1)))
                     {
@@ -199,7 +199,7 @@ public class dialogEngine : MonoBehaviour
         else
         {
             dialogBoxText.text += " <color=#0000></color>";
-            dialogBoxTextShadow.text = dialogBoxText.text;
+            // dialogBoxTextShadow.text = dialogBoxText.text;
 
             while (Time.time < startTime + (secPerChar)) //realize the function of delay display
             {
@@ -224,8 +224,8 @@ public class dialogEngine : MonoBehaviour
         dialogBoxTrn.gameObject.SetActive(true);
         dialogBoxText.text = "";
         dialogBoxText.fontSize = fontSize;
-        dialogBoxTextShadow.fontSize = fontSize;
-        dialogBoxTextShadow.text = dialogBoxText.text;
+        // dialogBoxTextShadow.fontSize = fontSize;
+        // dialogBoxTextShadow.text = dialogBoxText.text;
         /*        float alpha = 1f;
                 dialogCanvasGroup.alpha = 0;
                 while (true)
@@ -346,8 +346,8 @@ public class dialogEngine : MonoBehaviour
         choiceBox.rectTransform.sizeDelta = new Vector2(width, 16f + (fontSize * choices.Length));
         choiceBoxSelect.rectTransform.localPosition = new Vector3(8, 9f + (fontSize * startIndex), 0);
         choiceBoxText.rectTransform.sizeDelta = new Vector2(width - 30, choiceBox.rectTransform.sizeDelta.y);
-        choiceBoxTextShadow.rectTransform.sizeDelta = new Vector2(choiceBoxText.rectTransform.sizeDelta.x,
-            choiceBoxText.rectTransform.sizeDelta.y);
+        // choiceBoxTextShadow.rectTransform.sizeDelta = new Vector2(choiceBoxText.rectTransform.sizeDelta.x,
+            // choiceBoxText.rectTransform.sizeDelta.y);
 
         choiceBoxText.text = "";
         for (int i = 0; i < choices.Length; i++)
@@ -358,7 +358,7 @@ public class dialogEngine : MonoBehaviour
                 choiceBoxText.text += "\n";
             }
         }
-        choiceBoxTextShadow.text = choiceBoxText.text;
+        // choiceBoxTextShadow.text = choiceBoxText.text;
 
         bool selected = false;
         UpdateChosenIndex(startIndex, choices.Length, flavourText);

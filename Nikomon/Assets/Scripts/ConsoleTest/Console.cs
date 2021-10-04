@@ -95,7 +95,7 @@ namespace ConsoleDebug
             Debug.Log(cmd);
         }
 
-        static void SendUDP(string sendString)
+        public static void SendUDP(string sendString)
         {
             if (m_UDPClient is null)
             {

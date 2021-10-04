@@ -33,6 +33,11 @@ namespace PokemonCore.Utility
             return num == 0;
         }
 
+        public static T RandomPickOne<T>(this List<T> list)
+        {
+            return list[Game.Random.Next(0, list.Count)];
+        }
+
         /// <summary>
         /// 两个参数的List的count必须相同
         /// </summary>

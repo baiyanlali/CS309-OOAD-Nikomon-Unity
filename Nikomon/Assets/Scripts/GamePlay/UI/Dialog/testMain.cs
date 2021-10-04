@@ -9,8 +9,7 @@ public class testMain : MonoBehaviour
     private int condition;
     void Start()
     {
-        //de = transform.Find("dialogSystem").GetComponent<dialogEngine>();
-        dm = dialogManager.getDialogManager();
+        dm = dialogManager.dialogManagerIn;
         condition = 0;
     }
 

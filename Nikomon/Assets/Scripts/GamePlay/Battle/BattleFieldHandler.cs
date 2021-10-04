@@ -42,8 +42,11 @@ public class BattleFieldHandler : MonoBehaviour
         sInstance = battle.GetComponent<BattleFieldHandler>();
     }
 
+    private Dictionary<CombatPokemon, GameObject> dics;
+
     public void Init(List<CombatPokemon> allies,List<CombatPokemon> oppos)
     {
+        dics = new Dictionary<CombatPokemon, GameObject>();
         Camera.Priority = 12;
         for (int i = 0; i < allies.Count; i++)
         {
@@ -54,16 +57,19 @@ public class BattleFieldHandler : MonoBehaviour
             if (GlobalManager.Instance.Pokemons[allyID].Length == 1)
             {
                 obj = Instantiate(GlobalManager.Instance.Pokemons[allyID][0], allyPosition);
+                dics.Add(allies[i],obj);
             }
             else if (GlobalManager.Instance.Pokemons[allyID].Length == 2)
             {
                 if (allies[i].pokemon.isMale)
                 {
                     obj = Instantiate(GlobalManager.Instance.Pokemons[allyID][0], allyPosition);
+                    dics.Add(allies[i],obj);
                 }
                 else
                 {
                     obj = Instantiate(GlobalManager.Instance.Pokemons[allyID][1], allyPosition);
+                    dics.Add(allies[i],obj);
                 }
             }
 
@@ -80,16 +86,19 @@ public class BattleFieldHandler : MonoBehaviour
             if (GlobalManager.Instance.Pokemons[oppoID].Length == 1)
             {
                 obj = Instantiate(GlobalManager.Instance.Pokemons[oppoID][0], oppoPosition);
+                dics.Add(oppos[i],obj);
             }
             else if (GlobalManager.Instance.Pokemons[oppoID].Length == 2)
             {
                 if (oppos[i].pokemon.isMale)
                 {
                     obj = Instantiate(GlobalManager.Instance.Pokemons[oppoID][0], oppoPosition);
+                    dics.Add(oppos[i],obj);
                 }
                 else
                 {
                     obj = Instantiate(GlobalManager.Instance.Pokemons[oppoID][1], oppoPosition);
+                    dics.Add(oppos[i],obj);
                 }
             }
         
@@ -99,6 +108,37 @@ public class BattleFieldHandler : MonoBehaviour
 
     }
 
+    public void OnReplacePokemon(CombatPokemon p1, CombatPokemon p2)
+    {
+        Transform trans = dics[p1].transform;
+        int id = p2.pokemon.ID;
+        GameObject obj=null;
+
+        if (GlobalManager.Instance.Pokemons[id].Length == 1)
+        {
+            obj = Instantiate(GlobalManager.Instance.Pokemons[id][0], trans.parent);
+        }else if (GlobalManager.Instance.Pokemons[id].Length == 2)
+        {
+            if (p2.pokemon.isMale)
+            {
+                obj = Instantiate(GlobalManager.Instance.Pokemons[id][0], trans.parent);
+            }
+            else
+            {
+                obj = Instantiate(GlobalManager.Instance.Pokemons[id][1], trans.parent);
+            }
+        }
+
+        obj.transform.position = trans.position;
+        obj.transform.rotation = trans.rotation;
+        TargetGroup.RemoveMember(trans);
+        TargetGroup.AddMember(obj.transform,1,5);
+
+        dics.Remove(p1);
+        dics.Add(p2,obj);
+        Destroy(trans.gameObject);
+    }
+    
     public void EndBattle()
     {
         Camera.Priority = 9;

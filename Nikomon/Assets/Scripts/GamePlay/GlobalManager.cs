@@ -164,7 +164,12 @@ public class GlobalManager : MonoBehaviour
     {
         isBattling = true;
         game.StartBattle(allies,oppos,AI,userInternet,isHost,pokemonPerTrainer);
-        Game.battle.OnBattleEnd += (o) => { BattleHandler.Instance.EndBattle(); };
+        Game.battle.OnBattleEnd += (o) =>
+        {
+            isBattling = false;
+            print("Global: Battle END;");
+            BattleHandler.Instance.EndBattle();
+        };
         BattleHandler.Instance.StartBattle(Game.battle);
     }
 

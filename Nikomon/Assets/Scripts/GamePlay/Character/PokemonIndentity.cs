@@ -14,6 +14,7 @@ public class PokemonIndentity : MonoBehaviour,IInteractive
     public void OnInteractive()
     {
         GlobalManager.Instance.StartBattle(pokemon);
+        Destroy(this.gameObject);
     }
 
 

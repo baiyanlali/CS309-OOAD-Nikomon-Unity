@@ -1,39 +1,39 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using PokemonCore.Combat;
 using UnityEngine;
 
 public class dialogManager : MonoBehaviour
 {
+
+    //对话框消失的方式，目前分为按Accept消失和按时间Automatic消失两种
+    
     public static dialogManager dialogManagerIn;
     private string[] dialogList;
-    private string[] choiceList;
     private dialogEngine de;
 
     private void Awake()
     {
         dialogManagerIn = this;
         de = transform.GetComponent<dialogEngine>();
-        dialogManagerIn = this;
-        initialList();
-    }
-    public static dialogManager getDialogManager()
-    {
-        return dialogManagerIn;
+        this.gameObject.SetActive(false);
     }
 
+    public void InitBattle(BattleReporter br)
+    {
+        br.OnReport += onDialogText;
+    }
 
-    public void onDialogId(int dialogId)
+    public void EndBattle()
     {
-        onDialogId(dialogId, 0);
+        gameObject.SetActive(false);
     }
-    public void onDialogId(int dialogId, int style)
-    {
-        
-    }
+    
     //display battle discription
     public void onDialogText(string text)
     {
+        gameObject.SetActive(true);
         onDialogText(text, 0);
     }
     public void onDialogText(string text,int style)
@@ -43,16 +43,6 @@ public class dialogManager : MonoBehaviour
     public void offDialog()
     {
         StartCoroutine(textUnDraw());
-    }
-    
-    private void initialList()
-    {
-        //dialogList = File.ReadAllLines("dialogContent");
-        //choiceList = File.ReadAllLines("choiceContent");
-    }
-    private void readFile()
-    {
-
     }
 
     public IEnumerator textDraw(string text)

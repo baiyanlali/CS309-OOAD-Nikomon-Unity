@@ -108,6 +108,25 @@ namespace PokemonCore.Combat
         public Pokemon firstParty => party[0];
         [JsonIgnore]
         public Pokemon lastParty => party[party.Length-1];
+        
+        /// <summary>
+        /// 显示背包里实际上有多少只宝可梦
+        /// </summary>
+        [JsonIgnore]
+        public int bagPokemons{
+            get
+            {
+                int num = 0;
+                for (int i = 0; i < party.Length; i++)
+                {
+                    if (party[i] != null) num++;
+                    else break;
+                }
+
+                return num;
+            }
+        }
+        #if UNITY_EDITOR
         [Obsolete]
         //TODO:删除所有反射属性，支持IOS端
         public object this[string propertyName]
@@ -125,6 +144,7 @@ namespace PokemonCore.Combat
                 pi.SetValue(this, value, null);
             }
         }
+        #endif
 
     }
 }

@@ -12,7 +12,7 @@ namespace PokemonCore.Combat
     public class CombatPokemon:IPropertyModify
     {
         [JsonIgnore]
-        public Battle battle;
+        public Battle battle=>Game.battle;
         public int TrainerID { get; set; }
 
         //TODO:改变一种方法
@@ -22,7 +22,10 @@ namespace PokemonCore.Combat
         }
 
         public Pokemon pokemon { get; private set; }
-        public int HP { get; private set; }
+        public int HP
+        {
+            get { return pokemon.HP;} private set { pokemon.HP = value; }
+        }
         public int TotalHP { get; private set; }
         public int ATK { get; private set; }
         public int DEF { get; private set; }
@@ -148,7 +151,6 @@ namespace PokemonCore.Combat
 
         public CombatPokemon(Pokemon pokemon, Battle battle)
         {
-            this.battle = battle;
             this.pokemon = pokemon;
             this.HP = pokemon.HP;
             this.TotalHP = pokemon.TotalHp;
@@ -171,7 +173,6 @@ namespace PokemonCore.Combat
 
             lastMove = null;
 
-            battle.OnThisTurnEnd += () => this.pokemon.HP = this.HP;
         }
 
 
@@ -216,8 +217,23 @@ namespace PokemonCore.Combat
 
 
             this.HP -= damage.finalDamage;
+            if (HP <= 0)
+            {
+                HP = 0;
+                OnFainting();
+                return;
+            }
             if (damage.combatMove.TargetEffects != null)
                 Effects.AddRange(damage.combatMove.TargetEffects);
+        }
+
+        public void OnFainting()
+        {
+            foreach (var effect in Effects.OrEmptyIfNull())
+            {
+                effect.BeFainted();
+            }
+            battle.PokemonFainting(this);
         }
 
         public override string ToString()

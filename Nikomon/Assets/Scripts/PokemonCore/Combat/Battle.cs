@@ -71,6 +71,11 @@ namespace PokemonCore.Combat
             this.target = new List<int>();
             this.target.Add(target);
         }
+
+        public override string ToString()
+        {
+            return $"{CombatPokemonID}----{command}-----{ID}";
+        }
     }
 
     /// <summary>
@@ -238,6 +243,7 @@ namespace PokemonCore.Combat
 
             Instructions = new List<Instruction>();
             CombatMoves = new List<CombatMove>();
+            SwitchPokemons = new List<Tuple<CombatPokemon, Pokemon>>();
             Damages = new List<Damage>();
             turnCount = 0;
             mBattleResults = BattleResults.Continue;
@@ -251,12 +257,14 @@ namespace PokemonCore.Combat
 
         void NextAction()
         {
+            if (mBattleResults != BattleResults.Continue) return;
             switch (mBattleActions)
             {
                 case BattleActions.Choosing:
                     mBattleActions = BattleActions.Moving;
                     SortCombatMoves(CombatMoves);
                     ReplacePokemons(SwitchPokemons);
+                    SwitchPokemons.Clear();
                     Moving(CombatMoves);
                     CombatMoves.Clear();
                     NextAction();
@@ -333,9 +341,17 @@ namespace PokemonCore.Combat
 
         void Damaging(Damage dmg)
         {
+            if (dmg.sponsor.HP <= 0) return;
             dmg = dmg.sponsor.OnHit(dmg);
             OnHit?.Invoke(dmg);
+            // if(dmg.target.HP>0)
             dmg.target.BeHurt(dmg);
+            // else
+            // {
+            //     //TODO：一般来说只有2v2以上的对战才需要重新找个target
+            //     dmg.target = RefindTarget(dmg);
+            //     dmg.target.BeHurt(dmg);
+            // }
         }
 
         void Damaged()
@@ -347,10 +363,12 @@ namespace PokemonCore.Combat
         {
             if (opponentTrainers.TrainerAllFaint())
             {
+                mBattleResults = BattleResults.Succeed;
                 OnBattleEnd?.Invoke(BattleResults.Succeed);
             }
             else if(alliesTrainers.TrainerAllFaint())
             {
+                mBattleResults = BattleResults.Failed;
                 OnBattleEnd?.Invoke(BattleResults.Failed);
             }
             else
@@ -367,7 +385,11 @@ namespace PokemonCore.Combat
             {
                 ReplacePokemon(tuple.Item1,tuple.Item2);
             }
-            list.Clear();
+        }
+
+        public void PokemonFainting(CombatPokemon combatPokemon)
+        {
+            OnPokemonFainting?.Invoke(combatPokemon);
         }
         
         public void ReplacePokemon(CombatPokemon currentPokemon,Pokemon nextPokemon)
@@ -410,6 +432,8 @@ namespace PokemonCore.Combat
                     return false;
                 }
             }
+            
+            UnityEngine.Debug.Log($"Received instruction:{ins}");
             Instructions.Add(ins);
 
             switch (ins.command)
@@ -440,6 +464,28 @@ namespace PokemonCore.Combat
 
         #region 工具方法
 
+        public CombatPokemon RefindTarget(Damage dmg)
+        {
+            // bool isAlly = alliesPokemons.Contains(dmg.sponsor);
+            bool toAlly = alliesPokemons.Contains(dmg.target);
+            if (toAlly)
+            {
+                foreach (var pokemon in alliesPokemons)
+                {
+                    if (pokemon.HP > 0) return pokemon;
+                }
+            }
+            else
+            {
+                foreach (var pokemon in opponentsPokemons)
+                {
+                    if (pokemon.HP > 0) return pokemon;
+                }
+            }
+
+            return null;
+        }
+
         public CombatMove GenerateCombatMove(Instruction ins)
         {
             //Only can one sponsor exists
@@ -466,13 +512,27 @@ namespace PokemonCore.Combat
             }
         }
 
-
+        //TODO:目前的判定可能造成一个技能打宝可梦两遍甚至更多的情况，目前暂不修复
         public List<Damage> GenerateDamages(CombatMove cmove)
         {
             List<Damage> dmgs = new List<Damage>();
             foreach (var target in cmove.Targets)
             {
-                dmgs.Add(new Damage(cmove, cmove.Sponsor, target));
+                var t = target;
+                if(!Pokemons.Contains(target))
+                {
+                    
+                    bool isAlly = alliesTrainers.Contains(Trainers[target.TrainerID]);
+                    if (isAlly)
+                    {
+                        t = alliesPokemons.RandomPickOne();
+                    }
+                    else
+                    {
+                        t = opponentsPokemons.RandomPickOne();
+                    }
+                }
+                dmgs.Add(new Damage(cmove, cmove.Sponsor, t));
             }
 
             return dmgs;
