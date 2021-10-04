@@ -29,6 +29,8 @@ public class dialogEngine : MonoBehaviour
     public int dialogLines = 2;
     public int fontSize = 20;
 
+    public float fadeSpeed = 7f;
+
     private Transform dialogBoxTrn;
     private void Awake()
     {
@@ -37,6 +39,7 @@ public class dialogEngine : MonoBehaviour
         dialogBoxText = dialogBoxTrn.Find("boxText").GetComponent<Text>();
         dialogBoxTextShadow = dialogBoxTrn.Find("boxTextShadow").GetComponent<Text>();
         dialogCanvasGroup = dialogBoxTrn.transform.GetComponent<CanvasGroup>();
+
 
 /*        Transform choiceBoxTrn = transform.Find("ChoiceBox");
         choiceBox = choiceBoxTrn.GetComponent<Image>();
@@ -235,7 +238,7 @@ public class dialogEngine : MonoBehaviour
                         yield return null;
                     }
                 }*/
-        yield return StartCoroutine(fadeEffect(1,7f));
+        yield return StartCoroutine(fadeEffect(1));
         #region discard code
         //boxBG(o.x, line.y ) ->dialogBoxTrn.size
         /*dialogBoxBorder.rectTransform.sizeDelta = new Vector2(dialogBoxBorder.rectTransform.sizeDelta.x, Mathf.Round((float)lines * frontSize) + 16);
@@ -264,7 +267,7 @@ public class dialogEngine : MonoBehaviour
         #endregion
     }
     
-    public IEnumerator fadeEffect(int alpha,float fadeSpeed)
+    public IEnumerator fadeEffect(int alpha)
     {
         CanvasGroup cg = dialogCanvasGroup;
         while (cg.alpha != alpha)

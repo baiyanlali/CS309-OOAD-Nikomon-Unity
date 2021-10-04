@@ -63,7 +63,7 @@ public class dialogManager : MonoBehaviour
     }
     public IEnumerator textUnDraw()
     {
-        de.fadeEffect(0,7f);
+        de.StartCoroutine("fadeEffect",0);
         yield return null;
     }
 }
