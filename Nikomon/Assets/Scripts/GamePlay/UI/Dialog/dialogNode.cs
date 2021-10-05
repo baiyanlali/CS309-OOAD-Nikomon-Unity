@@ -7,29 +7,28 @@ class dialogNode
     public int nodeId;
     public int style;//0:default style  1:style 1  2:style 3
 
-    public int selectType;//0:no select  1:
-    List<int> nodeIdList;
+    public bool invokeChoice;
+    public List<int> nodeIdList;
+    public string content;
 
-    private dialogNode(int nodeId ,int style ,List<int> nodeidList,int selectType)
+    public dialogNode(string nodeId , string style ,string nodeidList, string invokeChoice,string content)
     {
-        this.nodeId = nodeId;
-        this.style = style;
-        this.nodeIdList = nodeidList ;
-        this.selectType = selectType;
+        this.nodeId = int.Parse(nodeId);
+        this.style = int.Parse(style);
+        this.invokeChoice = bool.Parse(invokeChoice);
+        this.content = content;
+
+        nodeIdList = new List<int>();
+        if (nodeidList != "")
+        {
+            string[] nl = nodeidList.Split('$');
+            for (int i = 0; i < nl.Length; i++)
+            {
+                nodeIdList.Add(int.Parse(nl[i]));
+            }
+        }
     }
 
-    public dialogNode readDialogNode() //read from dialogContent.txt
-    {
-        int nodeId = 0;
-        int style = 1;
-        List<int> nodeIdList = new List<int>();
-        int selectType = 1;
 
-
-
-        dialogNode dn = new dialogNode(nodeId,style,nodeIdList,selectType);
-
-        return dn;
-    }
 
 }

@@ -56,26 +56,31 @@ public class dialogEngine : MonoBehaviour
 
     public IEnumerator DrawText(string text)
     {
-        yield return StartCoroutine(DrawText(text, 1f / charPerSec, false));
+        yield return StartCoroutine(DrawText(text, 1f / charPerSec, false ,false));
     }
 
     public IEnumerator DrawText(string text, float secPerChar)
     {
-        yield return StartCoroutine(DrawText(text, secPerChar, false));
+        yield return StartCoroutine(DrawText(text, secPerChar, false, false));
     }
 
     public IEnumerator DrawTextSilent(string text)
     {
-        yield return StartCoroutine(DrawText(text, 1f / charPerSec, true));
+        yield return StartCoroutine(DrawText(text, 1f / charPerSec, true, false));
     }
 
     public IEnumerator DrawTextInstant(string text)
     {
-        yield return StartCoroutine(DrawText(text, 0, false));
+        yield return StartCoroutine(DrawText(text, 0, false, false));
     }
 
-    public IEnumerator DrawText(string text, float secPerChar, bool audioEffect)
+    public IEnumerator DrawText(string text, float secPerChar, bool audioEffect,bool continued)
     {
+        if (!continued)
+        {
+            dialogBoxText.text = "";
+            dialogBoxTextShadow.text = "";
+        }
         string[] words = text.Split(new char[] { ' ' });
         Debug.Log(text);
         for (int i = 0; i < words.Length; i++)
@@ -103,7 +108,6 @@ public class dialogEngine : MonoBehaviour
     {
         yield return StartCoroutine(DrawWord(word, false, false, false, secPerChar));
     }
-
     private IEnumerator DrawWord(string word, bool large, bool bold, bool italic, float secPerChar)
     {
         char[] chars = word.ToCharArray();
@@ -208,64 +212,29 @@ public class dialogEngine : MonoBehaviour
         }
     }
 
-
+    public bool dialogBoxOn()
+    {
+        return dialogBoxTrn.gameObject.activeInHierarchy;
+    }
     public void DrawDialogBox()
     {
-        StartCoroutine(DrawDialogBox(dialogLines,PlayerPrefs.GetInt("dialogStyle")));
+        DrawDialogBox(PlayerPrefs.GetInt("dialogStyle"));
     }
-    public void DrawDialogBox(int lines)
+    public void DrawDialogBox(int style)
     {
-        StartCoroutine(DrawDialogBox(lines, PlayerPrefs.GetInt("dialogStyle")));
-    }
+        // should be draw specific image scripts 
+        // the image should be according to the style
 
-    private IEnumerator DrawDialogBox(int lines,int style)
-    {
-        Debug.Log("DrawDialogbox"+ PlayerPrefs.GetInt("dialogStyle"));
+        //above
+
         dialogBoxTrn.gameObject.SetActive(true);
         dialogBoxText.text = "";
         dialogBoxText.fontSize = fontSize;
         dialogBoxTextShadow.fontSize = fontSize;
         dialogBoxTextShadow.text = dialogBoxText.text;
-        /*        float alpha = 1f;
-                dialogCanvasGroup.alpha = 0;
-                while (true)
-                {
-                    dialogCanvasGroup.alpha = Mathf.Lerp(dialogCanvasGroup.alpha, alpha, 0.01f * Time.deltaTime);
-                    Debug.Log(0.01f * Time.deltaTime);
-                    if (Mathf.Abs(alpha - dialogCanvasGroup.alpha) <= 0.01)
-                    {
-                        dialogCanvasGroup.alpha = alpha;
-                        yield return null;
-                    }
-                }*/
-        yield return StartCoroutine(fadeEffect(1));
-        #region discard code
-        //boxBG(o.x, line.y ) ->dialogBoxTrn.size
-        /*dialogBoxBorder.rectTransform.sizeDelta = new Vector2(dialogBoxBorder.rectTransform.sizeDelta.x, Mathf.Round((float)lines * frontSize) + 16);
-
-        dialogBox.rectTransform.sizeDelta = dialogBoxTrn.gameObject.GetComponent<RectTransform>().sizeDelta;
-        dialogBoxText.rectTransform.localPosition = new Vector3(dialogBoxText.rectTransform.localPosition.x,-110f + Mathf.Round((float)lines * frontSize), 0);
-        dialogBoxTextShadow.rectTransform.localPosition = new Vector3(dialogBoxText.rectTransform.localPosition.x, dialogBoxText.rectTransform.localPosition.y - 1f, 0);
-        */
-        //The rise effect of sign
-        /*if (sign)
-        {
-            float increment = 0f;
-            while (increment < 1)
-            {
-                increment += (1f / 0.2f) * Time.deltaTime;
-                if (increment > 1)
-                {
-                    increment = 1;
-                }
-
-                dialogBox.rectTransform.localPosition = new Vector2(dialogBox.rectTransform.localPosition.x,
-                    -dialogBox.rectTransform.sizeDelta.y + (dialogBox.rectTransform.sizeDelta.y * increment));
-                yield return null;
-            }
-        }*/
-        #endregion
+        StartCoroutine(fadeEffect(1));
     }
+
     
     public IEnumerator fadeEffect(int alpha)
     {
@@ -273,16 +242,32 @@ public class dialogEngine : MonoBehaviour
         while (cg.alpha != alpha)
         {
             cg.alpha = Mathf.Lerp(cg.alpha, alpha, fadeSpeed * Time.deltaTime);
-            yield return null;
+            
             // Debug.Log(cg.alpha);
             if (Mathf.Abs(alpha - cg.alpha) <= 0.01)
+            {
+                cg.alpha = alpha;
+                if(cg.alpha == 0)
                 {
-                    cg.alpha = alpha;
+                    dialogBoxTrn.gameObject.SetActive(false);
                 }
+            }
+            yield return null;
         }
         
     }
     
+
+
+
+
+
+
+
+
+
+
+
 
     public IEnumerator DrawChoiceBox()
     {

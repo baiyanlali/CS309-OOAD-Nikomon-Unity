@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class testMain : MonoBehaviour
 {
@@ -9,6 +10,8 @@ public class testMain : MonoBehaviour
     private int condition;
     void Start()
     {
+        
+
         //de = transform.Find("dialogSystem").GetComponent<dialogEngine>();
         dm = dialogManager.getDialogManager();
         condition = 0;
@@ -19,36 +22,21 @@ public class testMain : MonoBehaviour
     {
         //dm.onDialogText("八百标兵奔北坡，炮兵并排北边跑！");
         //dm.offDialog();
-        StartCoroutine("on");
-
-        
-
-    }
-    IEnumerator off()
-    {
-        
-        yield return new WaitForSeconds(2);
-        if (condition == 1)
+        var keyboard = Keyboard.current;
+        if (keyboard != null)
         {
-            Debug.Log("off");
-            dm.offDialog();
-            condition = 2;
-            
+            //执行顺序 isPressed = false -> 按下：wasPressedThisFrame = true -> 中途：isPressed = true -> 松开：wasReleasedThisFrame = true -> isPressed = false
+            if (keyboard.sKey.wasPressedThisFrame)
+                //dm.onDialogText("至诚无息，薄厚有会员");
+                dm.onDialogId(0);
+            if (keyboard.aKey.wasPressedThisFrame)
+                dm.onDialogId();
+            if (keyboard.lKey.wasPressedThisFrame)
+                dm.offDialog();
         }
 
     }
-    IEnumerator on()
-    {
-        yield return new WaitForSeconds(2);
-        if (condition == 0)
-        {
-            Debug.Log("on");
-            dm.onDialogText("八百标兵奔北坡，炮兵并排北边跑！");
-            condition = 1;
-            StartCoroutine("off");
-        }
 
-    }
 
 
 }
