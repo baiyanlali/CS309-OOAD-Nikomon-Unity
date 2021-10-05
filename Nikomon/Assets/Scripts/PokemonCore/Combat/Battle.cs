@@ -48,7 +48,7 @@ namespace PokemonCore.Combat
         public int CombatPokemonID;
         public Command command;
         /// <summary>
-        /// 这里的ID指的是不同Command下的ID，比如对于Move这里的id就是0，1，2，3代表宝可梦不同招式；对于Items就是Items本身的ID
+        /// 这里的ID指的是不同Command下的ID，比如对于Move这里的id就是0，1，2，3代表宝可梦不同招式；对于Items就是Items本身的ID，对于run就是本run宝可梦的trainer的ID
         /// </summary>
         public int ID;
         public List<int> target;
@@ -153,6 +153,8 @@ namespace PokemonCore.Combat
             get => (from myPokes in Pokemons where myPokes.TrainerID == UserTrainer.id select myPokes).ToList();
         }
 
+        public bool CanRun=>alliesTrainers.Count==1 && opponentTrainers.Count==1;
+
         private BattleResults mBattleResults;
 
         private BattleActions mBattleActions;
@@ -251,7 +253,14 @@ namespace PokemonCore.Combat
 
             OnTurnBegin += () => { turnCount++; };
 
-            OnBattleEnd += (o) => { Instance = null; };
+            OnBattleEnd += (o) =>
+            {
+                for (int i = 0; i < Game.trainer.pokemonOnTheBattle.Length; i++)
+                {
+                    Game.trainer.pokemonOnTheBattle[i] = false;
+                }
+                Instance = null;
+            };
             OnTurnBegin?.Invoke();
         }
 
@@ -450,6 +459,24 @@ namespace PokemonCore.Combat
                     SwitchPokemons.Add(new Tuple<CombatPokemon, Pokemon>(combatPoke,Trainers[combatPoke.TrainerID].party[ins.ID]));
                     break;
                 case Command.Run:
+                    if (CanRun)
+                    {
+                        //只有在1（trainer）v1（trainer）的时候才能run！
+                        if (alliesTrainers.Contains(Trainers[ins.ID]))
+                        {
+                            mBattleResults = BattleResults.Ran;
+                            OnBattleEnd?.Invoke(BattleResults.Ran);
+                        }
+                        else
+                        {
+                            mBattleResults = BattleResults.Succeed;
+                            OnBattleEnd?.Invoke(BattleResults.Succeed);
+                        }
+                    }
+                    else
+                    {
+                        
+                    }
                     break;
             }
 

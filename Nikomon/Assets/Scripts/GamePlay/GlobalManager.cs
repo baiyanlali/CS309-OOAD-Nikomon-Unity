@@ -10,9 +10,10 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Debug = UnityEngine.Debug;
 using Types = PokemonCore.Types;
-
 using Newtonsoft.Json;
 using PokemonCore.Network;
+using UnityEditor.U2D;
+using UnityEngine.U2D;
 using Utility;
 
 
@@ -27,7 +28,7 @@ public class GlobalManager : MonoBehaviour
         {
             if (s_Instance != null) return s_Instance;
             s_Instance = FindObjectOfType<GlobalManager>();
-            if(s_Instance!=null) return s_Instance;
+            if (s_Instance != null) return s_Instance;
             s_Instance = CreateGlobalManager();
             return s_Instance;
         }
@@ -36,12 +37,13 @@ public class GlobalManager : MonoBehaviour
     public static bool isBattling;
 
     private static GlobalManager s_Instance;
-    
+
     private Game game;
 
     #region 存储各种美术资源
 
     public Dictionary<int, GameObject[]> Pokemons;
+    public Dictionary<int, Sprite> PokemonIcons;
 
     #endregion
 
@@ -52,18 +54,18 @@ public class GlobalManager : MonoBehaviour
         {
             obj = new GameObject("Global");
         }
-        
+
         GlobalManager gm = obj.AddComponent<GlobalManager>();
         return gm;
-        
     }
-    
+
     private void Awake()
     {
         if (s_Instance != null && s_Instance != this)
         {
             Destroy(this.gameObject);
         }
+
         s_Instance = this;
 
 
@@ -78,23 +80,20 @@ public class GlobalManager : MonoBehaviour
         game = new Game();
         var natures = new Dictionary<int, Nature>();
         natures.Add(0, new Nature(0, new float[] {0, 0, 0, 0, 0}));
-        
+
         Pokemons = new Dictionary<int, GameObject[]>();
+        PokemonIcons = new Dictionary<int, Sprite>();
 
-
-        game.OnDoNotHaveSaveFile +=StartPanel;
-        game.OnHaveSaveFile += ()=>
-        {
-            SceneManager.LoadScene(1);
-        };
-        game.Init(LoadTypes(),null,LoadPokemons(),LoadExperienceTable(),natures,null,LoadMoves(),null);
+        game.OnDoNotHaveSaveFile += StartPanel;
+        game.OnHaveSaveFile += () => { SceneManager.LoadScene(1); };
+        game.Init(LoadTypes(), null, LoadPokemons(), LoadExperienceTable(), natures, null, LoadMoves(), null);
         isBattling = false;
     }
 
     void StartPanel()
     {
         Debug.Log("No Save data found");
-        GameObject obj=GameObject.Find("Canvas");
+        GameObject obj = GameObject.Find("Canvas");
         obj.transform.Find("StartCanvas").gameObject.SetActive(true);
         obj.transform.Find("Start").gameObject.SetActive(false);
     }
@@ -102,8 +101,8 @@ public class GlobalManager : MonoBehaviour
     public void CreateNewTrainer(bool isMale)
     {
         InputField text = GameObject.Find("NameText").GetComponent<InputField>();
-        game.CreateNewSaveFile(text.text,isMale);
-        
+        game.CreateNewSaveFile(text.text, isMale);
+
         StartGame();
     }
 
@@ -113,38 +112,35 @@ public class GlobalManager : MonoBehaviour
         SceneManager.sceneLoaded += StartBattleFastTest;
     }
 
-    public void StartNetworkBattle(int trainersNum=2,int pokemonPerTrainer=1,string password="")
+    public void StartNetworkBattle(int trainersNum = 2, int pokemonPerTrainer = 1, string password = "")
     {
         // NetworkLogic.StartLocalNetwork();
         NetworkLogic.OnStartBattle = StartBattle;
-        NetworkLogic.PairOnBattle(trainersNum,pokemonPerTrainer,password);
+        NetworkLogic.PairOnBattle(trainersNum, pokemonPerTrainer, password);
     }
 
     public void StartFastNetworkBattle()
     {
         SceneManager.LoadScene(1);
-        SceneManager.sceneLoaded += (a,b) =>
-        {
-            StartNetworkBattle();
-        };
+        SceneManager.sceneLoaded += (a, b) => { StartNetworkBattle(); };
     }
 
     void StartBattleFastTest(Scene scene, LoadSceneMode mode)
     {
-        Game.trainer.party[0]=new Pokemon(Game.PokemonsData[4], "",Game.trainer, 50, 0);
-        Game.trainer.party[1]=new Pokemon(Game.PokemonsData[1], "",Game.trainer, 50, 0);
-        Trainer trainer = new Trainer("Computer",false);
-        trainer.party[0] = new Pokemon(Game.PokemonsData[17], "",trainer, 50, 0);
-        trainer.party[1] = new Pokemon(Game.PokemonsData[7], "",trainer, 50, 0);
+        Game.trainer.party[0] = new Pokemon(Game.PokemonsData[4], "", Game.trainer, 50, 0);
+        Game.trainer.party[1] = new Pokemon(Game.PokemonsData[1], "", Game.trainer, 50, 0);
+        Trainer trainer = new Trainer("Computer", false);
+        trainer.party[0] = new Pokemon(Game.PokemonsData[17], "", trainer, 50, 0);
+        trainer.party[1] = new Pokemon(Game.PokemonsData[7], "", trainer, 50, 0);
         List<Trainer> trainers = new List<Trainer>();
         trainers.Add(trainer);
         game.SaveData();
-        StartBattle(null,trainers,true,2);
+        StartBattle(null, trainers, true, 2);
     }
 
-    public void StartBattle(List<Trainer> allies,List<Trainer> oppo,bool isHost,int pokemonPerTrainer=1)
+    public void StartBattle(List<Trainer> allies, List<Trainer> oppo, bool isHost, int pokemonPerTrainer = 1)
     {
-        StartBattle(allies,oppo,oppo,null,isHost,pokemonPerTrainer);
+        StartBattle(allies, oppo, oppo, null, isHost, pokemonPerTrainer);
     }
 
     /// <summary>
@@ -153,17 +149,18 @@ public class GlobalManager : MonoBehaviour
     /// <param name="pokemon">野外对战遇到的仅有的一只宝可梦</param>
     public void StartBattle(Pokemon pokemon)
     {
-        Trainer trainer = new Trainer(pokemon.Name,pokemon.isMale);
+        Trainer trainer = new Trainer(pokemon.Name, pokemon.isMale);
         trainer.party[0] = pokemon;
         pokemon.TrainerID = trainer.id;
-        StartBattle(null,new List<Trainer>(new []{trainer}),true);
+        StartBattle(null, new List<Trainer>(new[] {trainer}), true);
     }
 
-    public void StartBattle(List<Trainer> allies, List<Trainer> oppos,List<Trainer> AI, List<Trainer> userInternet, bool isHost,
+    public void StartBattle(List<Trainer> allies, List<Trainer> oppos, List<Trainer> AI, List<Trainer> userInternet,
+        bool isHost,
         int pokemonPerTrainer)
     {
         isBattling = true;
-        game.StartBattle(allies,oppos,AI,userInternet,isHost,pokemonPerTrainer);
+        game.StartBattle(allies, oppos, AI, userInternet, isHost, pokemonPerTrainer);
         Game.battle.OnBattleEnd += (o) =>
         {
             isBattling = false;
@@ -186,101 +183,110 @@ public class GlobalManager : MonoBehaviour
 
     #region LoadDataToDictionary
 
-        public Dictionary<int,int[]> LoadExperienceTable()
+    public Dictionary<int, int[]> LoadExperienceTable()
+    {
+        List<int[]> tmp =
+            JsonConvert.DeserializeObject<List<int[]>>(Resources.Load<TextAsset>("PokemonData/" + Game.ExpTableFile)
+                .text);
+        var ExperienceTable = new Dictionary<int, int[]>();
+        for (int i = 0; i < tmp.Count; i++)
         {
-            List<int[]> tmp = JsonConvert.DeserializeObject<List<int[]>>(Resources.Load<TextAsset>("PokemonData/"+Game.ExpTableFile).text);
-            var ExperienceTable = new Dictionary<int, int[]>();
-            for (int i = 0; i < tmp.Count; i++)
-            {
-                ExperienceTable.Add(i, tmp[i]);
-            }
-
-            return ExperienceTable;
+            ExperienceTable.Add(i, tmp[i]);
         }
 
-        public Dictionary<int,Types> LoadTypes()
-        {
-            List<Types> tmp = JsonConvert.DeserializeObject<List<Types>>(Resources.Load<TextAsset>("PokemonData/"+Game.TypeFile).text);
-            var TypesMap = new Dictionary<int, Types>();
-            foreach (var t in tmp)
-            {
-                TypesMap.Add(t.ID, t);
-            }
+        return ExperienceTable;
+    }
 
-            return TypesMap;
+    public Dictionary<int, Types> LoadTypes()
+    {
+        List<Types> tmp =
+            JsonConvert.DeserializeObject<List<Types>>(Resources.Load<TextAsset>("PokemonData/" + Game.TypeFile).text);
+        var TypesMap = new Dictionary<int, Types>();
+        foreach (var t in tmp)
+        {
+            TypesMap.Add(t.ID, t);
         }
 
-        public void LoadAbilities(LoadDataType type = LoadDataType.Json)
+        return TypesMap;
+    }
+
+    public void LoadAbilities(LoadDataType type = LoadDataType.Json)
+    {
+        if (type == LoadDataType.Json)
         {
-            if (type == LoadDataType.Json)
-            {
-                // using FileStream openStream = File.OpenRead(DataPath+"Abilities.json");
-                // AbilitiesData = await JsonSerializer.DeserializeAsync<Dictionary<int,Ability>>(openStream);
-            }
+            // using FileStream openStream = File.OpenRead(DataPath+"Abilities.json");
+            // AbilitiesData = await JsonSerializer.DeserializeAsync<Dictionary<int,Ability>>(openStream);
+        }
+    }
+
+    public void LoadNature(LoadDataType type = LoadDataType.Json)
+    {
+        if (type == LoadDataType.Json)
+        {
+        }
+    }
+
+    public void LoadEffect(LoadDataType type = LoadDataType.Json)
+    {
+        if (type == LoadDataType.Json)
+        {
+        }
+    }
+
+    public Dictionary<int, MoveData> LoadMoves()
+    {
+        List<MoveData> tmp =
+            JsonConvert.DeserializeObject<List<MoveData>>(
+                Resources.Load<TextAsset>("PokemonData/" + Game.MoveFile).text);
+        var MovesData = new Dictionary<int, MoveData>();
+        foreach (var t in tmp)
+        {
+            MovesData.Add(t.MoveID, t);
         }
 
-        public void LoadNature(LoadDataType type = LoadDataType.Json)
+        return MovesData;
+    }
+
+    public void LoadItems(LoadDataType type = LoadDataType.Json)
+    {
+        if (type == LoadDataType.Json)
         {
-            if (type == LoadDataType.Json)
-            {
-            }
         }
+    }
 
-        public void LoadEffect(LoadDataType type = LoadDataType.Json)
+
+    public Dictionary<int, PokemonData> LoadPokemons()
+    {
+        List<PokemonData> tmp =
+            JsonConvert.DeserializeObject<List<PokemonData>>(Resources
+                .Load<TextAsset>("PokemonData/" + Game.PokemonFile).text);
+        var PokemonsData = new Dictionary<int, PokemonData>();
+
+
+        foreach (var t in tmp)
         {
-            if (type == LoadDataType.Json)
+            PokemonsData.Add(t.ID, t);
+
+
+            GameObject obj = Resources.Load<GameObject>("Prefabs/Pokemons/" + t.ID + t.innerName);
+            if (obj == null)
             {
+                obj = Resources.Load<GameObject>("Prefabs/Pokemons/" + t.ID + t.innerName + "M");
+                if (obj == null) throw new Exception($"Pokemon Prefabs Not Found:{t.ID},{t.innerName}");
+                var obj2 = Resources.Load<GameObject>("Prefabs/Pokemons/" + t.ID + t.innerName + "F");
+                Pokemons.Add(t.ID, new[] {obj, obj2});
             }
-        }
-
-        public Dictionary<int,MoveData> LoadMoves()
-        {
-            List<MoveData> tmp = JsonConvert.DeserializeObject<List<MoveData>>(Resources.Load<TextAsset>("PokemonData/"+Game.MoveFile).text );
-            var MovesData = new Dictionary<int, MoveData>();
-            foreach (var t in tmp)
+            else
             {
-                MovesData.Add(t.MoveID, t);
-            }
-
-            return MovesData;
-        }
-
-        public void LoadItems(LoadDataType type = LoadDataType.Json)
-        {
-            if (type == LoadDataType.Json)
-            {
-            }
-        }
-
-
-        public Dictionary<int,PokemonData> LoadPokemons()
-        {
-            List<PokemonData> tmp =JsonConvert.DeserializeObject<List<PokemonData>>(Resources.Load<TextAsset>("PokemonData/"+Game.PokemonFile).text);
-            var PokemonsData = new Dictionary<int, PokemonData>();
-
-            foreach (var t in tmp)
-            {
-                PokemonsData.Add(t.ID, t);
-
-
-                GameObject obj = Resources.Load<GameObject>("Prefabs/Pokemons/" + t.ID + t.innerName);
-                if (obj == null)
-                {
-                    obj = Resources.Load<GameObject>("Prefabs/Pokemons/" + t.ID + t.innerName + "M");
-                    if (obj == null) throw new Exception($"Pokemon Prefabs Not Found:{t.ID},{t.innerName}");
-                    var obj2 = Resources.Load<GameObject>("Prefabs/Pokemons/" + t.ID + t.innerName + "F");
-                    Pokemons.Add(t.ID,new []{obj,obj2});
-                }
-                else
-                {
-                    Pokemons.Add(t.ID,new []{obj});
-                }
+                Pokemons.Add(t.ID, new[] {obj});
             }
 
-            return PokemonsData;
+            
+            PokemonIcons.Add(t.ID, Resources.Load<Sprite>("Sprites/PokemonIcons/"+t.ID+t.innerName));
         }
 
-        #endregion
-    
-    
+        return PokemonsData;
+    }
+
+    #endregion
 }

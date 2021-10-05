@@ -23,6 +23,7 @@ public class PokemonChooserElementUI : MonoBehaviour
         HealthText = HealthText ? HealthText : transform.Find("HealthText").GetComponent<Text>();
         LevelText = LevelText ? LevelText : transform.Find("LevelText").GetComponent<Text>();
 
+        PokemonIcon.sprite = GlobalManager.Instance.PokemonIcons[pokemon.ID];
         PokemonName.text = pokemon.Name;
         HealthBar.value = pokemon.HP / (float) pokemon.TotalHp;
         HealthText.text = $"{pokemon.HP}/{pokemon.TotalHp}";

@@ -1,14 +1,34 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using PokemonCore.Combat.Interface;
 using PokemonCore.Utility;
 using UnityEditor;
+using UnityEditor.VersionControl;
 using UnityEngine;
 
 namespace Editor
 {
-    public static class EditorUtil
+    public static class EditorUtil<T>
     {
+
+        public static Action<T> OnLoad;
+
+        public static void EditSaveLoad(T data,string name="")
+        {
+            GUILayout.BeginHorizontal();
+            if (GUILayout.Button("Save"))
+            {
+                SaveLoad.Save(name, data, @"Assets/Resources/PokemonData/");
+            }
+
+            if (GUILayout.Button("Load"))
+            {
+                OnLoad?.Invoke(SaveLoad.Load<T>(name, @"Assets/Resources/PokemonData/"));
+            }
+            GUILayout.EndHorizontal();
+        }
+        
         public static void EditConditions(List<PokemonCore.Utility.Condition> conditions)
         {
             GUILayout.BeginHorizontal();

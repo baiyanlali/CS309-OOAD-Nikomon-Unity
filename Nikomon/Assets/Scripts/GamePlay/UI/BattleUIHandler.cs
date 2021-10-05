@@ -151,8 +151,22 @@ public class BattleUIHandler : MonoBehaviour
 
     public void OnReplacePokemon(CombatPokemon p1,CombatPokemon p2)
     {
-        //TODO: 这里偷个小懒
-        Init(BattleHandler.Instance);
+        gameObject.SetActive(true);
+        // for (int i = 0; i < transform.childCount; i++)
+        // {
+        //     transform.GetChild(i).gameObject.SetActive(true);
+        // }
+
+        List<CombatPokemon> allies = BattleHandler.Instance.AlliesPokemons;
+        List<CombatPokemon> opponents = BattleHandler.Instance.OpponentPokemons;
+
+        InitStateUI(allies, AlliesState.transform);
+        InitStateUI(opponents, OpponentState.transform);
+
+        // PokemonChooserTableUI.Instance.Init(Game.trainer, new[] {"Switch Pokemon", "View Ability", "Items", "Cancel"},
+            // new Action<int>[] {SwitchPokemon, ViewAbility, ShowItems, ShowBattleMenu});
+
+        TargetChooserHandler.Init(opponents, allies);
         
     }
 
@@ -238,9 +252,17 @@ public class BattleUIHandler : MonoBehaviour
 
     public void SwitchPokemon(int index)
     {
+        ShowBattleMenu();
         UnityEngine.Debug.Log($"Choose switch to index:{index}");
         if (Game.trainer.party[index] == null || Game.trainer.pokemonOnTheBattle[index]) return;
         Instruction ins = new Instruction(BattleHandler.Instance.CurrentPokemon.CombatID, Command.SwitchPokemon, index,
+            null);
+        BuildInstrustruction(ins);
+    }
+
+    public void Run()
+    {
+        Instruction ins = new Instruction(BattleHandler.Instance.CurrentPokemon.CombatID, Command.Run, Game.trainer.id,
             null);
         BuildInstrustruction(ins);
     }

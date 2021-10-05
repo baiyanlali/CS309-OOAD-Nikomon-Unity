@@ -18,6 +18,7 @@ public class TargetChooserUI : MonoBehaviour
     public void Init(CombatPokemon pokemon)
     {
         this.Pokemon = pokemon;
+        pokeImage.sprite = GlobalManager.Instance.PokemonIcons[pokemon.pokemon.ID];
         toggle = GetComponent<Toggle>();
         pokeName.text = pokemon.Name;
         trainerName.text = "???";

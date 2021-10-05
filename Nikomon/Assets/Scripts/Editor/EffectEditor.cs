@@ -146,7 +146,7 @@ namespace Editor
             
             
             
-            EditorUtil.EditConditions(conditions);
+            EditorUtil<object>.EditConditions(conditions);
 
             GUILayout.EndVertical();
         }
@@ -227,7 +227,7 @@ namespace Editor
                 GUILayout.EndHorizontal();
                 GUILayout.Space(5);
                 GUILayout.Label("Edit Conditions:");
-                EditorUtil.EditConditions(eff[i].Conditions);
+                EditorUtil<object>.EditConditions(eff[i].Conditions);
                 GUILayout.Space(10);
             }
             GUILayout.EndScrollView();
