@@ -136,6 +136,7 @@ namespace PokemonCore.Network
             while (true)
             {
                 UnityEngine.Debug.Log("I'm sending message");
+                
                 UDPsend.Send(buf, buf.Length, endPoint);
                 Thread.Sleep(200);
             }

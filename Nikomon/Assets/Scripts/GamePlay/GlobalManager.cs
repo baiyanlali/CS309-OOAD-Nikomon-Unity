@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using GamePlay;
 using PokemonCore;
 using PokemonCore.Attack.Data;
 using PokemonCore.Combat;
@@ -14,8 +15,6 @@ using Newtonsoft.Json;
 using PokemonCore.Inventory;
 using PokemonCore.Network;
 using PokemonCore.Utility;
-using UnityEditor.U2D;
-using UnityEngine.U2D;
 using Utility;
 
 
@@ -42,6 +41,8 @@ public class GlobalManager : MonoBehaviour
 
     private Game game;
 
+    public ConfigSettings Config;
+    
     #region 存储各种美术资源
 
     public Dictionary<int, GameObject[]> Pokemons;
@@ -78,6 +79,8 @@ public class GlobalManager : MonoBehaviour
     private void InitGame()
     {
         Game.DataPath = Application.persistentDataPath;
+
+        Config = SaveLoad.Load<ConfigSettings>("Settings.json",Application.persistentDataPath) ?? new ConfigSettings();
 
         game = new Game();
         var natures = new Dictionary<int, Nature>();

@@ -6,7 +6,7 @@ using PokemonCore.Combat.Interface;
 namespace PokemonCore.Combat
 {
     [Serializable]
-    public class Trainer:IPropertyModify
+    public class Trainer
     {
         public string name { get; private set; }
         public int id { get; private set; }

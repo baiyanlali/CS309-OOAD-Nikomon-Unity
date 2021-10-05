@@ -9,7 +9,7 @@ using PokemonCore.Utility;
 
 namespace PokemonCore.Combat
 {
-    public class CombatPokemon:IPropertyModify
+    public class CombatPokemon
     {
         [JsonIgnore]
         public Battle battle=>Game.battle;

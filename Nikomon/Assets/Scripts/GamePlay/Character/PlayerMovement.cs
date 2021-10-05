@@ -10,20 +10,30 @@ public class PlayerMovement : MonoBehaviour
     public float InteractDepth = 5f;
     private Animator animator;
 
+    private GameObject VirtualController;
+
     void Start()
     {
         animator = GetComponent<Animator>();
+        VirtualController=GameObject.Find("VirtualController");
         if (nicoInput == null)
             nicoInput = FindObjectOfType<NicomonInputSystem>();
     }
 
     void Update()
     {
-        if (GlobalManager.isBattling) return;
+
+        if (GlobalManager.isBattling)
+        {
+            if(GlobalManager.Instance.Config.UseVirtualControl) VirtualController?.SetActive(false);
+            move=Vector2.zero;
+            return;
+        }
         if (nicoInput == null)
             nicoInput = FindObjectOfType<NicomonInputSystem>();
         else
         {
+            if(GlobalManager.Instance.Config.UseVirtualControl) VirtualController?.SetActive(true);
             this.move = nicoInput.move;
             Movement();
 
