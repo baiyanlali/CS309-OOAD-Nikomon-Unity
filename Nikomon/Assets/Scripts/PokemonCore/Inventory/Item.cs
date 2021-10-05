@@ -21,6 +21,11 @@ namespace PokemonCore.Inventory
         public Tag tag { get;  set; }
         public int ID { get;  set; }
         public string name { get;  set; }
+        
+        /// <summary>
+        /// 用作买卖
+        /// </summary>
+        public int value { get; set; }
 
         [JsonConstructor]
         public Item(Tag t,int id,string name)
@@ -35,7 +40,7 @@ namespace PokemonCore.Inventory
         {
             tag =  Tag.Berries;
             ID = 1;
-            name = "Chang this";
+            name = "Change this";
         }
         
         

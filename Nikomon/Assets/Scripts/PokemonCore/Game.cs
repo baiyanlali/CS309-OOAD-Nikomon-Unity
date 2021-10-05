@@ -31,6 +31,7 @@ namespace PokemonCore
         public static readonly string PokemonFile = "pokemons";
         public static readonly string ExpTableFile = "levelingRate";
         public static readonly string SaveFile = "Save.json";
+        public static readonly string ItemFile = "Items.json";
 
         #endregion
 
@@ -46,7 +47,7 @@ namespace PokemonCore
 
         public static Dictionary<int, MoveData> MovesData { get; private set; }
 
-        public static Dictionary<int, Item> ItemsData { get; private set; }
+        public static Dictionary<Tuple<Item.Tag,int>, Item> ItemsData { get; private set; }
 
 
         public static Trainer trainer;
@@ -85,24 +86,7 @@ namespace PokemonCore
         {
             SaveLoad.Save(SaveFile, trainer);
         }
-
-        // [Obsolete]
-        // public void Init()
-        // {
-        //     Random = new Random();
-        //     LoadTypes();
-        //     LoadMoves();
-        //     LoadPokemons();
-        //     LoadExperienceTable();
-        //     NatureData = new Dictionary<int, Nature>();
-        //     NatureData.Add(0, new Nature(0, new float[] {0, 0, 0, 0, 0}));
-        //     if (HaveSave)
-        //         trainer = SaveLoad.Load<Trainer>(SaveFile);
-        //     else
-        //         OnDoNotHaveSaveFile?.Invoke();
-        //
-        //     // PC pc = new PC();
-        // }
+        
 
 
         public void Init(
@@ -113,7 +97,7 @@ namespace PokemonCore
             Dictionary<int, Nature> natures,
             Dictionary<int, List<IEffect>> effectsData, 
             Dictionary<int, MoveData> moveDatas,
-            Dictionary<int, Item> items)
+            Dictionary<Tuple<Item.Tag,int>, Item> items)
         {
             Random = new Random();
             TypesMap = typesMap;

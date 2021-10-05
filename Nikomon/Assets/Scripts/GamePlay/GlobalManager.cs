@@ -11,7 +11,9 @@ using UnityEngine.UI;
 using Debug = UnityEngine.Debug;
 using Types = PokemonCore.Types;
 using Newtonsoft.Json;
+using PokemonCore.Inventory;
 using PokemonCore.Network;
+using PokemonCore.Utility;
 using UnityEditor.U2D;
 using UnityEngine.U2D;
 using Utility;
@@ -86,7 +88,7 @@ public class GlobalManager : MonoBehaviour
 
         game.OnDoNotHaveSaveFile += StartPanel;
         game.OnHaveSaveFile += () => { SceneManager.LoadScene(1); };
-        game.Init(LoadTypes(), null, LoadPokemons(), LoadExperienceTable(), natures, null, LoadMoves(), null);
+        game.Init(LoadTypes(), null, LoadPokemons(), LoadExperienceTable(), natures, null, LoadMoves(), LoadItems());
         isBattling = false;
     }
 
@@ -247,11 +249,24 @@ public class GlobalManager : MonoBehaviour
         return MovesData;
     }
 
-    public void LoadItems(LoadDataType type = LoadDataType.Json)
+    public Dictionary<Tuple<Item.Tag, int>, Item> LoadItems()
     {
-        if (type == LoadDataType.Json)
+        Dictionary<Item.Tag, List<Item>> items =
+            JsonConvert.DeserializeObject<Dictionary<Item.Tag, List<Item>>>(
+                Resources.Load<TextAsset>("PokemonData/" + Game.ItemFile).text);
+        var itemData = new Dictionary<Tuple<Item.Tag, int>, Item>();
+        foreach (var item in items)
         {
+            var tag = item.Key;
+            var list = item.Value;
+            foreach (var i in list.OrEmptyIfNull())
+            {
+                int id = i.ID;
+                itemData.Add(new Tuple<Item.Tag, int>(tag,id),i);
+            }
         }
+
+        return itemData;
     }
 
 
@@ -281,8 +296,8 @@ public class GlobalManager : MonoBehaviour
                 Pokemons.Add(t.ID, new[] {obj});
             }
 
-            
-            PokemonIcons.Add(t.ID, Resources.Load<Sprite>("Sprites/PokemonIcons/"+t.ID+t.innerName));
+
+            PokemonIcons.Add(t.ID, Resources.Load<Sprite>("Sprites/PokemonIcons/" + t.ID + t.innerName));
         }
 
         return PokemonsData;
