@@ -31,7 +31,7 @@ namespace PokemonCore
         public static readonly string PokemonFile = "pokemons";
         public static readonly string ExpTableFile = "levelingRate";
         public static readonly string SaveFile = "Save.json";
-        public static readonly string ItemFile = "Items.json";
+        public static readonly string ItemFile = "items";
 
         #endregion
 

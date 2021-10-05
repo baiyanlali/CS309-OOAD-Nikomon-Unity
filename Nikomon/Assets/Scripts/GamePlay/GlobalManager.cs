@@ -251,9 +251,9 @@ public class GlobalManager : MonoBehaviour
 
     public Dictionary<Tuple<Item.Tag, int>, Item> LoadItems()
     {
+        string str = Resources.Load<TextAsset>("PokemonData/" + Game.ItemFile).text;
         Dictionary<Item.Tag, List<Item>> items =
-            JsonConvert.DeserializeObject<Dictionary<Item.Tag, List<Item>>>(
-                Resources.Load<TextAsset>("PokemonData/" + Game.ItemFile).text);
+            JsonConvert.DeserializeObject<Dictionary<Item.Tag, List<Item>>>(str);
         var itemData = new Dictionary<Tuple<Item.Tag, int>, Item>();
         foreach (var item in items)
         {
@@ -262,7 +262,7 @@ public class GlobalManager : MonoBehaviour
             foreach (var i in list.OrEmptyIfNull())
             {
                 int id = i.ID;
-                itemData.Add(new Tuple<Item.Tag, int>(tag,id),i);
+                itemData.Add(new Tuple<Item.Tag, int>(tag, id), i);
             }
         }
 

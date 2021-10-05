@@ -58,6 +58,8 @@ namespace PokemonCore.Combat
             }
         }
 
+        [JsonIgnore] public bool isPartyFull => pokemonCount == party.Length;
+
         /// <summary>
         /// 这里传进来一个Pokemon，然后返回这个Pokemon在Trainer的party中的index
         /// </summary>
