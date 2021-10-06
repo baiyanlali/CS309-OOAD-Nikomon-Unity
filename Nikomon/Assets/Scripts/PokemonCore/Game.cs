@@ -177,6 +177,7 @@ namespace PokemonCore
             {
                 UnityEngine.Debug.Log($"Battle Results: {o}");
                 battle = null;
+                Random = new Random();
             };
             battle.StartBattle(alliesPoke, oppoPoke, allies, opponent);
             BattleAI ai;

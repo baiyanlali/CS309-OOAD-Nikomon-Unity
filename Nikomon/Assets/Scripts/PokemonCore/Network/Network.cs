@@ -114,8 +114,13 @@ namespace PokemonCore.Network
         /// </summary>
         public static void StartToBroadCast(NetworkBroadcastData data)
         {
+            // UDPsend = new UdpClient(new IPEndPoint(IPAddress.Parse(GetAddressIP()), BroadPort));
             if (UDPsend == null)
                 UDPsend = new UdpClient(new IPEndPoint(IPAddress.Parse(GetAddressIP()), BroadPort));
+            // else
+            // {
+            //     UDPsend.Connect(new IPEndPoint(IPAddress.Parse(GetAddressIP()), BroadPort));
+            // }
             //用于广播
             _BroadcastThread = new Thread(BroadCast);
             _BroadcastThread.IsBackground = true;
@@ -148,7 +153,12 @@ namespace PokemonCore.Network
         /// </summary>
         public static async void StartToDetect()
         {
+            // UDPsend = new UdpClient(new IPEndPoint(IPAddress.Parse(GetAddressIP()), BroadPort));
             if (UDPsend == null) UDPsend = new UdpClient(new IPEndPoint(IPAddress.Parse(GetAddressIP()), BroadPort));
+            // else
+            // {
+            //     UDPsend.Connect(new IPEndPoint(IPAddress.Parse(GetAddressIP()), BroadPort));
+            // }
             UnityEngine.Debug.Log("Start to receive");
             string strs = "";
             UdpReceiveResult result;
@@ -171,7 +181,7 @@ namespace PokemonCore.Network
 
                 if (!(string.IsNullOrEmpty(strs)))
                 {
-                    OnDetectBroadcast(result, strs);
+                    OnDetectBroadcast?.Invoke(result, strs);
                     // UnityEngine.Debug.Log($"{result.RemoteEndPoint.Address}:{result.RemoteEndPoint.Port}, {strs}");
                 }
             }

@@ -30,7 +30,7 @@ namespace PokemonCore.Network
             _pokemonsPerTrainer=pokemonsPerTrainer;
             _randomNum = Game.Random.Next();
             NetworkLocal.StartToDetect();
-            NetworkLocal.OnDetectBroadcast += OnDetectedPair;
+            NetworkLocal.OnDetectBroadcast = OnDetectedPair;
             NetworkLocal.StartToBroadCast(new NetworkBroadcastData(BroadcastType.SearchForBattle,_randomNum,password,Game.trainer,trainersNum,pokemonsPerTrainer));
         }
 
@@ -42,6 +42,7 @@ namespace PokemonCore.Network
 
         public static void PairOff()
         {
+            NetworkLocal.OnDetectBroadcast = null;
             NetworkLocal.StopBroadCast();
             NetworkLocal.StopDetect();
         }

@@ -124,6 +124,11 @@ public class GlobalManager : MonoBehaviour
         NetworkLogic.PairOnBattle(trainersNum, pokemonPerTrainer, password);
     }
 
+    public void StopPairNetworkBattle()
+    {
+        NetworkLogic.PairOff();
+    }
+
     public void StartFastNetworkBattle()
     {
         SceneManager.LoadScene(1);
