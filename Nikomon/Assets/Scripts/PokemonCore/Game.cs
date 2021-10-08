@@ -47,10 +47,12 @@ namespace PokemonCore
 
         public static Dictionary<int, MoveData> MovesData { get; private set; }
 
-        public static Dictionary<Tuple<Item.Tag,int>, Item> ItemsData { get; private set; }
+        public static Dictionary<ValueTuple<Item.Tag,int>, Item> ItemsData { get; private set; }
 
 
         public static Trainer trainer;
+
+        public static TrainerBag bag;
 
         public static Random Random;
 
@@ -97,7 +99,7 @@ namespace PokemonCore
             Dictionary<int, Nature> natures,
             Dictionary<int, List<IEffect>> effectsData, 
             Dictionary<int, MoveData> moveDatas,
-            Dictionary<Tuple<Item.Tag,int>, Item> items)
+            Dictionary<ValueTuple<Item.Tag,int>, Item> items)
         {
             Random = new Random();
             TypesMap = typesMap;
@@ -112,6 +114,9 @@ namespace PokemonCore
             EffectsData = effectsData;
 
             ItemsData = items;
+
+            bag = new TrainerBag();
+            bag.Add(items[(Item.Tag.PokeBalls,0)]);
 
             if (HaveSave)
             {
@@ -138,8 +143,20 @@ namespace PokemonCore
 
         public static Battle battle { get; private set; }
         public static BattleReporter battleReporter { get; private set; }
-        
 
+
+        public void AddPokemon(Pokemon poke)
+        {
+            if (!trainer.isPartyFull)
+            {
+                trainer.AddPokemon(poke);
+            }
+            else
+            {
+                
+            }
+        }
+        
         /// <summary>
         /// 
         /// </summary>

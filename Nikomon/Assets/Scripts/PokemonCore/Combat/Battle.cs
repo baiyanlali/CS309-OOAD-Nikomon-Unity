@@ -7,6 +7,7 @@ using System.Text;
 using PokemonCore.Combat.Interface;
 using PokemonCore.Utility;
 using Newtonsoft.Json;
+using PokemonCore.Inventory;
 using UnityEngine.Serialization;
 
 namespace PokemonCore.Combat
@@ -47,10 +48,15 @@ namespace PokemonCore.Combat
     {
         public int CombatPokemonID;
         public Command command;
+
         /// <summary>
-        /// 这里的ID指的是不同Command下的ID，比如对于Move这里的id就是0，1，2，3代表宝可梦不同招式；对于Items就是Items本身的ID，对于run就是本run宝可梦的trainer的ID
+        /// 这里的ID指的是不同Command下的ID，比如对于Move这里的id就是0，1，2，3代表宝可梦不同招式；对于Items就是Items本身的**Tag**，对于run就是本run宝可梦的trainer的ID
         /// </summary>
         public int ID;
+
+        /// <summary>
+        /// 这里的target对于Item属性稍微扩展一下，对于Item，Target的第一个元素代表Item的ID
+        /// </summary>
         public List<int> target;
 
         [JsonConstructor]
@@ -115,10 +121,8 @@ namespace PokemonCore.Combat
         /// </summary>
         public List<IEffect> MovedEffect { get; private set; }
 
-
-
         #endregion
-        
+
         public Func<Damage, string> OnHit;
 
         public Action OnThisTurnEnd;
@@ -130,12 +134,15 @@ namespace PokemonCore.Combat
         public Action<BattleResults> OnBattleEnd;
 
         public Action<CombatPokemon> OnPokemonFainting;
-        
+
         /// <summary>
         /// 比如说宝可梦这回合跳过，就会调用这个方法，参数是宝可梦的Combat ID
         /// </summary>
         public Action<int> OnPokemonChooseHandled;
+
         public Action<Instruction> OnUserChooseInstruction;
+
+        public Action<bool> OnCatchPokemon;
 
         public Dictionary<int, Trainer> Trainers;
 
@@ -153,7 +160,10 @@ namespace PokemonCore.Combat
             get => (from myPokes in Pokemons where myPokes.TrainerID == UserTrainer.id select myPokes).ToList();
         }
 
-        public bool CanRun=>alliesTrainers.Count==1 && opponentTrainers.Count==1;
+        /// <summary>
+        /// 假设只有1v1的情况下才能run
+        /// </summary>
+        public bool CanRun => alliesTrainers.Count == 1 && opponentTrainers.Count == 1;
 
         private BattleResults mBattleResults;
 
@@ -191,8 +201,10 @@ namespace PokemonCore.Combat
 
             #region init pokemons and trainers
 
-            this.alliesPokemons = (from poke in alliesPokemons where poke!=null select new CombatPokemon(poke, this)).ToList();
-            this.opponentsPokemons = (from poke in opponentsPokemons where poke!=null select new CombatPokemon(poke, this)).ToList();
+            this.alliesPokemons = (from poke in alliesPokemons where poke != null select new CombatPokemon(poke, this))
+                .ToList();
+            this.opponentsPokemons =
+                (from poke in opponentsPokemons where poke != null select new CombatPokemon(poke, this)).ToList();
             this.UserTrainer = Game.trainer;
             this.alliesTrainers = alliesTrainers;
             this.opponentTrainers = opponentTrainers;
@@ -200,23 +212,24 @@ namespace PokemonCore.Combat
             Trainers = new Dictionary<int, Trainer>();
             foreach (var trainer in alliesTrainers)
             {
-                Trainers.Add(trainer.id,trainer);
+                Trainers.Add(trainer.id, trainer);
                 var pokes = (from a in Pokemons where a.TrainerID == trainer.id select a).ToArray();
                 for (int i = 0; i < pokes.Length; i++)
                 {
                     trainer.pokemonOnTheBattle[trainer.PokemonIndex(pokes[i].pokemon)] = true;
                 }
             }
+
             foreach (var trainer in opponentTrainers)
             {
-                Trainers.Add(trainer.id,trainer);
+                Trainers.Add(trainer.id, trainer);
                 var pokes = (from a in Pokemons where a.TrainerID == trainer.id select a).ToArray();
                 for (int i = 0; i < pokes.Length; i++)
                 {
                     trainer.pokemonOnTheBattle[trainer.PokemonIndex(pokes[i].pokemon)] = true;
                 }
             }
-            
+
             #endregion
 
             #region init effects
@@ -259,6 +272,7 @@ namespace PokemonCore.Combat
                 {
                     Game.trainer.pokemonOnTheBattle[i] = false;
                 }
+
                 Instance = null;
             };
             OnTurnBegin?.Invoke();
@@ -321,7 +335,7 @@ namespace PokemonCore.Combat
             foreach (var ins in inss.OrEmptyIfNull())
             {
                 OnPokemonChooseHandled?.Invoke(ins.CombatPokemonID);
-                ReceiveInstruction(ins,true);
+                ReceiveInstruction(ins, true);
             }
         }
 
@@ -375,7 +389,7 @@ namespace PokemonCore.Combat
                 mBattleResults = BattleResults.Succeed;
                 OnBattleEnd?.Invoke(BattleResults.Succeed);
             }
-            else if(alliesTrainers.TrainerAllFaint())
+            else if (alliesTrainers.TrainerAllFaint())
             {
                 mBattleResults = BattleResults.Failed;
                 OnBattleEnd?.Invoke(BattleResults.Failed);
@@ -388,11 +402,11 @@ namespace PokemonCore.Combat
 
         #endregion
 
-        public void ReplacePokemons(List<Tuple<CombatPokemon,Pokemon>> list)
+        public void ReplacePokemons(List<Tuple<CombatPokemon, Pokemon>> list)
         {
             foreach (var tuple in list.OrEmptyIfNull())
             {
-                ReplacePokemon(tuple.Item1,tuple.Item2);
+                ReplacePokemon(tuple.Item1, tuple.Item2);
             }
         }
 
@@ -400,15 +414,39 @@ namespace PokemonCore.Combat
         {
             OnPokemonFainting?.Invoke(combatPokemon);
         }
-        
-        public void ReplacePokemon(CombatPokemon currentPokemon,Pokemon nextPokemon)
+
+        /// <summary>
+        /// 捕捉宝可梦！
+        /// </summary>
+        /// <param name="pokemons"></param>
+        public void CatchPokemon(CombatPokemon currentPoke,int pokeBall,List<int> pokemons)
+        {
+            //众所周知，被捕捉的宝可梦一定是opponent
+            var pokes = (from combatPokes in opponentsPokemons
+                join pokemon in pokemons on combatPokes.CombatID equals pokemon
+                select combatPokes).ToList();
+            foreach (var p in pokes.OrEmptyIfNull())
+            {
+                bool result = Calculator.Catch(pokeBall, currentPoke.pokemon, p.pokemon);
+                OnCatchPokemon?.Invoke(result);
+                if (result)
+                {
+                    Game.Instance.AddPokemon(p.pokemon);
+                }
+                Trainers[p.TrainerID].RemovePokemon(p.pokemon);
+                opponentsPokemons.Remove(p);
+            }
+            
+        }
+
+        public void ReplacePokemon(CombatPokemon currentPokemon, Pokemon nextPokemon)
         {
             CombatPokemon nPoke = new CombatPokemon(nextPokemon, this);
-            
+
             Trainer t = Trainers[currentPokemon.TrainerID];
             t.pokemonOnTheBattle[t.PokemonIndex(currentPokemon.pokemon)] = false;
             t.pokemonOnTheBattle[t.PokemonIndex(nextPokemon)] = true;
-            
+
             if (alliesPokemons.Contains(currentPokemon))
             {
                 alliesPokemons.Remove(currentPokemon);
@@ -419,11 +457,11 @@ namespace PokemonCore.Combat
                 opponentsPokemons.Remove(currentPokemon);
                 opponentsPokemons.Add(nPoke);
             }
-            OnReplacePokemon?.Invoke(currentPokemon,nPoke);
 
+            OnReplacePokemon?.Invoke(currentPokemon, nPoke);
         }
 
-        public bool ReceiveInstruction(Instruction ins,bool fromUser=false)
+        public bool ReceiveInstruction(Instruction ins, bool fromUser = false)
         {
             //判断有没有重复输入的
             if ((from instru in Instructions where ins.CombatPokemonID == instru.CombatPokemonID select instru)
@@ -441,7 +479,7 @@ namespace PokemonCore.Combat
                     return false;
                 }
             }
-            
+
             UnityEngine.Debug.Log($"Received instruction:{ins}");
             Instructions.Add(ins);
 
@@ -451,12 +489,32 @@ namespace PokemonCore.Combat
                     CombatMoves.Add(GenerateCombatMove(ins));
                     break;
                 case Command.Items:
+                    Item.Tag tag = (Item.Tag) ins.ID;
+                    int ID = ins.target[0];
+                    ins.target.RemoveAt(0);
+                    
+                    switch (tag)
+                    {
+                        case Item.Tag.PokeBalls:
+                            CatchPokemon(GetCombatPokemon(ins.CombatPokemonID),ID,ins.target);
+                            if (opponentTrainers.TrainerAllFaint())
+                            {
+                                mBattleResults = BattleResults.Captured;
+                                OnBattleEnd?.Invoke(BattleResults.Captured);
+                            }
+                            break;
+                        case Item.Tag.Berries:
+                        case Item.Tag.Medicine:
+                            break;
+                    }
+
                     break;
                 case Command.GoPokemon:
                     break;
                 case Command.SwitchPokemon:
-                    var combatPoke = (from p in Pokemons where p.CombatID == ins.CombatPokemonID select p).ToArray()[0];
-                    SwitchPokemons.Add(new Tuple<CombatPokemon, Pokemon>(combatPoke,Trainers[combatPoke.TrainerID].party[ins.ID]));
+                    var combatPoke = GetCombatPokemon(ins.CombatPokemonID);
+                    SwitchPokemons.Add(new Tuple<CombatPokemon, Pokemon>(combatPoke,
+                        Trainers[combatPoke.TrainerID].party[ins.ID]));
                     break;
                 case Command.Run:
                     if (CanRun)
@@ -475,8 +533,8 @@ namespace PokemonCore.Combat
                     }
                     else
                     {
-                        
                     }
+
                     break;
             }
 
@@ -513,6 +571,11 @@ namespace PokemonCore.Combat
             return null;
         }
 
+        public CombatMove GenerateCombatMoveFromItem()
+        {
+            return null;
+        }
+
         public CombatMove GenerateCombatMove(Instruction ins)
         {
             //Only can one sponsor exists
@@ -546,9 +609,8 @@ namespace PokemonCore.Combat
             foreach (var target in cmove.Targets)
             {
                 var t = target;
-                if(!Pokemons.Contains(target))
+                if (!Pokemons.Contains(target))
                 {
-                    
                     bool isAlly = alliesTrainers.Contains(Trainers[target.TrainerID]);
                     if (isAlly)
                     {
@@ -559,11 +621,20 @@ namespace PokemonCore.Combat
                         t = opponentsPokemons.RandomPickOne();
                     }
                 }
+
                 dmgs.Add(new Damage(cmove, cmove.Sponsor, t));
             }
 
             return dmgs;
         }
+
+        public CombatPokemon GetCombatPokemon(int combatID)
+        {
+            var pokes = (from poke in Pokemons where poke.CombatID == combatID select poke).ToArray();
+            if (pokes.Length != 1) throw new Exception("你Combat ID 没写好，出问题了吧");
+            return pokes[0];
+        }
+
 
         #endregion
 

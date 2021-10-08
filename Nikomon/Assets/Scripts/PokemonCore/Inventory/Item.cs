@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using PokemonCore.Utility;
 
 namespace PokemonCore.Inventory
 {
@@ -42,6 +43,7 @@ namespace PokemonCore.Inventory
             ID = 1;
             name = "Change this";
         }
+        
         
         
     }

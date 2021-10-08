@@ -10,10 +10,10 @@ namespace PokemonCore.Inventory
         /// <summary>
         /// Tuple用来确定是哪一个，最后一个int表示物品数量
         /// </summary>
-        public Dictionary<Tuple<Item.Tag, int>, int> Items;
+        public Dictionary<ValueTuple<Item.Tag, int>, int> Items;
 
         [JsonConstructor]
-        public TrainerBag(Dictionary<Tuple<Item.Tag, int>, int> items=null)
+        public TrainerBag(Dictionary<ValueTuple<Item.Tag, int>, int> items=null)
         {
             if (items != null)
             {
@@ -21,12 +21,15 @@ namespace PokemonCore.Inventory
             }
             else
             {
-                this.Items = new Dictionary<Tuple<Item.Tag, int>, int>();
+                this.Items = new Dictionary<ValueTuple<Item.Tag, int>, int>();
             }
         }
 
         [JsonIgnore]
         public List<Item> this[Item.Tag tag] => ShowItems(tag);
+        
+        [JsonIgnore]
+        public int this[Item item]=>Items[(item.tag,item.ID)];
 
         public List<Item> ShowItems(Item.Tag tag)
         {
@@ -40,12 +43,17 @@ namespace PokemonCore.Inventory
         
         public void Add(Item item,int nums=1)
         {
-            Add(new Tuple<Item.Tag, int>(item.tag,item.ID),nums);
+            Add((item.tag,item.ID),nums);
         }
 
-        public void Add(Tuple<Item.Tag, int> item,int nums=1)
+        public void Add(ValueTuple<Item.Tag, int> item,int nums=1)
         {
-            Items[item]+=nums;
+            if(Items.ContainsKey(item))
+                Items[item]+=nums;
+            else
+            {
+                Items.Add(item,nums);
+            }
         }
 
         public void AddRange(List<Item> items)
@@ -58,10 +66,10 @@ namespace PokemonCore.Inventory
 
         public bool Decrease(Item item, int nums = 1)
         {
-            return Decrease(new Tuple<Item.Tag, int>(item.tag, item.ID), nums);
+            return Decrease((item.tag, item.ID), nums);
         }
 
-        public bool Decrease(Tuple<Item.Tag, int> item,int nums=1)
+        public bool Decrease(ValueTuple<Item.Tag, int> item,int nums=1)
         {
             if (nums > Items[item]) return false;
             Items[item] -= nums;

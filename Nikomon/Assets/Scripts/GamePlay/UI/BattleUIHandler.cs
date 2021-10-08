@@ -5,6 +5,7 @@ using PokemonCore;
 using PokemonCore.Attack;
 using PokemonCore.Attack.Data;
 using PokemonCore.Combat;
+using PokemonCore.Inventory;
 using PokemonCore.Utility;
 using UnityEditor.Experimental;
 using UnityEngine;
@@ -257,6 +258,19 @@ public class BattleUIHandler : MonoBehaviour
         if (Game.trainer.party[index] == null || Game.trainer.pokemonOnTheBattle[index]) return;
         Instruction ins = new Instruction(BattleHandler.Instance.CurrentPokemon.CombatID, Command.SwitchPokemon, index,
             null);
+        BuildInstrustruction(ins);
+    }
+
+    public void UseItem(Item item, int target)
+    {
+        UseItem(item,new List<int>(){target});
+    }
+    
+    public void UseItem(Item item,List<int> target)
+    {
+        target.Insert(0,item.ID);
+        Instruction ins = new Instruction(BattleHandler.Instance.CurrentPokemon.CombatID, Command.Items, (int)item.tag,
+            target);
         BuildInstrustruction(ins);
     }
 

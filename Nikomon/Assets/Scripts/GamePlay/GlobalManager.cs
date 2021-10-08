@@ -42,11 +42,12 @@ public class GlobalManager : MonoBehaviour
     private Game game;
 
     public ConfigSettings Config;
-    
+
     #region 存储各种美术资源
 
     public Dictionary<int, GameObject[]> Pokemons;
     public Dictionary<int, Sprite> PokemonIcons;
+    public Dictionary<Item.Tag, Sprite> BagIcons;
 
     #endregion
 
@@ -80,7 +81,7 @@ public class GlobalManager : MonoBehaviour
     {
         Game.DataPath = Application.persistentDataPath;
 
-        Config = SaveLoad.Load<ConfigSettings>("Settings.json",Application.persistentDataPath) ?? new ConfigSettings();
+        Config = SaveLoad.Load<ConfigSettings>("Settings.json", Application.persistentDataPath) ?? new ConfigSettings();
 
         game = new Game();
         var natures = new Dictionary<int, Nature>();
@@ -90,7 +91,20 @@ public class GlobalManager : MonoBehaviour
         PokemonIcons = new Dictionary<int, Sprite>();
 
         game.OnDoNotHaveSaveFile += StartPanel;
-        game.OnHaveSaveFile += () => { SceneManager.LoadScene(1); };
+        
+        LoadResources();
+
+        game.OnHaveSaveFile += () =>
+        {
+            SceneManager.sceneLoaded += (o1, o2) =>
+            {
+                BagUI.Instance?.Init(Game.bag);
+            };
+
+            SceneManager.LoadScene(1);
+        };
+
+        
         game.Init(LoadTypes(), null, LoadPokemons(), LoadExperienceTable(), natures, null, LoadMoves(), LoadItems());
         isBattling = false;
     }
@@ -257,12 +271,12 @@ public class GlobalManager : MonoBehaviour
         return MovesData;
     }
 
-    public Dictionary<Tuple<Item.Tag, int>, Item> LoadItems()
+    public Dictionary<ValueTuple<Item.Tag, int>, Item> LoadItems()
     {
         string str = Resources.Load<TextAsset>("PokemonData/" + Game.ItemFile).text;
         Dictionary<Item.Tag, List<Item>> items =
             JsonConvert.DeserializeObject<Dictionary<Item.Tag, List<Item>>>(str);
-        var itemData = new Dictionary<Tuple<Item.Tag, int>, Item>();
+        var itemData = new Dictionary<ValueTuple<Item.Tag, int>, Item>();
         foreach (var item in items)
         {
             var tag = item.Key;
@@ -270,7 +284,7 @@ public class GlobalManager : MonoBehaviour
             foreach (var i in list.OrEmptyIfNull())
             {
                 int id = i.ID;
-                itemData.Add(new Tuple<Item.Tag, int>(tag, id), i);
+                itemData.Add((tag, id), i);
             }
         }
 
@@ -309,6 +323,17 @@ public class GlobalManager : MonoBehaviour
         }
 
         return PokemonsData;
+    }
+
+    public void LoadResources()
+    {
+        BagIcons = new Dictionary<Item.Tag, Sprite>();
+        string[] strs = Enum.GetNames(typeof(Item.Tag));
+        foreach (var str in strs)
+        {
+            Sprite spr = Resources.Load<Sprite>("Sprites/BagIcons/"+str);
+            BagIcons.Add((Item.Tag)Enum.Parse(typeof(Item.Tag),str),spr);
+        }
     }
 
     #endregion

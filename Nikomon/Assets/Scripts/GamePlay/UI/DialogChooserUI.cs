@@ -73,53 +73,12 @@ public class DialogChooserUI : MonoBehaviour
             Content.GetChild(i).GetComponentInChildren<Text>().text = chooser[i];
             Content.GetChild(i).GetComponent<Button>().onClick.RemoveAllListeners();
             int c = i;
-            Content.GetChild(i).GetComponent<Button>().onClick.AddListener(() => { OnChoose?.Invoke(c); });
+            Content.GetChild(i).GetComponent<Button>().onClick.AddListener(() =>
+            {
+                OnChoose?.Invoke(c); 
+                gameObject.SetActive(false);
+            });
         }
         
-        // if (chooser.Length == Content.childCount)
-        // {
-        //     for (int i = 0; i < Content.childCount; i++)
-        //     {
-        //         Content.GetChild(i).gameObject.SetActive(true);
-        //         Content.GetChild(i).GetComponent<Text>().text = chooser[i];
-        //         Content.GetChild(i).GetComponent<Button>().onClick.RemoveAllListeners();
-        //         Content.GetChild(i).GetComponent<Button>().onClick.AddListener(() => { OnChoose?.Invoke(i); });
-        //     }
-        // }
-        // else if (chooser.Length < Content.childCount)
-        // {
-        //     for (int i = 0; i < chooser.Length; i++)
-        //     {
-        //         Content.GetChild(i).gameObject.SetActive(true);
-        //         Content.GetChild(i).GetComponent<Text>().text = chooser[i];
-        //         Content.GetChild(i).GetComponent<Button>().onClick.RemoveAllListeners();
-        //         Content.GetChild(i).GetComponent<Button>().onClick.AddListener(() => { OnChoose?.Invoke(i); });
-        //     }
-        //
-        //     for (int i = chooser.Length; i < Content.childCount; i++)
-        //     {
-        //         Content.GetChild(i).gameObject.SetActive(false);
-        //     }
-        // }
-        // else if (chooser.Length > Content.childCount)
-        // {
-        //     for (int i = 0; i < Content.childCount; i++)
-        //     {
-        //         Content.GetChild(i).gameObject.SetActive(true);
-        //         Content.GetChild(i).GetComponent<Text>().text = chooser[i];
-        //         Content.GetChild(i).GetComponent<Button>().onClick.RemoveAllListeners();
-        //         Content.GetChild(i).GetComponent<Button>().onClick.AddListener(() => { OnChoose?.Invoke(i); });
-        //     }
-        //
-        //     GameObject obj = Resources.Load<GameObject>("Prefabs/UI/ChooseElement");
-        //
-        //     for (int i = Content.childCount; i < chooser.Length; i++)
-        //     {
-        //         var btn = Instantiate(obj, Content);
-        //         btn.GetComponentInChildren<Text>().text = chooser[i];
-        //         btn.GetComponent<Button>().onClick.RemoveAllListeners();
-        //         btn.GetComponent<Button>().onClick.AddListener(() => { OnChoose?.Invoke(i); });
-        //     }
-        // }
     }
 }

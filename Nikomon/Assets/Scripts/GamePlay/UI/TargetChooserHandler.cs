@@ -24,25 +24,22 @@ public class TargetChooserHandler : MonoBehaviour
 
     public Action<List<int>> OnChooseTarget;
     public Action OnCancelChoose;
+
+    public static TargetChooserHandler Instance
+    {
+        get
+        {
+            return sInstance;
+        }
+    }
+    private static TargetChooserHandler sInstance;
+    
     public void Init(List<CombatPokemon> opponents,List<CombatPokemon> allies)
     {
+        sInstance = this;
         oppoToggle = new List<TargetChooserUI>();
         allyToggle = new List<TargetChooserUI>();
         userToggle = new List<TargetChooserUI>();
-        // foreach (var oppo in opponents.OrEmptyIfNull())
-        // {
-        //     GameObject o = Instantiate(TargetChooserPrefab, Opponents);
-        //     o.GetComponent<TargetChooserUI>()?.Init(oppo);
-        //     oppoToggle.Add(o.GetComponent<TargetChooserUI>());
-        // }
-        // foreach (var ally in allies.OrEmptyIfNull())
-        // {
-        //     GameObject o = Instantiate(TargetChooserPrefab, Allies);
-        //     o.GetComponent<TargetChooserUI>()?.Init(ally);
-        //     allyToggle.Add(o.GetComponent<TargetChooserUI>());
-        //     if(ally.TrainerID==Game.trainer.id)
-        //         userToggle.Add(o.GetComponent<TargetChooserUI>());
-        // }
         InitToggleUI(opponents,Opponents);
         InitToggleUI(allies,Allies);
         Panel.SetActive(false);
@@ -53,7 +50,7 @@ public class TargetChooserHandler : MonoBehaviour
         });
     }
     
-    
+    //TODO:这里可以改得更好看一些
     private void InitToggleUI(List<CombatPokemon> pokemons, Transform parent)
     {
         if (pokemons.Count == parent.transform.childCount)
@@ -72,7 +69,7 @@ public class TargetChooserHandler : MonoBehaviour
 
             for (int i = parent.transform.childCount; i < pokemons.Count; i++)
             {
-                GameObject o = Instantiate(TargetChooserPrefab, Opponents);
+                GameObject o = Instantiate(TargetChooserPrefab, parent);
                 o.GetComponent<TargetChooserUI>()?.Init(pokemons[i]);
                 oppoToggle.Add(o.GetComponent<TargetChooserUI>());
                 if(pokemons[i].TrainerID==Game.trainer.id)

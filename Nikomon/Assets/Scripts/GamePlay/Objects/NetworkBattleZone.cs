@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class NetworkBattleZone : MonoBehaviour
 {
-    public CinemachineVirtualCamera camera;
+    public new CinemachineVirtualCamera camera;
     private void OnTriggerEnter(Collider other)
     {
         camera.Priority = 13;

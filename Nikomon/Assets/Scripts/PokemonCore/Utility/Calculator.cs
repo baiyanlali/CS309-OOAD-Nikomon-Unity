@@ -112,8 +112,9 @@ namespace PokemonCore.Utility
         /// <param name="wild">要抓的那个宝可梦个体</param>
         /// <param name="enemy">要抓的那个宝可梦种类</param>
         /// <returns>catchValue</returns>1-255，越大越容易被捕获。255即被立刻捕获。
-        public static int CatchRate(int baseball, int MaxHP, int HP, Pokemon mine, Pokemon wild, PokemonData enemy)
+        public static int CatchRate(int baseball, Pokemon mine, Pokemon wild)
         {
+            PokemonData enemy = wild._base;
             //TODO: 地形的判断（精灵球里面）
             Random ran = new Random();
             //int catchValue = ran.Next(1,255);
@@ -158,16 +159,16 @@ namespace PokemonCore.Utility
                 //TODO: 其他的精灵球
             }
             //TODO: 状态修正
-            float result = (3 * MaxHP - 2 * HP) * enemy.CatchRate * baseballValue / (3 * MaxHP);
+            float result = (3 * wild.TotalHp - 2 * wild.HP) * enemy.CatchRate * baseballValue / (3 * wild.TotalHp);
             return (int)result;
         }
 
         /// <summary>判定精灵球是否捕获成功
-        public static bool Catch(int baseball, int MaxHP, int HP, Pokemon mine, Pokemon wild, PokemonData enemy)
+        public static bool Catch(int baseball,  Pokemon mine, Pokemon wild)
         {
             if (baseball == 3)
                 return true;
-            double B = CatchRate(baseball, MaxHP, HP, mine, wild, enemy);
+            double B = CatchRate(baseball,  mine, wild);
             double number = 1048560;//FFFF0
             double num = 16711680;
             double G = number / Math.Sqrt(Math.Sqrt((num / B)));

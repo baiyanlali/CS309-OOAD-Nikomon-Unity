@@ -9,6 +9,8 @@ public class TabElement : MonoBehaviour,IPointerDownHandler
     public Action<TabElement> OnChoose;
     public void OnPointerDown(PointerEventData eventData)
     {
+        
+        // print("OnPointerDown");
         OnChoose?.Invoke(this);
     }
 }

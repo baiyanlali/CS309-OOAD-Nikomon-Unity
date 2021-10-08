@@ -8,17 +8,16 @@ public class SaveSprites
     static void SaveSprite()
     {
         string resourcesPath = "Assets/Resources/Sprites";
-
-        Sprite[] sprites = Resources.LoadAll<Sprite>("Sprites/PokemonSprites");
+        Sprite[] sprites = Resources.LoadAll<Sprite>("Sprites/BagUIIcon");
         Debug.Log("Start to generate sprites");
         if (sprites.Length > 0)
         {
-            string outPath = resourcesPath+"/PokemonIcons";
+            string outPath = resourcesPath+"/BagIcons";
             
             // System.IO.Directory.CreateDirectory(outPath);
             foreach (Sprite sprite in sprites)
             {
-                if (!Regex.IsMatch(sprite.name, @"^\d")) continue; //判断是否是以数字开头
+                // if (!Regex.IsMatch(sprite.name, @"^\d")) continue; //判断是否是以数字开头
                 Texture2D tex = new Texture2D((int) sprite.rect.width, (int) sprite.rect.height,
                     sprite.texture.format, false);
                 tex.SetPixels(sprite.texture.GetPixels((int) sprite.rect.xMin, (int) sprite.rect.yMin,

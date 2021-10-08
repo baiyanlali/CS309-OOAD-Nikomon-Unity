@@ -16,6 +16,18 @@ namespace PokemonCore.Combat
             battle.OnThisTurnEnd += ShowState;
             battle.OnReplacePokemon += (o1, o2) => { OnReport?.Invoke($"回来吧！{o1.pokemon.Name}。就是你了!{o2.pokemon.Name}");};
             battle.OnBattleEnd += (o) => { OnReport?.Invoke($"最后的结果是----{o}!");};
+            battle.OnCatchPokemon += (o) =>
+            {
+                if (o)
+                {
+                    OnReport?.Invoke("捕捉成功！");
+                }
+                else
+                {
+                    OnReport?.Invoke("捕捉失败");
+
+                }
+            };
         }
 
         public static int ReportNum = 0;
