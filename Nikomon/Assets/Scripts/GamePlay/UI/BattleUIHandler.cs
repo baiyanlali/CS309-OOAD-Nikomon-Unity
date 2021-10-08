@@ -185,6 +185,7 @@ public class BattleUIHandler : MonoBehaviour
         DialogChooserUI.Instance.gameObject.SetActive(false);
     }
 
+    
     public void ShowMoves()
     {
         Move[] moves = BattleHandler.Instance.CurrentPokemon.pokemon.moves;

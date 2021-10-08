@@ -119,8 +119,8 @@ public class GlobalManager : MonoBehaviour
 
     public void CreateNewTrainer(bool isMale)
     {
-        InputField text = GameObject.Find("NameText").GetComponent<InputField>();
-        game.CreateNewSaveFile(text.text, isMale);
+        InputField inputField = GameObject.Find("NameText").GetComponent<InputField>();
+        game.CreateNewSaveFile(inputField.text, isMale);
 
         StartGame();
     }
