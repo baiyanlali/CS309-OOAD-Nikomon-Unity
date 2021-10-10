@@ -37,3 +37,19 @@ effect0={
 }
 
 
+effect1={
+    ID=0,
+    InnerName='Chaos',
+    Round=3,
+    EffectLastType=CS.PokemonCore.Combat.Interface.EffectLastType.ROUND,
+    EffectChance=50,
+    
+    OnMoving=function(combatMove) 
+        rand = CS.PokemonCore.Game.Instance.Random.Next(101)
+        if rand>EffectChance then
+            combatMove.Target={combatMove.Sponsor.combatID}
+        end
+    end
+}
+
+

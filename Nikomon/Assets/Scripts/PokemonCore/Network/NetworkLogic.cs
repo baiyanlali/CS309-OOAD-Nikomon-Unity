@@ -57,10 +57,11 @@ namespace PokemonCore.Network
         {
             if (result.RemoteEndPoint.Address.Equals(IPAddress.Parse(NetworkLocal.GetAddressIP()))) return;
 
+            UnityEngine.Debug.Log($"Network Detected! from: {result.RemoteEndPoint.Address}");
+
             NetworkBroadcastData data = JsonConvert.DeserializeObject<NetworkBroadcastData>(password);
             if (data == null) throw new Exception("Unknown data from online");
             if (data.password != _password && data.broadCastType!=_broadcastType) return;
-            
             
             if (usersBroadcast.ContainsKey(result.RemoteEndPoint.Address))
                 usersBroadcast[result.RemoteEndPoint.Address] = data;
