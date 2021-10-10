@@ -1,101 +1,59 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using PokemonCore.Combat;
 using UnityEngine;
 
 public class dialogManager : MonoBehaviour
 {
+
+    //对话框消失的方式，目前分为按Accept消失和按时间Automatic消失两种
+    
     public static dialogManager dialogManagerIn;
     private string[] dialogList;
-    private string[] choiceList;
     private dialogEngine de;
-    private int nextNode = -1;
 
     private void Awake()
     {
         dialogManagerIn = this;
         de = transform.GetComponent<dialogEngine>();
-        dialogManagerIn = this;
-        initialList();
-    }
-    public static dialogManager getDialogManager()
-    {
-        return dialogManagerIn;
+        this.gameObject.SetActive(false);
     }
 
-    /// <summary>
-    /// display certain dialogNode in dialog
-    /// </summary>
-    /// <param name="dialogId"></param>
-    public void onDialogId()
+    public void InitBattle(BattleReporter br)
     {
-        if (nextNode != -1)
-            onDialogId(nextNode);
-        else
-            offDialog();
+        br.OnReport += onDialogText;
     }
-    public void onDialogId(int dialogId)
-    {
-        dialogNode dnTemp = readNode(dialogId);
-        onDialogText(dnTemp.content, dnTemp.style);
-        if (dnTemp.invokeChoice)
-        {
 
-        }
-        else
-        {
-            if (dnTemp.nodeIdList.Count == 0)
-            {
-                nextNode = -1;
-            }
-            else
-            {
-                nextNode = dnTemp.nodeIdList[0];
-            }
-        }
+    public void EndBattle()
+    {
+        gameObject.SetActive(false);
     }
     
-    /// <summary>
-    /// display certain string in dialog
-    /// </summary>
-    /// <param name="text"></param>
+    //display battle discription
     public void onDialogText(string text)
     {
+        gameObject.SetActive(true);
         onDialogText(text, 0);
     }
     public void onDialogText(string text,int style)
     {
-        if (de.dialogBoxOn())
-        {
-            de.StartCoroutine("DrawText", text);
-        }
-        else
-        {
-            de.DrawDialogBox(style);
-            de.StartCoroutine("DrawText", text);
-        }
+        StartCoroutine(textDraw(text));
     }
-
-    /// <summary>
-    /// close the dialog with the fade Effect
-    /// </summary>
     public void offDialog()
     {
-        de.StartCoroutine("fadeEffect", 0);
+        StartCoroutine(textUnDraw());
     }
-    
-    private void initialList()
+
+    public IEnumerator textDraw(string text)
     {
-        dialogList = File.ReadAllLines("Assets/Resources/DialogTexts/dialogContent.txt");
-        choiceList = File.ReadAllLines("Assets/Resources/DialogTexts/choiceContent.txt");
+        de.DrawDialogBox();
+        de.StartCoroutine("DrawText", text);
+        yield return null;
     }
-    private dialogNode readNode(int id)
+    public IEnumerator textUnDraw()
     {
-        string[] m_list = dialogList[id].Split('^');
-        dialogNode dn = new dialogNode(m_list[0], m_list[1], m_list[2], m_list[3], m_list[4]);
-
-        return dn;
+        de.StartCoroutine("fadeEffect",0);
+        yield return null;
     }
-
-
 }

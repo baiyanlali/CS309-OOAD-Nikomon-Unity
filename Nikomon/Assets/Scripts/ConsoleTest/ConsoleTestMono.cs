@@ -35,6 +35,7 @@ namespace ConsoleDebug
             ConsoleDebug.Console.Init();
 
             ConsoleDebug.Console.OnMessageEntered += OnReceiveInstruction;
+            // ConsoleDebug.Console.OnMessageEntered += OnReceiveInstruction;
 
             // Application.logMessageReceived += DebugUIHandler.Instance.InsertInfo;
                     

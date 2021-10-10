@@ -1,4 +1,5 @@
 ﻿using System;
+using Newtonsoft.Json;
 using PokemonCore.Combat;
 
 namespace PokemonCore.Character
@@ -10,6 +11,7 @@ namespace PokemonCore.Character
 
         private Pokemon[,] pokemons;
 
+        [JsonIgnore]
         public Pokemon[][] AllBoxes
         {
             get
@@ -28,6 +30,7 @@ namespace PokemonCore.Character
             }
         }
 
+        [JsonIgnore]
         public Pokemon[] Pokemons
         {
             get
@@ -45,7 +48,7 @@ namespace PokemonCore.Character
         public byte ActiveBox { get; private set; }
         public string[] BoxNames { get; private set; }
 
-
+        [JsonIgnore]
         public PC this[byte i]
         {
             get
@@ -55,6 +58,18 @@ namespace PokemonCore.Character
             }
             
         }
+
+
+        [JsonConstructor]
+        public PC(int maxPokemonsPerBox,int maxBox,Pokemon[,] pokemons,byte activeBox,string[] boxNames)
+        {
+            this.maxPokemonsPerBox = maxPokemonsPerBox;
+            this.maxBox = maxBox;
+            this.pokemons = pokemons;
+            this.ActiveBox = activeBox;
+            this.BoxNames = boxNames;
+        }
+        
         public PC(int maxPokemonsPerBox = 20, int maxBox = 40)
         {
             this.pokemons = new Pokemon[maxBox, maxPokemonsPerBox];
@@ -118,9 +133,7 @@ namespace PokemonCore.Character
         
         public void swapPokemon(int box1, int poke1, int box2, int poke2)
         {
-            Pokemon pokemon = pokemons[box1, poke1];
-            pokemons[box1, poke1] = pokemons[box2, poke2];
-            pokemons[box2, poke2] = pokemon;
+            (pokemons[box1, poke1], pokemons[box2, poke2]) = (pokemons[box2, poke2], pokemons[box1, poke1]);
         }
 
     }

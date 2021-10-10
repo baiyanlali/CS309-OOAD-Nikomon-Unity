@@ -10,6 +10,7 @@ using PokemonCore.Monster;
 using PokemonCore.Monster.Data;
 using PokemonCore.Saving;
 using PokemonCore.Utility;
+using XLua;
 
 
 namespace PokemonCore
@@ -31,6 +32,7 @@ namespace PokemonCore
         public static readonly string PokemonFile = "pokemons";
         public static readonly string ExpTableFile = "levelingRate";
         public static readonly string SaveFile = "Save.json";
+        public static readonly string ItemFile = "items";
 
         #endregion
 
@@ -42,16 +44,20 @@ namespace PokemonCore
         public static Dictionary<int, int[]> ExperienceTable { get; private set; }
         public static Dictionary<int, Nature> NatureData { get; private set; }
 
-        public static Dictionary<int, List<IEffect>> EffectsData { get; private set; }
+        public static Dictionary<int, List<string>> EffectsData { get; private set; }
 
         public static Dictionary<int, MoveData> MovesData { get; private set; }
 
-        public static Dictionary<int, Item> ItemsData { get; private set; }
+        public static Dictionary<ValueTuple<Item.Tag,int>, Item> ItemsData { get; private set; }
 
 
         public static Trainer trainer;
 
+        public static TrainerBag bag;
+
         public static Random Random;
+
+        public static LuaEnv LuaEnv;
 
         private LoadDataType loadDataType { get; set; }
 
@@ -59,6 +65,14 @@ namespace PokemonCore
 
         public Action OnDoNotHaveSaveFile;
         public Action OnHaveSaveFile;
+
+        public Action OnGameQuit= () =>
+        {
+            if (LuaEnv!=null)
+            {
+                // LuaEnv.Dispose();
+            }
+        };
 
         #endregion
 
@@ -85,24 +99,7 @@ namespace PokemonCore
         {
             SaveLoad.Save(SaveFile, trainer);
         }
-
-        // [Obsolete]
-        // public void Init()
-        // {
-        //     Random = new Random();
-        //     LoadTypes();
-        //     LoadMoves();
-        //     LoadPokemons();
-        //     LoadExperienceTable();
-        //     NatureData = new Dictionary<int, Nature>();
-        //     NatureData.Add(0, new Nature(0, new float[] {0, 0, 0, 0, 0}));
-        //     if (HaveSave)
-        //         trainer = SaveLoad.Load<Trainer>(SaveFile);
-        //     else
-        //         OnDoNotHaveSaveFile?.Invoke();
-        //
-        //     // PC pc = new PC();
-        // }
+        
 
 
         public void Init(
@@ -111,9 +108,9 @@ namespace PokemonCore
             Dictionary<int, PokemonData> pokemonDatas, 
             Dictionary<int, int[]> experienceTable,
             Dictionary<int, Nature> natures,
-            Dictionary<int, List<IEffect>> effectsData, 
+            Dictionary<int, List<string>> effectsData, 
             Dictionary<int, MoveData> moveDatas,
-            Dictionary<int, Item> items)
+            Dictionary<ValueTuple<Item.Tag,int>, Item> items)
         {
             Random = new Random();
             TypesMap = typesMap;
@@ -129,6 +126,9 @@ namespace PokemonCore
 
             ItemsData = items;
 
+            bag = new TrainerBag();
+            bag.Add(items[(Item.Tag.PokeBalls,0)]);
+
             if (HaveSave)
             {
                 trainer = SaveLoad.Load<Trainer>(SaveFile);
@@ -136,6 +136,9 @@ namespace PokemonCore
             }
             else
                 OnDoNotHaveSaveFile?.Invoke();
+
+            LuaEnv = new LuaEnv();
+            LuaEnv.DoString("require 'Effect'");
             // NatureData = new Dictionary<int, Nature>();
             // NatureData.Add(0, new Nature(0, new float[] {0, 0, 0, 0, 0}));
             // if (HaveSave)
@@ -154,8 +157,20 @@ namespace PokemonCore
 
         public static Battle battle { get; private set; }
         public static BattleReporter battleReporter { get; private set; }
-        
 
+
+        public void AddPokemon(Pokemon poke)
+        {
+            if (!trainer.isPartyFull)
+            {
+                trainer.AddPokemon(poke);
+            }
+            else
+            {
+                
+            }
+        }
+        
         /// <summary>
         /// 
         /// </summary>
@@ -193,6 +208,7 @@ namespace PokemonCore
             {
                 UnityEngine.Debug.Log($"Battle Results: {o}");
                 battle = null;
+                Random = new Random();
             };
             battle.StartBattle(alliesPoke, oppoPoke, allies, opponent);
             BattleAI ai;

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 using PokemonCore.Character;
 using PokemonCore.Combat;
 using PokemonCore.Inventory;
@@ -9,49 +10,26 @@ using PokemonCore.Utility;
 namespace PokemonCore.Saving
 {
     [Serializable]
-    public struct GameState:IEquatable<GameState>,IEqualityComparer<GameState>
+    public struct GameState
     {
         // public DateTime TimeCreated { get; private set; }
         public Trainer Trainer { get; private set; }
         public PC PlayerPC { get; private set; }
+        public TrainerBag TrainerBag { get; private set; }
         // public int[] PlayerBag { get; private set; }
 //TODO：Player Bag,Time Created
+        [JsonConstructor]
         public GameState(
             Trainer trainer,
-            PC pc
+            PC pc,
+            TrainerBag trainerBag
             )
         {
             
             Trainer = trainer;
             PlayerPC = pc;
+            TrainerBag = trainerBag;
         }
-        public bool Equals(GameState obj)
-        {
-            return Equals(obj);
-        }
-
-        public override bool Equals(object obj)
-        {
-            if (obj == null) return false;
-            if (typeof(Game) == obj.GetType()) return this.Equals(obj);
-            if (typeof(GameState) == obj.GetType()) return this.Equals(obj);
-            return base.Equals(obj);
-        }
-
-        
-        public bool Equals(GameState x, GameState y)
-        {
-            return x.Equals(y);
-        }
-
-        public int GetHashCode(GameState obj)
-        {
-            return Trainer.id.GetHashCode();
-        }
-
-        public override int GetHashCode()
-        {
-            return base.GetHashCode();
-        }
+       
     }
 }

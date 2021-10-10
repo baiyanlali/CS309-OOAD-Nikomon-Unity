@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class CameraFollower : MonoBehaviour
 {
-    private Cinemachine.CinemachineVirtualCamera camera;
+    private new Cinemachine.CinemachineVirtualCamera camera;
     public float HorizontalRotateSpeed = 3;
     public float VerticalRotateSpeed = 3;
 

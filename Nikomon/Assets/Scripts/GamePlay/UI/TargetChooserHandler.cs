@@ -24,31 +24,106 @@ public class TargetChooserHandler : MonoBehaviour
 
     public Action<List<int>> OnChooseTarget;
     public Action OnCancelChoose;
+
+    public static TargetChooserHandler Instance
+    {
+        get
+        {
+            return sInstance;
+        }
+    }
+    private static TargetChooserHandler sInstance;
+    
     public void Init(List<CombatPokemon> opponents,List<CombatPokemon> allies)
     {
+        sInstance = this;
         oppoToggle = new List<TargetChooserUI>();
         allyToggle = new List<TargetChooserUI>();
         userToggle = new List<TargetChooserUI>();
-        foreach (var oppo in opponents.OrEmptyIfNull())
-        {
-            GameObject o = Instantiate(TargetChooserPrefab, Opponents);
-            o.GetComponent<TargetChooserUI>()?.Init(oppo);
-            oppoToggle.Add(o.GetComponent<TargetChooserUI>());
-        }
-        foreach (var ally in allies.OrEmptyIfNull())
-        {
-            GameObject o = Instantiate(TargetChooserPrefab, Allies);
-            o.GetComponent<TargetChooserUI>()?.Init(ally);
-            allyToggle.Add(o.GetComponent<TargetChooserUI>());
-            if(ally.TrainerID==Game.trainer.id)
-                userToggle.Add(o.GetComponent<TargetChooserUI>());
-        }
+        InitToggleUI(opponents,Opponents,oppoToggle);
+        InitToggleUI(allies,Allies,allyToggle);
         Panel.SetActive(false);
         Cancel.onClick.AddListener(() =>
         {
             Panel.SetActive(false);
             OnCancelChoose?.Invoke();
         });
+    }
+    
+    //TODO:这里可以改得更好看一些
+    private void InitToggleUI(List<CombatPokemon> pokemons, Transform parent,List<TargetChooserUI> toggle)
+    {
+
+        if (pokemons.Count < parent.transform.childCount)
+        {
+            for (int i = 0; i < parent.transform.childCount; i++)
+            {
+                parent.transform.GetChild(i).gameObject.SetActive(false);
+            }
+        }
+        else if (pokemons.Count > parent.transform.childCount)
+        {
+            GameObject o = Instantiate(TargetChooserPrefab, parent);
+        }
+
+        for (int i = 0; i < pokemons.Count; i++)
+        {
+            var targetChooserUI=parent.transform.GetChild(i).GetComponent<TargetChooserUI>();
+            targetChooserUI.gameObject.SetActive(true);
+            targetChooserUI.Init(pokemons[i]);
+            toggle.Add(targetChooserUI.GetComponent<TargetChooserUI>());
+            if(pokemons[i].TrainerID==Game.trainer.id)
+                userToggle.Add(targetChooserUI.GetComponent<TargetChooserUI>());
+        }
+        
+        // if (pokemons.Count == parent.transform.childCount)
+        // {
+        //     for (int i = 0; i < pokemons.Count; i++)
+        //     {
+        //         parent.transform.GetChild(i).GetComponent<TargetChooserUI>().Init(pokemons[i]);
+        //     }
+        // }
+        // else if (pokemons.Count > parent.transform.childCount)
+        // {
+        //     for (int i = 0; i < parent.transform.childCount; i++)
+        //     {
+        //         parent.transform.GetChild(i).GetComponent<TargetChooserUI>().Init(pokemons[i]);
+        //     }
+        //
+        //     for (int i = parent.transform.childCount; i < pokemons.Count; i++)
+        //     {
+        //         GameObject o = Instantiate(TargetChooserPrefab, parent);
+        //         o.GetComponent<TargetChooserUI>()?.Init(pokemons[i]);
+        //         toggle.Add(o.GetComponent<TargetChooserUI>());
+        //         if(pokemons[i].TrainerID==Game.trainer.id)
+        //             userToggle.Add(o.GetComponent<TargetChooserUI>());
+        //     }
+        // }
+        // else if (pokemons.Count < parent.transform.childCount)
+        // {
+        //     for (int i = 0; i < pokemons.Count; i++)
+        //     {
+        //         parent.transform.GetChild(i).GetComponent<TargetChooserUI>().Init(pokemons[i]);
+        //     }
+        //
+        //     for (int i = pokemons.Count; i < parent.transform.childCount; i++)
+        //     {
+        //         parent.transform.GetChild(i).gameObject.SetActive(false);
+        //     }
+        // }
+    }
+
+
+    private void ClearToggle()
+    {
+        foreach (var toggle in allyToggle)
+        {
+            toggle.toggle.isOn = false;
+        }
+        foreach (var toggle in oppoToggle)
+        {
+            toggle.toggle.isOn = false;
+        }
     }
 
     //TODO: 完善这里！
@@ -103,13 +178,7 @@ public class TargetChooserHandler : MonoBehaviour
                 oppoToggle.Enable();
                 allyToggle.Disable();
                 Submit.gameObject.SetActive(false);
-                oppoToggle.OnSelected(() =>
-                {
-                    targets.AddRange(from o in oppoToggle where o.toggle.isOn select o.Pokemon.CombatID);
-                    targets.AddRange(from o in allyToggle where o.toggle.isOn select o.Pokemon.CombatID);
-                    OnChooseTarget?.Invoke(targets);
-                    Panel.SetActive(false);
-                });
+                oppoToggle.OnSelected(OnSelected);
                 break;
             case Targets.ALL_OTHER_POKEMON:
                 oppoToggle.Disable();
@@ -130,6 +199,7 @@ public class TargetChooserHandler : MonoBehaviour
                 {
                     targets.AddRange(from o in oppoToggle where o.toggle.isOn select o.Pokemon.CombatID);
                     targets.AddRange(from o in allyToggle where o.toggle.isOn select o.Pokemon.CombatID);
+                    ClearToggle();
                     OnChooseTarget?.Invoke(targets);
                     Panel.SetActive(false);
                 });
@@ -147,6 +217,16 @@ public class TargetChooserHandler : MonoBehaviour
             );
         
     }
-    
+
+
+    public void OnSelected()
+    {
+        List<int> targets = new List<int>();
+        targets.AddRange(from o in oppoToggle where o.toggle.isOn select o.Pokemon.CombatID);
+        targets.AddRange(from o in allyToggle where o.toggle.isOn select o.Pokemon.CombatID);
+        ClearToggle();
+        OnChooseTarget?.Invoke(targets);
+        Panel.SetActive(false);
+    }
     
 }

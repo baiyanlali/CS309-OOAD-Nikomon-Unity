@@ -9,12 +9,12 @@ public class dialogEngine : MonoBehaviour
 
     private Image dialogBox;
     private Text dialogBoxText;
-    private Text dialogBoxTextShadow;
+    // private Text dialogBoxTextShadow;
     private CanvasGroup dialogCanvasGroup;
 
     private Image choiceBox;
     private Text choiceBoxText;
-    private Text choiceBoxTextShadow;
+    // private Text choiceBoxTextShadow;
     private Image choiceBoxSelect;
 
     public AudioClip selectClip;
@@ -37,7 +37,7 @@ public class dialogEngine : MonoBehaviour
         dialogBoxTrn = transform.Find("DialogBox");
         dialogBox = dialogBoxTrn.Find("boxBG").GetComponent<Image>();
         dialogBoxText = dialogBoxTrn.Find("boxText").GetComponent<Text>();
-        dialogBoxTextShadow = dialogBoxTrn.Find("boxTextShadow").GetComponent<Text>();
+        // dialogBoxTextShadow = dialogBoxTrn.Find("boxTextShadow").GetComponent<Text>();
         dialogCanvasGroup = dialogBoxTrn.transform.GetComponent<CanvasGroup>();
 
 
@@ -56,31 +56,26 @@ public class dialogEngine : MonoBehaviour
 
     public IEnumerator DrawText(string text)
     {
-        yield return StartCoroutine(DrawText(text, 1f / charPerSec, false ,false));
+        yield return StartCoroutine(DrawText(text, 1f / charPerSec, false));
     }
 
     public IEnumerator DrawText(string text, float secPerChar)
     {
-        yield return StartCoroutine(DrawText(text, secPerChar, false, false));
+        yield return StartCoroutine(DrawText(text, secPerChar, false));
     }
 
     public IEnumerator DrawTextSilent(string text)
     {
-        yield return StartCoroutine(DrawText(text, 1f / charPerSec, true, false));
+        yield return StartCoroutine(DrawText(text, 1f / charPerSec, true));
     }
 
     public IEnumerator DrawTextInstant(string text)
     {
-        yield return StartCoroutine(DrawText(text, 0, false, false));
+        yield return StartCoroutine(DrawText(text, 0, false));
     }
 
-    public IEnumerator DrawText(string text, float secPerChar, bool audioEffect,bool continued)
+    public IEnumerator DrawText(string text, float secPerChar, bool audioEffect)
     {
-        if (!continued)
-        {
-            dialogBoxText.text = "";
-            dialogBoxTextShadow.text = "";
-        }
         string[] words = text.Split(new char[] { ' ' });
         Debug.Log(text);
         for (int i = 0; i < words.Length; i++)
@@ -108,6 +103,7 @@ public class dialogEngine : MonoBehaviour
     {
         yield return StartCoroutine(DrawWord(word, false, false, false, secPerChar));
     }
+
     private IEnumerator DrawWord(string word, bool large, bool bold, bool italic, float secPerChar)
     {
         char[] chars = word.ToCharArray();
@@ -186,7 +182,7 @@ public class dialogEngine : MonoBehaviour
                     added += (large) ? "</size>" : "";
 
                     dialogBoxText.text = currentText + added;
-                    dialogBoxTextShadow.text = dialogBoxText.text;
+                    // dialogBoxTextShadow.text = dialogBoxText.text;
 
                     while (Time.time < startTime + (secPerChar * (i + 1)))
                     {
@@ -203,7 +199,7 @@ public class dialogEngine : MonoBehaviour
         else
         {
             dialogBoxText.text += " <color=#0000></color>";
-            dialogBoxTextShadow.text = dialogBoxText.text;
+            // dialogBoxTextShadow.text = dialogBoxText.text;
 
             while (Time.time < startTime + (secPerChar)) //realize the function of delay display
             {
@@ -212,29 +208,64 @@ public class dialogEngine : MonoBehaviour
         }
     }
 
-    public bool dialogBoxOn()
-    {
-        return dialogBoxTrn.gameObject.activeInHierarchy;
-    }
+
     public void DrawDialogBox()
     {
-        DrawDialogBox(PlayerPrefs.GetInt("dialogStyle"));
+        StartCoroutine(DrawDialogBox(dialogLines,PlayerPrefs.GetInt("dialogStyle")));
     }
-    public void DrawDialogBox(int style)
+    public void DrawDialogBox(int lines)
     {
-        // should be draw specific image scripts 
-        // the image should be according to the style
+        StartCoroutine(DrawDialogBox(lines, PlayerPrefs.GetInt("dialogStyle")));
+    }
 
-        //above
-
+    private IEnumerator DrawDialogBox(int lines,int style)
+    {
+        Debug.Log("DrawDialogbox"+ PlayerPrefs.GetInt("dialogStyle"));
         dialogBoxTrn.gameObject.SetActive(true);
         dialogBoxText.text = "";
         dialogBoxText.fontSize = fontSize;
-        dialogBoxTextShadow.fontSize = fontSize;
-        dialogBoxTextShadow.text = dialogBoxText.text;
-        StartCoroutine(fadeEffect(1));
-    }
+        // dialogBoxTextShadow.fontSize = fontSize;
+        // dialogBoxTextShadow.text = dialogBoxText.text;
+        /*        float alpha = 1f;
+                dialogCanvasGroup.alpha = 0;
+                while (true)
+                {
+                    dialogCanvasGroup.alpha = Mathf.Lerp(dialogCanvasGroup.alpha, alpha, 0.01f * Time.deltaTime);
+                    Debug.Log(0.01f * Time.deltaTime);
+                    if (Mathf.Abs(alpha - dialogCanvasGroup.alpha) <= 0.01)
+                    {
+                        dialogCanvasGroup.alpha = alpha;
+                        yield return null;
+                    }
+                }*/
+        yield return StartCoroutine(fadeEffect(1));
+        #region discard code
+        //boxBG(o.x, line.y ) ->dialogBoxTrn.size
+        /*dialogBoxBorder.rectTransform.sizeDelta = new Vector2(dialogBoxBorder.rectTransform.sizeDelta.x, Mathf.Round((float)lines * frontSize) + 16);
 
+        dialogBox.rectTransform.sizeDelta = dialogBoxTrn.gameObject.GetComponent<RectTransform>().sizeDelta;
+        dialogBoxText.rectTransform.localPosition = new Vector3(dialogBoxText.rectTransform.localPosition.x,-110f + Mathf.Round((float)lines * frontSize), 0);
+        dialogBoxTextShadow.rectTransform.localPosition = new Vector3(dialogBoxText.rectTransform.localPosition.x, dialogBoxText.rectTransform.localPosition.y - 1f, 0);
+        */
+        //The rise effect of sign
+        /*if (sign)
+        {
+            float increment = 0f;
+            while (increment < 1)
+            {
+                increment += (1f / 0.2f) * Time.deltaTime;
+                if (increment > 1)
+                {
+                    increment = 1;
+                }
+
+                dialogBox.rectTransform.localPosition = new Vector2(dialogBox.rectTransform.localPosition.x,
+                    -dialogBox.rectTransform.sizeDelta.y + (dialogBox.rectTransform.sizeDelta.y * increment));
+                yield return null;
+            }
+        }*/
+        #endregion
+    }
     
     public IEnumerator fadeEffect(int alpha)
     {
@@ -242,32 +273,16 @@ public class dialogEngine : MonoBehaviour
         while (cg.alpha != alpha)
         {
             cg.alpha = Mathf.Lerp(cg.alpha, alpha, fadeSpeed * Time.deltaTime);
-            
+            yield return null;
             // Debug.Log(cg.alpha);
             if (Mathf.Abs(alpha - cg.alpha) <= 0.01)
-            {
-                cg.alpha = alpha;
-                if(cg.alpha == 0)
                 {
-                    dialogBoxTrn.gameObject.SetActive(false);
+                    cg.alpha = alpha;
                 }
-            }
-            yield return null;
         }
         
     }
     
-
-
-
-
-
-
-
-
-
-
-
 
     public IEnumerator DrawChoiceBox()
     {
@@ -331,8 +346,8 @@ public class dialogEngine : MonoBehaviour
         choiceBox.rectTransform.sizeDelta = new Vector2(width, 16f + (fontSize * choices.Length));
         choiceBoxSelect.rectTransform.localPosition = new Vector3(8, 9f + (fontSize * startIndex), 0);
         choiceBoxText.rectTransform.sizeDelta = new Vector2(width - 30, choiceBox.rectTransform.sizeDelta.y);
-        choiceBoxTextShadow.rectTransform.sizeDelta = new Vector2(choiceBoxText.rectTransform.sizeDelta.x,
-            choiceBoxText.rectTransform.sizeDelta.y);
+        // choiceBoxTextShadow.rectTransform.sizeDelta = new Vector2(choiceBoxText.rectTransform.sizeDelta.x,
+            // choiceBoxText.rectTransform.sizeDelta.y);
 
         choiceBoxText.text = "";
         for (int i = 0; i < choices.Length; i++)
@@ -343,7 +358,7 @@ public class dialogEngine : MonoBehaviour
                 choiceBoxText.text += "\n";
             }
         }
-        choiceBoxTextShadow.text = choiceBoxText.text;
+        // choiceBoxTextShadow.text = choiceBoxText.text;
 
         bool selected = false;
         UpdateChosenIndex(startIndex, choices.Length, flavourText);

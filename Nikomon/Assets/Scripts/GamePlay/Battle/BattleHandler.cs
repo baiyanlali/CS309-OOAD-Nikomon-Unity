@@ -65,8 +65,16 @@ public class BattleHandler : MonoBehaviour
         battle.OnThisTurnEnd += OnTurnEnd;
         battle.OnTurnBegin += OnTurnBegin;
         battle.OnPokemonChooseHandled += OnPokemonChooseHandled;
+        battle.OnReplacePokemon += (p1, p2) =>
+        {
+            BattleUIHandler.Instance.OnReplacePokemon(p1,p2);
+            BattleFieldHandler.Instance.OnReplacePokemon(p1, p2);
+        };
         BattleUIHandler.Instance.Init(this);
         BattleFieldHandler.Instance.Init(AlliesPokemons, OpponentPokemons);
+
+        DialogHandler.Instance.OnDialogFinished += (o) => { if(Game.battle!=null) BattleUIHandler.Instance.UpdateUI(this);};
+        
         OnTurnBegin();
     }
     
@@ -81,7 +89,7 @@ public class BattleHandler : MonoBehaviour
     {
         UnityEngine.Debug.Log("Turn End");
         
-        EventPool.Schedule(() => { BattleUIHandler.Instance.UpdateUI(this); });
+        // EventPool.Schedule(() => { BattleUIHandler.Instance.UpdateUI(this); });
     }
 
     public void OnTurnBegin()
@@ -91,9 +99,11 @@ public class BattleHandler : MonoBehaviour
         EventPool.Schedule(() =>
         {
             CurrentMyPokemonIndex = 0;
+            BattleUIHandler.Instance.BattleUI.SetActive(true);
             BattleUIHandler.Instance.ShowMoves();
         });
-
+        
+        
         // print($"Current Pokemon Index: {CurrentMyPokemonIndex}");
     }
 

@@ -9,26 +9,28 @@ using PokemonCore.Utility;
 
 namespace PokemonCore.Combat
 {
-    public class CombatPokemon:IPropertyModify
+    public class CombatPokemon
     {
         [JsonIgnore]
-        public Battle battle;
+        public Battle battle=>Game.battle;
         public int TrainerID { get; set; }
 
-        //TODO:改变一种方法
         public int CombatID
         {
-            get => TrainerID * 100 + pokemon._base.ID;
+            get => TrainerID * 100 + pokemon._base.ID ;
         }
 
         public Pokemon pokemon { get; private set; }
-        public int HP { get; private set; }
+        public int HP
+        {
+            get { return pokemon.HP;} private set { pokemon.HP = value; }
+        }
         public int TotalHP { get; private set; }
-        public int ATK { get; private set; }
-        public int DEF { get; private set; }
-        public int SPA { get; private set; }
-        public int SPD { get; private set; }
-        public int SPE { get; private set; }
+        public int ATK { get; set; }
+        public int DEF { get; set; }
+        public int SPA { get; set; }
+        public int SPD { get; set; }
+        public int SPE { get; set; }
         
         public int Level
         {
@@ -38,12 +40,12 @@ namespace PokemonCore.Combat
         /// <summary>
         /// Used only in battle
         /// </summary>
-        public int Accuracy { get; private set; }
+        public int Accuracy { get; set; }
 
         /// <summary>
         /// Used only in battle
         /// </summary>
-        public int Evasion { get; private set; }
+        public int Evasion { get; set; }
 
         #region State Change
         
@@ -116,39 +118,22 @@ namespace PokemonCore.Combat
 
         public int? Type1 { get; private set; }
 
-        public int? Type2 { get; private set; }
+        public int? Type2 { get; set; }
 
-        public int? Type3 { get; private set; }
+        public int? Type3 { get; set; }
 
-        public int AbilityID { get; }
+        public int AbilityID { get; set; }
 
         public int ItemID { get; }
 
-        public List<IEffect> Effects { get; set; }
+        public List<Effect> Effects { get; set; }
 
         public Move lastMove;
+        
+        
 
-        #if UNITY_EDITOR
-        public object this[string propertyName]
+        public CombatPokemon(Pokemon pokemon)
         {
-            get
-            {
-                Type t = this.GetType();
-                PropertyInfo pi = t.GetProperty(propertyName);
-                return pi.GetValue(this, null);
-            }
-            set
-            {
-                Type t = this.GetType();
-                PropertyInfo pi = t.GetProperty(propertyName);
-                pi.SetValue(this, value, null);
-            }
-        }
-        #endif
-
-        public CombatPokemon(Pokemon pokemon, Battle battle)
-        {
-            this.battle = battle;
             this.pokemon = pokemon;
             this.HP = pokemon.HP;
             this.TotalHP = pokemon.TotalHp;
@@ -165,13 +150,15 @@ namespace PokemonCore.Combat
             Accuracy = 100;
             Evasion = 0;
 
+            Effects = new List<Effect>();
+            Effects.Add(Game.LuaEnv.Global.Get<Effect>("effect0"));
+
             //TODO:Add ability
 
             TrainerID = pokemon.TrainerID;
 
             lastMove = null;
 
-            battle.OnThisTurnEnd += () => this.pokemon.HP = this.HP;
         }
 
 
@@ -179,11 +166,25 @@ namespace PokemonCore.Combat
         {
             foreach (var e in Effects.OrEmptyIfNull())
             {
-                Instruction i = e.OnChoosing(battle, this);
+                if (e.OnChoosing == null) continue;
+                Instruction i = e.OnChoosing(this);
                 if (i != null) return i;
             }
 
             return null;
+        }
+
+        public CombatMove OnMoving(CombatMove cmove)
+        {
+            UnityEngine.Debug.Log(cmove);
+            foreach (var e in Effects.OrEmptyIfNull())
+            {
+                if (e.OnMoving == null) continue;
+                
+                e.OnMoving(cmove);
+            }
+            UnityEngine.Debug.Log(cmove);
+            return cmove;
         }
 
 
@@ -191,6 +192,7 @@ namespace PokemonCore.Combat
         {
             foreach (var e in Effects.OrEmptyIfNull())
             {
+                if (e.OnSwitchPokemon == null) return true;
                 if (e.OnSwitchPokemon(this) == false) return false;
             }
 
@@ -201,7 +203,8 @@ namespace PokemonCore.Combat
         {
             foreach (var e in Effects.OrEmptyIfNull())
             {
-                damage = e.OnHit(damage);
+                if (e.OnHit == null) continue;
+                e.OnHit(this,damage);
             }
 
             return damage;
@@ -211,13 +214,30 @@ namespace PokemonCore.Combat
         {
             foreach (var e in Effects.OrEmptyIfNull())
             {
-                damage = e.BeHurt(damage);
+                if (e.BeHurt == null) continue;
+                e.BeHurt(this,damage);
             }
 
 
             this.HP -= damage.finalDamage;
+            if (HP <= 0)
+            {
+                HP = 0;
+                OnFainting();
+                return;
+            }
             if (damage.combatMove.TargetEffects != null)
                 Effects.AddRange(damage.combatMove.TargetEffects);
+        }
+
+        public void OnFainting()
+        {
+            foreach (var effect in Effects.OrEmptyIfNull())
+            {
+                if (effect.BeFainted == null) continue;
+                effect.BeFainted(this);
+            }
+            battle.PokemonFainting(this);
         }
 
         public override string ToString()

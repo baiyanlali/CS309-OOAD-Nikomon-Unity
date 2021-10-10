@@ -6,13 +6,13 @@ using PokemonCore.Combat.Interface;
 namespace PokemonCore.Combat
 {
     [Serializable]
-    public class Trainer:IPropertyModify
+    public class Trainer
     {
         public string name { get; private set; }
         public int id { get; private set; }
         public int money { get; private set; }
         public Pokemon[] party { get; set; }
-        
+
         public bool isMale;
 
         public int pokedexNums;
@@ -28,8 +28,8 @@ namespace PokemonCore.Combat
             this.pokedexNums = pokedexNums;
             pokemonOnTheBattle = new bool[party.Length];
         }
-        
-        public Trainer(string name,bool isMale)
+
+        public Trainer(string name, bool isMale)
         {
             this.name = name;
             this.isMale = isMale;
@@ -42,7 +42,7 @@ namespace PokemonCore.Combat
         }
 
         [JsonIgnore] public bool[] pokemonOnTheBattle;
-        
+
         [JsonIgnore]
         public int pokemonCount
         {
@@ -57,6 +57,8 @@ namespace PokemonCore.Combat
                 return num;
             }
         }
+
+        [JsonIgnore] public bool isPartyFull => pokemonCount >= party.Length;
 
         /// <summary>
         /// 这里传进来一个Pokemon，然后返回这个Pokemon在Trainer的party中的index
@@ -73,7 +75,7 @@ namespace PokemonCore.Combat
 
             return -1;
         }
-        
+
         [JsonIgnore]
         public int ablePokemonCount
         {
@@ -82,7 +84,7 @@ namespace PokemonCore.Combat
                 int num = 0;
                 for (int i = 0; i < this.party.Length; i++)
                 {
-                    if (this.party[i] != null && party[i].HP>0) num++;
+                    if (this.party[i] != null && party[i].HP > 0) num++;
                 }
 
                 return num;
@@ -98,33 +100,75 @@ namespace PokemonCore.Combat
                 for (int i = 0; i < party.Length; i++)
                 {
                     //血量大于0而且不在战场上
-                    if (party[i] != null && party[i].HP > 0 && pokemonOnTheBattle[i] ==false) return i;
+                    if (party[i] != null && party[i].HP > 0 && pokemonOnTheBattle[i] == false) return i;
                 }
 
                 return -1;
             }
         }
+
+        [JsonIgnore] public Pokemon firstParty => party[0];
+        [JsonIgnore] public Pokemon lastParty => party[party.Length - 1];
+
+
+        /// <summary>
+        /// 显示背包里实际上有多少只宝可梦
+        /// </summary>
         [JsonIgnore]
-        public Pokemon firstParty => party[0];
-        [JsonIgnore]
-        public Pokemon lastParty => party[party.Length-1];
-        [Obsolete]
-        //TODO:删除所有反射属性，支持IOS端
-        public object this[string propertyName]
+        public int bagPokemons
         {
             get
             {
-                Type t = this.GetType();
-                PropertyInfo pi = t.GetProperty(propertyName);
-                return pi.GetValue(this, null);
-            }
-            set
-            {
-                Type t = this.GetType();
-                PropertyInfo pi = t.GetProperty(propertyName);
-                pi.SetValue(this, value, null);
+                int num = 0;
+                for (int i = 0; i < party.Length; i++)
+                {
+                    if (party[i] != null) num++;
+                    else break;
+                }
+
+                return num;
             }
         }
 
+        public void AddPokemon(Pokemon poke)
+        {
+            if (isPartyFull) return;
+            poke.TrainerID = this.id;
+            party[pokemonCount] = poke;
+        }
+
+        /// <summary>
+        /// 这里我们假设只出现一个null,我们先找到这个null，然后让它和下一个元素交换，直到下一个元素为null
+        /// </summary>
+        public void ReArrayParty()
+        {
+            int index = 0;
+            for (int i = 0; i < party.Length; i++)
+            {
+                if (party[i] == null)
+                {
+                    index = i;
+                    break;
+                }
+            }
+
+            for (int i = index; i < party.Length - 1; i++)
+            {
+                if (party[i + 1] != null)
+                {
+                    (party[i], party[i + 1]) = (party[i + 1], party[i]);
+                }
+                else break;
+            }
+        }
+
+        public void RemovePokemon(Pokemon poke)
+        {
+            for (int i = 0; i < pokemonCount; i++)
+            {
+                if (poke == party[i]) party[i] = null;
+                ReArrayParty();
+            }
+        }
     }
 }

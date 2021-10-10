@@ -1,0 +1,39 @@
+effectTemplate = {
+    ID=-1,
+    InnerName = 'template',
+    Round = 5,
+    EffectLastType = CS.PokemonCore.Combat.Interface.EffectLastType.ALWAYS,
+    EffectChance = 100,
+    
+    BeFaint = function(combatPoke)    end,
+    BeSwitched = function(combatPoke) end,
+    OnEffectBegin = function(combatPoke) end,
+    OnChoosing = function(combatPoke) return instruction  end,
+    OnMoving = function(combatMove,combatPoke) return combatMove end,
+    OnHit = function(combatPoke,damage) return damage end,
+    BeHurt = function(combatPoke,damage) return damage end,
+    OnDamaged = function(sponsor,target) end,
+    OnSwitchPokemon = function(combatPoke) return True end,
+    OnEffectEnd = function(combatPoke) return True end,
+}
+
+--这个effect是所有宝可梦都拥有的一个effect，效果是如果发出来的技能和本身属性相同，则威力*1.5，注意取整
+effect0={
+    ID=0,
+    InnerName='SameTypePowerUp',
+    Round=-1,
+    EffectLastType= CS.PokemonCore.Combat.Interface.EffectLastType.ALWAYS,
+    EffectChance=100,
+
+    OnMoving = function(combatMove)
+        print('Use effect 0')
+        --if combatMove.type.ID == 
+        if combatMove.types.ID == combatMove.Sponsor.Type1 or combatMove.types.ID == combatMove.Sponsor.Type2  or combatMove.types.ID == combatMove.Sponsor.Type3  then
+            combatMove.power=math.floor(combatMove.power*1.5)
+            print('Pokemon:'..combatMove.Sponsor.pokemon.Name..' powers up!')
+        end
+        return combatMove
+    end,
+}
+
+

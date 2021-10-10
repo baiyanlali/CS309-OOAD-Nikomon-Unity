@@ -1,34 +1,35 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using PokemonCore.Attack;
 using PokemonCore.Attack.Data;
 using PokemonCore.Combat.Interface;
+using PokemonCore.Utility;
 
 namespace PokemonCore.Combat
 {
     /// <summary>
     /// 战斗使用的Move方法,为什么要把属性复制一遍->便于在战斗中修改
     /// </summary>
-    public class CombatMove:IPropertyModify
+    public class CombatMove
     {
         public Battle battle;
         public Move move { get; private set; }
-        public List<IEffect> TargetEffects { get; private set; }
-        public List<IEffect> AttackerEffects { get; private set; }
-        public List<IEffect> FieldEffects { get; private set; }
-        public int? power { get; private set; }
-        public Types types { get; private set; }
-        public int TotalPP { get; private set; }
-        public byte pp { get; private set; }
-        public int? Accuracy { get; private set; }
-        public int Priority { get; private set; }
-        public CombatPokemon Sponsor { get; private set; }
-        public List<CombatPokemon> Targets { get; private set; }
+        public List<Effect> TargetEffects { get; private set; }
+        public List<Effect> AttackerEffects { get; private set; }
+        public List<Effect> FieldEffects { get; private set; }
+        public int? power { get; set; }
+        public Types types { get; set; }
+        public int TotalPP { get; set; }
+        public byte pp { get; set; }
+        public int? Accuracy { get; set; }
+        public int Priority { get; set; }
+        public CombatPokemon Sponsor { get; set; }
+        public List<CombatPokemon> Targets { get; set; }
 
-        
 
-        public CombatMove(Move move,Battle battle,CombatPokemon sponsor,List<CombatPokemon> targets)
+        public CombatMove(Move move, Battle battle, CombatPokemon sponsor, List<CombatPokemon> targets)
         {
             this.move = move;
             this.battle = battle;
@@ -37,29 +38,20 @@ namespace PokemonCore.Combat
             this.Targets = targets;
             this.types = Game.TypesMap[move._baseData.Type];
             this.TotalPP = move.TotalPP;
-            this.pp = (byte)(move.PP-1);
+            this.pp = (byte) (move.PP - 1);
             this.Accuracy = move._baseData.Accuracy;
             this.Priority = move._baseData.Priority;
             this.power = move._baseData.Power;
-            battle.OnThisTurnEnd += () =>
-            {
-                move.PP = pp;
-            };
+            battle.OnThisTurnEnd += () => { move.PP = pp; };
         }
-        public object this[string propertyName]
+
+        public override string ToString()
         {
-            get
-            {
-                Type t = this.GetType();
-                PropertyInfo pi = t.GetProperty(propertyName);
-                return pi.GetValue(this, null);
-            }
-            set
-            {
-                Type t = this.GetType();
-                PropertyInfo pi = t.GetProperty(propertyName);
-                pi.SetValue(this, value, null);
-            }
+            return
+                $"{move._baseData.Name}:\n" +
+                $"sponsor:{Sponsor.Name}\n" +
+                $"target:{(from t in Targets select t.Name).ToList().ConverToString()}\n" +
+                $"power:{power}\n";
         }
     }
 }

@@ -33,23 +33,11 @@ namespace PokemonCore.Utility
             return num == 0;
         }
 
-        /// <summary>
-        /// 两个参数的List的count必须相同
-        /// </summary>
-        /// <param name="cons"></param>
-        /// <param name="property"></param>
-        /// <returns></returns>
-        public static bool Satisfy(this List<Condition> cons,List<IPropertyModify> property)
+        public static T RandomPickOne<T>(this List<T> list)
         {
-            if (cons == null) return true;
-            if (cons.Count == 0) return true;
-            for (int i = 0; i < cons.Count; i++)
-            {
-                if (cons[i].Satisfied(property[i]) == false) return false;
-            }
-
-            return true;
+            return list[Game.Random.Next(0, list.Count)];
         }
+        
 
 
     }
