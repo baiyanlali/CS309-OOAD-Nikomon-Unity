@@ -40,8 +40,8 @@ public class TargetChooserHandler : MonoBehaviour
         oppoToggle = new List<TargetChooserUI>();
         allyToggle = new List<TargetChooserUI>();
         userToggle = new List<TargetChooserUI>();
-        InitToggleUI(opponents,Opponents);
-        InitToggleUI(allies,Allies);
+        InitToggleUI(opponents,Opponents,oppoToggle);
+        InitToggleUI(allies,Allies,allyToggle);
         Panel.SetActive(false);
         Cancel.onClick.AddListener(() =>
         {
@@ -51,45 +51,80 @@ public class TargetChooserHandler : MonoBehaviour
     }
     
     //TODO:这里可以改得更好看一些
-    private void InitToggleUI(List<CombatPokemon> pokemons, Transform parent)
+    private void InitToggleUI(List<CombatPokemon> pokemons, Transform parent,List<TargetChooserUI> toggle)
     {
-        if (pokemons.Count == parent.transform.childCount)
-        {
-            for (int i = 0; i < pokemons.Count; i++)
-            {
-                parent.transform.GetChild(i).GetComponent<TargetChooserUI>().Init(pokemons[i]);
-            }
-        }
-        else if (pokemons.Count > parent.transform.childCount)
+
+        if (pokemons.Count < parent.transform.childCount)
         {
             for (int i = 0; i < parent.transform.childCount; i++)
-            {
-                parent.transform.GetChild(i).GetComponent<TargetChooserUI>().Init(pokemons[i]);
-            }
-
-            for (int i = parent.transform.childCount; i < pokemons.Count; i++)
-            {
-                GameObject o = Instantiate(TargetChooserPrefab, parent);
-                o.GetComponent<TargetChooserUI>()?.Init(pokemons[i]);
-                oppoToggle.Add(o.GetComponent<TargetChooserUI>());
-                if(pokemons[i].TrainerID==Game.trainer.id)
-                    userToggle.Add(o.GetComponent<TargetChooserUI>());
-            }
-        }
-        else if (pokemons.Count < parent.transform.childCount)
-        {
-            for (int i = 0; i < pokemons.Count; i++)
-            {
-                parent.transform.GetChild(i).GetComponent<TargetChooserUI>().Init(pokemons[i]);
-            }
-
-            for (int i = pokemons.Count; i < parent.transform.childCount; i++)
             {
                 parent.transform.GetChild(i).gameObject.SetActive(false);
             }
         }
+        else if (pokemons.Count > parent.transform.childCount)
+        {
+            GameObject o = Instantiate(TargetChooserPrefab, parent);
+        }
+
+        for (int i = 0; i < pokemons.Count; i++)
+        {
+            var targetChooserUI=parent.transform.GetChild(i).GetComponent<TargetChooserUI>();
+            targetChooserUI.gameObject.SetActive(true);
+            targetChooserUI.Init(pokemons[i]);
+            toggle.Add(targetChooserUI.GetComponent<TargetChooserUI>());
+            if(pokemons[i].TrainerID==Game.trainer.id)
+                userToggle.Add(targetChooserUI.GetComponent<TargetChooserUI>());
+        }
+        
+        // if (pokemons.Count == parent.transform.childCount)
+        // {
+        //     for (int i = 0; i < pokemons.Count; i++)
+        //     {
+        //         parent.transform.GetChild(i).GetComponent<TargetChooserUI>().Init(pokemons[i]);
+        //     }
+        // }
+        // else if (pokemons.Count > parent.transform.childCount)
+        // {
+        //     for (int i = 0; i < parent.transform.childCount; i++)
+        //     {
+        //         parent.transform.GetChild(i).GetComponent<TargetChooserUI>().Init(pokemons[i]);
+        //     }
+        //
+        //     for (int i = parent.transform.childCount; i < pokemons.Count; i++)
+        //     {
+        //         GameObject o = Instantiate(TargetChooserPrefab, parent);
+        //         o.GetComponent<TargetChooserUI>()?.Init(pokemons[i]);
+        //         toggle.Add(o.GetComponent<TargetChooserUI>());
+        //         if(pokemons[i].TrainerID==Game.trainer.id)
+        //             userToggle.Add(o.GetComponent<TargetChooserUI>());
+        //     }
+        // }
+        // else if (pokemons.Count < parent.transform.childCount)
+        // {
+        //     for (int i = 0; i < pokemons.Count; i++)
+        //     {
+        //         parent.transform.GetChild(i).GetComponent<TargetChooserUI>().Init(pokemons[i]);
+        //     }
+        //
+        //     for (int i = pokemons.Count; i < parent.transform.childCount; i++)
+        //     {
+        //         parent.transform.GetChild(i).gameObject.SetActive(false);
+        //     }
+        // }
     }
 
+
+    private void ClearToggle()
+    {
+        foreach (var toggle in allyToggle)
+        {
+            toggle.toggle.isOn = false;
+        }
+        foreach (var toggle in oppoToggle)
+        {
+            toggle.toggle.isOn = false;
+        }
+    }
 
     //TODO: 完善这里！
     public void ShowTargetChooser(Targets target)
@@ -143,13 +178,7 @@ public class TargetChooserHandler : MonoBehaviour
                 oppoToggle.Enable();
                 allyToggle.Disable();
                 Submit.gameObject.SetActive(false);
-                oppoToggle.OnSelected(() =>
-                {
-                    targets.AddRange(from o in oppoToggle where o.toggle.isOn select o.Pokemon.CombatID);
-                    targets.AddRange(from o in allyToggle where o.toggle.isOn select o.Pokemon.CombatID);
-                    OnChooseTarget?.Invoke(targets);
-                    Panel.SetActive(false);
-                });
+                oppoToggle.OnSelected(OnSelected);
                 break;
             case Targets.ALL_OTHER_POKEMON:
                 oppoToggle.Disable();
@@ -170,6 +199,7 @@ public class TargetChooserHandler : MonoBehaviour
                 {
                     targets.AddRange(from o in oppoToggle where o.toggle.isOn select o.Pokemon.CombatID);
                     targets.AddRange(from o in allyToggle where o.toggle.isOn select o.Pokemon.CombatID);
+                    ClearToggle();
                     OnChooseTarget?.Invoke(targets);
                     Panel.SetActive(false);
                 });
@@ -187,6 +217,16 @@ public class TargetChooserHandler : MonoBehaviour
             );
         
     }
-    
+
+
+    public void OnSelected()
+    {
+        List<int> targets = new List<int>();
+        targets.AddRange(from o in oppoToggle where o.toggle.isOn select o.Pokemon.CombatID);
+        targets.AddRange(from o in allyToggle where o.toggle.isOn select o.Pokemon.CombatID);
+        ClearToggle();
+        OnChooseTarget?.Invoke(targets);
+        Panel.SetActive(false);
+    }
     
 }

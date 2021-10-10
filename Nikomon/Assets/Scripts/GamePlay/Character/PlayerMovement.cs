@@ -36,7 +36,10 @@ public class PlayerMovement : MonoBehaviour
             if(GlobalManager.Instance.Config.UseVirtualControl) VirtualController?.SetActive(true);
             this.move = nicoInput.move;
             Movement();
-
+            if (nicoInput.menu)
+            {
+                GlobalManager.Instance.SaveData();
+            }
             if (nicoInput.accept)
             {
                 CheckInteractable();

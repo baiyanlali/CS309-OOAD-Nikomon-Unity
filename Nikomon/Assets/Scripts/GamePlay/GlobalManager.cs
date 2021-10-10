@@ -115,6 +115,11 @@ public class GlobalManager : MonoBehaviour
         isBattling = false;
     }
 
+    public void SaveData()
+    {
+        game.SaveData();
+    }
+
     void StartPanel()
     {
         Debug.Log("No Save data found");

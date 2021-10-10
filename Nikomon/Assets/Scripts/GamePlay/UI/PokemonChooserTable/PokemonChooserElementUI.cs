@@ -38,7 +38,8 @@ public class PokemonChooserElementUI : MonoBehaviour
                 {
                     //这里是宝可梦的index和选项的index
                     actions[o]?.Invoke(Index);
-                });
+                },
+                transform as RectTransform);
         });
     }
 }

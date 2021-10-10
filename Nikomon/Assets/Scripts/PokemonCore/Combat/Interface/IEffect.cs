@@ -73,10 +73,10 @@ namespace PokemonCore.Combat.Interface
         /// <summary>
         /// param: combat move, move sponsor, the result of combat move
         /// </summary>
-        public Func<CombatMove,CombatMove> OnMoving;
+        public Action<CombatMove> OnMoving;
         
-        public Func<CombatPokemon,Damage,Damage> OnHit;
-        public Func<CombatPokemon,Damage,Damage> BeHurt;
+        public Action<CombatPokemon,Damage> OnHit;
+        public Action<CombatPokemon,Damage> BeHurt;
         /// <summary>
         ///sponsor, target
         /// </summary>

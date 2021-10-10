@@ -88,6 +88,28 @@ public class BagUI : MonoBehaviour
     {
         gameObject.SetActive(false);
     }
+
+    public void ShowInBattle()
+    {
+        var values =Enum.GetValues(typeof(Item.Tag));
+        bool[] bools = new bool[values.Length];
+        for (int i = 0; i < values.Length; i++)
+        {
+            switch ((Item.Tag)values.GetValue(i))
+            {
+                case Item.Tag.Medicine:
+                    case Item.Tag.PokeBalls:
+                    bools[i] = true;
+                    break;
+                default:
+                    bools[i] = false;
+                    break;
+            }
+        }
+        
+        _tabSystem.Show(bools);
+        gameObject.SetActive(true);
+    }
     
     public void Show()
     {

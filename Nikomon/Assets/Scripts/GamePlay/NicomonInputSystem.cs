@@ -17,6 +17,8 @@ public class NicomonInputSystem : MonoBehaviour
     public bool accept { get; private set; }
     
     public bool back { get; private set; }
+    public bool menu { get; private set; }
+    public bool bag { get; private set; }
     
     void Awake()
     {
@@ -34,6 +36,13 @@ public class NicomonInputSystem : MonoBehaviour
         
         nicomonInput.Player.Back.performed += (context) => back = context.ReadValue<float>()>=0.5f;
         nicomonInput.Player.Back.canceled += (context) => back = false;
+        
+        nicomonInput.Player.Menu.performed += (context) => menu = context.ReadValue<float>()>=0.5f;
+        nicomonInput.Player.Menu.canceled += (context) => menu = false;
+        
+        nicomonInput.Player.Bag.performed += (context) =>bag = context.ReadValue<float>()>=0.5f;
+        nicomonInput.Player.Bag.canceled += (context) => bag = false;
+        
         if(Instance==null)
             Instance = this;
         else Destroy(this);

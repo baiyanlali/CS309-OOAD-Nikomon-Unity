@@ -181,7 +181,7 @@ namespace PokemonCore.Combat
             {
                 if (e.OnMoving == null) continue;
                 
-                cmove = e.OnMoving(cmove);
+                e.OnMoving(cmove);
             }
             UnityEngine.Debug.Log(cmove);
             return cmove;
@@ -204,7 +204,7 @@ namespace PokemonCore.Combat
             foreach (var e in Effects.OrEmptyIfNull())
             {
                 if (e.OnHit == null) continue;
-                damage = e.OnHit(this,damage);
+                e.OnHit(this,damage);
             }
 
             return damage;
@@ -215,7 +215,7 @@ namespace PokemonCore.Combat
             foreach (var e in Effects.OrEmptyIfNull())
             {
                 if (e.BeHurt == null) continue;
-                damage = e.BeHurt(this,damage);
+                e.BeHurt(this,damage);
             }
 
 

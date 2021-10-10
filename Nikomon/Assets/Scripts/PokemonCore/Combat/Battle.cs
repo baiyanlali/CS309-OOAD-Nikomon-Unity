@@ -424,9 +424,14 @@ namespace PokemonCore.Combat
         public void CatchPokemon(CombatPokemon currentPoke,int pokeBall,List<int> pokemons)
         {
             //众所周知，被捕捉的宝可梦一定是opponent
-            var pokes = (from combatPokes in opponentsPokemons
-                join pokemon in pokemons on combatPokes.CombatID equals pokemon
-                select combatPokes).ToList();
+            // var pokes = (from combatPokes in opponentsPokemons
+            //     join pokemon in pokemons on combatPokes.CombatID equals pokemon
+            //     select combatPokes).ToList();
+            List<CombatPokemon> pokes = new List<CombatPokemon>();
+            foreach (var pokemon in pokemons)
+            {
+                pokes.Add(GetCombatPokemon(pokemon));
+            }
             foreach (var p in pokes.OrEmptyIfNull())
             {
                 bool result = Calculator.Catch(pokeBall, currentPoke.pokemon, p.pokemon);
@@ -449,15 +454,16 @@ namespace PokemonCore.Combat
             t.pokemonOnTheBattle[t.PokemonIndex(currentPokemon.pokemon)] = false;
             t.pokemonOnTheBattle[t.PokemonIndex(nextPokemon)] = true;
 
+            int index = alliesPokemons.BinarySearch(currentPokemon);
             if (alliesPokemons.Contains(currentPokemon))
             {
                 alliesPokemons.Remove(currentPokemon);
-                alliesPokemons.Add(nPoke);
+                alliesPokemons.Insert(index,nPoke);
             }
             else if (opponentsPokemons.Contains(currentPokemon))
             {
                 opponentsPokemons.Remove(currentPokemon);
-                opponentsPokemons.Add(nPoke);
+                opponentsPokemons.Insert(index,nPoke);
             }
 
             OnReplacePokemon?.Invoke(currentPokemon, nPoke);

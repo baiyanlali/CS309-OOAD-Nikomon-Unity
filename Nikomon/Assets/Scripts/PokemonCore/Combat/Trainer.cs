@@ -133,6 +133,7 @@ namespace PokemonCore.Combat
         public void AddPokemon(Pokemon poke)
         {
             if (isPartyFull) return;
+            poke.TrainerID = this.id;
             party[pokemonCount] = poke;
         }
 
