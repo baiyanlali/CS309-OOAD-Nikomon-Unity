@@ -55,7 +55,36 @@ namespace PokemonCore.Combat.Interface
         UseLastTurnMove,
         StatusChange
     }
-    
+
+
+    public class Effect
+    {
+        public int ID;
+        public string InnerName;
+        public int Round;
+        public EffectLastType EffectLastType;
+        public int EffectChance;
+        
+        public Action<CombatPokemon> BeSwitched;
+        public Action<CombatPokemon> BeFainted;
+        public Action<CombatPokemon> OnEffectBegin;
+
+        public Func<CombatPokemon,Instruction> OnChoosing;
+        /// <summary>
+        /// param: combat move, move sponsor, the result of combat move
+        /// </summary>
+        public Func<CombatMove,CombatMove> OnMoving;
+        
+        public Func<CombatPokemon,Damage,Damage> OnHit;
+        public Func<CombatPokemon,Damage,Damage> BeHurt;
+        /// <summary>
+        ///sponsor, target
+        /// </summary>
+        public Action<CombatPokemon,CombatPokemon> OnDamaged;
+        public Func<CombatPokemon,bool> OnSwitchPokemon;
+        public Func<CombatPokemon,bool> OnEffectEnd;
+        
+    }
     
     [CSharpCallLua]
     public interface IEffect

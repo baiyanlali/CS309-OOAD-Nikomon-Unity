@@ -99,27 +99,27 @@ namespace PokemonCore.Combat
         /// <summary>
         /// 选择招式之前的Effect
         /// </summary>
-        public List<IEffect> ChoosingEffect { get; private set; }
+        public List<Effect> ChoosingEffect { get; private set; }
 
         /// <summary>
         /// 招式生效之前的Effect->可以修改招式的Type,威力,Target等
         /// </summary>
-        public List<IEffect> MovingEffect { get; private set; }
+        public List<Effect> MovingEffect { get; private set; }
 
         /// <summary>
         /// 伤害造成前的Effect->可以阻止或削减伤害的程度等
         /// </summary>
-        public List<IEffect> DamagingEffect { get; private set; }
+        public List<Effect> DamagingEffect { get; private set; }
 
         /// <summary>
         /// 伤害造成后的Effect->可以造成自身增减血量等效果
         /// </summary>
-        public List<IEffect> DamagedEffect { get; private set; }
+        public List<Effect> DamagedEffect { get; private set; }
 
         /// <summary>
         /// 招式效果结束后的效果；可以用于一些附加效果，比如寄生种子
         /// </summary>
-        public List<IEffect> MovedEffect { get; private set; }
+        public List<Effect> MovedEffect { get; private set; }
 
         #endregion
 
@@ -191,20 +191,20 @@ namespace PokemonCore.Combat
             List<Pokemon> opponentsPokemons,
             List<Trainer> alliesTrainers,
             List<Trainer> opponentTrainers,
-            IEffect[] choosingEffect = null,
-            IEffect[] movingEffect = null,
-            IEffect[] damagingEffect = null,
-            IEffect[] damagedEffect = null,
-            IEffect[] movedEffect = null)
+            Effect[] choosingEffect = null,
+            Effect[] movingEffect = null,
+            Effect[] damagingEffect = null,
+            Effect[] damagedEffect = null,
+            Effect[] movedEffect = null)
         {
             Instance = this;
 
             #region init pokemons and trainers
 
-            this.alliesPokemons = (from poke in alliesPokemons where poke != null select new CombatPokemon(poke, this))
+            this.alliesPokemons = (from poke in alliesPokemons where poke != null select new CombatPokemon(poke))
                 .ToList();
             this.opponentsPokemons =
-                (from poke in opponentsPokemons where poke != null select new CombatPokemon(poke, this)).ToList();
+                (from poke in opponentsPokemons where poke != null select new CombatPokemon(poke)).ToList();
             this.UserTrainer = Game.trainer;
             this.alliesTrainers = alliesTrainers;
             this.opponentTrainers = opponentTrainers;
@@ -234,23 +234,23 @@ namespace PokemonCore.Combat
 
             #region init effects
 
-            this.ChoosingEffect = new List<IEffect>();
+            this.ChoosingEffect = new List<Effect>();
             if (choosingEffect != null)
                 this.ChoosingEffect.AddRange(choosingEffect);
 
-            this.MovingEffect = new List<IEffect>();
+            this.MovingEffect = new List<Effect>();
             if (movingEffect != null)
                 this.MovingEffect.AddRange(movingEffect);
 
-            this.DamagingEffect = new List<IEffect>();
+            this.DamagingEffect = new List<Effect>();
             if (damagingEffect != null)
                 this.DamagingEffect.AddRange(damagingEffect);
 
-            this.DamagedEffect = new List<IEffect>();
+            this.DamagedEffect = new List<Effect>();
             if (damagedEffect != null)
                 this.DamagedEffect.AddRange(damagedEffect);
 
-            this.MovedEffect = new List<IEffect>();
+            this.MovedEffect = new List<Effect>();
             if (movedEffect != null)
                 this.MovedEffect.AddRange(movedEffect);
 
@@ -348,7 +348,9 @@ namespace PokemonCore.Combat
         {
             foreach (var c in cm.OrEmptyIfNull())
             {
-                Damages.AddRange(GenerateDamages(c));
+                c.Sponsor.lastMove = c.move;
+                var c_final = c.Sponsor.OnMoving(c);
+                Damages.AddRange(GenerateDamages(c_final));
             }
 
             return Damages;
@@ -441,7 +443,7 @@ namespace PokemonCore.Combat
 
         public void ReplacePokemon(CombatPokemon currentPokemon, Pokemon nextPokemon)
         {
-            CombatPokemon nPoke = new CombatPokemon(nextPokemon, this);
+            CombatPokemon nPoke = new CombatPokemon(nextPokemon);
 
             Trainer t = Trainers[currentPokemon.TrainerID];
             t.pokemonOnTheBattle[t.PokemonIndex(currentPokemon.pokemon)] = false;

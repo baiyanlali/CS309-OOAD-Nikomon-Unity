@@ -10,6 +10,7 @@ using PokemonCore.Monster;
 using PokemonCore.Monster.Data;
 using PokemonCore.Saving;
 using PokemonCore.Utility;
+using XLua;
 
 
 namespace PokemonCore
@@ -43,7 +44,7 @@ namespace PokemonCore
         public static Dictionary<int, int[]> ExperienceTable { get; private set; }
         public static Dictionary<int, Nature> NatureData { get; private set; }
 
-        public static Dictionary<int, List<IEffect>> EffectsData { get; private set; }
+        public static Dictionary<int, List<string>> EffectsData { get; private set; }
 
         public static Dictionary<int, MoveData> MovesData { get; private set; }
 
@@ -56,12 +57,22 @@ namespace PokemonCore
 
         public static Random Random;
 
+        public static LuaEnv LuaEnv;
+
         private LoadDataType loadDataType { get; set; }
 
         #region 触发事件
 
         public Action OnDoNotHaveSaveFile;
         public Action OnHaveSaveFile;
+
+        public Action OnGameQuit= () =>
+        {
+            if (LuaEnv!=null)
+            {
+                // LuaEnv.Dispose();
+            }
+        };
 
         #endregion
 
@@ -97,7 +108,7 @@ namespace PokemonCore
             Dictionary<int, PokemonData> pokemonDatas, 
             Dictionary<int, int[]> experienceTable,
             Dictionary<int, Nature> natures,
-            Dictionary<int, List<IEffect>> effectsData, 
+            Dictionary<int, List<string>> effectsData, 
             Dictionary<int, MoveData> moveDatas,
             Dictionary<ValueTuple<Item.Tag,int>, Item> items)
         {
@@ -125,6 +136,9 @@ namespace PokemonCore
             }
             else
                 OnDoNotHaveSaveFile?.Invoke();
+
+            LuaEnv = new LuaEnv();
+            LuaEnv.DoString("require 'Effect'");
             // NatureData = new Dictionary<int, Nature>();
             // NatureData.Add(0, new Nature(0, new float[] {0, 0, 0, 0, 0}));
             // if (HaveSave)

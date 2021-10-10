@@ -51,6 +51,12 @@ public class GlobalManager : MonoBehaviour
 
     #endregion
 
+    private void OnDestroy()
+    {
+        game?.OnGameQuit();
+    }
+    
+
     private static GlobalManager CreateGlobalManager()
     {
         GameObject obj = GameObject.Find("Global");
