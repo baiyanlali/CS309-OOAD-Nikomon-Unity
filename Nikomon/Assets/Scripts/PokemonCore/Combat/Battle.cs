@@ -454,6 +454,7 @@ namespace PokemonCore.Combat
             t.pokemonOnTheBattle[t.PokemonIndex(currentPokemon.pokemon)] = false;
             t.pokemonOnTheBattle[t.PokemonIndex(nextPokemon)] = true;
 
+            //TODO;
             int index = alliesPokemons.BinarySearch(currentPokemon);
             if (alliesPokemons.Contains(currentPokemon))
             {

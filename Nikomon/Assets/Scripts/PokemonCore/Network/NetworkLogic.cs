@@ -79,7 +79,7 @@ namespace PokemonCore.Network
                     //这个时候是本机当主机
                     Game.Random = new Random(_randomNum);
                     isHost = true;
-                    BecomeHost();
+                    BecomeHost(_randomNum);
                     UnityEngine.Debug.Log("Become Host");
 
                 }
@@ -90,17 +90,17 @@ namespace PokemonCore.Network
                     var arr = (from d in usersBroadcast where d.Value.randomNum == maxRandom select d.Key).ToArray();
                     if (arr.Length != 1) throw new Exception("Error occured");
                     isHost = false;
-                    BecomeClient(arr[0]);
+                    BecomeClient(arr[0],maxRandom);
                     UnityEngine.Debug.Log("Become Client");
 
                 }
                 NetworkLocal.StopDetect();
 
-                System.Threading.Timer t=new Timer(new TimerCallback((o) =>
-                {
-                    NetworkLocal.StopBroadCast();
-                    UnityEngine.Debug.Log("Stop broadcast");
-                }),
+                new Timer(new TimerCallback((o) =>
+                    {
+                        NetworkLocal.StopBroadCast();
+                        UnityEngine.Debug.Log("Stop broadcast");
+                    }),
                     null,1000,Timeout.Infinite);
                 
                 StartBattle(isHost);
@@ -173,29 +173,25 @@ namespace PokemonCore.Network
         /// 用来解决一次性传了两或多个个Json字符串，编程：{}{}的情况
         /// </summary>
         /// <returns></returns>
-        private static string[] ParseJson(string str)
+        // TODO
+        private static List<string> ParseJson(string str)
         {
-            //TODO:解决一次性传两个json的问题
-            // var strs = str.Split('}').ToList();
-            // strs.RemoveAt(strs.Count-1);
-            // for (int i = 0; i < strs.Count; i++)
-            // {
-            //     strs[i] = strs[i] + '}';
-            // }
-            // UnityEngine.Debug.Log("Parse Json: "+strs.ConverToString());
-            // return strs.ToArray();
-            return new[] {str};
+            // TODO:解决一次性传两个json的问题
+             var strs = str.Split(',').ToList();
+             strs.RemoveAt(strs.Count-1);
+             UnityEngine.Debug.Log("Parse Json: "+strs.ConverToString());
+             return strs;
         }
         
         /// <summary>
         /// 玩家无法通过游戏界面选择自己是Host还是Client,所有的配对都通过UDP广播来完成，然后由第一个UDP广播的作为Host
         /// </summary>
-        static void BecomeHost()
+        static void BecomeHost(int port)
         {
-            NetworkLocal.OnServerReceiveMessage = (data) =>
+            NetworkLocal.OnServerReceiveMessage = (data,client) =>
             {
                 string str = Encoding.UTF8.GetString(data);
-                NetworkLocal.SendToClients(str);
+                NetworkLocal.SendToClients(str,client);
                 UnityEngine.Debug.Log("Server Receive Message");
                 foreach (var s in ParseJson(str))
                 {
@@ -205,12 +201,12 @@ namespace PokemonCore.Network
                 }
             };
             
-            NetworkLocal.BuildHost(_trainersNum);
+            NetworkLocal.BuildHost(_trainersNum,port);
         }
 
         
 
-        static void BecomeClient(IPAddress ipAddress)
+        static void BecomeClient(IPAddress ipAddress,int port=-1)
         {
             NetworkLocal.OnClientReceiveMessage = (data) =>
             {
@@ -218,20 +214,20 @@ namespace PokemonCore.Network
                 UnityEngine.Debug.Log("Client Receive Message");
                 foreach (var s in ParseJson(str))
                 {
+                    if (string.IsNullOrWhiteSpace(s)) continue;
                     UnityEngine.Debug.Log(s);
                     Instruction ins = JsonConvert.DeserializeObject<Instruction>(s);
                     Battle.Instance.ReceiveInstruction(ins,false);
                 }
             };
-            
-            new Thread(NetworkLocal.StartClient).Start(ipAddress);
+            NetworkLocal.StartClient(ipAddress,port);
+            // new Thread().Start(ipAddress);
         }
         static void ServerSendInstruction(Instruction instruction)
         {
             new Thread((o1)=>{
-                string str = JsonConvert.SerializeObject(instruction);
-                UnityEngine.Debug.Log("Server send Instruction");
-                UnityEngine.Debug.Log(str);
+                string str = JsonConvert.SerializeObject(instruction)+",";
+                UnityEngine.Debug.Log($"Server send Instruction :{str}");
                 NetworkLocal.SendToClients(str);
             }).Start();
             
@@ -241,9 +237,8 @@ namespace PokemonCore.Network
         {
             new Thread(() =>
             {
-                string str = JsonConvert.SerializeObject(instruction);
-                UnityEngine.Debug.Log("Client send Instruction");
-                UnityEngine.Debug.Log(str);
+                string str = JsonConvert.SerializeObject(instruction)+",";
+                UnityEngine.Debug.Log($"Client send Instruction :{str}");
                 NetworkLocal.SendToServer(str);
             }).Start();
             

@@ -101,7 +101,7 @@ namespace PokemonCore.Network
         /// </summary>
         public static int maxPlayers = 6;
 
-        public static Action<byte[]> OnServerReceiveMessage;
+        public static Action<byte[],Socket> OnServerReceiveMessage;
         public static Action<byte[]> OnClientReceiveMessage;
         public static Action<UdpReceiveResult,string> OnDetectBroadcast;
 
@@ -137,10 +137,10 @@ namespace PokemonCore.Network
         {
             NetworkBroadcastData na = password as NetworkBroadcastData;
             byte[] buf = Encoding.Default.GetBytes(JsonConvert.SerializeObject(na));
-            IPEndPoint endPoint = new IPEndPoint(IPAddress.Parse("255.255.255.255"), BroadPort);
+            IPEndPoint endPoint = new IPEndPoint(IPAddress.Broadcast, BroadPort);
             while (true)
             {
-                UnityEngine.Debug.Log("I'm sending message");
+                UnityEngine.Debug.Log($"I'm sending message from:{GetAddressIP()}");
                 
                 UDPsend.Send(buf, buf.Length, endPoint);
                 Thread.Sleep(200);
@@ -203,12 +203,13 @@ namespace PokemonCore.Network
         /// <summary>
         /// 建立一个Host
         /// </summary>
-        public static void BuildHost(int players=2)
+        public static void BuildHost(int players=2,int serverPort=-1)
         {
+            if (serverPort == -1) serverPort = ServerPort;
             maxPlayers = players;
             ServerSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            UnityEngine.Debug.Log($"{GetAddressIP()},{ServerPort},listen num : {maxPlayers-1}");
-            ServerSocket.Bind(new IPEndPoint(IPAddress.Parse(GetAddressIP()), ServerPort));
+            UnityEngine.Debug.Log($"{GetAddressIP()},{serverPort},listen num : {maxPlayers-1}");
+            ServerSocket.Bind(new IPEndPoint(IPAddress.Parse(GetAddressIP()), serverPort));
             ServerSocket.Listen(maxPlayers - 1);
             Clients = new List<Socket>();
             new Thread(ListenClientConnect).Start();
@@ -245,7 +246,7 @@ namespace PokemonCore.Network
                 {
                     var len = sock.Receive(result, result.Length, SocketFlags.None);
                     if(len>0)
-                        OnServerReceiveMessage?.Invoke(result);
+                        OnServerReceiveMessage?.Invoke(result,sock);
                 }
                 catch (Exception e)
                 {
@@ -267,7 +268,17 @@ namespace PokemonCore.Network
                 SendToClient(data, client);
             }
         }
-
+        
+        
+        public static void SendToClients(string data,Socket client_except)
+        {
+            foreach (var client in Clients.OrEmptyIfNull())
+            {
+                if (client.LocalEndPoint == client_except.LocalEndPoint) continue;
+                SendToClient(data, client);
+            }
+        }
+        
         static void SendToClient(string data, Socket socket)
         {
             try
@@ -287,13 +298,14 @@ namespace PokemonCore.Network
         #region 当作client时用
         
         
-        public static void StartClient(object obj)
+        public static void StartClient(object obj,int serverPort=-1)
         {
+            if (serverPort == -1) serverPort = ServerPort;
             Thread.Sleep(100);
             IPAddress ipAddress=obj as IPAddress;
             ClientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            UnityEngine.Debug.Log($"Start to connect to the host.{ipAddress},{ServerPort}");
-            ClientSocket.Connect(new IPEndPoint(ipAddress,ServerPort));
+            UnityEngine.Debug.Log($"Start to connect to the host.{ipAddress},{serverPort}");
+            ClientSocket.Connect(new IPEndPoint(ipAddress,serverPort));
             UnityEngine.Debug.Log("Connect to the host successfully!");
             new Thread(ReceiveFromServer).Start();
         }
