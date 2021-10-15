@@ -14,10 +14,7 @@ public class BattleHandler : MonoBehaviour
     public List<CombatPokemon> AlliesPokemons => battle?.alliesPokemons;
     public List<CombatPokemon> OpponentPokemons => battle?.opponentsPokemons;
 
-    public CombatPokemon CurrentPokemon =>
-        CurrentMyPokemonIndex >= userPokemons.Count ? null : userPokemons[CurrentMyPokemonIndex];
-
-    [SerializeField] public Battle battle => Game.battle;
+    public Battle battle => Game.battle;
 
     public static BattleHandler Instance
     {
@@ -58,13 +55,16 @@ public class BattleHandler : MonoBehaviour
         return s_Instance;
     }
 
-    private int CurrentMyPokemonIndex = 0;
 
     public void StartBattle(Battle battle)
     {
         battle.OnThisTurnEnd += OnTurnEnd;
         battle.OnTurnBegin += OnTurnBegin;
-        battle.OnPokemonChooseHandled += OnPokemonChooseHandled;
+        battle.ShowPokeMove += ShowPokeMove;
+        battle.OnPokemonFainting += (combatPoke) =>
+        {
+            BattleFieldHandler.Instance.OnPokemonFainting(combatPoke);
+        };
         battle.OnReplacePokemon += (p1, p2) =>
         {
             BattleUIHandler.Instance.OnReplacePokemon(p1,p2);
@@ -74,8 +74,20 @@ public class BattleHandler : MonoBehaviour
         BattleFieldHandler.Instance.Init(AlliesPokemons, OpponentPokemons);
 
         DialogHandler.Instance.OnDialogFinished += (o) => { if(Game.battle!=null) BattleUIHandler.Instance.UpdateUI(this);};
+
+        battle.OnMove += OnMove;
+        battle.OnHit += OnHit;
         
-        OnTurnBegin();
+        
+        // OnTurnBegin();
+        
+        GlobalManager.Instance.CompleteBattleInit();
+    }
+
+    public void ShowPokeMove(CombatPokemon poke)
+    {
+        print("show move!");
+        EventPool.Schedule(() => { BattleUIHandler.Instance.ShowMoves(poke);});
     }
     
     public void EndBattle()
@@ -83,7 +95,18 @@ public class BattleHandler : MonoBehaviour
         BattleUIHandler.Instance.EndBattle();
         BattleFieldHandler.Instance.EndBattle();
     }
-    
+
+    public string OnHit(Damage dmg)
+    {
+        
+        return null;
+    }
+
+    public void OnMove(CombatMove move)
+    {
+        BattleFieldHandler.Instance.OnMove(move);
+
+    }
 
     public void OnTurnEnd()
     {
@@ -98,33 +121,18 @@ public class BattleHandler : MonoBehaviour
 
         EventPool.Schedule(() =>
         {
-            CurrentMyPokemonIndex = 0;
             BattleUIHandler.Instance.BattleUI.SetActive(true);
-            BattleUIHandler.Instance.ShowMoves();
         });
         
         
         // print($"Current Pokemon Index: {CurrentMyPokemonIndex}");
     }
 
-    //TODO: 增加当宝可梦回合跳过
-    public void OnPokemonChooseHandled(int combatID)
-    {
-    }
+
 
     public void ReceiveInstruction(Instruction instruction)
     {
-        if (CurrentMyPokemonIndex + 1 == userPokemons.Count)
-        {
-            battle.ReceiveInstruction(instruction, true); //很多时候用了这个命令就直接进入到下一个TurnEnd和TurnBegin了，所以要提前考虑
-        }
-        else
-        {
-            battle.ReceiveInstruction(instruction, true);
-            CurrentMyPokemonIndex++;
-
-            EventPool.Schedule(() => { BattleUIHandler.Instance.ShowMoves(); });
-        }
+        battle.ReceiveInstruction(instruction, true);
     }
 
    

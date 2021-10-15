@@ -7,4 +7,9 @@ public class StaticObject : MonoBehaviour,IInteractive
     {
         throw new System.NotImplementedException();
     }
+
+    public void OnInteractive(GameObject obj)
+    {
+        throw new System.NotImplementedException();
+    }
 }

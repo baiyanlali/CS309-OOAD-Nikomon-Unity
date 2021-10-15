@@ -15,6 +15,7 @@ public class BattleFieldHandler : MonoBehaviour
     public float padding = 15;
     public Transform allyPosition;
     public Transform oppoPosition;
+    
 
     public static BattleFieldHandler Instance
     {
@@ -42,11 +43,11 @@ public class BattleFieldHandler : MonoBehaviour
         sInstance = battle.GetComponent<BattleFieldHandler>();
     }
 
-    private Dictionary<CombatPokemon, GameObject> dics;
+    private Dictionary<int, PokemonIndentity> dics;
 
     public void Init(List<CombatPokemon> allies,List<CombatPokemon> oppos)
     {
-        dics = new Dictionary<CombatPokemon, GameObject>();
+        dics = new Dictionary<int, PokemonIndentity>();
         Camera.Priority = 12;
         for (int i = 0; i < allies.Count; i++)
         {
@@ -57,22 +58,22 @@ public class BattleFieldHandler : MonoBehaviour
             if (GlobalManager.Instance.Pokemons[allyID].Length == 1)
             {
                 obj = Instantiate(GlobalManager.Instance.Pokemons[allyID][0], allyPosition);
-                dics.Add(allies[i],obj);
             }
             else if (GlobalManager.Instance.Pokemons[allyID].Length == 2)
             {
                 if (allies[i].pokemon.isMale)
                 {
                     obj = Instantiate(GlobalManager.Instance.Pokemons[allyID][0], allyPosition);
-                    dics.Add(allies[i],obj);
                 }
                 else
                 {
                     obj = Instantiate(GlobalManager.Instance.Pokemons[allyID][1], allyPosition);
-                    dics.Add(allies[i],obj);
                 }
             }
 
+            PokemonIndentity indentity = obj.AddComponent<PokemonIndentity>();
+            indentity.InitBattle(false);
+            dics.Add(allies[i].CombatID,indentity);
             obj.transform.localPosition = Vector3.right * offset;
             TargetGroup.AddMember(obj.transform,1,5);
         }
@@ -86,31 +87,46 @@ public class BattleFieldHandler : MonoBehaviour
             if (GlobalManager.Instance.Pokemons[oppoID].Length == 1)
             {
                 obj = Instantiate(GlobalManager.Instance.Pokemons[oppoID][0], oppoPosition);
-                dics.Add(oppos[i],obj);
             }
             else if (GlobalManager.Instance.Pokemons[oppoID].Length == 2)
             {
                 if (oppos[i].pokemon.isMale)
                 {
                     obj = Instantiate(GlobalManager.Instance.Pokemons[oppoID][0], oppoPosition);
-                    dics.Add(oppos[i],obj);
                 }
                 else
                 {
                     obj = Instantiate(GlobalManager.Instance.Pokemons[oppoID][1], oppoPosition);
-                    dics.Add(oppos[i],obj);
                 }
             }
-        
+
+            var identity = obj.AddComponent<PokemonIndentity>();
+            identity.InitBattle(true);
+            dics.Add(oppos[i].CombatID,identity);
             obj.transform.localPosition = Vector3.right * offset;
             TargetGroup.AddMember(obj.transform,1,5);
         }
-
+        
+        
     }
 
+    public void OnMove(CombatMove move)
+    {
+        dics[move.Sponsor.CombatID].DoMove(move,null);
+        // foreach (var pokes in move.Targets)
+        // {
+        //     dics[pokes].BeHit(null);
+        // }
+    }
+
+    public void OnPokemonFainting(CombatPokemon poke)
+    {
+        dics[poke.CombatID].Faint();
+    }
+    
     public void OnReplacePokemon(CombatPokemon p1, CombatPokemon p2)
     {
-        Transform trans = dics[p1].transform;
+        Transform trans = dics[p1.CombatID].transform;
         int id = p2.pokemon.ID;
         GameObject obj=null;
 
@@ -134,14 +150,23 @@ public class BattleFieldHandler : MonoBehaviour
         TargetGroup.RemoveMember(trans);
         TargetGroup.AddMember(obj.transform,1,5);
 
-        dics.Remove(p1);
-        dics.Add(p2,obj);
+        dics.Remove(p1.CombatID);
+        PokemonIndentity indentity = obj.AddComponent<PokemonIndentity>();
+        indentity.InitBattle(false);
+        dics.Add(p2.CombatID,indentity);
         Destroy(trans.gameObject);
     }
     
     public void EndBattle()
     {
+        StartCoroutine(EndBattling());
+        
+    }
+
+    private IEnumerator EndBattling()
+    {
         Camera.Priority = 9;
+        yield return new WaitForSeconds(2f);
         for (int i = 0; i < allyPosition.childCount; i++)
         {
             var a = allyPosition.GetChild(i);
@@ -154,6 +179,7 @@ public class BattleFieldHandler : MonoBehaviour
             TargetGroup.RemoveMember(a);
             Destroy(a.gameObject);
         }
+        dics.Clear();
     }
 
     /// <summary>

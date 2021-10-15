@@ -185,10 +185,23 @@ public class BattleUIHandler : MonoBehaviour
         DialogChooserUI.Instance.gameObject.SetActive(false);
     }
 
-    
-    public void ShowMoves()
+    private CombatPokemon currentPoke;
+    public void ShowMoves(CombatPokemon poke)
     {
-        Move[] moves = BattleHandler.Instance.CurrentPokemon.pokemon.moves;
+        currentPoke = poke;
+        if (poke.HP <= 0)
+        {
+            BattleUI.SetActive(true);
+            BattleUI.transform.Find("Fight").gameObject.SetActive(false);
+            BattleUI.transform.Find("Bag").gameObject.SetActive(false);
+            LayoutRebuilder.ForceRebuildLayoutImmediate(BattleUI.GetComponent<RectTransform>());
+            return;
+        }
+        BattleUI.SetActive(true);
+        BattleUI.transform.Find("Fight").gameObject.SetActive(true);
+        BattleUI.transform.Find("Bag").gameObject.SetActive(true);
+        LayoutRebuilder.ForceRebuildLayoutImmediate(BattleUI.GetComponent<RectTransform>());
+        Move[] moves = poke.pokemon.moves;
 
         //有一个back按钮
         for (int i = 0; i < moves.Length; i++)
@@ -217,11 +230,6 @@ public class BattleUIHandler : MonoBehaviour
     {
     }
 
-    public void HideInstruction()
-    {
-        UnityEngine.Debug.Log("Hide Instruction");
-    }
-
     public void ChooseMove(Move move, int index)
     {
         //如果技能效果是针对对面宝可梦而且宝可梦只有一个的话
@@ -229,7 +237,7 @@ public class BattleUIHandler : MonoBehaviour
             BattleHandler.Instance.OpponentPokemons.Count == 1)
         {
             Instruction instruction =
-                new Instruction(BattleHandler.Instance.CurrentPokemon.CombatID, Command.Move, index,
+                new Instruction(currentPoke.CombatID, Command.Move, index,
                     BattleHandler.Instance.OpponentPokemons[0].CombatID);
             BuildInstrustruction(instruction);
         }
@@ -243,10 +251,10 @@ public class BattleUIHandler : MonoBehaviour
                 {
                     UnityEngine.Debug.Log(target.ConverToString());
                     Instruction instruction =
-                        new Instruction(BattleHandler.Instance.CurrentPokemon.CombatID, Command.Move, index,
+                        new Instruction(currentPoke.CombatID, Command.Move, index,
                             target);
                     BuildInstrustruction(instruction);
-                    BattleUI.SetActive(true); //TODO:这里有bug！
+                    BattleUI.SetActive(false); //TODO:这里有bug！
                 }
                 ;
         }
@@ -257,7 +265,7 @@ public class BattleUIHandler : MonoBehaviour
         ShowBattleMenu();
         UnityEngine.Debug.Log($"Choose switch to index:{index}");
         if (Game.trainer.party[index] == null || Game.trainer.pokemonOnTheBattle[index]) return;
-        Instruction ins = new Instruction(BattleHandler.Instance.CurrentPokemon.CombatID, Command.SwitchPokemon, index,
+        Instruction ins = new Instruction(currentPoke.CombatID, Command.SwitchPokemon, index,
             null);
         BuildInstrustruction(ins);
     }
@@ -270,14 +278,14 @@ public class BattleUIHandler : MonoBehaviour
     public void UseItem(Item item,List<int> target)
     {
         target.Insert(0,item.ID);
-        Instruction ins = new Instruction(BattleHandler.Instance.CurrentPokemon.CombatID, Command.Items, (int)item.tag,
+        Instruction ins = new Instruction(currentPoke.CombatID, Command.Items, (int)item.tag,
             target);
         BuildInstrustruction(ins);
     }
 
     public void Run()
     {
-        Instruction ins = new Instruction(BattleHandler.Instance.CurrentPokemon.CombatID, Command.Run, Game.trainer.id,
+        Instruction ins = new Instruction(currentPoke.CombatID, Command.Run, Game.trainer.id,
             null);
         BuildInstrustruction(ins);
     }

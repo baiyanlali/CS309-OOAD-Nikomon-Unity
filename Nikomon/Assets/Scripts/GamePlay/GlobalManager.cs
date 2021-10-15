@@ -105,14 +105,19 @@ public class GlobalManager : MonoBehaviour
             SceneManager.sceneLoaded += (o1, o2) =>
             {
                 BagUI.Instance?.Init(Game.bag);
+                PokemonChooserTableUI.Instance?.Init(Game.trainer, new string[] {},
+                new Action<int>[] {});
             };
 
+            
             SceneManager.LoadScene(1);
         };
 
         
         game.Init(LoadTypes(), null, LoadPokemons(), LoadExperienceTable(), natures, null, LoadMoves(), LoadItems());
         isBattling = false;
+        
+        
     }
 
     public void SaveData()
@@ -203,6 +208,11 @@ public class GlobalManager : MonoBehaviour
             BattleHandler.Instance.EndBattle();
         };
         BattleHandler.Instance.StartBattle(Game.battle);
+    }
+
+    public void CompleteBattleInit()
+    {
+        game.CompleteBattleInit();
     }
 
     private void OnApplicationQuit()

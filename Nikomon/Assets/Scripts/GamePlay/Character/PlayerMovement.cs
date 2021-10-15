@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Debug = System.Diagnostics.Debug;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -26,6 +27,8 @@ public class PlayerMovement : MonoBehaviour
         if (GlobalManager.isBattling)
         {
             if(GlobalManager.Instance.Config.UseVirtualControl) VirtualController?.SetActive(false);
+            isWalking = false;
+            animator?.SetBool("IsWalking",false);
             move=Vector2.zero;
             return;
         }
@@ -46,6 +49,9 @@ public class PlayerMovement : MonoBehaviour
             }
         }
     }
+    
+    
+    
 
 
     void CheckInteractable()
@@ -59,11 +65,19 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    private void OnCollisionEnter(Collision other)
+    {
+        if (GlobalManager.isBattling) return;
+        IInteractive interactive = other.gameObject.GetComponent<IInteractive>();
+        interactive?.OnInteractive(this.gameObject);
+    }
+
     public void Movement()
     {
         if (move != Vector2.zero)
         {
             isWalking = true;
+            Debug.Assert(Camera.main != null, "Camera.main != null");
             float cameraForward =
                 Camera.main.transform.rotation.eulerAngles.y;
             float theta = 0;
@@ -89,4 +103,10 @@ public class PlayerMovement : MonoBehaviour
 
     private bool isWalking;
     private Vector2 move;
+
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.DrawRay(transform.position, transform.forward);
+    }
 }

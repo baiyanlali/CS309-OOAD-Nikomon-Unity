@@ -33,7 +33,7 @@ public class PokemonChooserElementUI : MonoBehaviour
         GetComponent<Button>().onClick.AddListener(() =>
         {
             // UnityEngine.Debug.Log("Click!");
-            DialogChooserUI.Instance.ShowChooser(dialogChoose,
+            DialogChooserUI.Instance.ShowChooser(dialogChoose,new Vector2(0,1),
                 (o) =>
                 {
                     //这里是宝可梦的index和选项的index
@@ -41,5 +41,21 @@ public class PokemonChooserElementUI : MonoBehaviour
                 },
                 transform as RectTransform);
         });
+    }
+
+    public void UpdateData(Pokemon pokemon)
+    {
+        PokemonIcon = PokemonIcon ? PokemonIcon : transform.Find("PokemonIcon").GetComponent<Image>();
+        PokemonName = PokemonName ? PokemonName : transform.Find("PokemonName").GetComponent<Text>();
+        HealthBar = HealthBar ? HealthBar : transform.Find("HealthBar").GetComponent<Slider>();
+        HealthText = HealthText ? HealthText : transform.Find("HealthText").GetComponent<Text>();
+        LevelText = LevelText ? LevelText : transform.Find("LevelText").GetComponent<Text>();
+
+        PokemonIcon.sprite = GlobalManager.Instance.PokemonIcons[pokemon.ID];
+        PokemonName.text = pokemon.Name;
+        HealthBar.value = pokemon.HP / (float) pokemon.TotalHp;
+        HealthText.text = $"{pokemon.HP}/{pokemon.TotalHp}";
+        LevelText.text = $"Lv.{pokemon.Level}";
+        
     }
 }

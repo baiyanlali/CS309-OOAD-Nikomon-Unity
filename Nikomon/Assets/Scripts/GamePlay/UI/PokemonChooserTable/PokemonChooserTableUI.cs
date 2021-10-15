@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using PokemonCore;
 using PokemonCore.Combat;
 using UnityEngine;
 
@@ -15,7 +16,8 @@ public class PokemonChooserTableUI : MonoBehaviour
             if (sInstance != null) return sInstance;
             sInstance = FindObjectOfType<PokemonChooserTableUI>();
             if (sInstance != null) return sInstance;
-            throw new Exception("懒得写了");
+            // throw new Exception("懒得写了");
+            return sInstance;
         }
     }
     public static PokemonChooserTableUI sInstance;
@@ -52,4 +54,18 @@ public class PokemonChooserTableUI : MonoBehaviour
         
         gameObject.SetActive(false);
     }
+
+    public void UpdateData()
+    {
+        Trainer trainer = Game.trainer;
+        for (int i = 0; i < transform.childCount; i++)
+        {
+            if (trainer.party[i] == null) break;
+            transform.GetChild(i).gameObject.SetActive(true);
+            transform.GetChild(i).GetComponent<PokemonChooserElementUI>().UpdateData(trainer.party[i]);
+        }
+        gameObject.SetActive(true);
+    }
+
+    
 }

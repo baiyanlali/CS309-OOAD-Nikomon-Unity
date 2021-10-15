@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Cinemachine;
+using Unity.Mathematics;
 using UnityEngine;
 
 public class CameraFollower : MonoBehaviour
@@ -21,8 +22,11 @@ public class CameraFollower : MonoBehaviour
     {
         if (NicomonInputSystem.Instance.look != Vector2.zero)
         {
-            Vector2 look = NicomonInputSystem.Instance.look;
-            camera.gameObject.transform.localPosition += new Vector3(-look.x *HorizontalRotateSpeed, -look.y*VerticalRotateSpeed)*Time.deltaTime*10;
+            // Vector2 look = NicomonInputSystem.Instance.look;
+            // var transform1 = camera.transform;
+            // Vector3 offset = transform1.right * look.x * HorizontalRotateSpeed+
+            //                  transform1.up * look.y * VerticalRotateSpeed;
+            // camera.ForceCameraPosition(transform.position+offset,quaternion.identity);
         }
     }
 }

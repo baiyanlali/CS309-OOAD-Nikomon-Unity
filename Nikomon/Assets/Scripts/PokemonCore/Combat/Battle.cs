@@ -38,7 +38,6 @@ namespace PokemonCore.Combat
         Move,
         Items,
         SwitchPokemon,
-        GoPokemon,
         Run,
         Skip
     }
@@ -125,6 +124,8 @@ namespace PokemonCore.Combat
 
         public Func<Damage, string> OnHit;
 
+        public Action<CombatMove> OnMove;
+
         public Action OnThisTurnEnd;
 
         public Action OnTurnBegin;
@@ -135,16 +136,18 @@ namespace PokemonCore.Combat
 
         public Action<CombatPokemon> OnPokemonFainting;
 
-        /// <summary>
-        /// 比如说宝可梦这回合跳过，就会调用这个方法，参数是宝可梦的Combat ID
-        /// </summary>
-        public Action<int> OnPokemonChooseHandled;
 
         public Action<Instruction> OnUserChooseInstruction;
 
         public Action<bool> OnCatchPokemon;
 
+        /// <summary>
+        /// 目前应当显示那只宝可梦的move是由battle决定，并交给Show Poke Move来响应
+        /// </summary>
+        public Action<CombatPokemon> ShowPokeMove;
+
         public Dictionary<int, Trainer> Trainers;
+
 
         public Trainer UserTrainer { get; private set; }
         public List<Trainer> alliesTrainers { get; private set; }
@@ -178,6 +181,11 @@ namespace PokemonCore.Combat
         /// If you are not the host, you have to wait for the data transmit back to you;
         /// </summary>
         public bool isHost;
+
+        /// <summary>
+        /// 这个是在回合开始时判断是否有濒死的宝可梦，如果有的话就先调用方法让Trainer去换宝可梦
+        /// </summary>
+        public List<CombatPokemon> faintPokemon => (from poke in Pokemons where poke.HP <= 0 select poke).ToList();
 
 
         public Battle(
@@ -275,9 +283,20 @@ namespace PokemonCore.Combat
 
                 Instance = null;
             };
-            OnTurnBegin?.Invoke();
+
         }
 
+        /// <summary>
+        /// 在start battle时很多外界状态都没初始化完成,这里用来将外界初始化完成的内容进行初始化
+        /// </summary>
+        public void CompleteInit()
+        {
+            OnTurnBegin?.Invoke();
+
+            if(MyPokeWithNoInstructions.Count!=0)
+                ShowPokeMove?.Invoke(MyPokeWithNoInstructions[0]);
+        }
+        
         void NextAction()
         {
             if (mBattleResults != BattleResults.Continue) return;
@@ -312,6 +331,8 @@ namespace PokemonCore.Combat
                     mBattleActions = BattleActions.Choosing;
                     OnTurnBegin?.Invoke();
                     Choosing();
+                    if(MyPokeWithNoInstructions.Count!=0)
+                        ShowPokeMove?.Invoke(MyPokeWithNoInstructions[0]);
                     break;
             }
         }
@@ -334,7 +355,7 @@ namespace PokemonCore.Combat
                 select instruction).ToList();
             foreach (var ins in inss.OrEmptyIfNull())
             {
-                OnPokemonChooseHandled?.Invoke(ins.CombatPokemonID);
+                // OnPokemonChooseHandled?.Invoke(ins.CombatPokemonID);
                 ReceiveInstruction(ins, true);
             }
         }
@@ -350,6 +371,7 @@ namespace PokemonCore.Combat
             {
                 c.Sponsor.lastMove = c.move;
                 var c_final = c.Sponsor.OnMoving(c);
+                OnMove?.Invoke(c_final);
                 Damages.AddRange(GenerateDamages(c_final));
             }
 
@@ -421,7 +443,7 @@ namespace PokemonCore.Combat
         /// 捕捉宝可梦！
         /// </summary>
         /// <param name="pokemons"></param>
-        public void CatchPokemon(CombatPokemon currentPoke,int pokeBall,List<int> pokemons)
+        public void CatchPokemon(CombatPokemon currentPoke, int pokeBall, List<int> pokemons)
         {
             //众所周知，被捕捉的宝可梦一定是opponent
             // var pokes = (from combatPokes in opponentsPokemons
@@ -432,6 +454,7 @@ namespace PokemonCore.Combat
             {
                 pokes.Add(GetCombatPokemon(pokemon));
             }
+
             foreach (var p in pokes.OrEmptyIfNull())
             {
                 bool result = Calculator.Catch(pokeBall, currentPoke.pokemon, p.pokemon);
@@ -440,10 +463,10 @@ namespace PokemonCore.Combat
                 {
                     Game.Instance.AddPokemon(p.pokemon);
                 }
+
                 Trainers[p.TrainerID].RemovePokemon(p.pokemon);
                 opponentsPokemons.Remove(p);
             }
-            
         }
 
         public void ReplacePokemon(CombatPokemon currentPokemon, Pokemon nextPokemon)
@@ -455,20 +478,28 @@ namespace PokemonCore.Combat
             t.pokemonOnTheBattle[t.PokemonIndex(nextPokemon)] = true;
 
             //TODO;
-            int index = alliesPokemons.BinarySearch(currentPokemon);
+            int index = alliesPokemons.IndexOf(currentPokemon);
+            // alliesPokemons.BinarySearch(currentPokemon);
             if (alliesPokemons.Contains(currentPokemon))
             {
                 alliesPokemons.Remove(currentPokemon);
-                alliesPokemons.Insert(index,nPoke);
+                alliesPokemons.Insert(index, nPoke);
             }
             else if (opponentsPokemons.Contains(currentPokemon))
             {
                 opponentsPokemons.Remove(currentPokemon);
-                opponentsPokemons.Insert(index,nPoke);
+                opponentsPokemons.Insert(index, nPoke);
             }
 
             OnReplacePokemon?.Invoke(currentPokemon, nPoke);
         }
+
+        public List<CombatPokemon> MyPokeWithInstructions =>
+            (from poke in MyPokemons
+                join instruction in Instructions on poke.CombatID equals instruction.CombatPokemonID
+                select poke).ToList();
+
+        public List<CombatPokemon> MyPokeWithNoInstructions => MyPokemons.Except(MyPokeWithInstructions).ToList();
 
         public bool ReceiveInstruction(Instruction ins, bool fromUser = false)
         {
@@ -488,6 +519,8 @@ namespace PokemonCore.Combat
                     return false;
                 }
             }
+            
+            
 
             UnityEngine.Debug.Log($"Received instruction:{ins}");
             Instructions.Add(ins);
@@ -501,16 +534,17 @@ namespace PokemonCore.Combat
                     Item.Tag tag = (Item.Tag) ins.ID;
                     int ID = ins.target[0];
                     ins.target.RemoveAt(0);
-                    
+
                     switch (tag)
                     {
                         case Item.Tag.PokeBalls:
-                            CatchPokemon(GetCombatPokemon(ins.CombatPokemonID),ID,ins.target);
+                            CatchPokemon(GetCombatPokemon(ins.CombatPokemonID), ID, ins.target);
                             if (opponentTrainers.TrainerAllFaint())
                             {
                                 mBattleResults = BattleResults.Captured;
                                 OnBattleEnd?.Invoke(BattleResults.Captured);
                             }
+
                             break;
                         case Item.Tag.Berries:
                         case Item.Tag.Medicine:
@@ -518,12 +552,18 @@ namespace PokemonCore.Combat
                     }
 
                     break;
-                case Command.GoPokemon:
-                    break;
                 case Command.SwitchPokemon:
                     var combatPoke = GetCombatPokemon(ins.CombatPokemonID);
-                    SwitchPokemons.Add(new Tuple<CombatPokemon, Pokemon>(combatPoke,
-                        Trainers[combatPoke.TrainerID].party[ins.ID]));
+                    if (combatPoke.HP <= 0)
+                    {
+                        Instructions.Remove(ins);
+                        ReplacePokemon(combatPoke,Trainers[combatPoke.TrainerID].party[ins.ID]);
+                    }
+                    else
+                    {
+                        SwitchPokemons.Add(new Tuple<CombatPokemon, Pokemon>(combatPoke,
+                            Trainers[combatPoke.TrainerID].party[ins.ID]));
+                    }
                     break;
                 case Command.Run:
                     if (CanRun)
@@ -545,12 +585,20 @@ namespace PokemonCore.Combat
                     }
 
                     break;
+                case Command.Skip:
+                    break;
+                    break;
             }
 
+            
+            
             if (Instructions.Count == Pokemons.Count)
             {
                 Instructions.Clear();
                 NextAction();
+            }else if (MyPokeWithNoInstructions.Count != 0)
+            {
+                ShowPokeMove?.Invoke(MyPokeWithNoInstructions[0]);
             }
 
             return true;
@@ -643,7 +691,6 @@ namespace PokemonCore.Combat
             if (pokes.Length != 1) throw new Exception("你Combat ID 没写好，出问题了吧");
             return pokes[0];
         }
-
 
         #endregion
 

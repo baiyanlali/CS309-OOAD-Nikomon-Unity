@@ -1,15 +1,39 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using PokemonCore.Attack.Data;
+using PokemonCore.Combat;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
 public class PokemonIndentity : MonoBehaviour,IInteractive
 {
+
+
+
+
+
+    enum  AnimMode
+    {
+        Fight,
+        Movement,
+        Pet
+    }
+    
     public Pokemon pokemon;
 
     public float Time=3f;
+    public float MoveRange = 1;
     private float timer = 0f;
+    private Animator anim;
+    private Rigidbody rigid;
+    public void Start()
+    {
+        rigid = GetComponent<Rigidbody>();
+        anim = GetComponentInChildren<Animator>();
+        // isBattling = false;
+    }
+    
     
     public void OnInteractive()
     {
@@ -17,9 +41,18 @@ public class PokemonIndentity : MonoBehaviour,IInteractive
         Destroy(this.gameObject);
     }
 
+    public void OnInteractive(GameObject obj)
+    {
+        GameObject.FindGameObjectWithTag("BattleField").transform.position = obj.transform.position + obj.transform.forward *40f;
+        GameObject.FindGameObjectWithTag("BattleField").transform.rotation = obj.transform.rotation;
+        GlobalManager.Instance.StartBattle(pokemon);
+        Destroy(this.gameObject);
+    }
+
 
     private void Update()
     {
+        if (isBattling) return;
         timer += UnityEngine.Time.deltaTime;
         if (timer > Time)
         {
@@ -28,8 +61,64 @@ public class PokemonIndentity : MonoBehaviour,IInteractive
         }
     }
 
+    public void DoMove(CombatMove move,Action onComplete)
+    {
+        if (move.move._baseData.Category == Category.Physical)
+        {
+            anim.SetTrigger(Attack);
+        }
+        else
+        {
+            anim.SetTrigger(NoTouchAttack);
+        }
+    }
+
+    public void BeHit(Action onComplete)
+    {
+        anim.SetTrigger(BeAttacked);
+    }
+
+    public void Faint()
+    {
+        anim.SetTrigger(Lost);
+    }
+
+    private bool isBattling=false;
+    private static readonly int BeAttacked = Animator.StringToHash("be_attacked");
+    private static readonly int Lost = Animator.StringToHash("lost");
+    private static readonly int IsWalking = Animator.StringToHash("isWalking");
+    private static readonly int IsAppear = Animator.StringToHash("is_appear");
+    private static readonly int StartBattle = Animator.StringToHash("startBattle");
+    private static readonly int NoTouchAttack = Animator.StringToHash("no_touch_attack");
+    private static readonly int Attack = Animator.StringToHash("attack");
+
+    public void InitBattle(bool isAppear)
+    {
+        // print("Init battle");
+        isBattling = true;
+        anim = anim ? anim : GetComponentInChildren<Animator>();
+        if(isAppear)anim.SetBool(IsAppear,true);
+        anim.SetTrigger(StartBattle);
+    }
+
+    public void EndBattle()
+    {
+        isBattling = false;
+    }
+
+    public void OnAnimStart()
+    {
+        
+    }
+
+    public void OnAnimEnd()
+    {
+        
+    }
+
     private void Move()
     {
+        
         Vector3 vec = new Vector3(Random.Range(-10f, 10f),0, Random.Range(-10f, 10f));
         
         // transform.LookAt(transform.position+vec);
@@ -45,9 +134,23 @@ public class PokemonIndentity : MonoBehaviour,IInteractive
         }
         theta = Mathf.Rad2Deg * theta;
 
-        LeanTween.rotateY(this.gameObject, theta,Time/5f);
-        // transform.position += vec;
-        LeanTween.move(this.gameObject,transform.position+vec, Time);
+        LeanTween.rotateY(this.gameObject, theta,Time/5f).setOnStart(() =>
+        {
+            anim.SetBool(IsWalking,true);
+        });
+        var position = transform.position;
+        LeanTween.value(this.gameObject,(vector3 => rigid.MovePosition(vector3)),position,position+vec*MoveRange,Time).setOnStart(() =>
+        {
+            anim.SetBool(IsWalking,true);
+        }).setOnComplete(() =>
+        {
+            anim.SetBool(IsWalking,false);
+        });
+
+
     }
+
+
+    
     
 }

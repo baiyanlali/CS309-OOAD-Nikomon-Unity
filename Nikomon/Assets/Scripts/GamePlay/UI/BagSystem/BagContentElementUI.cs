@@ -25,7 +25,7 @@ public class BagContentElementUI : MonoBehaviour
         _button.onClick.RemoveAllListeners();
         _button.onClick.AddListener(() =>
         {
-            DialogChooserUI.Instance.ShowChooser(new[] {"Use", "Cancel"}, (i) =>
+            DialogChooserUI.Instance.ShowChooser(new[] {"Use", "Cancel"}, new Vector2(0,1),(i) =>
             {
                 BagUI.Instance.Hide();
                 switch (i)

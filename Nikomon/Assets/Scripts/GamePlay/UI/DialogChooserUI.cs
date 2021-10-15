@@ -35,7 +35,7 @@ public class DialogChooserUI : MonoBehaviour
         gameObject.SetActive(false);
     }
 
-    public void ShowChooser(string[] chooser,Action<int> OnChoose=null, RectTransform rectTransform = null)
+    public void ShowChooser(string[] chooser,Vector2 wantedPivot,Action<int> OnChoose=null, RectTransform rectTransform = null)
     {
         // UnityEngine.Debug.Log("Show Chooser!");
         gameObject.SetActive(true);
@@ -79,6 +79,51 @@ public class DialogChooserUI : MonoBehaviour
                 gameObject.SetActive(false);
             });
         }
+
         
+        
+        
+        int width = Screen.width;
+        int height = Screen.height;
+        RectTransform rectTrans=GetComponent<RectTransform>();
+
+        rectTrans.pivot = wantedPivot;
+        
+        LayoutRebuilder.ForceRebuildLayoutImmediate(rectTrans);
+        LayoutRebuilder.ForceRebuildLayoutImmediate(rectTrans);
+        
+        Rect rect = rectTrans.rect;
+
+        Vector2 vec=rectTrans.position;
+
+        var pivot = rectTrans.pivot;
+        float left = vec.x - rect.width * pivot.x;
+        float right = vec.x + rect.width * (1 - pivot.x);
+        float down = vec.y - rect.height * pivot.y;
+        float up = vec.y + rect.height * (1 - pivot.y);
+
+        Vector2 finalPos=vec;
+        if (left <= 0)
+        {
+            left = 0;
+            finalPos.x = left + rect.width * pivot.x;
+        }else if (right > width)
+        {
+            right = width;
+            finalPos.x = right - rect.width * (1 - pivot.x);
+        }
+        
+        if (down <= 0)
+        {
+            down = 0;
+            finalPos.y =down + rect.height * pivot.y;
+        }else if (up>height)
+        {
+            up = height;
+            finalPos.y = up- rect.height * (1 - pivot.y);
+        }
+
+        rectTrans.anchoredPosition = finalPos;
+        // LayoutRebuilder.ForceRebuildLayoutImmediate(rectTrans);
     }
 }

@@ -190,8 +190,8 @@ namespace PokemonCore
             List<Pokemon> oppoPoke = null;
             if (pokemonPerTrainer == 1)
             {
-                alliesPoke = (from pokea in allies select pokea.firstParty).ToList();
-                oppoPoke = (from pokea in opponent select pokea.firstParty).ToList();
+                alliesPoke = (from pokea in allies select pokea.firstAbleParty).ToList();
+                oppoPoke = (from pokea in opponent select pokea.firstAbleParty).ToList();
             }
             else if (pokemonPerTrainer > 1)
             {
@@ -215,6 +215,12 @@ namespace PokemonCore
             if (AI != null)
                 ai = new BattleAI(battle, AI);
             battleReporter = new BattleReporter(battle);
+            
+        }
+
+        public void CompleteBattleInit()
+        {
+            battle.CompleteInit();
         }
 
         #region LoadDataToDictionary
@@ -291,6 +297,8 @@ namespace PokemonCore
         // }
 
         #endregion
+        
+        
     }
 
     public enum LoadDataType

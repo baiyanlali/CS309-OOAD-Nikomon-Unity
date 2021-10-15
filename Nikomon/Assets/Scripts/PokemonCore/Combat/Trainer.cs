@@ -108,6 +108,19 @@ namespace PokemonCore.Combat
         }
 
         [JsonIgnore] public Pokemon firstParty => party[0];
+        
+        
+        [JsonIgnore] public Pokemon firstAbleParty{
+            get
+            {
+                for (int i = 0; i < party.Length; i++)
+                {
+                    if (party[i].HP > 0) return party[i];
+                }
+
+                return null;
+            }
+        }
         [JsonIgnore] public Pokemon lastParty => party[party.Length - 1];
 
 
