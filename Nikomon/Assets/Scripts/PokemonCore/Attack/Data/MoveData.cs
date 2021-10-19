@@ -29,9 +29,6 @@ namespace PokemonCore.Attack.Data
         public string innerName { get;  set; }
 
         public Category Category { get; set; }
-        public string Name => this.ToString(TextScripts.Name);
-
-        public string Description => this.ToString(TextScripts.Description);
 
         public MoveData(
             int moveID = 0,
@@ -68,11 +65,6 @@ namespace PokemonCore.Attack.Data
                    $"Power: {Power}\n" +
                    $"Accuracy: {Accuracy}";
         }
-
-        //TODO:FIX TO STRING FUNCTION
-        public string ToString(TextScripts ts)
-        {
-            return "";
-        }
+        
     }
 }

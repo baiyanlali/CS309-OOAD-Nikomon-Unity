@@ -64,6 +64,8 @@ namespace PokemonCore.Combat.Interface
         public int Round;
         public EffectLastType EffectLastType;
         public int EffectChance;
+
+        public bool isUsed;
         
         public Action<CombatPokemon> BeSwitched;
         public Action<CombatPokemon> BeFainted;

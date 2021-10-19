@@ -2,6 +2,7 @@
 using PokemonCore.Monster;
 using PokemonCore.Monster.Data;
 using System;
+using PokemonCore.Combat;
 
 namespace PokemonCore.Utility
 {
@@ -247,32 +248,56 @@ namespace PokemonCore.Utility
             return experience;
         }
 
-        /// <summary>
-        /// 伤害值
-        /// </summary>
-        /// <param name="baseHP">种族值</param>
-        /// <param name="EV">基础点数</param>
-        /// <param name="IV">个体值</param>
-        /// <param name="level">等级</param>
-        /// <returns>HP能力值</returns>
-        public static int Demage(Pokemon mine, Pokemon enemy, MoveData move)
+
+        public static float Damage(CombatPokemon sponsor, CombatPokemon target, CombatMove cmove)
         {
-            int result = 1;//最少一滴血
-            switch (move.Category)
+            float result = 1;//最少一滴血
+            if (cmove.power==null || cmove.power<=0)
+            {
+                return 0;
+            }
+            switch (cmove.Category)
             {
                 case (Category.Status):
                     result = 0;
                     break;
                 case (Category.Physical):
-                    result = (int)((mine.Level * 2 + 10) / 250 * (mine.ATK / enemy.DEF) * move.Power + 2);
+                    result = (sponsor.Level * 2 + 10) / 250f * ((float)sponsor.ATK / target.DEF) * cmove.power.Value + 2;
                     break;
                 case Category.Special:
-                    result = (int)((mine.Level * 2 + 10) / 250 * (mine.SPA / enemy.SPD) * move.Power + 2);
+                    result = (sponsor.Level * 2 + 10) / 250f * ((float)sponsor.SPA / target.SPD) * cmove.power.Value + 2;
                     break;
             }
 
             return result;
         }
 
+
+        public static bool isCritical(Damage damage)
+        {
+            float rate = 0;
+            switch (damage.criticalHitLevel)
+            {
+                case 0:
+                    rate = 1 / 16f;
+                    break;
+                case 1 :
+                    rate = 1 / 8f;
+                    break;
+                case 2:
+                    rate = 1 / 2f;
+                    break;
+                case 3:
+                    rate = 1f;
+                    break;
+            }
+
+            rate *= 100;
+
+            int random = Game.Random.Next(0, 100);
+            return rate >= random;
+
+        }
+        
     }
 }
