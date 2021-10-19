@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Cinemachine;
+using GamePlay;
 using PokemonCore.Combat;
 using UnityEngine;
 
@@ -55,19 +56,19 @@ public class BattleFieldHandler : MonoBehaviour
 
             float offset = CalculatePointPosition(allies.Count, i+1, padding);
             GameObject obj=null;
-            if (GlobalManager.Instance.Pokemons[allyID].Length == 1)
+            if (GameResources.Pokemons[allyID].Length == 1)
             {
-                obj = Instantiate(GlobalManager.Instance.Pokemons[allyID][0], allyPosition);
+                obj = Instantiate(GameResources.Pokemons[allyID][0], allyPosition);
             }
-            else if (GlobalManager.Instance.Pokemons[allyID].Length == 2)
+            else if (GameResources.Pokemons[allyID].Length == 2)
             {
                 if (allies[i].pokemon.isMale)
                 {
-                    obj = Instantiate(GlobalManager.Instance.Pokemons[allyID][0], allyPosition);
+                    obj = Instantiate(GameResources.Pokemons[allyID][0], allyPosition);
                 }
                 else
                 {
-                    obj = Instantiate(GlobalManager.Instance.Pokemons[allyID][1], allyPosition);
+                    obj = Instantiate(GameResources.Pokemons[allyID][1], allyPosition);
                 }
             }
 
@@ -84,19 +85,19 @@ public class BattleFieldHandler : MonoBehaviour
 
             float offset = CalculatePointPosition(oppos.Count,  oppos.Count-i, padding);
             GameObject obj=null;
-            if (GlobalManager.Instance.Pokemons[oppoID].Length == 1)
+            if (GameResources.Pokemons[oppoID].Length == 1)
             {
-                obj = Instantiate(GlobalManager.Instance.Pokemons[oppoID][0], oppoPosition);
+                obj = Instantiate(GameResources.Pokemons[oppoID][0], oppoPosition);
             }
-            else if (GlobalManager.Instance.Pokemons[oppoID].Length == 2)
+            else if (GameResources.Pokemons[oppoID].Length == 2)
             {
                 if (oppos[i].pokemon.isMale)
                 {
-                    obj = Instantiate(GlobalManager.Instance.Pokemons[oppoID][0], oppoPosition);
+                    obj = Instantiate(GameResources.Pokemons[oppoID][0], oppoPosition);
                 }
                 else
                 {
-                    obj = Instantiate(GlobalManager.Instance.Pokemons[oppoID][1], oppoPosition);
+                    obj = Instantiate(GameResources.Pokemons[oppoID][1], oppoPosition);
                 }
             }
 
@@ -130,18 +131,18 @@ public class BattleFieldHandler : MonoBehaviour
         int id = p2.pokemon.ID;
         GameObject obj=null;
 
-        if (GlobalManager.Instance.Pokemons[id].Length == 1)
+        if (GameResources.Pokemons[id].Length == 1)
         {
-            obj = Instantiate(GlobalManager.Instance.Pokemons[id][0], trans.parent);
-        }else if (GlobalManager.Instance.Pokemons[id].Length == 2)
+            obj = Instantiate(GameResources.Pokemons[id][0], trans.parent);
+        }else if (GameResources.Pokemons[id].Length == 2)
         {
             if (p2.pokemon.isMale)
             {
-                obj = Instantiate(GlobalManager.Instance.Pokemons[id][0], trans.parent);
+                obj = Instantiate(GameResources.Pokemons[id][0], trans.parent);
             }
             else
             {
-                obj = Instantiate(GlobalManager.Instance.Pokemons[id][1], trans.parent);
+                obj = Instantiate(GameResources.Pokemons[id][1], trans.parent);
             }
         }
 

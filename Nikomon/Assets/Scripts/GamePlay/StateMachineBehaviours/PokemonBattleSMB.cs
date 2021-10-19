@@ -11,14 +11,14 @@ namespace GamePlay.StateMachineBehaviours
             int layerIndex)
         {
             pokemonIndentity=pokemonIndentity? pokemonIndentity: animator.gameObject.GetComponentInParent<PokemonIndentity>();
-            pokemonIndentity.OnAnimStart();
+            pokemonIndentity?.OnAnimStart();
         }
 
         public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo,
             int layerIndex)
         {
             pokemonIndentity=pokemonIndentity? pokemonIndentity: animator.gameObject.GetComponentInParent<PokemonIndentity>();
-            pokemonIndentity.OnAnimEnd();
+            pokemonIndentity?.OnAnimEnd();
         }
 
         public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo,

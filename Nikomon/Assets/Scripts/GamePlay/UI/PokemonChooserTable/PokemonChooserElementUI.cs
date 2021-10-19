@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using GamePlay;
 using UnityEngine;
 using UnityEngine.UI;
 using Debug = PokemonCore.Debug;
@@ -23,7 +24,7 @@ public class PokemonChooserElementUI : MonoBehaviour
         HealthText = HealthText ? HealthText : transform.Find("HealthText").GetComponent<Text>();
         LevelText = LevelText ? LevelText : transform.Find("LevelText").GetComponent<Text>();
 
-        PokemonIcon.sprite = GlobalManager.Instance.PokemonIcons[pokemon.ID];
+        PokemonIcon.sprite = GameResources.PokemonIcons[pokemon.ID];
         PokemonName.text = pokemon.Name;
         HealthBar.value = pokemon.HP / (float) pokemon.TotalHp;
         HealthText.text = $"{pokemon.HP}/{pokemon.TotalHp}";
@@ -51,7 +52,7 @@ public class PokemonChooserElementUI : MonoBehaviour
         HealthText = HealthText ? HealthText : transform.Find("HealthText").GetComponent<Text>();
         LevelText = LevelText ? LevelText : transform.Find("LevelText").GetComponent<Text>();
 
-        PokemonIcon.sprite = GlobalManager.Instance.PokemonIcons[pokemon.ID];
+        PokemonIcon.sprite = GameResources.PokemonIcons[pokemon.ID];
         PokemonName.text = pokemon.Name;
         HealthBar.value = pokemon.HP / (float) pokemon.TotalHp;
         HealthText.text = $"{pokemon.HP}/{pokemon.TotalHp}";
