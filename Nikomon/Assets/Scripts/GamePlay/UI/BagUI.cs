@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using GamePlay;
 using PokemonCore.Inventory;
 using PokemonCore.Utility;
 using UnityEngine;
@@ -60,7 +61,7 @@ public class BagUI : MonoBehaviour
             
             GameObject tab = Instantiate(table);
             tab.name = strs[i];
-            tab.GetComponent<Image>().sprite = GlobalManager.Instance.BagIcons[(Item.Tag) Enum.Parse(typeof(Item.Tag),strs[i])];
+            tab.GetComponent<Image>().sprite = GameResources.BagIcons[(Item.Tag) Enum.Parse(typeof(Item.Tag),strs[i])];
             tab.GetComponent<Image>().color=Color.black;
             GameObject contents = Instantiate(bagContents);
             contents.name = strs[i];

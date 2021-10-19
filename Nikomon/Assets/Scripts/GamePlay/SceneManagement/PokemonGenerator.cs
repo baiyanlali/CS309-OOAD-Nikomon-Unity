@@ -21,14 +21,14 @@ public class PokemonGenerator : MonoBehaviour
         for (int i = 0; i < maxPokemonNum; i++)
         {
             Pokemon pokemon = new Pokemon(Pokemons.RandomPickOne(), Random.Range(minLevel, maxLevel + 1));
-            var obj = GlobalManager.Instance.Pokemons[pokemon.ID];
+            var obj = GameResources.Pokemons[pokemon.ID];
             GameObject poke=null;
             Vector2 pos = Random.insideUnitCircle*GetComponent<SphereCollider>().radius;
             
             if(obj.Length==1)
-               poke  = Instantiate(obj[0],new Vector3(pos.x,pos.y,transform.position.z),Quaternion.identity);
+               poke  = Instantiate(obj[0],new Vector3(pos.x,transform.position.y,pos.y),Quaternion.identity);
             else if (obj.Length == 2)
-                poke = Instantiate(obj[pokemon.isMale ? 0 : 1],new Vector3(pos.x,pos.y,transform.position.z),Quaternion.identity);
+                poke = Instantiate(obj[pokemon.isMale ? 0 : 1],new Vector3(pos.x,transform.position.y,pos.y),Quaternion.identity);
 
             if (poke != null)
             {

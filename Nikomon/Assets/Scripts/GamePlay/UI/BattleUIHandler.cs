@@ -10,6 +10,7 @@ using PokemonCore.Utility;
 using UnityEditor.Experimental;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using Utility;
 using Debug = PokemonCore.Debug;
@@ -31,6 +32,7 @@ public class BattleUIHandler : MonoBehaviour
 
     #endregion
 
+    
 
     public static BattleUIHandler Instance
     {
@@ -78,6 +80,8 @@ public class BattleUIHandler : MonoBehaviour
 
         // dialogManager.dialogManagerIn.InitBattle(Game.battleReporter);
         DialogHandler.Instance.InitBattle(Game.battleReporter);
+
+        EventSystem.current.SetSelectedGameObject(BattleUI.gameObject.transform.GetChild(0).gameObject);
     }
 
 
@@ -293,5 +297,19 @@ public class BattleUIHandler : MonoBehaviour
     public void BuildInstrustruction(Instruction instruction)
     {
         BattleHandler.Instance.ReceiveInstruction(instruction);
+    }
+
+
+    private void Update()
+    {
+        if (NicomonInputSystem.Instance.back)
+        {
+            BattleUI.SetActive(true);
+            EventSystem.current.SetSelectedGameObject(BattleUI.gameObject.transform.GetChild(0).gameObject);
+            MoveUI.SetActive(false);
+            TargetChooserHandler.Instance.gameObject.SetActive(false);
+            BagUI.Instance.gameObject.SetActive(false);
+            PokemonChooserTableUI.Instance.gameObject.SetActive(false);
+        }
     }
 }

@@ -291,7 +291,7 @@ public class @NicomonInput : IInputActionCollection, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""b2515461-e2ff-42fb-800e-2db7aed65ecd"",
-                    ""path"": ""<Gamepad>/buttonSouth"",
+                    ""path"": ""<Gamepad>/buttonEast"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
@@ -306,17 +306,6 @@ public class @NicomonInput : IInputActionCollection, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Keyboard&Mouse"",
-                    ""action"": ""Back"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""0dca7678-8de3-4e53-b6eb-ed79dd063c7f"",
-                    ""path"": ""<Touchscreen>/press"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
                     ""action"": ""Back"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false

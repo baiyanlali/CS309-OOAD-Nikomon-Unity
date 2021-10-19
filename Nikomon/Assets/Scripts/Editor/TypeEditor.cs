@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using GamePlay.Core;
 using PokemonCore;
 using UnityEditor;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
 using Newtonsoft.Json;
+using PokemonCore.Combat;
 using PokemonCore.Utility;
 using Types = PokemonCore.Types;
 
@@ -19,9 +21,12 @@ namespace Editor
         public int typeNum;
         public string fileName;
         public Vector2 viewField;
+
+        public List<Color> TypeColors;
         private void CreateGUI()
         {
             Debug.Log("GUI Created");
+            TypeColors =new List<Color>();
             if (types == null)
             {
                 typeNum = 2;
@@ -46,7 +51,6 @@ namespace Editor
                     GUILayout.BeginHorizontal();
                     // GUILayout.Label("File Name:");
                     fileName = EditorGUILayout.TextField("File Name:",fileName);
-                    string filePath="Assets//Data//"+fileName+".json";
                     // EditorUtility.SetDirty(this);
                     this.Repaint();
                     GUILayout.EndHorizontal();
@@ -56,6 +60,26 @@ namespace Editor
                         // StreamReader sr = File.OpenText(filePath);
                         // string data = sr.ReadToEnd();
                         Types[] typesArray = SaveLoad.Load<Types[]>("types.json",@"Assets\Resources\PokemonData\");
+                        var tmp_dir = SaveLoad.Load<Dictionary<int,Color>>("typesColor.json",@"Assets\Resources\PokemonData\");
+
+                        TypeColors.Clear();
+                        if (tmp_dir == null || tmp_dir.Count == 0)
+                        {
+                            for (int i = 0; i < typesArray.Length; i++)
+                            {
+                                TypeColors.Add((Color.black));
+                            }
+                        }
+                        else
+                        {
+                            for (int i = 0; i < tmp_dir.Count; i++)
+                            {
+                                TypeColors.Add((tmp_dir[i]));
+                            }
+                        }
+
+                        
+
                         // JsonConvert.DeserializeObject<Types[]>(data);
                         typeNum = typesArray.Length;
                         types = new TypeRelationship[typeNum, typeNum];
@@ -108,23 +132,13 @@ namespace Editor
                         }
 
                         SaveLoad.Save("types", typesList, @"Assets\Resources\PokemonData\");
-                        // string data = JsonConvert.SerializeObject(typesList.ToArray());
-                        // FileStream fs;
-                        // if (File.Exists(filePath))
-                        // {
-                        //      fs = File.Create(filePath);
-                        // }
-                        // else
-                        // {
-                        //     fs = File.OpenWrite(filePath);
-                        // }
-                        //
-                        // StreamWriter sw = new StreamWriter(fs);
-                        // sw.Write(data);
-                        // sw.Flush();
-                        // sw.Close();
-                        // fs.Close();
-                        // Debug.Log($"Type json write to {filePath} successfully");
+                        Dictionary<int, PokeColor> dictionary = new Dictionary<int, PokeColor>();
+                        for (int i = 0; i < TypeColors.Count; i++)
+                        {
+                            dictionary.Add(i,PokeColor.toPokeColor(TypeColors[i]));
+                        }
+
+                        SaveLoad.Save("typesColor",dictionary , @"Assets\Resources\PokemonData\");
                     }
 
                     if (GUILayout.Button("Add Type"))
@@ -146,9 +160,16 @@ namespace Editor
 
                         types = tmp;
                         TypeName = tmpString;
+                        
+                        TypeColors.Add((Color.clear));
                         this.Repaint();
                     }
 
+                    
+                    for (int i = 0; i < TypeColors.Count; i++)
+                    {
+                        TypeColors[i] = EditorGUILayout.ColorField($"{TypeName[i]} Color:", TypeColors[i]);
+                    }
                 }
                 GUILayout.EndVertical();
                 
@@ -211,7 +232,14 @@ namespace Editor
                 GUILayout.EndVertical();
 
                 GUILayout.BeginVertical();
+
                 
+                
+                // foreach (var colors in TypeColors)
+                // {
+                //     var key=colors.Key;
+                //     TypeColors[key] = EditorGUILayout.ColorField($"{TypeName[key]} Color:", colors.Value);
+                // }
                 GUILayout.EndVertical();
             }
             GUILayout.EndHorizontal();
