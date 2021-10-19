@@ -596,7 +596,7 @@ namespace PokemonCore.Combat
             {
                 Instructions.Clear();
                 NextAction();
-            }else if (MyPokeWithNoInstructions.Count != 0)
+            }else if (MyPokeWithNoInstructions.Count != 0 && fromUser)
             {
                 ShowPokeMove?.Invoke(MyPokeWithNoInstructions[0]);
             }

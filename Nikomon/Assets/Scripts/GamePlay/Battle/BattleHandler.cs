@@ -56,6 +56,8 @@ public class BattleHandler : MonoBehaviour
     }
 
 
+    private Queue moveTimeline;
+
     public void StartBattle(Battle battle)
     {
         battle.OnThisTurnEnd += OnTurnEnd;
