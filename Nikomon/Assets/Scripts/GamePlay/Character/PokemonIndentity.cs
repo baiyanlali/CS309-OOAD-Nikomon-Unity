@@ -8,11 +8,6 @@ using Random = UnityEngine.Random;
 
 public class PokemonIndentity : MonoBehaviour,IInteractive
 {
-
-
-
-
-
     enum  AnimMode
     {
         Fight,
@@ -113,7 +108,8 @@ public class PokemonIndentity : MonoBehaviour,IInteractive
 
     public void OnAnimEnd()
     {
-        
+        print("Anim End!");
+        FindObjectOfType<BattleFieldHandler>().OnAnimEnd();
     }
 
     private void Move()

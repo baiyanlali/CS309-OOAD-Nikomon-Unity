@@ -13,7 +13,7 @@ public class BattlePokemonStateUI : MonoBehaviour
     public Text HealthText;
     public Slider HealthSlider;
     public Slider ExpSlider;
-    private CombatPokemon pokemon;
+    public CombatPokemon pokemon;
 
     public void Init(CombatPokemon pokemon)
     {
@@ -23,8 +23,12 @@ public class BattlePokemonStateUI : MonoBehaviour
         HealthText.text = pokemon.HP + "/" + pokemon.TotalHP;
         HealthSlider.value = pokemon.HP / (float) pokemon.TotalHP;
         ExpSlider.value = pokemon.pokemon.Exp.Current / (float) pokemon.pokemon.Exp.NextLevelExp;
-        
-        
+
+        ChangeHealthSliderColor();
+    }
+
+    public void ChangeHealthSliderColor()
+    {
         if (HealthSlider.value <= 0.2f)
         {
             HealthSlider.transform.Find("Fill Area/Fill").GetComponent<Image>().color = Color.red;
@@ -50,27 +54,26 @@ public class BattlePokemonStateUI : MonoBehaviour
                 HealthSlider.value = f;
 
 
-                if (HealthSlider.value <= 0.2f)
-                {
-                    HealthSlider.transform.Find("Fill Area/Fill").GetComponent<Image>().color = Color.red;
-                }
-                else if (HealthSlider.value <= 0.5f)
-                {
-                    HealthSlider.transform.Find("Fill Area/Fill").GetComponent<Image>().color = Color.yellow;
-                }
-                else
-                {
-                    HealthSlider.transform.Find("Fill Area/Fill").GetComponent<Image>().color = Color.green;
-                }
+                ChangeHealthSliderColor();
             });
     }
 
-    public void UpdateState(int hp)
+    public void UpdateState(int hp, Action onComplete)
     {
+        Debug.Log($"Update State!! from :{gameObject.name}");
         LevelText.text = "Lv." + pokemon.Level;
         HealthText.text = pokemon.HP + "/" + pokemon.TotalHP;
         // HealthSlider.value = pokemon.HP / (float)pokemon.TotalHP;
         LeanTween.value(HealthSlider.value, hp / (float) pokemon.TotalHP, 1f)
-            .setOnUpdate((f => HealthSlider.value = f));
+            .setOnUpdate(f =>
+            {
+                HealthSlider.value = f;
+                ChangeHealthSliderColor();
+            }).setOnComplete(() =>
+            {
+                Debug.Log("Update state complete");
+                onComplete?.Invoke();
+            });
+        
     }
 }

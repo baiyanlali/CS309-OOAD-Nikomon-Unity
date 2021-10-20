@@ -17,7 +17,7 @@ namespace PokemonCore.Combat
 
         public int CombatID
         {
-            get => TrainerID * 100 + pokemon._base.ID ;
+            get => TrainerID * 100 + pokemon._base.ID +randomID ;
         }
 
         public Pokemon pokemon { get; private set; }
@@ -130,7 +130,7 @@ namespace PokemonCore.Combat
 
         public Move lastMove;
         
-        
+        public int randomID { get; private set; }
 
         public CombatPokemon(Pokemon pokemon)
         {
@@ -159,6 +159,7 @@ namespace PokemonCore.Combat
 
             lastMove = null;
 
+            randomID = Game.Random.Next(100);
         }
 
 

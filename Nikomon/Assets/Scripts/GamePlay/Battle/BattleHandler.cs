@@ -75,10 +75,11 @@ public class BattleHandler : MonoBehaviour
         BattleUIHandler.Instance.Init(this);
         BattleFieldHandler.Instance.Init(AlliesPokemons, OpponentPokemons);
 
-        DialogHandler.Instance.OnDialogFinished += (o) => { if(Game.battle!=null) BattleUIHandler.Instance.UpdateUI(this);};
+        // DialogHandler.Instance.OnDialogFinished += (o) => { if(Game.battle!=null) BattleUIHandler.Instance.UpdateUI(this);};
 
         battle.OnMove += OnMove;
         battle.OnHit += OnHit;
+        battle.OnHitted += OnHitted;
         
         
         // OnTurnBegin();
@@ -88,7 +89,7 @@ public class BattleHandler : MonoBehaviour
 
     public void ShowPokeMove(CombatPokemon poke)
     {
-        print("show move!");
+        // print("show move!");
         EventPool.Schedule(() => { BattleUIHandler.Instance.ShowMoves(poke);});
     }
     
@@ -100,18 +101,22 @@ public class BattleHandler : MonoBehaviour
 
     public string OnHit(Damage dmg)
     {
-        
+        BattleFieldHandler.Instance.OnHit(dmg);
         return null;
+    }
+    public void OnHitted(CombatPokemon pokemon)
+    {
+        BattleFieldHandler.Instance.OnHitted(pokemon);
     }
 
     public void OnMove(CombatMove move)
     {
         BattleFieldHandler.Instance.OnMove(move);
-
     }
 
     public void OnTurnEnd()
     {
+        BattleFieldHandler.Instance.OnTurnEnd();
         UnityEngine.Debug.Log("Turn End");
         
         // EventPool.Schedule(() => { BattleUIHandler.Instance.UpdateUI(this); });

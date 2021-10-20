@@ -124,6 +124,8 @@ namespace PokemonCore.Combat
 
         public Func<Damage, string> OnHit;
 
+        public Action<CombatPokemon> OnHitted;
+
         public Action<CombatMove> OnMove;
 
         public Action OnThisTurnEnd;
@@ -393,6 +395,8 @@ namespace PokemonCore.Combat
             OnHit?.Invoke(dmg);
             // if(dmg.target.HP>0)
             dmg.target.BeHurt(dmg);
+
+            OnHitted?.Invoke(dmg.target);
             // else
             // {
             //     //TODO：一般来说只有2v2以上的对战才需要重新找个target
@@ -403,6 +407,7 @@ namespace PokemonCore.Combat
 
         void Damaged()
         {
+            
             // return cm;
         }
 

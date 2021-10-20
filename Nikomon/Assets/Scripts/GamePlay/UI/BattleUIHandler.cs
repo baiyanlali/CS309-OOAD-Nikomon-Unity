@@ -154,6 +154,30 @@ public class BattleUIHandler : MonoBehaviour
         }
     }
 
+    public void UpdateStatus(CombatPokemon poke,int hp,Action onComplete)
+    {
+        ShowBattleMenu();
+        int count = AlliesState.transform.childCount;
+        for (int i = 0; i < count; i++)
+        {
+            var ui = AlliesState.transform.GetChild(i).GetComponent<BattlePokemonStateUI>();
+            if (ui.pokemon.CombatID == poke.CombatID)
+            {
+                ui.UpdateState(hp,onComplete);
+            }
+        }
+
+        count = OpponentState.transform.childCount;
+        for (int i = 0; i < count; i++)
+        {
+            var ui = OpponentState.transform.GetChild(i).GetComponent<BattlePokemonStateUI>();
+            if (ui.pokemon.CombatID == poke.CombatID)
+            {
+                ui.UpdateState(hp,onComplete);
+            }
+        }
+    }
+
     public void OnReplacePokemon(CombatPokemon p1,CombatPokemon p2)
     {
         gameObject.SetActive(true);
