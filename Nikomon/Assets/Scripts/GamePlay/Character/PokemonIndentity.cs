@@ -139,14 +139,9 @@ public class PokemonIndentity : MonoBehaviour,IInteractive
             anim.SetBool(IsWalking,true);
         });
         var position = transform.position;
-        LeanTween.value(this.gameObject,(vector3 => rigid.MovePosition(vector3)),position,position+vec*MoveRange,Time).setOnStart(() =>
-        {
-            anim.SetBool(IsWalking,true);
-        }).setOnComplete(() =>
-        {
-            anim.SetBool(IsWalking,false);
-        });
 
+        rigid.velocity = vec.normalized * MoveRange;
+        anim.SetBool(IsWalking,true);
 
     }
 

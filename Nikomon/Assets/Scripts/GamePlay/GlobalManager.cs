@@ -42,20 +42,13 @@ public class GlobalManager : MonoBehaviour
     private Game game;
 
     public ConfigSettings Config;
-
-    #region 存储各种美术资源
-
-    public Dictionary<int, GameObject[]> Pokemons;
-    public Dictionary<int, Sprite> PokemonIcons;
-    public Dictionary<Item.Tag, Sprite> BagIcons;
-
-    #endregion
+    
 
     private void OnDestroy()
     {
         game?.OnGameQuit();
     }
-    
+
 
     private static GlobalManager CreateGlobalManager()
     {
@@ -93,31 +86,30 @@ public class GlobalManager : MonoBehaviour
         var natures = new Dictionary<int, Nature>();
         natures.Add(0, new Nature(0, new float[] {0, 0, 0, 0, 0}));
 
-        Pokemons = new Dictionary<int, GameObject[]>();
-        PokemonIcons = new Dictionary<int, Sprite>();
+        GameResources.Pokemons = new Dictionary<int, GameObject[]>();
+        GameResources.PokemonIcons = new Dictionary<int, Sprite>();
 
         game.OnDoNotHaveSaveFile += StartPanel;
-        
-        LoadResources();
+
+        GameResources.LoadResources();
 
         game.OnHaveSaveFile += () =>
         {
             SceneManager.sceneLoaded += (o1, o2) =>
             {
                 BagUI.Instance?.Init(Game.bag);
-                PokemonChooserTableUI.Instance?.Init(Game.trainer, new string[] {},
-                new Action<int>[] {});
+                PokemonChooserTableUI.Instance?.Init(Game.trainer, new string[] { },
+                    new Action<int>[] { });
             };
 
-            
+
             SceneManager.LoadScene(1);
         };
 
-        
-        game.Init(LoadTypes(), null, LoadPokemons(), LoadExperienceTable(), natures, null, LoadMoves(), LoadItems());
+
+        game.Init(GameResources.LoadTypes(), null, GameResources.LoadPokemons(), GameResources.LoadExperienceTable(),
+            natures, null, GameResources.LoadMoves(), GameResources.LoadItems());
         isBattling = false;
-        
-        
     }
 
     public void SaveData()
@@ -225,137 +217,4 @@ public class GlobalManager : MonoBehaviour
     {
         EventPool.Tick();
     }
-
-    #region LoadDataToDictionary
-
-    public Dictionary<int, int[]> LoadExperienceTable()
-    {
-        List<int[]> tmp =
-            JsonConvert.DeserializeObject<List<int[]>>(Resources.Load<TextAsset>("PokemonData/" + Game.ExpTableFile)
-                .text);
-        var ExperienceTable = new Dictionary<int, int[]>();
-        for (int i = 0; i < tmp.Count; i++)
-        {
-            ExperienceTable.Add(i, tmp[i]);
-        }
-
-        return ExperienceTable;
-    }
-
-    public Dictionary<int, Types> LoadTypes()
-    {
-        List<Types> tmp =
-            JsonConvert.DeserializeObject<List<Types>>(Resources.Load<TextAsset>("PokemonData/" + Game.TypeFile).text);
-        var TypesMap = new Dictionary<int, Types>();
-        foreach (var t in tmp)
-        {
-            TypesMap.Add(t.ID, t);
-        }
-
-        return TypesMap;
-    }
-
-    public void LoadAbilities(LoadDataType type = LoadDataType.Json)
-    {
-        if (type == LoadDataType.Json)
-        {
-            // using FileStream openStream = File.OpenRead(DataPath+"Abilities.json");
-            // AbilitiesData = await JsonSerializer.DeserializeAsync<Dictionary<int,Ability>>(openStream);
-        }
-    }
-
-    public void LoadNature(LoadDataType type = LoadDataType.Json)
-    {
-        if (type == LoadDataType.Json)
-        {
-        }
-    }
-
-    public void LoadEffect(LoadDataType type = LoadDataType.Json)
-    {
-        if (type == LoadDataType.Json)
-        {
-        }
-    }
-
-    public Dictionary<int, MoveData> LoadMoves()
-    {
-        List<MoveData> tmp =
-            JsonConvert.DeserializeObject<List<MoveData>>(
-                Resources.Load<TextAsset>("PokemonData/" + Game.MoveFile).text);
-        var MovesData = new Dictionary<int, MoveData>();
-        foreach (var t in tmp)
-        {
-            MovesData.Add(t.MoveID, t);
-        }
-
-        return MovesData;
-    }
-
-    public Dictionary<ValueTuple<Item.Tag, int>, Item> LoadItems()
-    {
-        string str = Resources.Load<TextAsset>("PokemonData/" + Game.ItemFile).text;
-        Dictionary<Item.Tag, List<Item>> items =
-            JsonConvert.DeserializeObject<Dictionary<Item.Tag, List<Item>>>(str);
-        var itemData = new Dictionary<ValueTuple<Item.Tag, int>, Item>();
-        foreach (var item in items)
-        {
-            var tag = item.Key;
-            var list = item.Value;
-            foreach (var i in list.OrEmptyIfNull())
-            {
-                int id = i.ID;
-                itemData.Add((tag, id), i);
-            }
-        }
-
-        return itemData;
-    }
-
-
-    public Dictionary<int, PokemonData> LoadPokemons()
-    {
-        List<PokemonData> tmp =
-            JsonConvert.DeserializeObject<List<PokemonData>>(Resources
-                .Load<TextAsset>("PokemonData/" + Game.PokemonFile).text);
-        var PokemonsData = new Dictionary<int, PokemonData>();
-
-
-        foreach (var t in tmp)
-        {
-            PokemonsData.Add(t.ID, t);
-
-
-            GameObject obj = Resources.Load<GameObject>("Prefabs/Pokemons/" + t.ID + t.innerName);
-            if (obj == null)
-            {
-                obj = Resources.Load<GameObject>("Prefabs/Pokemons/" + t.ID + t.innerName + "M");
-                if (obj == null) throw new Exception($"Pokemon Prefabs Not Found:{t.ID},{t.innerName}");
-                var obj2 = Resources.Load<GameObject>("Prefabs/Pokemons/" + t.ID + t.innerName + "F");
-                Pokemons.Add(t.ID, new[] {obj, obj2});
-            }
-            else
-            {
-                Pokemons.Add(t.ID, new[] {obj});
-            }
-
-
-            PokemonIcons.Add(t.ID, Resources.Load<Sprite>("Sprites/PokemonIcons/" + t.ID + t.innerName));
-        }
-
-        return PokemonsData;
-    }
-
-    public void LoadResources()
-    {
-        BagIcons = new Dictionary<Item.Tag, Sprite>();
-        string[] strs = Enum.GetNames(typeof(Item.Tag));
-        foreach (var str in strs)
-        {
-            Sprite spr = Resources.Load<Sprite>("Sprites/BagIcons/"+str);
-            BagIcons.Add((Item.Tag)Enum.Parse(typeof(Item.Tag),str),spr);
-        }
-    }
-
-    #endregion
 }

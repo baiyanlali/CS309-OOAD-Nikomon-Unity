@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using PokemonCore;
 using PokemonCore.Combat;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class PokemonChooserTableUI : MonoBehaviour
 {
@@ -53,6 +54,7 @@ public class PokemonChooserTableUI : MonoBehaviour
         }
         
         gameObject.SetActive(false);
+        EventSystem.current.SetSelectedGameObject(transform.GetChild(0).gameObject);
     }
 
     public void UpdateData()

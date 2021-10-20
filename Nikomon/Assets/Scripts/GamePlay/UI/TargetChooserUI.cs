@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using GamePlay;
 using PokemonCore.Combat;
 using UnityEngine;
 using UnityEngine.UI;
@@ -18,7 +19,7 @@ public class TargetChooserUI : MonoBehaviour
     public void Init(CombatPokemon pokemon)
     {
         this.Pokemon = pokemon;
-        pokeImage.sprite = GlobalManager.Instance.PokemonIcons[pokemon.pokemon.ID];
+        pokeImage.sprite = GameResources.PokemonIcons[pokemon.pokemon.ID];
         toggle = GetComponent<Toggle>();
         pokeName.text = pokemon.Name;
         trainerName.text = "???";
