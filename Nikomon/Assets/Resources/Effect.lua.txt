@@ -39,7 +39,7 @@ effect0={
 
 
 effect1={
-    ID=0,
+    ID=1,
     InnerName='Chaos',
     Round=3,
     EffectLastType=CS.PokemonCore.Combat.Interface.EffectLastType.ROUND,
@@ -52,5 +52,145 @@ effect1={
         end
     end
 }
+effect2={
+    ID=2,
+    InnerName='Sleep',
+    Round=3,
+    EffectLastType=CS.PokemonCore.Combat.Interface.EffectLastType.ROUND,
+    EffectChance=100,
+	EffectType=SkipOneTurn, 	//is that enough ???
+	EffectActTime=Moving,
+    
+    OnChoosing=function(combatMove) 
+        return combatMove
+    end
+}
+effect3={
+    ID=3,
+    InnerName='Poison',
+    Round=3,
+    EffectLastType=CS.PokemonCore.Combat.Interface.EffectLastType.ROUND,
+    EffectChance=100,
+    
+    OnMoving=function(combatMove) 
+        //damage to sponsor with 1/3 of sponsor's Hp
+    end
+}
+
+effect11={
+    ID=11,
+    InnerName='raiseATK',
+    Round=3,
+    EffectLastType=CS.PokemonCore.Combat.Interface.EffectLastType.UNTIL_SWITCH_POKEMON,
+    EffectChance=100,
+    
+    OnMoving=function(combatMove) 
+		combatMove.Sponsor.ATKStateChange.set(ATKStateChange.get() + 1)
+    end
+}
+effect12={
+    ID=12,
+    InnerName='raiseDEF',
+    Round=3,
+    EffectLastType=CS.PokemonCore.Combat.Interface.EffectLastType.UNTIL_SWITCH_POKEMON,
+    EffectChance=100,
+    
+    OnMoving=function(combatMove) 
+		combatMove.Sponsor.DEFStateChange.set(DEFStateChange.get() + 1)
+    end
+}
+effect13={
+    ID=13,
+    InnerName='raiseSPA',
+    Round=3,
+    EffectLastType=CS.PokemonCore.Combat.Interface.EffectLastType.UNTIL_SWITCH_POKEMON,
+    EffectChance=100,
+    
+    OnMoving=function(combatMove) 
+		combatMove.Sponsor.SPAStateChange.set(SPAStateChange.get() + 1)
+    end
+}
+effect14={
+    ID=14,
+    InnerName='raiseEvation',
+    Round=3,
+    EffectLastType=CS.PokemonCore.Combat.Interface.EffectLastType.UNTIL_SWITCH_POKEMON,
+    EffectChance=100,
+    
+    OnMoving=function(combatMove) 
+		combatMove.Sponsor.EvasionStateChange.set(EvasionStateChange.get() + 1)
+    end
+}
+effect15={
+    ID=16,
+    InnerName='raiseAccuracy',
+    Round=3,
+    EffectLastType=CS.PokemonCore.Combat.Interface.EffectLastType.UNTIL_SWITCH_POKEMON,
+    EffectChance=100,
+    
+    OnMoving=function(combatMove) 
+		combatMove.Sponsor.AccuracyStateChange.set(AccuracyStateChange.get() + 12)
+    end
+}
+
+
+
+effect17={
+    ID=17,
+    InnerName='lowerATK',
+    Round=3,
+    EffectLastType=CS.PokemonCore.Combat.Interface.EffectLastType.UNTIL_SWITCH_POKEMON,
+    EffectChance=100,
+    
+    OnMoving=function(combatMove) 
+		combatMove.Sponsor.ATKStateChange.set(ATKStateChange.get() - 1)
+    end
+}
+effect18={
+    ID=18,
+    InnerName='lowerDEF',
+    Round=3,
+    EffectLastType=CS.PokemonCore.Combat.Interface.EffectLastType.UNTIL_SWITCH_POKEMON,
+    EffectChance=100,
+    
+    OnMoving=function(combatMove) 
+		combatMove.Sponsor.DEFStateChange.set(DEFStateChange.get() - 1)
+    end
+}
+effect19={
+    ID=19,
+    InnerName='lowerSPE',
+    Round=3,
+    EffectLastType=CS.PokemonCore.Combat.Interface.EffectLastType.UNTIL_SWITCH_POKEMON,
+    EffectChance=100,
+    
+    OnMoving=function(combatMove) 
+		combatMove.Sponsor.SPEStateChange.set(SPEStateChange.get() - 1)
+    end
+}
+effect20={
+    ID=20,
+    InnerName='lowerAccuracy',
+    Round=3,
+    EffectLastType=CS.PokemonCore.Combat.Interface.EffectLastType.UNTIL_SWITCH_POKEMON,
+    EffectChance=100,
+    
+    OnMoving=function(combatMove) 
+		combatMove.Sponsor.AccuracyStateChange.set(AccuracyStateChange.get() - 1)
+    end
+}
+effect21={
+    ID=21,
+    InnerName='lowerEvation',
+    Round=3,
+    EffectLastType=CS.PokemonCore.Combat.Interface.EffectLastType.UNTIL_SWITCH_POKEMON,
+    EffectChance=100,
+    
+    OnMoving=function(combatMove) 
+		combatMove.Sponsor.EvasionStateChange.set(EvasionStateChange.get() - 1)
+    end
+}
+
+
 
 
