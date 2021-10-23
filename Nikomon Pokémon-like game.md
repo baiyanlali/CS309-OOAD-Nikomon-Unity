@@ -28,7 +28,7 @@ Pokémon is the most valuable IP in the world and also many people's childhood. 
 
 We want to create a designer friendly game development. Though our team member all know how to program, for more game development teams, the game designer may have no idea how to program. So we will create a designer friendly development mode to solve this problem. The key idea is that game data must be separated with game logic code. We will explain our idea by some user stories. 
 
-![image-20211023154036288](D:\Projects\CS309OOAD\Nikemon\Nikemon\CS309-OOAD-Nikomon-Unity\Nikomon Pokémon-like game.assets\image-20211023154036288.png)
+<img src="D:\Projects\CS309OOAD\Nikemon\Nikemon\CS309-OOAD-Nikomon-Unity\Nikomon Pokémon-like game.assets\image-20211023154036288.png" alt="image-20211023154036288" style="zoom:50%;" />
 
 ##### Edit Pokémon
 
@@ -44,55 +44,53 @@ We use Yarn Spinner to write plot and embed it into game.
 
 #### For Player
 
+##### Main Interaction
 
+##### <img src="D:\Projects\CS309OOAD\Nikemon\Nikemon\CS309-OOAD-Nikomon-Unity\Nikomon Pokémon-like game.assets\useCaseOoad.jpg" alt="useCaseOoad" style="zoom: 50%;" />
+
+##### Battle Interaction
+
+Battle will start by battle handler and then initialize any essential component related with battle such as battle UI and battle Pokémon model.
+
+Then from UI player choose each Pokémon's move(we want to build a n vs n turn-based system so the Pokémon  player have on the battle scene may be more than one). Repeat this work until the battle ends.
+
+<img src="D:\Projects\CS309OOAD\Nikemon\Nikemon\CS309-OOAD-Nikomon-Unity\Nikomon Pokémon-like game.assets\image-20211023160144717.png" alt="image-20211023160144717" style="zoom: 25%;" />
+
+##### Bag & PC Interaction
+
+When players go to check the warehouse, they can choose to check the bag or PC. After selecting one of them, you can choose to view the corresponding pokemon. Then you can choose to view the properties of pokemon, release pokemon, exchange the location of pokemon between bag and bag, bag and PC, PC and PC, and use items.
+
+<img src="D:\Projects\CS309OOAD\Nikemon\Nikemon\CS309-OOAD-Nikomon-Unity\Nikomon Pokémon-like game.assets\image-20211023160715599.png" alt="image-20211023160715599" style="zoom: 33%;" />
 
 ### Requirements
 
 Computer configuration:
 
-CPU: Intel(R) Core(TM) i7-8564U CPU @ 1.80GHz
+CPU: Intel(R) Core(TM) i7-8564U CPU @ 1.80GHz		Memory: 8GB
 
-Memory: 8GB
+GPU: NVIDIA GeForce MX250										  Resolution Ratio:1920*1080
 
-GPU: NVIDIA GeForce MX250
-
-Resolution Ratio:1920*1080
-
-
-
-Start Scene:
-
-![1](D:\Projects\CS309OOAD\Nikemon\Nikemon\CS309-OOAD-Nikomon-Unity\Nikomon Pokémon-like game.assets\1.png)
-
-Battle Scene:
-
-![2](D:\Projects\CS309OOAD\Nikemon\Nikemon\CS309-OOAD-Nikomon-Unity\Nikomon Pokémon-like game.assets\2.png)
-
-Profiler:
-
-![3](D:\Projects\CS309OOAD\Nikemon\Nikemon\CS309-OOAD-Nikomon-Unity\Nikomon Pokémon-like game.assets\3.png)
+| Battle Scene:                                                | Profiler:                                                    |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
+| <img src="D:\Projects\CS309OOAD\Nikemon\Nikemon\CS309-OOAD-Nikomon-Unity\Nikomon Pokémon-like game.assets\2.png" alt="2" style="zoom: 25%;" /> | <img src="D:\Projects\CS309OOAD\Nikemon\Nikemon\CS309-OOAD-Nikomon-Unity\Nikomon Pokémon-like game.assets\3.png" alt="3" style="zoom: 25%;" /> |
 
 ### Design Document
 
 #### Architecture
 
+##### Battle System
 
+| <img src="D:\Projects\CS309OOAD\Nikemon\Nikemon\CS309-OOAD-Nikomon-Unity\Nikomon Pokémon-like game.assets\image-20211023160144717.png" alt="image-20211023160144717" style="zoom: 33%;" /> | <img src="D:\Projects\CS309OOAD\Nikemon\Nikemon\CS309-OOAD-Nikomon-Unity\Nikomon Pokémon-like game.assets\classUMLOoad.drawio.png" alt="classUMLOoad.drawio" style="zoom: 33%;" /> |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
+
+##### Interact with Bag UI
+
+| <img src="D:\Projects\CS309OOAD\Nikemon\Nikemon\CS309-OOAD-Nikomon-Unity\Nikomon Pokémon-like game.assets\image-20211023160701797.png" alt="image-20211023160701797" style="zoom: 33%;" /> | <img src="D:\Projects\CS309OOAD\Nikemon\Nikemon\CS309-OOAD-Nikomon-Unity\Nikomon Pokémon-like game.assets\image-20211023160917786.png" alt="image-20211023160917786" style="zoom: 33%;" /> |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
 
 #### Timeline
 
 ![image-20211023152606563](D:\Projects\CS309OOAD\Nikemon\Nikemon\CS309-OOAD-Nikomon-Unity\Nikomon Pokémon-like game.assets\image-20211023152606563.png)
-
-#### APIs
-
-Unity 2020 LTS
-
-Cinemachine, used for camera control
-
-Newtownsoft.Json, used for reading and saving json file
-
-Lua, used for scripting game effect and other game data containing logic
-
-Yarn Spinner, used for plot editing
 
 ### Feasibility
 
