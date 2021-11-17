@@ -26,7 +26,7 @@ namespace PokemonCore.Combat
             battle.OnTurnBegin += DoAI;
             battle.OnBattleEnd += (o) => { battle = null;};
             // battle.OnPokemonFainting += OnPokemonDied;
-            DoAI();
+            // DoAI();
         }
 
         public void OnPokemonDied(CombatPokemon pokemon)

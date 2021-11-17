@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Cinemachine;
 using GamePlay;
+using PokemonCore;
 using PokemonCore.Combat;
 using UnityEngine;
 using UnityEngine.Playables;
@@ -19,24 +20,23 @@ public class BattleFieldHandler : MonoBehaviour
     {
         public enum SequenceTag
         {
+            EnterScene,
             OnMove,
             BeHit,
             Capture,
             BeCaptured,
             Fainted,
             UseItem,
-            UpdateState
+            EndMove
         }
 
         public CombatPokemon poke;
-        public int hp;
         public SequenceTag tag;
         public Object[] param;
 
         public TimeSequence(CombatPokemon poke, SequenceTag tag, params Object[] objs)
         {
             this.poke = poke;
-            this.hp = poke.HP;
             this.tag = tag;
             param = objs;
         }
@@ -90,6 +90,8 @@ public class BattleFieldHandler : MonoBehaviour
         for (int i = 0; i < allies.Count; i++)
         {
             var allyID = allies[i].pokemon.ID;
+            
+            TimeSequences.Enqueue(new TimeSequence(allies[i],TimeSequence.SequenceTag.EnterScene,null));
 
             float offset = CalculatePointPosition(allies.Count, i + 1, padding);
             GameObject obj = null;
@@ -119,6 +121,7 @@ public class BattleFieldHandler : MonoBehaviour
         for (int i = 0; i < oppos.Count; i++)
         {
             var oppoID = oppos[i].pokemon.ID;
+            TimeSequences.Enqueue(new TimeSequence(allies[i],TimeSequence.SequenceTag.EnterScene,null));
 
             float offset = CalculatePointPosition(oppos.Count, oppos.Count - i, padding);
             GameObject obj = null;
@@ -162,45 +165,44 @@ public class BattleFieldHandler : MonoBehaviour
         TimeSequences.Enqueue(new TimeSequence(dmg.sponsor, TimeSequence.SequenceTag.OnMove, dmg.combatMove));
 
         TimeSequences.Enqueue(new TimeSequence(dmg.target, TimeSequence.SequenceTag.BeHit));
+        
+        TimeSequences.Enqueue(new TimeSequence(dmg.sponsor, TimeSequence.SequenceTag.EndMove));
+
+        DoNextSequence();
     }
 
     public void OnHitted(CombatPokemon poke)
     {
-        TimeSequences.Enqueue(new TimeSequence(poke, TimeSequence.SequenceTag.UpdateState, poke.HP));
+        // DoNextSequence();
     }
 
     public void OnTurnEnd()
     {
-        DoNextSequence();
+        // DoNextSequence();
+        TimeSequences.Clear();
     }
 
     public void DoNextSequence()
     {
         if (TimeSequences.Count == 0) return;
-        print(TimeSequences.Peek().tag);
-        // if (TimeSequences.Peek().tag != TimeSequence.SequenceTag.BeHit)
-        // {
-            var sequence = TimeSequences.Dequeue();
-            if (sequence.tag == TimeSequence.SequenceTag.OnMove)
-            {
+        print($"{TimeSequences.Peek().tag}");
+        var sequence = TimeSequences.Dequeue();
+
+        switch (sequence.tag)
+        {
+            case TimeSequence.SequenceTag.EnterScene:
+                break;
+            case TimeSequence.SequenceTag.OnMove:
                 dics[sequence.poke.CombatID].DoMove(sequence.param[0] as CombatMove, null);
-            }
-            else if (sequence.tag == TimeSequence.SequenceTag.UpdateState)
-            {
-                BattleUIHandler.Instance.UpdateStatus(sequence.poke, (int) sequence.param[0],DoNextSequence);
-            }else if (sequence.tag == TimeSequence.SequenceTag.BeHit)
-            {
+                break;
+            case TimeSequence.SequenceTag.EndMove:
+                BattleUIHandler.Instance.UpdateStatus();
+                BattleHandler.Instance.battle.NextMove();
+                break;
+            case TimeSequence.SequenceTag.BeHit:
                 dics[sequence.poke.CombatID].BeHit(null);
-            }
-        // }
-        // else
-        // {
-        //     do
-        //     {
-        //         var sequence = TimeSequences.Dequeue();
-        //         dics[sequence.poke.CombatID].BeHit(null);
-        //     } while (TimeSequences.Count != 0 && TimeSequences.Peek().tag == TimeSequence.SequenceTag.BeHit);
-        // }
+                break;
+        }
     }
 
     public void OnAnimEnd()
