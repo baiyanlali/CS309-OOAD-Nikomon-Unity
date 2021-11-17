@@ -58,7 +58,7 @@ effect2={
     Round=3,
     EffectLastType=CS.PokemonCore.Combat.Interface.EffectLastType.ROUND,
     EffectChance=100,
-	EffectType=SkipOneTurn, 	//is that enough ???
+	EffectType=SkipOneTurn, 	--is that enough ???
 	EffectActTime=Moving,
     
     OnChoosing=function(combatMove) 
@@ -73,7 +73,7 @@ effect3={
     EffectChance=100,
     
     OnMoving=function(combatMove) 
-        //damage to sponsor with 1/3 of sponsor's Hp
+        --damage to sponsor with 1/3 of sponsor's Hp
     end
 }
 
