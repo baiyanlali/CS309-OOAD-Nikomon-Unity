@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using GamePlay.Core;
+using GamePlay.UI.UIFramework;
 using Newtonsoft.Json;
 using PokemonCore;
 using PokemonCore.Attack.Data;
@@ -13,6 +14,27 @@ using Types = PokemonCore.Types;
 
 namespace GamePlay
 {
+    public static class GameConst
+    {
+        public static Dictionary<string, string> UI_PATH = new Dictionary<string, string>()
+        {
+            ["ChooseElement"] = "Prefabs/UI/ChooseElement",
+            ["DialogChooser"] = "Prefabs/UI/DialogChooser",
+            ["DialogSystem"] = "Prefabs/UI/DialogSystem",
+            ["Move"] = "Prefabs/UI/Move",
+            ["PokemonChooser"] = "Prefabs/UI/PokemonChooser",
+            ["PokemonState"] = "Prefabs/UI/PokemonState",
+            
+            ["BagContentElement"]="Prefabs/UI/BagSystem/BagContentElement",
+            ["BagContents"]="Prefabs/UI/BagSystem/BagContents",
+            ["BagTable"]="Prefabs/UI/BagSystem/BagTable",
+            ["Table"]="Prefabs/UI/BagSystem/Table",
+            
+            ["PokemonChooserTable"]="Prefabs/UI/PokemonChooserTable/PokemonChooserTable",
+            ["PokemonStatButton"]="Prefabs/UI/PokemonChooserTable/PokemonStatButton",
+        };
+    }
+    
     public static class GameResources
     {
         public static Dictionary<int, GameObject[]> Pokemons;
@@ -21,6 +43,11 @@ namespace GamePlay
         public static Dictionary<int, Sprite> TypeIcons;
         public static Dictionary<int, Color> TypeColors;
 
+        private static Dictionary<string, GameObject> CachedPrefabs;
+
+        #region Initial Load
+
+        
 
         public static Dictionary<int, int[]> LoadExperienceTable()
         {
@@ -166,5 +193,27 @@ namespace GamePlay
                 BagIcons.Add((Item.Tag) Enum.Parse(typeof(Item.Tag), str), spr);
             }
         }
+        
+        #endregion
+
+        public static BaseUI SpawnUIPrefab(string name)
+        {
+            if (!GameConst.UI_PATH.ContainsKey(name))
+            {
+                throw new Exception($"No Keys of {name} founded in ui prefab");
+            }
+            
+            if(!CachedPrefabs.ContainsKey(name))
+            {
+                var result = Resources.Load<BaseUI>(GameConst.UI_PATH[name]);
+                return result;
+            }
+            else
+            {
+                return CachedPrefabs[name].GetComponent<BaseUI>();
+            }
+        }
+        
+        
     }
 }
