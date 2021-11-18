@@ -3,24 +3,24 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
-public class TabElement : MonoBehaviour,IPointerDownHandler
+public class TabElement : Button
 {
     public Action<TabElement> OnChoose;
-    public void OnPointerDown(PointerEventData eventData)
+
+    public override void OnSelect(BaseEventData eventData)
     {
-        
-        // print("OnPointerDown");
+        base.OnSelect(eventData);
+        // print("select!");
         OnChoose?.Invoke(this);
     }
-
-    public virtual void Select()
-    {
-        
-    }
-
+    
+    
+    
     public virtual void DeSelect()
     {
         
     }
+    
 }

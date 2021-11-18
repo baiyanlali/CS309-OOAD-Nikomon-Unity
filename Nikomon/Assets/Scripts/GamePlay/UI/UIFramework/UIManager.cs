@@ -1,29 +1,58 @@
 ﻿using System.Collections.Generic;
-using GamePlay.Utilities;
 using UnityEngine;
 
-namespace GamePlay.UIFramework
+namespace GamePlay.UI.UIFramework
 {
-    public static class UIManager
+    public enum UILayer
     {
-        public static Dictionary<UIType, GameObject> _UIDict = new Dictionary<UIType, GameObject>();
+        MainUI,
+        NormalUI,//仅有这个有stack层数
+        PopupUI,
+        Top
+    }
+    public class UIManager:MonoBehaviour
+    {
+        private static UIManager _instance;
 
-        private static Canvas _canvas;
-
-        public static GameObject GetUI(UIType type)
+        public static UIManager Instance
         {
-            if (_UIDict.ContainsKey(type) == false || _UIDict[type] == null)
+            get
             {
-                GameObject tmp = Resources.Load<GameObject>(type.Path);
-                GameObject obj = GameObject.Instantiate(tmp);
-                obj.transform.SetParent(_canvas.transform, false);
-                obj.name = type.Name;
-                _UIDict.AddOrReplace(type,obj);
-                return obj;
+                if (_instance != null) return _instance;
+                _instance = FindObjectOfType<UIManager>();
+                if (_instance != null) return _instance;
+                CreateUIManager();
+                DontDestroyOnLoad(_instance);
+                return _instance;
             }
-
-            return _UIDict[type];
         }
+
+        private static void CreateUIManager()
+        {
+            GameObject UIManager = new GameObject();
+            UIManager.name = "UIManager";
+            _instance = UIManager.AddComponent<UIManager>();
+        }
+
+
+        private Stack<BaseUI> _normalStack = new Stack<BaseUI>();
+        private BaseUI _mainUI;
+
+
+        public void PushUI(BaseUI ui)
+        {
+            switch (ui.Layer)
+            {
+                case UILayer.MainUI:
+                    break;
+                case UILayer.NormalUI:
+                    break;
+                case UILayer.PopupUI:
+                    break;
+            }
+        }
+        
+        
         
     }
 }

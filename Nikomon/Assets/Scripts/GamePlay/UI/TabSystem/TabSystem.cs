@@ -4,18 +4,19 @@ using System.Collections.Generic;
 using PokemonCore.Inventory;
 using PokemonCore.Utility;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class TabSystem : MonoBehaviour
 {
-    public float ScaleSize=1.5f;
 
     public Action<TabElement> OnChoosed;
     private List<TabElement> TabElements;
     public Transform TableContent;
     public Transform Tables;
     private TabElement CurrentTabElement;
+    private TabContent CurrentTableContent;
 
-    private List<Transform> tableContents;
+    private List<TabContent> tableContents;
 
     private void OnEnable()
     {
@@ -25,18 +26,35 @@ public class TabSystem : MonoBehaviour
         Tables = Tables ? Tables : transform.Find("Tables");
         if (TableContent != null)
         {
-            tableContents = new List<Transform>();
+            tableContents = new List<TabContent>();
             for (int i = 0; i < TableContent.childCount; i++)
             {
-                tableContents.Add(TableContent.GetChild(i));
+                tableContents.Add(TableContent.GetChild(i).GetComponent<TabContent>());
             }
         }
         
         foreach (var tabElement in TabElements.OrEmptyIfNull())
         {
             tabElement.OnChoose = OnChoose;
+            tabElement.onClick.RemoveAllListeners();
+            
+        }
+        
+        
+
+    }
+
+    private void Update()
+    {
+        if (NicomonInputSystem.Instance.ui_submit)
+        {
+            OnSubmit();
         }
 
+        if (NicomonInputSystem.Instance.ui_cancel)
+        {
+            OnCancel();
+        }
     }
 
     /// <summary>
@@ -56,7 +74,7 @@ public class TabSystem : MonoBehaviour
             Destroy(Tables.GetChild(i).gameObject);
         }
         
-        tableContents = new List<Transform>();
+        tableContents = new List<TabContent>();
         TabElements = new List<TabElement>();
         
         foreach (var tab in tabElements)
@@ -65,7 +83,7 @@ public class TabSystem : MonoBehaviour
             tab.Key.gameObject.transform.SetParent(Tables);
             tab.Key.transform.SetSiblingIndex(Tables.childCount-2);
             tab.Key.OnChoose = OnChoose;
-            tableContents.Add(tab.Value.transform);
+            tableContents.Add(tab.Value.transform.GetComponent<TabContent>());
             tab.Value.transform.SetParent(TableContent,false);
         }
         
@@ -105,20 +123,35 @@ public class TabSystem : MonoBehaviour
             
         element.Select();
 
+        //检测当前content是否真的切换了，因为有可能当前没有content可以用，这时就直接将current table content 设为null
+        bool flag = false;
         for (int i = 0; i < tableContents.Count; i++)
         {
-            //因为有左箭头，这里的index从1开始
             if (TabElements.IndexOf(element.transform.GetComponent<TabElement>()) == i)
             {
+                CurrentTableContent = tableContents[i].gameObject.GetComponent<TabContent>();
                 tableContents[i].gameObject.SetActive(true);
+                flag = true;
             }
             else
             {
                 tableContents[i].gameObject.SetActive(false);
             }
         }
-        
+
+        if (!flag) CurrentTableContent = null;
         OnChoosed?.Invoke(element);
     }
     
+    public void OnCancel()
+    {
+        EventSystem.current.SetSelectedGameObject(TabElements[0].gameObject);
+    }
+
+    public void OnSubmit()
+    {
+        // print("Submit!");
+        if (CurrentTableContent == null || CurrentTableContent.FirstSelectedObject == null) return;
+        EventSystem.current.SetSelectedGameObject(CurrentTableContent.FirstSelectedObject);
+    }
 }

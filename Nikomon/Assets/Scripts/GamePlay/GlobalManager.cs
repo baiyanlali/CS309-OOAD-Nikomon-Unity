@@ -43,6 +43,18 @@ public class GlobalManager : MonoBehaviour
 
     public ConfigSettings Config;
     
+    
+    public static bool CanPlayerControlled
+    {
+        get => NicomonInputSystem.Instance.NicomonInput.Player.enabled;
+        set
+        {
+            if(value)NicomonInputSystem.Instance.NicomonInput.Player.Enable();
+            else
+                NicomonInputSystem.Instance.NicomonInput.Player.Disable();
+        }
+    }
+    
 
     private void OnDestroy()
     {
