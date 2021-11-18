@@ -70,7 +70,7 @@ namespace PokemonCore.Character
             this.BoxNames = boxNames;
         }
         
-        public PC(int maxPokemonsPerBox = 20, int maxBox = 40)
+        public PC(int maxPokemonsPerBox = 20, int maxBox = 8)
         {
             this.pokemons = new Pokemon[maxBox, maxPokemonsPerBox];
             this.BoxNames = new string[maxBox];
@@ -86,9 +86,9 @@ namespace PokemonCore.Character
         }
 
         public PC(
-            Pokemon[][] pokemons = null,
+            Pokemon[][] pokemons,
             byte? box = null,
-            string[] names = null) : this(20, 40)
+            string[] names = null) : this()
         {
             if (names != null)
                 BoxNames = names;

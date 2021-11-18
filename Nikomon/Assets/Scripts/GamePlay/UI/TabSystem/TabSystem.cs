@@ -11,8 +11,8 @@ public class TabSystem : MonoBehaviour
 
     public Action<TabElement> OnChoosed;
     private List<TabElement> TabElements;
-    private Transform TableContent;
-    private Transform Tables;
+    public Transform TableContent;
+    public Transform Tables;
     private TabElement CurrentTabElement;
 
     private List<Transform> tableContents;
@@ -21,8 +21,8 @@ public class TabSystem : MonoBehaviour
     {
         TabElements = new List<TabElement>();
         TabElements.AddRange(GetComponentsInChildren<TabElement>());
-        TableContent = transform.Find("TableContent");
-        Tables = transform.Find("Tables");
+        TableContent = TableContent ? TableContent : transform.Find("TableContent");
+        Tables = Tables ? Tables : transform.Find("Tables");
         if (TableContent != null)
         {
             tableContents = new List<Transform>();

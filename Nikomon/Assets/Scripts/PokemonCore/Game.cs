@@ -10,7 +10,9 @@ using PokemonCore.Monster;
 using PokemonCore.Monster.Data;
 using PokemonCore.Saving;
 using PokemonCore.Utility;
+using UnityEngine;
 using XLua;
+using Random = System.Random;
 
 
 namespace PokemonCore
@@ -20,6 +22,9 @@ namespace PokemonCore
     /// </summary>
     public class Game
     {
+
+        public const float VERSOIN = 0.1f;
+        
         #region DataPath
 
         public static string DataPath { get; set; }
@@ -31,7 +36,7 @@ namespace PokemonCore
         public static readonly string MoveFile = "moves";
         public static readonly string PokemonFile = "pokemons";
         public static readonly string ExpTableFile = "levelingRate";
-        public static readonly string SaveFile = "Save.json";
+        public static readonly string SaveFile = "Save1.json";
         public static readonly string ItemFile = "items";
 
         #endregion
@@ -54,6 +59,8 @@ namespace PokemonCore
         public static Trainer trainer;
 
         public static TrainerBag bag;
+
+        public static PC pc;
 
         public static Random Random;
 
@@ -93,11 +100,21 @@ namespace PokemonCore
         }
 
         //TODO:目前只存档Trainer信息，剩下的以后再说
-        public bool HaveSave => SaveLoad.Load<Trainer>(SaveFile) != null;
+        public bool HaveSave => SaveLoad.Load<GameState>(SaveFile) != null;
 
         public void SaveData()
         {
-            SaveLoad.Save(SaveFile, trainer);
+            SaveLoad.Save(SaveFile, GetSave);
+        }
+
+
+        public GameState GetSave
+        {
+            get
+            {
+                var state=new GameState(VERSOIN,DateTime.Now,trainer,pc,bag);
+                return state;
+            }
         }
         
 
@@ -126,13 +143,23 @@ namespace PokemonCore
 
             ItemsData = items;
 
-            bag = new TrainerBag();
-            bag.Add(items[(Item.Tag.PokeBalls,0)]);
+            // bag = new TrainerBag();
+            // bag.Add(items[(Item.Tag.PokeBalls,0)]);
 
             if (HaveSave)
             {
-                trainer = SaveLoad.Load<Trainer>(SaveFile);
-                OnHaveSaveFile?.Invoke();
+                // trainer = SaveLoad.Load<Trainer>(SaveFile);
+                // OnHaveSaveFile?.Invoke();
+                
+                GameState state = SaveLoad.Load<GameState>(SaveFile);
+                if (state.VERSION < VERSOIN)
+                {
+                    UnityEngine.Debug.LogWarning("GameCore version level not equal, may cause some problem");
+                }
+                trainer = state.Trainer;
+                pc = state.PlayerPC;
+                bag = state.TrainerBag;
+                
             }
             else
                 OnDoNotHaveSaveFile?.Invoke();
@@ -149,9 +176,14 @@ namespace PokemonCore
             // PC pc = new PC();
         }
 
+        //TODO: for test
         public void CreateNewSaveFile(string name, bool isMale)
         {
             trainer = new Trainer(name, isMale);
+            AddPokemon(new Pokemon(1,50));
+            bag = new TrainerBag();
+            bag.Add(ItemsData[(Item.Tag.PokeBalls,0)]);
+            pc = new PC();
             SaveData();
         }
 

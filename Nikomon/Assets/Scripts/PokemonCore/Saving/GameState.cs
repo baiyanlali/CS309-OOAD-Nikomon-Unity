@@ -10,22 +10,25 @@ using PokemonCore.Utility;
 namespace PokemonCore.Saving
 {
     [Serializable]
-    public struct GameState
+    public class GameState
     {
-        // public DateTime TimeCreated { get; private set; }
+        public float VERSION ;
+        public DateTime TimeModified { get; private set; }
         public Trainer Trainer { get; private set; }
         public PC PlayerPC { get; private set; }
         public TrainerBag TrainerBag { get; private set; }
         // public int[] PlayerBag { get; private set; }
-//TODO：Player Bag,Time Created
         [JsonConstructor]
         public GameState(
+            float version,
+            DateTime timeModified,
             Trainer trainer,
             PC pc,
             TrainerBag trainerBag
             )
         {
-            
+            this.VERSION = version;
+            this.TimeModified = timeModified;
             Trainer = trainer;
             PlayerPC = pc;
             TrainerBag = trainerBag;
