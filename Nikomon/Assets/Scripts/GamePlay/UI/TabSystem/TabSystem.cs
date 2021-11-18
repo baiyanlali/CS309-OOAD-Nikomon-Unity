@@ -94,20 +94,21 @@ public class TabSystem : MonoBehaviour
         if (element == CurrentTabElement) return;
         
         RectTransform rect=element.transform as RectTransform;
-        LeanTween.size(rect, rect.sizeDelta*ScaleSize, 0.2f);
+        // LeanTween.size(rect, rect.sizeDelta*ScaleSize, 0.2f);
 
         if (CurrentTabElement != null)
         {
-            RectTransform r=CurrentTabElement.transform as RectTransform;
-            LeanTween.size(r, r.sizeDelta/ScaleSize, 0.2f);
+            CurrentTabElement.DeSelect();
         }
         
         CurrentTabElement = element;
+            
+        element.Select();
 
         for (int i = 0; i < tableContents.Count; i++)
         {
             //因为有左箭头，这里的index从1开始
-            if (element.transform.GetSiblingIndex()-1 == i)
+            if (TabElements.IndexOf(element.transform.GetComponent<TabElement>()) == i)
             {
                 tableContents[i].gameObject.SetActive(true);
             }

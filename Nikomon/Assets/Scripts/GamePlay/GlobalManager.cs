@@ -112,9 +112,9 @@ public class GlobalManager : MonoBehaviour
         isBattling = false;
     }
 
-    public void SaveData()
+    public void SaveData(int slot)
     {
-        game.SaveData();
+        game.SaveData(slot);
     }
 
     void StartPanel()

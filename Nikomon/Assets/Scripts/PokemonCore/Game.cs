@@ -36,7 +36,7 @@ namespace PokemonCore
         public static readonly string MoveFile = "moves";
         public static readonly string PokemonFile = "pokemons";
         public static readonly string ExpTableFile = "levelingRate";
-        public static readonly string SaveFile = "Save1.json";
+        public static readonly string SaveFile = "Save";
         public static readonly string ItemFile = "items";
 
         #endregion
@@ -100,11 +100,11 @@ namespace PokemonCore
         }
 
         //TODO:目前只存档Trainer信息，剩下的以后再说
-        public bool HaveSave => SaveLoad.Load<GameState>(SaveFile) != null;
+        // public bool HaveSave => SaveLoad.Load<GameState>(SaveFile) != null;
 
-        public void SaveData()
+        public void SaveData(int slot)
         {
-            SaveLoad.Save(SaveFile, GetSave);
+            SaveLoad.Save(string.Concat(SaveFile,slot), GetSave);
         }
 
 
@@ -146,23 +146,23 @@ namespace PokemonCore
             // bag = new TrainerBag();
             // bag.Add(items[(Item.Tag.PokeBalls,0)]);
 
-            if (HaveSave)
-            {
-                // trainer = SaveLoad.Load<Trainer>(SaveFile);
-                // OnHaveSaveFile?.Invoke();
-                
-                GameState state = SaveLoad.Load<GameState>(SaveFile);
-                if (state.VERSION < VERSOIN)
-                {
-                    UnityEngine.Debug.LogWarning("GameCore version level not equal, may cause some problem");
-                }
-                trainer = state.Trainer;
-                pc = state.PlayerPC;
-                bag = state.TrainerBag;
-                
-            }
-            else
-                OnDoNotHaveSaveFile?.Invoke();
+            // if (HaveSave)
+            // {
+            //     // trainer = SaveLoad.Load<Trainer>(SaveFile);
+            //     // OnHaveSaveFile?.Invoke();
+            //     
+            //     GameState state = SaveLoad.Load<GameState>(SaveFile);
+            //     if (state.VERSION < VERSOIN)
+            //     {
+            //         UnityEngine.Debug.LogWarning("GameCore version level not equal, may cause some problem");
+            //     }
+            //     trainer = state.Trainer;
+            //     pc = state.PlayerPC;
+            //     bag = state.TrainerBag;
+            //     
+            // }
+            // else
+            //     OnDoNotHaveSaveFile?.Invoke();
 
             LuaEnv = new LuaEnv();
             LuaEnv.DoString("require 'Effect'");
@@ -184,7 +184,20 @@ namespace PokemonCore
             bag = new TrainerBag();
             bag.Add(ItemsData[(Item.Tag.PokeBalls,0)]);
             pc = new PC();
-            SaveData();
+            // SaveData(slot);
+        }
+
+        public void LoadSaveFile(int slot)
+        {
+            GameState state = SaveLoad.Load<GameState>(string.Concat(SaveFile, slot));
+            LoadSaveFile(state);
+        }
+
+        public void LoadSaveFile(GameState gameState)
+        {
+            trainer = gameState.Trainer;
+            bag = gameState.TrainerBag;
+            pc = gameState.PlayerPC;
         }
 
         public static Battle battle { get; private set; }

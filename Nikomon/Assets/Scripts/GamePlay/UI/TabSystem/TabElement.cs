@@ -13,4 +13,14 @@ public class TabElement : MonoBehaviour,IPointerDownHandler
         // print("OnPointerDown");
         OnChoose?.Invoke(this);
     }
+
+    public virtual void Select()
+    {
+        
+    }
+
+    public virtual void DeSelect()
+    {
+        
+    }
 }
