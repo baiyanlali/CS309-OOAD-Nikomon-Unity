@@ -10,6 +10,8 @@ namespace GamePlay.Utilities
             dic[key] = val;
             return dic;
         }
+        
+
 
         public static string GetAnimateName(this Animator animator, AnimatorStateInfo info)
         {

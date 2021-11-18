@@ -42,6 +42,7 @@ namespace Editor
 
         private void OnGUI()
         {
+            
             GUILayout.BeginHorizontal();
                 GUILayout.BeginVertical(GUILayout.MaxWidth(100));
                 {
@@ -163,16 +164,18 @@ namespace Editor
                         CurrentMove.Priority = (byte) EditorGUILayout.IntSlider(CurrentMove.Priority, 0, 2);
                         GUILayout.EndHorizontal();
 
-                        GUILayout.BeginHorizontal();
-                        GUILayout.Label("EffectID:");
-                        CurrentMove.EffectID = EditorGUILayout.IntField(CurrentMove.EffectID);
-                        GUILayout.EndHorizontal();
-
-                        GUILayout.BeginHorizontal();
-                        GUILayout.Label("EffectChance:");
-                        CurrentMove.EffectChance = EditorGUILayout.IntField((int) CurrentMove.EffectChance);
-                        if (CurrentMove.EffectChance == -1) CurrentMove.EffectChance = null;
-                        GUILayout.EndHorizontal();
+                        
+                        
+                        // GUILayout.BeginHorizontal();
+                        // GUILayout.Label("EffectID:");
+                        // CurrentMove.EffectID = EditorGUILayout.IntField(CurrentMove.EffectID);
+                        // GUILayout.EndHorizontal();
+                        //
+                        // GUILayout.BeginHorizontal();
+                        // GUILayout.Label("EffectChance:");
+                        // CurrentMove.EffectChance = EditorGUILayout.IntField((int) CurrentMove.EffectChance);
+                        // if (CurrentMove.EffectChance == -1) CurrentMove.EffectChance = null;
+                        // GUILayout.EndHorizontal();
 
 
 

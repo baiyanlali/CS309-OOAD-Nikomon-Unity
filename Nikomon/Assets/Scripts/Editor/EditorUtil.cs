@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using PokemonCore.Combat.Interface;
 using PokemonCore.Utility;
 using UnityEditor;
@@ -28,6 +29,39 @@ namespace Editor
             }
             GUILayout.EndHorizontal();
         }
+
+        // private static Dictionary<PropertyInfo, bool> isExpanded=new Dictionary<PropertyInfo, bool>();
+        // public static void DrawProperties<T>(T prop, bool drawChildren)
+        // {
+        //     
+        //     Type type = prop.GetType();
+        //     var propInfos = type.GetProperties();
+        //     foreach (var p in propInfos)
+        //     {
+        //         if (p.GetType().IsArray)
+        //         {
+        //             EditorGUILayout.BeginHorizontal();
+        //             if (isExpanded.ContainsKey(p))
+        //             {
+        //                 EditorGUILayout.Foldout(isExpanded[p], p.Name);
+        //             }
+        //             else
+        //             {
+        //                 isExpanded.Add(p,false);
+        //             }
+        //             EditorGUILayout.EndHorizontal();
+        //
+        //             if (isExpanded[p])
+        //             {
+        //                 EditorGUI.indentLevel++;
+        //                 Type ttt = p.GetType();
+        //                 DrawProperties<object>(p,drawChildren);
+        //                 EditorGUI.indentLevel--;
+        //             }
+        //         }
+        //     }
+        //     
+        // }
         
         // public static void EditConditions(List<PokemonCore.Utility.Condition> conditions)
         // {
