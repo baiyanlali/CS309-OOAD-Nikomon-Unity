@@ -74,6 +74,46 @@ namespace PokemonCore.Attack.Data
             this.CriticalLevel = criticalLevel;
             this.MustHit = mustHit;
         }
+        
+        // public MoveData(
+        //     int moveID = 0,
+        //     string innerName="",
+        //     int? accuracy = 100,
+        //     int? power = 0,
+        //     byte pp = 0,
+        //     int priority = 0,
+        //     Targets target = Targets.SELECTED_OPPONENT_POKEMON,
+        //     int type = 0,
+        //     int effectID = 0,
+        //     int? effectChance = 0,
+        //     // EffectInfo[] effectInfos=null,
+        //     int criticalLevel=0
+        //     // bool mustHit=false
+        // )
+        // {
+        //     this.MoveID = moveID;
+        //     this.innerName = innerName;
+        //     this.Accuracy = accuracy;
+        //     this.Power = power;
+        //     this.PP = pp;
+        //     this.Priority = priority;
+        //     this.Target = target;
+        //     this.Type = type;
+        //     this.EffectInfos = new[]
+        //     {
+        //         new EffectInfo()
+        //         {
+        //             EffectChance = effectChance.HasValue ? effectChance.Value : -1,
+        //             EffectID = effectID,
+        //             TargetType = Targets.USER
+        //         }
+        //     };
+        //     // this.EffectID = effectID;
+        //     // this.EffectChance = effectChance;
+        //     // this.EffectInfos = effectInfos;
+        //     this.CriticalLevel = criticalLevel;
+        //     this.MustHit = false;
+        // }
 
         public override string ToString()
         {
