@@ -16,6 +16,11 @@ namespace GamePlay
 {
     public static class GameConst
     {
+        
+        public static readonly string SaveFilePath = Application.persistentDataPath;
+        public static readonly string SaveFileName = "Save";
+        public static readonly int SaveMaxFileNum = 3;
+        
         public static Dictionary<string, string> UI_PATH = new Dictionary<string, string>()
         {
             ["ChooseElement"] = "Prefabs/UI/ChooseElement",

@@ -42,6 +42,8 @@ public class GlobalManager : MonoBehaviour
     public Game game;
 
     public ConfigSettings Config;
+
+    public static int CurrentDataSlot { get; private set; }
     
     
     public static bool CanPlayerControlled
@@ -124,9 +126,40 @@ public class GlobalManager : MonoBehaviour
         isBattling = false;
     }
 
-    public void SaveData(int slot)
+    public void SaveSaveData()
     {
-        game.SaveData(slot);
+        SaveSaveData(CurrentDataSlot);
+    }
+
+    public void SaveSaveData(int slot)
+    {
+        var state = game.GetSave;
+        Vector3 position=Vector3.zero;
+        var player = FindObjectOfType<PlayerMovement>();
+        if (player != null)
+            position = player.transform.position;
+        
+        SaveData save=new SaveData(state,"TODO",position,SceneManager.GetActiveScene().buildIndex);
+        SaveLoad.Save(GameConst.SaveFileName+slot,save,GameConst.SaveFilePath);
+        // game.SaveData(slot);
+    }
+
+    public SaveData[] LoadAllSaveData()
+    {
+        SaveData[] saves = new SaveData[GameConst.SaveMaxFileNum];
+        for (int i = 0; i < saves.Length; i++)
+        {
+            //may be cause null
+            saves[i] = LoadSaveData(i);
+        }
+
+        return saves;
+    }
+
+    public SaveData LoadSaveData(int slot)
+    {
+        var result = SaveLoad.Load<SaveData>( string.Concat(GameConst.SaveFileName,slot),GameConst.SaveFilePath);
+        return result;
     }
 
     void StartPanel()

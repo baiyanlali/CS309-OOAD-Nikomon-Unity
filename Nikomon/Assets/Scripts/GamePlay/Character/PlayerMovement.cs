@@ -41,7 +41,7 @@ public class PlayerMovement : MonoBehaviour
             Movement();
             if (nicoInput.menu)
             {
-                GlobalManager.Instance.SaveData(1);
+                // GlobalManager.Instance.SaveSaveData();
             }
             if (nicoInput.accept)
             {
