@@ -9,6 +9,8 @@ namespace GamePlay.UI.MainMenuUI
 {
     public class SavePanelUI : BaseUI
     {
+        public override UILayer Layer => UILayer.NormalUI;
+
         public List<SaveSlotUI> SaveSlots = new List<SaveSlotUI>();
 
 

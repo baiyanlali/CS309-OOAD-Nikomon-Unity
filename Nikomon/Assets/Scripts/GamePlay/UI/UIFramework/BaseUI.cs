@@ -14,6 +14,11 @@ namespace GamePlay.UI.UIFramework
     }
     public abstract class BaseUI : MonoBehaviour
     {
+        public enum GET_TYPE
+        {
+            GameObject,
+            Component
+        }
         public virtual UILayer Layer { get; set; }
         public virtual bool IsOnly { get; }
         public virtual bool IsBlockPlayerControl { get; set; }
@@ -45,23 +50,31 @@ namespace GamePlay.UI.UIFramework
             }
         }
 
-        protected T GET<T>(BaseUI ui, T obj,string name)where T:UnityEngine.Object
+        protected T GET<T>(BaseUI ui, T obj,string name,GET_TYPE type)where T:UnityEngine.Object
         {
-            return ui.GET(obj,name);
+            return ui.GET(obj,name,type);
             // return obj!=null ? obj : ui.transform.Find(name).GetComponent<T>();
         }
-        
-        protected T GET<T>(T obj,string name)where T:UnityEngine.Object
+        //TODO:写得太烂了！重写！
+        protected T GET<T>(T obj,string name,GET_TYPE type)where T:UnityEngine.Object
         {
-            if (obj is Selectable)
+            if (type == GET_TYPE.Component)
             {
-                allUIAsset.Add(obj as Selectable);
+                T result = obj!=null ? obj : transform.Find(name).GetComponent<T>();
+                if (result is Selectable)
+                {
+                    allUIAsset.Add(result as Selectable);
+                }
+
+                return result;
             }
-            if (obj is GameObject)
+            else if(type==GET_TYPE.GameObject)
             {
-                return obj != null ? obj : transform.Find(name).gameObject as T;
+                T result= obj != null ? obj : transform.Find(name).gameObject as T;
+                return result;
             }
-            return obj!=null ? obj : transform.Find(name).GetComponent<T>();
+
+            return null;
         }
         
         
@@ -74,11 +87,12 @@ namespace GamePlay.UI.UIFramework
             CanPlayerControlBefore = GlobalManager.Instance.CanPlayerControlled;
             if (IsBlockPlayerControl) GlobalManager.Instance.CanPlayerControlled = false;
 
+            SetInteractable(true);
+
             if (FirstSelectable != null)
             {
-                EventSystem.current.SetSelectedGameObject(FirstSelectable.gameObject,new BaseEventData(EventSystem.current));
+                EventSystem.current.SetSelectedGameObject(FirstSelectable.gameObject);
             }
-            SetInteractable(true);
         }
 
         public virtual void OnExit()

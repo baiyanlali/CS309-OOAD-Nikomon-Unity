@@ -10,10 +10,10 @@ public class MainMenuUI : BaseUI
 {
     #region UIAsset
 
-    public Button Bag;
-    public Button Party;
-    public Button Save;
-    public Button Setting;
+    public GameObject Bag;
+    public GameObject Party;
+    public GameObject Save;
+    public GameObject Setting;
 
     #endregion
     
@@ -24,23 +24,23 @@ public class MainMenuUI : BaseUI
     public override void Init(params object[] args)
     {
         base.Init(args);
-        Bag = GET(Bag ,nameof(Bag )).GetComponentInChildren<Button>();
-        Party = GET(Party ,nameof(Party )).GetComponentInChildren<Button>();
-        Save = GET(Save ,nameof(Save )).GetComponentInChildren<Button>();
-        Setting = GET(Setting ,nameof(Setting )).GetComponentInChildren<Button>();
+        Bag = GET(Bag ,nameof(Bag ),GET_TYPE.GameObject);
+        Party = GET(Party ,nameof(Party ),GET_TYPE.GameObject);
+        Save = GET(Save ,nameof(Save ),GET_TYPE.GameObject);
+        Setting = GET(Setting ,nameof(Setting ),GET_TYPE.GameObject);
     }
 
     public override void OnEnter(params object[] args)
     {
         base.OnEnter(args);
-        Bag.onClick.RemoveAllListeners();
-        Bag.onClick.AddListener(OpenBag);
-        Party.onClick.RemoveAllListeners();
-        Party.onClick.AddListener(OpenParty);
-        Save.onClick.RemoveAllListeners();
-        Save.onClick.AddListener(OpenSave);
-        Setting.onClick.RemoveAllListeners();
-        Setting.onClick.AddListener(OpenSetting);
+        Bag.GetComponentInChildren<Button>().onClick.RemoveAllListeners();
+        Bag.GetComponentInChildren<Button>().onClick.AddListener(OpenBag);
+        Party.GetComponentInChildren<Button>().onClick.RemoveAllListeners();
+        Party.GetComponentInChildren<Button>().onClick.AddListener(OpenParty);
+        Save.GetComponentInChildren<Button>().onClick.RemoveAllListeners();
+        Save.GetComponentInChildren<Button>().onClick.AddListener(OpenSave);
+        Setting.GetComponentInChildren<Button>().onClick.RemoveAllListeners();
+        Setting.GetComponentInChildren<Button>().onClick.AddListener(OpenSetting);
     }
 
     public override void OnExit()
@@ -51,7 +51,6 @@ public class MainMenuUI : BaseUI
     public override void OnPause()
     {
         base.OnPause();
-        Bag.interactable = true;
     }
 
     public override void OnResume()
@@ -80,6 +79,7 @@ public class MainMenuUI : BaseUI
     }
     public void OpenSave()
     {
+        print("Open Save");
         UIManager.Instance.Show<SavePanelUI>();
     }
     

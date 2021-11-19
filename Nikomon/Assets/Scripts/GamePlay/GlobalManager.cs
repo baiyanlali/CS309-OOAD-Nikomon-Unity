@@ -154,7 +154,7 @@ public class GlobalManager : MonoBehaviour
         SaveLoad.Save(GameConst.SaveFileName+slot,save,GameConst.SaveFilePath);
         // game.SaveData(slot);
         
-        UIManager.Instance.Show<SavingSignatureUI>();
+        // UIManager.Instance.Show<SavingSignatureUI>();
     }
 
     public SaveData[] LoadAllSaveData()

@@ -21,11 +21,11 @@ public class SaveSlotUI : BaseUI
 
     public override void Init(params object[] args)
     {
-        Title = GET(Title,nameof(Title));
-        LastTimeSaved = GET(LastTimeSaved,nameof(LastTimeSaved));
-        Name = GET(Name,nameof(Name));
-        Money = GET(Money,nameof(Money));
-        PokemonParty = GET(PokemonParty,nameof(PokemonParty));
+        Title = GET(Title,nameof(Title),GET_TYPE.Component);
+        LastTimeSaved = GET(LastTimeSaved,nameof(LastTimeSaved),GET_TYPE.Component);
+        Name = GET(Name,nameof(Name),GET_TYPE.Component);
+        Money = GET(Money,nameof(Money),GET_TYPE.Component);
+        PokemonParty = GET(PokemonParty,nameof(PokemonParty),GET_TYPE.Component);
 
         PokemonImages = PokemonParty.GetComponentsInChildren<Image>();
     }

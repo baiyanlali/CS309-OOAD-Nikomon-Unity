@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Threading.Tasks;
 using Newtonsoft.Json;
 
 namespace PokemonCore.Utility
@@ -23,7 +24,12 @@ namespace PokemonCore.Utility
             return obj;
         }
 
-        public static bool Save<T>(string fileName,T data,string dataFilePath="")
+        public static async Task SaveAsync<T>(string fileName, T data, string dataFilePath = "")
+        {
+            
+        }
+        
+        public static void Save<T>(string fileName,T data,string dataFilePath="")
         {
             if (!fileName.Contains(".")) fileName += ".json";
             string filePath = "";
@@ -48,7 +54,6 @@ namespace PokemonCore.Utility
             sw.Close();
             fs.Close();
             UnityEngine.Debug.Log($"{filePath} has saved!");
-            return true;
         }
     }
 }
