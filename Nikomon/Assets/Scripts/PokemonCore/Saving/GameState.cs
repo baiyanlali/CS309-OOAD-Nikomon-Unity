@@ -16,7 +16,7 @@ namespace PokemonCore.Saving
         public DateTime TimeModified { get; private set; }
         public Trainer Trainer { get; private set; }
         public PC PlayerPC { get; private set; }
-        public TrainerBag TrainerBag { get; private set; }
+        public SeriTrainerBag TrainerBag { get; private set; }
         // public int[] PlayerBag { get; private set; }
         [JsonConstructor]
         public GameState(
@@ -24,7 +24,7 @@ namespace PokemonCore.Saving
             DateTime timeModified,
             Trainer trainer,
             PC pc,
-            TrainerBag trainerBag
+            SeriTrainerBag trainerBag
             )
         {
             this.VERSION = version;
@@ -32,6 +32,19 @@ namespace PokemonCore.Saving
             Trainer = trainer;
             PlayerPC = pc;
             TrainerBag = trainerBag;
+        }
+
+        public GameState(float version,
+            DateTime timeModified,
+            Trainer trainer,
+            PC pc,
+            TrainerBag trainerBag)
+        {
+            this.VERSION = version;
+            this.TimeModified = timeModified;
+            Trainer = trainer;
+            PlayerPC = pc;
+            TrainerBag = new SeriTrainerBag(trainerBag);
         }
        
     }

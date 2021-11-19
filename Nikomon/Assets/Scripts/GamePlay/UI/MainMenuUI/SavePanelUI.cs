@@ -47,15 +47,31 @@ namespace GamePlay.UI.MainMenuUI
                         UIManager.Instance.Show<ConfirmPanel>("SavePanelUI.HasFile",act);
                     }
                     else
+                    {
                         GlobalManager.Instance.SaveSaveData(index);
+                        UIManager.Instance.Show<ConfirmPanel>("SavePanelUI.SaveSuccessfully");
+                    }
                 });
+            }
+        }
+
+        public override void OnResume()
+        {
+            base.OnResume();
+            var datas = GlobalManager.Instance.LoadAllSaveData();
+            for (int i = 0; i < datas.Length; i++)
+            {
+                SaveSlots[i].OnEnter(i, datas[i]);
             }
         }
 
         public void ConfirmSave(bool isConfirmed)
         {
             if(isConfirmed)
+            {
                 GlobalManager.Instance.SaveSaveData(saveIndex);
+                UIManager.Instance.Show<ConfirmPanel>("SavePanelUI.SaveSuccessfully",null);
+            }
         }
     }
 }

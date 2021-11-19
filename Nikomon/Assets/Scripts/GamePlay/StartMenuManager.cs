@@ -15,7 +15,7 @@ public class StartMenuManager : MonoBehaviour
 
     public void StartGameWithSlot(int slot)
     {
-        GlobalManager.Instance.game.LoadSaveFile(slot);
+        GlobalManager.Instance.LoadSaveData(slot);
         SceneManager.LoadSceneAsync(1);
     }
 

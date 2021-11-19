@@ -25,7 +25,7 @@ public class SaveSlotUI : BaseUI
         LastTimeSaved = GET(LastTimeSaved,nameof(LastTimeSaved),GET_TYPE.Component);
         Name = GET(Name,nameof(Name),GET_TYPE.Component);
         Money = GET(Money,nameof(Money),GET_TYPE.Component);
-        PokemonParty = GET(PokemonParty,nameof(PokemonParty),GET_TYPE.Component);
+        PokemonParty = GET(PokemonParty,nameof(PokemonParty),GET_TYPE.GameObject);
 
         PokemonImages = PokemonParty.GetComponentsInChildren<Image>();
     }
@@ -63,8 +63,8 @@ public class SaveSlotUI : BaseUI
         else
         {
             HasFile = false;
-            Title.text = "No File Here";
-            LastTimeSaved.text = "";
+            Title.text = "Save " + slot;
+            LastTimeSaved.text = "No File Here";
             Name.text = "";
             Money.text = "";
             for (int i = 0; i < PokemonImages.Length; i++)

@@ -187,16 +187,16 @@ namespace PokemonCore
             // SaveData(slot);
         }
 
-        public void LoadSaveFile(int slot)
-        {
-            GameState state = SaveLoad.Load<GameState>(string.Concat(SaveFile, slot));
-            LoadSaveFile(state);
-        }
+        // public void LoadSaveFile(int slot)
+        // {
+        //     // GameState state = SaveLoad.Load<GameState>(string.Concat(SaveFile, slot));
+        //     // LoadSaveFile(state);
+        // }
 
         public void LoadSaveFile(GameState gameState)
         {
             trainer = gameState.Trainer;
-            bag = gameState.TrainerBag;
+            bag = gameState.TrainerBag.ToTrainerBag();
             pc = gameState.PlayerPC;
         }
 

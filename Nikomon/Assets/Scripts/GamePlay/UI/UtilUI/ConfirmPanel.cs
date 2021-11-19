@@ -35,7 +35,9 @@ namespace GamePlay.UI.UtilUI
         {
             base.OnEnter(args);
             string confirmInformation = args[0] as string;
-            Action<bool> confirmAction = args[1] as Action<bool>;
+            Action<bool> confirmAction=null;
+            if(args.Length>=2)
+                confirmAction = args[1] as Action<bool>;
 
             string yes = "ConfirmPanel.yes";
             string no = "ConfirmPanel.no";

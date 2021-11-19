@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 namespace GamePlay.UI.UIFramework
@@ -35,12 +36,21 @@ namespace GamePlay.UI.UIFramework
         public GameObject FirstSelectable;
         public Button ExitBtn;
 
-        public UnityAction CancelAction;
         public virtual void Init(params object[] args)
         {
             if(ExitBtn!=null)
-                ExitBtn.onClick.AddListener(CancelAction);
+                ExitBtn.onClick.AddListener(OnExit);
         }
+
+        public virtual void DoExit(InputAction.CallbackContext context)
+        {
+            if (ExitBtn != null)
+            {
+                EventSystem.current.SetSelectedGameObject(ExitBtn.gameObject);
+                Invoke(nameof(OnExit),0.25f);
+            }
+        }
+        
 
         public virtual void SetInteractable(bool interactable)
         {
@@ -55,7 +65,6 @@ namespace GamePlay.UI.UIFramework
             return ui.GET(obj,name,type);
             // return obj!=null ? obj : ui.transform.Find(name).GetComponent<T>();
         }
-        //TODO:写得太烂了！重写！
         protected T GET<T>(T obj,string name,GET_TYPE type)where T:UnityEngine.Object
         {
             if (type == GET_TYPE.Component)
@@ -93,6 +102,9 @@ namespace GamePlay.UI.UIFramework
             {
                 EventSystem.current.SetSelectedGameObject(FirstSelectable.gameObject);
             }
+
+            NicomonInputSystem.Instance.NicomonInput.UI.Cancel.started += DoExit;
+
         }
 
         public virtual void OnExit()
@@ -101,6 +113,8 @@ namespace GamePlay.UI.UIFramework
             else gameObject.SetActive(false);
 
             GlobalManager.Instance.CanPlayerControlled = CanPlayerControlBefore;
+            
+            NicomonInputSystem.Instance.NicomonInput.UI.Cancel.started -= DoExit;
         }
 
         private GameObject currentSelectObj;
@@ -111,6 +125,8 @@ namespace GamePlay.UI.UIFramework
         public virtual void OnPause()
         {
             currentSelectObj = EventSystem.current.currentSelectedGameObject;
+            
+            NicomonInputSystem.Instance.NicomonInput.UI.Cancel.started -= DoExit;
             SetInteractable(false);
         }
 
@@ -120,6 +136,7 @@ namespace GamePlay.UI.UIFramework
         public virtual void OnResume()
         {
             SetInteractable(true);
+            NicomonInputSystem.Instance.NicomonInput.UI.Cancel.started += DoExit;
             if(currentSelectObj!=null)
                 EventSystem.current.SetSelectedGameObject(currentSelectObj);
         }
