@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using GamePlay.Core;
+using GamePlay.UI;
+using GamePlay.UI.MainMenuUI;
 using GamePlay.UI.UIFramework;
+using GamePlay.UI.UtilUI;
 using Newtonsoft.Json;
 using PokemonCore;
 using PokemonCore.Attack.Data;
@@ -20,24 +23,30 @@ namespace GamePlay
         public static readonly string SaveFilePath = Application.persistentDataPath;
         public static readonly string SaveFileName = "Save";
         public static readonly int SaveMaxFileNum = 3;
-        
-        public static Dictionary<string, string> UI_PATH = new Dictionary<string, string>()
-        {
-            ["ChooseElement"] = "Prefabs/UI/ChooseElement",
-            ["DialogChooser"] = "Prefabs/UI/DialogChooser",
-            ["DialogSystem"] = "Prefabs/UI/DialogSystem",
-            ["Move"] = "Prefabs/UI/Move",
-            ["PokemonChooser"] = "Prefabs/UI/PokemonChooser",
-            ["PokemonState"] = "Prefabs/UI/PokemonState",
-            
-            ["BagContentElement"]="Prefabs/UI/BagSystem/BagContentElement",
-            ["BagContents"]="Prefabs/UI/BagSystem/BagContents",
-            ["BagTable"]="Prefabs/UI/BagSystem/BagTable",
-            ["Table"]="Prefabs/UI/BagSystem/Table",
-            
-            ["PokemonChooserTable"]="Prefabs/UI/PokemonChooserTable/PokemonChooserTable",
-            ["PokemonStatButton"]="Prefabs/UI/PokemonChooserTable/PokemonStatButton",
-        };
+
+        public static Dictionary<Type, string> PrefabPath = new Dictionary<Type, string>()
+            {
+            //     [typeof(ChooseElement)] = "Prefabs/UI/ChooseElement",
+            //     [typeof(DialogChooser)] = "Prefabs/UI/DialogChooser",
+            //     [typeof(DialogSystem)] = "Prefabs/UI/DialogSystem",
+            //     [typeof(Move)] = "Prefabs/UI/Move",
+            //     [typeof(PokemonChooser)] = "Prefabs/UI/PokemonChooser",
+            //     [typeof(PokemonState)] = "Prefabs/UI/PokemonState",
+            //     
+            //     ["BagContentElement"]="Prefabs/UI/BagSystem/BagContentElement",
+            //     ["BagContents"]="Prefabs/UI/BagSystem/BagContents",
+            //     ["BagTable"]="Prefabs/UI/BagSystem/BagTable",
+            //     ["Table"]="Prefabs/UI/BagSystem/Table",
+            //     
+            //     ["PokemonChooserTable"]="Prefabs/UI/PokemonChooserTable/PokemonChooserTable",
+            //     ["PokemonStatButton"]="Prefabs/UI/PokemonChooserTable/PokemonStatButton",
+            [typeof(GlobalManager)]="Prefabs/Global",
+            [typeof(UIManager)]="Prefabs/UI/UIManager",
+            [typeof(MainMenuUI)] = "Prefabs/UI/MainMenu/MainMenu",
+            [typeof(StartMenuUI)] = "Prefabs/UI/MainMenu/StartMenu",
+            [typeof(SavePanelUI)]="Prefabs/UI/MainMenu/SavePanelUI",
+            [typeof(ConfirmPanel)]="Prefabs/UI/UtilUI/ConfirmPanel"
+    };
     }
     
     public static class GameResources
@@ -48,7 +57,7 @@ namespace GamePlay
         public static Dictionary<int, Sprite> TypeIcons;
         public static Dictionary<int, Color> TypeColors;
 
-        private static Dictionary<string, GameObject> CachedPrefabs;
+        private static Dictionary<Type, GameObject> CachedPrefabs=new Dictionary<Type, GameObject>();
 
         #region Initial Load
 
@@ -201,21 +210,23 @@ namespace GamePlay
         
         #endregion
 
-        public static BaseUI SpawnUIPrefab(string name)
+        
+        public static GameObject SpawnPrefab(Type name)
         {
-            if (!GameConst.UI_PATH.ContainsKey(name))
+            if (!GameConst.PrefabPath.ContainsKey(name))
             {
-                throw new Exception($"No Keys of {name} founded in ui prefab");
+                throw new Exception($"No Keys of {name} founded in prefab");
             }
             
             if(!CachedPrefabs.ContainsKey(name))
             {
-                var result = Resources.Load<BaseUI>(GameConst.UI_PATH[name]);
+                var result = Resources.Load<GameObject>(GameConst.PrefabPath[name]);
+                CachedPrefabs.Add(name,result);
                 return result;
             }
             else
             {
-                return CachedPrefabs[name].GetComponent<BaseUI>();
+                return CachedPrefabs[name];
             }
         }
         

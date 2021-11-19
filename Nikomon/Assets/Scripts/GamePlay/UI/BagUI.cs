@@ -73,8 +73,8 @@ public class BagUI : MonoBehaviour
             {
                 if (item == null) break;
                 var o = Instantiate(Resources.Load<GameObject>(path + "BagContentElement"),contents.transform);
-                if(tabContents.FirstSelectedObject==null)
-                    tabContents.FirstSelectedObject = o;
+                if(tabContents.FirstSelectable==null)
+                    tabContents.FirstSelectable = o;
                 o.GetComponent<BagContentElementUI>().Init(item,bag[item]);
             }
         }

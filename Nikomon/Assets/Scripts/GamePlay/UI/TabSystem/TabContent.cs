@@ -1,8 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
+using GamePlay.UI.UIFramework;
 using UnityEngine;
 
-public class TabContent : MonoBehaviour
+public class TabContent : BaseUI
 {
-    public GameObject FirstSelectedObject;
+    public virtual void OnShow()
+    {
+        
+    }
 }

@@ -1,6 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.CompilerServices;
+using GamePlay.Utilities;
 using UnityEngine;
+using UnityEngine.PlayerLoop;
 
 namespace GamePlay.UI.UIFramework
 {
@@ -32,9 +36,14 @@ namespace GamePlay.UI.UIFramework
 
         private static void CreateUIManager()
         {
-            GameObject UIManager = new GameObject();
-            UIManager.name = "UIManager";
-            _instance = UIManager.AddComponent<UIManager>();
+            // GameObject UIManager = new GameObject();
+            // UIManager.name = "UIManager";
+            // _instance = UIManager.AddComponent<UIManager>();
+            GameObject UIManager = GameResources.SpawnPrefab(typeof(UIManager));
+            UIManager = Instantiate(UIManager);
+            UIManager.name = nameof(UIManager);
+            _instance = UIManager.GetComponent<UIManager>();
+            _instance.Init();
         }
 
         protected Dictionary<Type, BaseUI> _uiDics = new Dictionary<Type, BaseUI>();
@@ -43,10 +52,12 @@ namespace GamePlay.UI.UIFramework
         private Stack<BaseUI> _popStack = new Stack<BaseUI>();
         //主界面上可能会有许多个UI元素
         private List<BaseUI> _mainUI=new List<BaseUI>();
+        private List<BaseUI> _topUI = new List<BaseUI>();
 
         public Transform MainUIParent;
         public Transform NormalUIParent;
         public Transform PopUIParent;
+        public Transform TopParent;
 
 
         public Transform GetUIParent(UILayer layer)
@@ -55,15 +66,21 @@ namespace GamePlay.UI.UIFramework
             {
                 case UILayer.MainUI:
                     return MainUIParent;
-                    break;
                 case UILayer.NormalUI:
                     return NormalUIParent;
                 case UILayer.PopupUI:
                     return PopUIParent;
-                
+                case UILayer.Top:
+                    return TopParent;
             }
 
             return null;
+        }
+
+        public void Init()
+        {
+            
+            
         }
         
         public void PushUI(BaseUI ui)
@@ -74,10 +91,17 @@ namespace GamePlay.UI.UIFramework
                     _mainUI.Add(ui);
                     break;
                 case UILayer.NormalUI:
-                    _normalStack.Peek().OnPause();
+                    if(_normalStack.Count!=0)
+                        _normalStack.Peek()?.OnPause();
                     _normalStack.Push(ui);
                     break;
                 case UILayer.PopupUI:
+                    if(_popStack.Count!=0)
+                        _popStack.Peek()?.OnPause();
+                    _popStack.Push(ui);
+                    break;
+                case UILayer.Top:
+                    _topUI.Add(ui);
                     break;
             }
         }
@@ -88,17 +112,19 @@ namespace GamePlay.UI.UIFramework
             if (_uiDics.ContainsKey(typeof(T)))
             {
                 curUI = _uiDics[typeof(T)];
-
             }
             else
             {
-                curUI = GameResources.SpawnUIPrefab(nameof(T));
+                GameObject tmp = GameResources.SpawnPrefab(typeof(T));
+                curUI = Instantiate(tmp,tmp.transform.position,tmp.transform.rotation).GetComponent<BaseUI>();
+                tmp = null;
+                _uiDics.AddOrReplace(typeof(T),curUI);
             }
             if(curUI.IsOnly)
                 PopAllUI(curUI.Layer);
             PushUI(curUI);
             
-            curUI.transform.SetParent(GetUIParent(curUI.Layer));
+            curUI.transform.SetParent(GetUIParent(curUI.Layer),false);
             
             curUI.Init();
             
@@ -106,6 +132,28 @@ namespace GamePlay.UI.UIFramework
 
         }
 
+        public void Hide<T>(T obj)where T:BaseUI
+        {
+            var tmp = obj as BaseUI;
+            _uiDics.AddOrReplace(tmp.GetType(),tmp);
+            if (_normalStack.Contains(tmp))
+            {
+                PopUIUntil(tmp,_normalStack);
+            }else if (_popStack.Contains(tmp))
+            {
+                PopUIUntil(tmp, _popStack);
+            }
+            else if(_mainUI.Contains(tmp))
+            {
+                _mainUI.Remove(tmp);
+                tmp.OnExit();
+            }else if (_topUI.Contains(tmp))
+            {
+                _topUI.Remove(tmp);
+                tmp.OnExit();
+            }
+        }
+        
         public void PopAllUI(UILayer layer)
         {
             if (layer == UILayer.NormalUI)
@@ -123,6 +171,13 @@ namespace GamePlay.UI.UIFramework
                     mainUI.OnExit();
                 }
                 _mainUI.Clear();
+            }else if (layer == UILayer.Top)
+            {
+                foreach (var topUI in _topUI)
+                {
+                    topUI.OnExit();
+                }
+                _topUI.Clear();
             }
         }
 
@@ -131,7 +186,7 @@ namespace GamePlay.UI.UIFramework
         /// </summary>
         /// <param name="until"></param>
         /// <param name="stack"></param>
-        void PopUIUntil(BaseUI until,Stack<BaseUI> stack)
+        public void PopUIUntil(BaseUI until,Stack<BaseUI> stack)
         {
             if (!stack.Contains(until)) return;
             BaseUI node = stack.Pop();
@@ -152,6 +207,7 @@ namespace GamePlay.UI.UIFramework
                 stack.Peek().OnResume();
         }
 
+        
         void PopUIUntilNone(Stack<BaseUI> stack)
         {
             while (stack.Count>0)
@@ -160,9 +216,6 @@ namespace GamePlay.UI.UIFramework
                 node.OnExit();
             }
         }
-        
-        
-        
-        
+
     }
 }

@@ -34,14 +34,14 @@ namespace PokemonCore.Utility
             FileStream fs;
             if (File.Exists(filePath))
             {
-                fs = File.Create(filePath);
+                fs =File.Create(filePath);
             }
             else
             {
-                fs = File.OpenWrite(filePath);
+                fs =File.OpenWrite(filePath);
             }
 
-            string jsonData = JsonConvert.SerializeObject(data);
+            string jsonData =JsonConvert.SerializeObject(data);
             StreamWriter sw = new StreamWriter(fs);
             sw.Write(jsonData);
             sw.Flush();

@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using GamePlay;
+using GamePlay.UI.SaveUI;
+using GamePlay.UI.UIFramework;
 using PokemonCore;
 using PokemonCore.Attack.Data;
 using PokemonCore.Combat;
@@ -43,12 +46,14 @@ public class GlobalManager : MonoBehaviour
 
     public ConfigSettings Config;
 
-    public static int CurrentDataSlot { get; private set; }
+    public int CurrentDataSlot { get; private set; }
     
     
-    public static bool CanPlayerControlled
+    public bool CanPlayerControlled
     {
-        get => NicomonInputSystem.Instance.NicomonInput.Player.enabled;
+        get{
+            return NicomonInputSystem.Instance.NicomonInput.Player.enabled;
+        }
         set
         {
             if(value)NicomonInputSystem.Instance.NicomonInput.Player.Enable();
@@ -66,13 +71,19 @@ public class GlobalManager : MonoBehaviour
 
     private static GlobalManager CreateGlobalManager()
     {
-        GameObject obj = GameObject.Find("Global");
-        if (obj == null)
-        {
-            obj = new GameObject("Global");
-        }
+        // GameObject obj = GameObject.Find("Global");
+        // if (obj == null)
+        // {
+        //     obj = new GameObject("Global");
+        // }
+        //
+        // GlobalManager gm = obj.AddComponent<GlobalManager>();
+        GameObject obj = GameResources.SpawnPrefab(typeof(GlobalManager));
 
-        GlobalManager gm = obj.AddComponent<GlobalManager>();
+        obj = Instantiate<GameObject>(obj);
+        obj.name = nameof(GlobalManager);
+        GlobalManager gm = obj.GetComponent<GlobalManager>();
+        
         return gm;
     }
 
@@ -138,10 +149,12 @@ public class GlobalManager : MonoBehaviour
         var player = FindObjectOfType<PlayerMovement>();
         if (player != null)
             position = player.transform.position;
-        
-        SaveData save=new SaveData(state,"TODO",position,SceneManager.GetActiveScene().buildIndex);
+        //TODO
+        SaveData save=new SaveData(state,"TODO",position,SceneManager.GetActiveScene().buildIndex,Config);
         SaveLoad.Save(GameConst.SaveFileName+slot,save,GameConst.SaveFilePath);
         // game.SaveData(slot);
+        
+        UIManager.Instance.Show<SavingSignatureUI>();
     }
 
     public SaveData[] LoadAllSaveData()

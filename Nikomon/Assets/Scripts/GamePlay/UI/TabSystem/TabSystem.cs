@@ -18,6 +18,9 @@ public class TabSystem : MonoBehaviour
 
     private List<TabContent> tableContents;
 
+    private bool HaveEnterScope = false;
+
+
     private void OnEnable()
     {
         TabElements = new List<TabElement>();
@@ -46,7 +49,7 @@ public class TabSystem : MonoBehaviour
 
     private void Update()
     {
-        if (NicomonInputSystem.Instance.ui_submit)
+        if (NicomonInputSystem.Instance.ui_submit && !HaveEnterScope)
         {
             OnSubmit();
         }
@@ -130,7 +133,9 @@ public class TabSystem : MonoBehaviour
             if (TabElements.IndexOf(element.transform.GetComponent<TabElement>()) == i)
             {
                 CurrentTableContent = tableContents[i].gameObject.GetComponent<TabContent>();
+                
                 tableContents[i].gameObject.SetActive(true);
+                CurrentTableContent.OnShow();
                 flag = true;
             }
             else
@@ -145,13 +150,19 @@ public class TabSystem : MonoBehaviour
     
     public void OnCancel()
     {
+        if(CurrentTableContent!=null)
+            CurrentTableContent.OnExit();
         EventSystem.current.SetSelectedGameObject(TabElements[0].gameObject);
+        OnChoose(TabElements[0]);
+        HaveEnterScope = false;
     }
 
     public void OnSubmit()
     {
         // print("Submit!");
-        if (CurrentTableContent == null || CurrentTableContent.FirstSelectedObject == null) return;
-        EventSystem.current.SetSelectedGameObject(CurrentTableContent.FirstSelectedObject);
+        if (CurrentTableContent == null || CurrentTableContent.FirstSelectable == null) return;
+        // EventSystem.current.SetSelectedGameObject(CurrentTableContent.FirstSelectedObject);
+        CurrentTableContent.OnEnter();
+        HaveEnterScope = true;
     }
 }
