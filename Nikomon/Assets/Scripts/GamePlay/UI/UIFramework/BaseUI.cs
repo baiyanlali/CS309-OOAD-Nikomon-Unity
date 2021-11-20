@@ -47,11 +47,7 @@ namespace GamePlay.UI.UIFramework
                 ExitBtn.onClick.AddListener( ()=>UIManager.Instance.Hide(this));
             }
             
-            _cancelTriggers.AddRange(GetComponentsInChildren<CancelTrigger>());
-            foreach (var cancelTrigger in _cancelTriggers)
-            {
-                cancelTrigger.cancel = (o)=>StartCoroutine(DoExit());
-            }
+            
         }
 
         public IEnumerator DoExit()
@@ -124,6 +120,12 @@ namespace GamePlay.UI.UIFramework
             CanPlayerControlBefore = GlobalManager.Instance.CanPlayerControlled;
             if (IsBlockPlayerControl) GlobalManager.Instance.CanPlayerControlled = false;
 
+            
+            _cancelTriggers.AddRange(GetComponentsInChildren<CancelTrigger>());
+            foreach (var cancelTrigger in _cancelTriggers)
+            {
+                cancelTrigger.cancel = (o)=>StartCoroutine(DoExit());
+            }
 
             if (FirstSelectable != null)
             {

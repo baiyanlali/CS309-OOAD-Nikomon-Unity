@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using GamePlay.Core;
 using GamePlay.UI;
 using GamePlay.UI.MainMenuUI;
+using GamePlay.UI.PokemonChooserTable;
 using GamePlay.UI.UIFramework;
 using GamePlay.UI.UtilUI;
 using Newtonsoft.Json;
@@ -23,6 +24,11 @@ namespace GamePlay
         public static readonly string SaveFilePath = Application.persistentDataPath;
         public static readonly string SaveFileName = "Save";
         public static readonly int SaveMaxFileNum = 3;
+
+        public static Dictionary<string, string> PrefabPathStr = new Dictionary<string, string>()
+        {
+            
+        };
 
         public static Dictionary<Type, string> PrefabPath = new Dictionary<Type, string>()
             {
@@ -53,7 +59,11 @@ namespace GamePlay
             [typeof(ConfirmPanel)]="Prefabs/UI/UtilUI/ConfirmPanel",
             //bag
             [typeof(BagPanelUI)]="Prefabs/UI/BagSystem/BagTable",
-            [typeof(BagContentElementUI)]="Prefabs/UI/BagSystem/BagContentElement"
+            [typeof(BagContentElementUI)]="Prefabs/UI/BagSystem/BagContentElement",
+            
+            //PokemonChooserPanel
+            [typeof(PokemonChooserPanelUI)]="Prefabs/UI/PokemonChooserTable/PokemonChooserTable",
+            [typeof(PokemonChooserElementUI)]="Prefabs/UI/PokemonChooserTable/PokemonStatButton"
     };
     }
     
@@ -66,6 +76,7 @@ namespace GamePlay
         public static Dictionary<int, Color> TypeColors;
 
         private static Dictionary<Type, GameObject> CachedPrefabs=new Dictionary<Type, GameObject>();
+        private static Dictionary<string, GameObject> CachedPrefabsStr=new Dictionary<string, GameObject>();
 
         #region Initial Load
 
@@ -218,6 +229,25 @@ namespace GamePlay
         
         #endregion
 
+
+        public static GameObject SpawnPrefab(string name)
+        {
+            if (!GameConst.PrefabPathStr.ContainsKey(name))
+            {
+                throw new Exception($"No Keys of {name} founded in prefab");
+            }
+            
+            if(!CachedPrefabsStr.ContainsKey(name))
+            {
+                var result = Resources.Load<GameObject>(GameConst.PrefabPathStr[name]);
+                CachedPrefabsStr.Add(name,result);
+                return result;
+            }
+            else
+            {
+                return CachedPrefabsStr[name];
+            }
+        }
         
         public static GameObject SpawnPrefab(Type name)
         {
