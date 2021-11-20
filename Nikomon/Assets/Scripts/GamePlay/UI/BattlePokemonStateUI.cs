@@ -58,6 +58,12 @@ public class BattlePokemonStateUI : MonoBehaviour
             });
     }
 
+    public void UpdateState(Action onComplete)
+    {
+        UpdateState();
+        // onComplete?.Invoke();
+    }
+
     public void UpdateState(int hp, Action onComplete)
     {
         Debug.Log($"Update State!! from :{gameObject.name}");

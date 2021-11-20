@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using GamePlay;
+using GamePlay.UI.SaveUI;
+using GamePlay.UI.UIFramework;
 using PokemonCore;
 using PokemonCore.Attack.Data;
 using PokemonCore.Combat;
@@ -39,9 +42,25 @@ public class GlobalManager : MonoBehaviour
 
     private static GlobalManager s_Instance;
 
-    private Game game;
+    public Game game;
 
     public ConfigSettings Config;
+
+    public int CurrentDataSlot { get; private set; }
+    
+    
+    public bool CanPlayerControlled
+    {
+        get{
+            return NicomonInputSystem.Instance.NicomonInput.Player.enabled;
+        }
+        set
+        {
+            if(value)NicomonInputSystem.Instance.NicomonInput.Player.Enable();
+            else
+                NicomonInputSystem.Instance.NicomonInput.Player.Disable();
+        }
+    }
     
 
     private void OnDestroy()
@@ -52,13 +71,19 @@ public class GlobalManager : MonoBehaviour
 
     private static GlobalManager CreateGlobalManager()
     {
-        GameObject obj = GameObject.Find("Global");
-        if (obj == null)
-        {
-            obj = new GameObject("Global");
-        }
+        // GameObject obj = GameObject.Find("Global");
+        // if (obj == null)
+        // {
+        //     obj = new GameObject("Global");
+        // }
+        //
+        // GlobalManager gm = obj.AddComponent<GlobalManager>();
+        GameObject obj = GameResources.SpawnPrefab(typeof(GlobalManager));
 
-        GlobalManager gm = obj.AddComponent<GlobalManager>();
+        obj = Instantiate<GameObject>(obj);
+        obj.name = nameof(GlobalManager);
+        GlobalManager gm = obj.GetComponent<GlobalManager>();
+        
         return gm;
     }
 
@@ -89,22 +114,22 @@ public class GlobalManager : MonoBehaviour
         GameResources.Pokemons = new Dictionary<int, GameObject[]>();
         GameResources.PokemonIcons = new Dictionary<int, Sprite>();
 
-        game.OnDoNotHaveSaveFile += StartPanel;
+        // game.OnDoNotHaveSaveFile += StartPanel;
 
         GameResources.LoadResources();
 
-        game.OnHaveSaveFile += () =>
+        // game.OnHaveSaveFile += () =>
+        // {
+        SceneManager.sceneLoaded += (o1, o2) =>
         {
-            SceneManager.sceneLoaded += (o1, o2) =>
-            {
-                BagUI.Instance?.Init(Game.bag);
-                PokemonChooserTableUI.Instance?.Init(Game.trainer, new string[] { },
-                    new Action<int>[] { });
-            };
-
-
-            SceneManager.LoadScene(1);
+            BagUI.Instance?.Init(Game.bag);
+            PokemonChooserTableUI.Instance?.Init(Game.trainer, new string[] { },
+                new Action<int>[] { });
         };
+        //
+        //
+        //     SceneManager.LoadScene(1);
+        // };
 
 
         game.Init(GameResources.LoadTypes(), null, GameResources.LoadPokemons(), GameResources.LoadExperienceTable(),
@@ -112,9 +137,42 @@ public class GlobalManager : MonoBehaviour
         isBattling = false;
     }
 
-    public void SaveData()
+    public void SaveSaveData()
     {
-        game.SaveData();
+        SaveSaveData(CurrentDataSlot);
+    }
+
+    public void SaveSaveData(int slot)
+    {
+        var state = game.GetSave;
+        Vector3 position=Vector3.zero;
+        var player = FindObjectOfType<PlayerMovement>();
+        if (player != null)
+            position = player.transform.position;
+        //TODO
+        SaveData save=new SaveData(state,"TODO",position,SceneManager.GetActiveScene().buildIndex,Config);
+        SaveLoad.Save(GameConst.SaveFileName+slot,save,GameConst.SaveFilePath);
+        // game.SaveData(slot);
+        
+        // UIManager.Instance.Show<SavingSignatureUI>();
+    }
+
+    public SaveData[] LoadAllSaveData()
+    {
+        SaveData[] saves = new SaveData[GameConst.SaveMaxFileNum];
+        for (int i = 0; i < saves.Length; i++)
+        {
+            //may be cause null
+            saves[i] = LoadSaveData(i);
+        }
+
+        return saves;
+    }
+
+    public SaveData LoadSaveData(int slot)
+    {
+        var result = SaveLoad.Load<SaveData>( string.Concat(GameConst.SaveFileName,slot),GameConst.SaveFilePath);
+        return result;
     }
 
     void StartPanel()
@@ -125,19 +183,13 @@ public class GlobalManager : MonoBehaviour
         obj.transform.Find("Start").gameObject.SetActive(false);
     }
 
-    public void CreateNewTrainer(bool isMale)
-    {
-        InputField inputField = GameObject.Find("NameText").GetComponent<InputField>();
-        game.CreateNewSaveFile(inputField.text, isMale);
+    
 
-        StartGame();
-    }
-
-    public void StartGame()
-    {
-        SceneManager.LoadScene(1);
-        SceneManager.sceneLoaded += StartBattleFastTest;
-    }
+    // public void StartGame()
+    // {
+    //     SceneManager.LoadScene(1);
+    //     SceneManager.sceneLoaded += StartBattleFastTest;
+    // }
 
     public void StartNetworkBattle(int trainersNum = 2, int pokemonPerTrainer = 1, string password = "")
     {
@@ -145,30 +197,30 @@ public class GlobalManager : MonoBehaviour
         NetworkLogic.OnStartBattle = StartBattle;
         NetworkLogic.PairOnBattle(trainersNum, pokemonPerTrainer, password);
     }
-
+    //
     public void StopPairNetworkBattle()
     {
         NetworkLogic.PairOff();
     }
+    //
+    // public void StartFastNetworkBattle()
+    // {
+    //     SceneManager.LoadScene(1);
+    //     SceneManager.sceneLoaded += (a, b) => { StartNetworkBattle(); };
+    // }
 
-    public void StartFastNetworkBattle()
-    {
-        SceneManager.LoadScene(1);
-        SceneManager.sceneLoaded += (a, b) => { StartNetworkBattle(); };
-    }
-
-    void StartBattleFastTest(Scene scene, LoadSceneMode mode)
-    {
-        Game.trainer.party[0] = new Pokemon(Game.PokemonsData[4], "", Game.trainer, 50, 0);
-        Game.trainer.party[1] = new Pokemon(Game.PokemonsData[1], "", Game.trainer, 50, 0);
-        Trainer trainer = new Trainer("Computer", false);
-        trainer.party[0] = new Pokemon(Game.PokemonsData[17], "", trainer, 50, 0);
-        trainer.party[1] = new Pokemon(Game.PokemonsData[7], "", trainer, 50, 0);
-        List<Trainer> trainers = new List<Trainer>();
-        trainers.Add(trainer);
-        game.SaveData();
-        StartBattle(null, trainers, true, 2);
-    }
+    // void StartBattleFastTest(Scene scene, LoadSceneMode mode)
+    // {
+    //     Game.trainer.party[0] = new Pokemon(Game.PokemonsData[4], "", Game.trainer, 50, 0);
+    //     Game.trainer.party[1] = new Pokemon(Game.PokemonsData[1], "", Game.trainer, 50, 0);
+    //     Trainer trainer = new Trainer("Computer", false);
+    //     trainer.party[0] = new Pokemon(Game.PokemonsData[17], "", trainer, 50, 0);
+    //     trainer.party[1] = new Pokemon(Game.PokemonsData[7], "", trainer, 50, 0);
+    //     List<Trainer> trainers = new List<Trainer>();
+    //     trainers.Add(trainer);
+    //     game.SaveData();
+    //     StartBattle(null, trainers, true, 2);
+    // }
 
     public void StartBattle(List<Trainer> allies, List<Trainer> oppo, bool isHost, int pokemonPerTrainer = 1)
     {

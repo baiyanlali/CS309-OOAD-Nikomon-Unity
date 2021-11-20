@@ -27,11 +27,11 @@ effect0={
     EffectChance=100,
 
     OnMoving = function(combatMove)
-        print('Use effect 0')
+        --print('Use effect 0')
         --if combatMove.type.ID == 
         if combatMove.types.ID == combatMove.Sponsor.Type1 or combatMove.types.ID == combatMove.Sponsor.Type2  or combatMove.types.ID == combatMove.Sponsor.Type3  then
             combatMove.power=math.floor(combatMove.power*1.5)
-            print('Pokemon:'..combatMove.Sponsor.pokemon.Name..' powers up!')
+            --print('Pokemon:'..combatMove.Sponsor.pokemon.Name..' powers up!')
         end
         return combatMove
     end,

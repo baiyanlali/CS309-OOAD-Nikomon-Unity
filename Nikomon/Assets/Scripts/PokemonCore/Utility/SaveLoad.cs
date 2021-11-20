@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Threading.Tasks;
 using Newtonsoft.Json;
 
 namespace PokemonCore.Utility
@@ -19,11 +20,17 @@ namespace PokemonCore.Utility
             if (!File.Exists(filePath)) return default(T);
             StreamReader sr = File.OpenText(filePath);
             string data = sr.ReadToEnd();
+            sr.Close();
             T obj = JsonConvert.DeserializeObject<T>(data);
             return obj;
         }
 
-        public static bool Save<T>(string fileName,T data,string dataFilePath="")
+        public static async Task SaveAsync<T>(string fileName, T data, string dataFilePath = "")
+        {
+            
+        }
+        
+        public static void Save<T>(string fileName,T data,string dataFilePath="")
         {
             if (!fileName.Contains(".")) fileName += ".json";
             string filePath = "";
@@ -32,23 +39,22 @@ namespace PokemonCore.Utility
             else
                 filePath = dataFilePath + fileName;
             FileStream fs;
-            if (File.Exists(filePath))
+            if (!File.Exists(filePath))
             {
-                fs = File.Create(filePath);
+                fs =File.Create(filePath);
             }
             else
             {
-                fs = File.OpenWrite(filePath);
+                fs =File.OpenWrite(filePath);
             }
 
-            string jsonData = JsonConvert.SerializeObject(data);
+            string jsonData =JsonConvert.SerializeObject(data);
             StreamWriter sw = new StreamWriter(fs);
             sw.Write(jsonData);
             sw.Flush();
             sw.Close();
             fs.Close();
             UnityEngine.Debug.Log($"{filePath} has saved!");
-            return true;
         }
     }
 }

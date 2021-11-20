@@ -8,6 +8,11 @@ namespace PokemonCore.Utility
 {
     public static class ListExtension
     {
+        public static string ConverToString<T>(this T[] i)
+        {
+            return String.Join(", ", i);
+        }
+        
         public static string ConverToString<T>(this List<T> i)
         {
             return String.Join(", ", i);

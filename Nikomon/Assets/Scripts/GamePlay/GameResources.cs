@@ -1,6 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using GamePlay.Core;
+using GamePlay.UI;
+using GamePlay.UI.MainMenuUI;
+using GamePlay.UI.UIFramework;
+using GamePlay.UI.UtilUI;
 using Newtonsoft.Json;
 using PokemonCore;
 using PokemonCore.Attack.Data;
@@ -13,6 +17,38 @@ using Types = PokemonCore.Types;
 
 namespace GamePlay
 {
+    public static class GameConst
+    {
+        
+        public static readonly string SaveFilePath = Application.persistentDataPath;
+        public static readonly string SaveFileName = "Save";
+        public static readonly int SaveMaxFileNum = 3;
+
+        public static Dictionary<Type, string> PrefabPath = new Dictionary<Type, string>()
+            {
+            //     [typeof(ChooseElement)] = "Prefabs/UI/ChooseElement",
+            //     [typeof(DialogChooser)] = "Prefabs/UI/DialogChooser",
+            //     [typeof(DialogSystem)] = "Prefabs/UI/DialogSystem",
+            //     [typeof(Move)] = "Prefabs/UI/Move",
+            //     [typeof(PokemonChooser)] = "Prefabs/UI/PokemonChooser",
+            //     [typeof(PokemonState)] = "Prefabs/UI/PokemonState",
+            //     
+            //     ["BagContentElement"]="Prefabs/UI/BagSystem/BagContentElement",
+            //     ["BagContents"]="Prefabs/UI/BagSystem/BagContents",
+            //     ["BagTable"]="Prefabs/UI/BagSystem/BagTable",
+            //     ["Table"]="Prefabs/UI/BagSystem/Table",
+            //     
+            //     ["PokemonChooserTable"]="Prefabs/UI/PokemonChooserTable/PokemonChooserTable",
+            //     ["PokemonStatButton"]="Prefabs/UI/PokemonChooserTable/PokemonStatButton",
+            [typeof(GlobalManager)]="Prefabs/Global",
+            [typeof(UIManager)]="Prefabs/UI/UIManager",
+            [typeof(MainMenuUI)] = "Prefabs/UI/MainMenu/MainMenu",
+            [typeof(StartMenuUI)] = "Prefabs/UI/MainMenu/StartMenu",
+            [typeof(SavePanelUI)]="Prefabs/UI/MainMenu/SavePanelUI",
+            [typeof(ConfirmPanel)]="Prefabs/UI/UtilUI/ConfirmPanel"
+    };
+    }
+    
     public static class GameResources
     {
         public static Dictionary<int, GameObject[]> Pokemons;
@@ -21,6 +57,11 @@ namespace GamePlay
         public static Dictionary<int, Sprite> TypeIcons;
         public static Dictionary<int, Color> TypeColors;
 
+        private static Dictionary<Type, GameObject> CachedPrefabs=new Dictionary<Type, GameObject>();
+
+        #region Initial Load
+
+        
 
         public static Dictionary<int, int[]> LoadExperienceTable()
         {
@@ -166,5 +207,29 @@ namespace GamePlay
                 BagIcons.Add((Item.Tag) Enum.Parse(typeof(Item.Tag), str), spr);
             }
         }
+        
+        #endregion
+
+        
+        public static GameObject SpawnPrefab(Type name)
+        {
+            if (!GameConst.PrefabPath.ContainsKey(name))
+            {
+                throw new Exception($"No Keys of {name} founded in prefab");
+            }
+            
+            if(!CachedPrefabs.ContainsKey(name))
+            {
+                var result = Resources.Load<GameObject>(GameConst.PrefabPath[name]);
+                CachedPrefabs.Add(name,result);
+                return result;
+            }
+            else
+            {
+                return CachedPrefabs[name];
+            }
+        }
+        
+        
     }
 }

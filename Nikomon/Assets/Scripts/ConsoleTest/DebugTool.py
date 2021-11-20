@@ -2,11 +2,7 @@ import sys
 import socket
 import _thread
 
-try:
-    args=sys.argv[1:]
-    port=int(args[0])
-except Exception as e:
-    print("Please input the port number")
+
 
 class LogType:
     Error="#0"
@@ -25,6 +21,11 @@ def receive_input():
         s.sendto(strs.encode('utf-8'),addr)
 
 if __name__=="__main__":
+    try:
+        args=sys.argv[1:]
+        port=int(args[0])
+    except Exception as e:
+        print("Please input the port number")
     s=socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
     s.bind(('',port))
     print("UDP Server Open, Port: "+args[0])

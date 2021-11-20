@@ -339,6 +339,68 @@ namespace PokemonCore.Combat
             }
         }
 
+        #region new move methods
+
+        
+
+        public void NextMove()
+        {
+            if (mBattleResults != BattleResults.Continue) return;
+            switch (mBattleActions)
+            {
+                case BattleActions.Choosing:
+                    mBattleActions = BattleActions.Moving;
+                    SortCombatMoves(CombatMoves);
+                    ReplacePokemons(SwitchPokemons);
+                    SwitchPokemons.Clear();
+                    // CombatMoves.Clear();
+                    NextMove();
+                    break;
+                case BattleActions.Moving:
+                    if (CombatMoves.Count == 0)
+                    {
+                        //本回合结束
+                        mBattleActions = BattleActions.Moved;
+                        OnThisTurnEnd?.Invoke();
+                        NextMove();
+                        return;
+                    }
+                    else
+                    {
+                        //这里由外部调用，进行下一个招式的播放
+                        mBattleActions = BattleActions.Moving;
+                    }
+                    SingleMoving(CombatMoves);
+                    Damaging(Damages);
+                    Damages.Clear();
+                    Damaged();
+                    Moved();
+                    if (mBattleResults != BattleResults.Continue) return;
+                    break;
+                case BattleActions.Moved:
+
+                    mBattleActions = BattleActions.Choosing;
+                    OnTurnBegin?.Invoke();
+                    Choosing();
+                    if(MyPokeWithNoInstructions.Count!=0)
+                        ShowPokeMove?.Invoke(MyPokeWithNoInstructions[0]);
+                    break;
+            }
+        }
+        
+        
+        void SingleMoving(List<CombatMove> cm)
+        {
+            if (cm.Count == 0) return;
+            var c = cm[0];
+            cm.RemoveAt(0);
+            c = c.Sponsor.OnMoving(c);
+            OnMove?.Invoke(c);
+            Damages.AddRange(GenerateDamages(c));
+        }
+
+
+        #endregion
 
         #region MoveAction
 
@@ -380,6 +442,8 @@ namespace PokemonCore.Combat
             return Damages;
         }
 
+        
+
         void Damaging(List<Damage> dmgs)
         {
             foreach (var d in dmgs.OrEmptyIfNull())
@@ -411,6 +475,9 @@ namespace PokemonCore.Combat
             // return cm;
         }
 
+        /// <summary>
+        /// 用来判断此turn结束后是否分出胜负
+        /// </summary>
         void Moved()
         {
             if (opponentTrainers.TrainerAllFaint())
@@ -425,7 +492,7 @@ namespace PokemonCore.Combat
             }
             else
             {
-                OnThisTurnEnd?.Invoke();
+                // OnThisTurnEnd?.Invoke();
             }
         }
 
@@ -524,11 +591,11 @@ namespace PokemonCore.Combat
                     return false;
                 }
             }
-            
-            
 
-            UnityEngine.Debug.Log($"Received instruction:{ins}");
+
             Instructions.Add(ins);
+            UnityEngine.Debug.Log($"Received instruction:{ins}, now has {Instructions.Count} instruction(s)");
+
 
             switch (ins.command)
             {
@@ -599,8 +666,11 @@ namespace PokemonCore.Combat
             
             if (Instructions.Count == Pokemons.Count)
             {
+                //如果所有指令都接收到则进入move
                 Instructions.Clear();
-                NextAction();
+                // UnityEngine.Debug.Log($"{Instructions.Count} instruction and {Pokemons.Count} pokemon, i can go next move");
+                // NextAction();
+                NextMove();
             }else if (MyPokeWithNoInstructions.Count != 0 && fromUser)
             {
                 ShowPokeMove?.Invoke(MyPokeWithNoInstructions[0]);
@@ -657,8 +727,9 @@ namespace PokemonCore.Combat
             {
                 cms.Sort((o1, o2) =>
                     {
-                        if (o1.Priority != o2.Priority) return o1.Priority - o2.Priority;
-                        else return o1.Sponsor.SPE - o2.Sponsor.SPE;
+                        //从大到小排列
+                        if (o1.Priority != o2.Priority) return o2.Priority - o1.Priority;
+                        else return o2.Sponsor.SPE - o1.Sponsor.SPE;
                     }
                 );
             }
