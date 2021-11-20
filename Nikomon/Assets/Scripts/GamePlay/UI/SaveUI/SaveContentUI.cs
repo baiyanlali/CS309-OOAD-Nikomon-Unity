@@ -27,6 +27,7 @@ public class SaveContentUI : TabContent
 
     public override void Init(params object[] args)
     {
+        base.Init(args);
         if (SaveSlots.Count == 0)
         {
             SaveSlots.AddRange(gameObject.GetComponentsInChildren<SaveSlotUI>());

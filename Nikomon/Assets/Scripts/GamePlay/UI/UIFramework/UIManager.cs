@@ -117,6 +117,7 @@ namespace GamePlay.UI.UIFramework
             {
                 GameObject tmp = GameResources.SpawnPrefab(typeof(T));
                 curUI = Instantiate(tmp,tmp.transform.position,tmp.transform.rotation).GetComponent<BaseUI>();
+                curUI.name = curUI.name.Replace("(Clone)", "");
                 tmp = null;
                 _uiDics.AddOrReplace(typeof(T),curUI);
             }

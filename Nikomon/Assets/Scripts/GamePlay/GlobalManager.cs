@@ -89,6 +89,7 @@ public class GlobalManager : MonoBehaviour
 
     private void Awake()
     {
+        print("Init");
         if (s_Instance != null && s_Instance != this)
         {
             Destroy(this.gameObject);
@@ -120,6 +121,7 @@ public class GlobalManager : MonoBehaviour
 
         // game.OnHaveSaveFile += () =>
         // {
+        //TODO:Delete it
         SceneManager.sceneLoaded += (o1, o2) =>
         {
             BagUI.Instance?.Init(Game.bag);

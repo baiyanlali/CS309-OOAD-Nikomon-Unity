@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using GamePlay.UI;
 using GamePlay.UI.MainMenuUI;
 using GamePlay.UI.UIFramework;
+using PokemonCore;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -69,7 +70,7 @@ public class MainMenuUI : BaseUI
 
     public void OpenBag()
     {
-        
+        UIManager.Instance.Show<BagPanelUI>(Game.bag);
     }
 
     public void OpenSetting()

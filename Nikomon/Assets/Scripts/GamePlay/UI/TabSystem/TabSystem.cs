@@ -18,11 +18,12 @@ public class TabSystem : MonoBehaviour
 
     private List<TabContent> tableContents;
 
-    private bool HaveEnterScope = false;
+    // private bool HaveEnterScope = false;
 
 
-    private void OnEnable()
+    private void Start()
     {
+        if (hasInit) return;
         TabElements = new List<TabElement>();
         TabElements.AddRange(GetComponentsInChildren<TabElement>());
         TableContent = TableContent ? TableContent : transform.Find("TableContent");
@@ -35,30 +36,19 @@ public class TabSystem : MonoBehaviour
                 tableContents.Add(TableContent.GetChild(i).GetComponent<TabContent>());
             }
         }
-        
-        foreach (var tabElement in TabElements.OrEmptyIfNull())
+
+        for (int i = 0; i < TabElements.Count; i++)
         {
-            tabElement.OnChoose = OnChoose;
-            tabElement.onClick.RemoveAllListeners();
-            
+            TabElements[i].OnChoose = OnChoose;
+            TabElements[i].onClick.RemoveAllListeners();
+            var i1 = i;
+            if(i1<tableContents.Count)
+                TabElements[i].onClick.AddListener(()=>tableContents[i1].OnEnter());
         }
         
-        
-
     }
 
-    private void Update()
-    {
-        if (NicomonInputSystem.Instance.ui_submit && !HaveEnterScope)
-        {
-            OnSubmit();
-        }
-
-        if (NicomonInputSystem.Instance.ui_cancel)
-        {
-            OnCancel();
-        }
-    }
+    private bool hasInit = false;
 
     /// <summary>
     /// 必须确保TableContent下没有子物体，命令才有效
@@ -66,16 +56,20 @@ public class TabSystem : MonoBehaviour
     /// <param name="tabElements"></param>
     public void Init(Dictionary<TabElement,GameObject> tabElements)
     {
+        hasInit = true;
         // print($"Tab system init {tabElements.Count}");
         for (int i = 0; i < TableContent.childCount; i++)
         {
             Destroy(TableContent.GetChild(i).gameObject);
         }
-
-        for (int i = 1; i < Tables.childCount-1; i++)
+        
+        for (int i = 0; i < Tables.childCount; i++)
         {
-            Destroy(Tables.GetChild(i).gameObject);
+            Transform obj = Tables.GetChild(i);
+            if(obj.GetComponent<TabElement>()!=null)
+                Destroy(obj.gameObject);
         }
+        
         
         tableContents = new List<TabContent>();
         TabElements = new List<TabElement>();
@@ -88,6 +82,9 @@ public class TabSystem : MonoBehaviour
             tab.Key.OnChoose = OnChoose;
             tableContents.Add(tab.Value.transform.GetComponent<TabContent>());
             tab.Value.transform.SetParent(TableContent,false);
+            
+            tab.Key.onClick.RemoveAllListeners();
+            tab.Key.onClick.AddListener(()=>tab.Value.transform.GetComponent<TabContent>().OnEnter());
         }
         
         OnChoose(TabElements[0]);
@@ -154,15 +151,15 @@ public class TabSystem : MonoBehaviour
             CurrentTableContent.OnExit();
         EventSystem.current.SetSelectedGameObject(TabElements[0].gameObject);
         OnChoose(TabElements[0]);
-        HaveEnterScope = false;
+        // HaveEnterScope = false;
     }
-
+    
     public void OnSubmit()
     {
         // print("Submit!");
         if (CurrentTableContent == null || CurrentTableContent.FirstSelectable == null) return;
         // EventSystem.current.SetSelectedGameObject(CurrentTableContent.FirstSelectedObject);
         CurrentTableContent.OnEnter();
-        HaveEnterScope = true;
+        // HaveEnterScope = true;
     }
 }

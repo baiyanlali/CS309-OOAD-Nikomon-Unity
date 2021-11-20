@@ -40,12 +40,20 @@ namespace GamePlay
             //     
             //     ["PokemonChooserTable"]="Prefabs/UI/PokemonChooserTable/PokemonChooserTable",
             //     ["PokemonStatButton"]="Prefabs/UI/PokemonChooserTable/PokemonStatButton",
+            
+            /*-----------------GameObject-------------------*/
             [typeof(GlobalManager)]="Prefabs/Global",
+            
+            
+            /*-----------------UI-------------------*/
             [typeof(UIManager)]="Prefabs/UI/UIManager",
             [typeof(MainMenuUI)] = "Prefabs/UI/MainMenu/MainMenu",
             [typeof(StartMenuUI)] = "Prefabs/UI/MainMenu/StartMenu",
             [typeof(SavePanelUI)]="Prefabs/UI/MainMenu/SavePanelUI",
-            [typeof(ConfirmPanel)]="Prefabs/UI/UtilUI/ConfirmPanel"
+            [typeof(ConfirmPanel)]="Prefabs/UI/UtilUI/ConfirmPanel",
+            //bag
+            [typeof(BagPanelUI)]="Prefabs/UI/BagSystem/BagTable",
+            [typeof(BagContentElementUI)]="Prefabs/UI/BagSystem/BagContentElement"
     };
     }
     

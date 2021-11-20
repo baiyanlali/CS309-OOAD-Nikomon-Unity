@@ -21,7 +21,8 @@ namespace GamePlay.UI.UIFramework
             GameObject,
             Component
         }
-        public virtual UILayer Layer { get; set; }
+
+        public virtual UILayer Layer { get; set; } =  UILayer.NormalUI;
         public virtual bool IsOnly { get; }
         public virtual bool IsBlockPlayerControl { get; set; }
         public virtual float DisplayTime { get; } = -1;//-1表示一直显示
@@ -61,6 +62,10 @@ namespace GamePlay.UI.UIFramework
                 yield return new WaitForSeconds(0.25f);
                 UIManager.Instance.Hide(this);
             }
+            else
+            {
+                UIManager.Instance.Hide(this);
+            }
         }
 
         public IEnumerator TimeToExit(float time)
@@ -76,18 +81,35 @@ namespace GamePlay.UI.UIFramework
             return ui.GET(obj,name,type);
             // return obj!=null ? obj : ui.transform.Find(name).GetComponent<T>();
         }
-        protected T GET<T>(T obj,string name,GET_TYPE type)where T:UnityEngine.Object
+        protected T GET<T>(T obj,string name,GET_TYPE type=GET_TYPE.Component)where T:UnityEngine.Object
         {
-            if (type == GET_TYPE.Component)
+            if (this.name.Equals(name))
             {
-                T result = obj!=null ? obj : transform.Find(name).GetComponent<T>();
-                return result;
+                if (type == GET_TYPE.Component)
+                {
+                    T result = obj!=null ? obj : this.GetComponent<T>();
+                    return result;
+                }
+                else if(type==GET_TYPE.GameObject)
+                {
+                    T result= obj != null ? obj : this.gameObject as T;
+                    return result;
+                }
             }
-            else if(type==GET_TYPE.GameObject)
+            else
             {
-                T result= obj != null ? obj : transform.Find(name).gameObject as T;
-                return result;
+                if (type == GET_TYPE.Component)
+                {
+                    T result = obj!=null ? obj : transform.Find(name).GetComponent<T>();
+                    return result;
+                }
+                else if(type==GET_TYPE.GameObject)
+                {
+                    T result= obj != null ? obj : transform.Find(name).gameObject as T;
+                    return result;
+                }
             }
+            
 
             return null;
         }
