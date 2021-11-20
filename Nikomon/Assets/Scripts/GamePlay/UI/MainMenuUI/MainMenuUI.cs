@@ -82,7 +82,8 @@ public class MainMenuUI : BaseUI
 
     public void OpenParty()
     {
-        UIManager.Instance.Show<PokemonChooserPanelUI>(Game.trainer,new string[]{},new Action<int>[]{});
+        Action<int> action = (o) => print(o);
+        UIManager.Instance.Show<PokemonChooserPanelUI>(Game.trainer,new string[]{"yes","no"},action);
     }
     public void OpenSave()
     {
