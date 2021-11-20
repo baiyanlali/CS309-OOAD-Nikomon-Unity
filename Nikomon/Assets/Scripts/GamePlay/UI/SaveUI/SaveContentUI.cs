@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class SaveContentUI : TabContent
 {
@@ -14,7 +15,13 @@ public class SaveContentUI : TabContent
         var datas = GlobalManager.Instance.LoadAllSaveData();
         for (int i = 0; i < datas.Length; i++)
         {
+            int index = i;
             SaveSlots[i].OnEnter(i,datas[i]);
+            SaveSlots[i].GetComponent<Button>().onClick.RemoveAllListeners();
+            SaveSlots[i].GetComponent<Button>().onClick.AddListener(() =>
+            {
+                GlobalManager.Instance.InitGameWithDataIndex(index);
+            });
         }
     }
 

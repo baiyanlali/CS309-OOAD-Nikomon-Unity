@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using GamePlay;
 using GamePlay.UI.UIFramework;
+using GamePlay.UI.UtilUI;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -62,6 +63,8 @@ public class SaveSlotUI : BaseUI
                 PokemonImages[i].gameObject.SetActive(true);
                 PokemonImages[i].sprite = GameResources.PokemonIcons[data.GameState.Trainer.party[i].ID];
             }
+            
+            
         }
         else
         {
@@ -74,6 +77,8 @@ public class SaveSlotUI : BaseUI
             {
                 PokemonImages[i].gameObject.SetActive(false);
             }
+            
+            
         }
     }
 

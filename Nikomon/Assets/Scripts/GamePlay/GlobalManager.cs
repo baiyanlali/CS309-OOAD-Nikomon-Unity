@@ -169,6 +169,34 @@ public class GlobalManager : MonoBehaviour
         return saves;
     }
 
+    /// <summary>
+    /// 这里只是完成Game的数据初始化
+    /// </summary>
+    /// <param name="index"></param>
+    public void InitGameWithDataIndex(int index)
+    {
+        var data = LoadSaveData(index);
+        InitGameWithData(data);
+    }
+
+    public void InitGameWithData(SaveData data)
+    {
+        Config = data.Settings;
+        game.LoadSaveFile(data.GameState);
+        
+        SceneManager.LoadScene(data.SceneLoaded);
+        location = data.PlayerPosition.ToVec3();
+        SceneManager.sceneLoaded +=  OnLoadedFromSave;
+    }
+
+    private Vector3 location;
+
+    public void OnLoadedFromSave(Scene s,LoadSceneMode m)
+    {
+        GameObject.FindWithTag("Player").transform.position = location;
+        SceneManager.sceneLoaded -=  OnLoadedFromSave;
+    }
+
     public SaveData LoadSaveData(int slot)
     {
         var result = SaveLoad.Load<SaveData>( string.Concat(GameConst.SaveFileName,slot),GameConst.SaveFilePath);
