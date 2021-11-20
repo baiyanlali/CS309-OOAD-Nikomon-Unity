@@ -11,6 +11,7 @@ public class MainMenuUI : BaseUI
     #region UIAsset
 
     public GameObject Bag;
+    public GameObject Resume;
     public GameObject Party;
     public GameObject Save;
     public GameObject Setting;
@@ -28,11 +29,14 @@ public class MainMenuUI : BaseUI
         Party = GET(Party ,nameof(Party ),GET_TYPE.GameObject);
         Save = GET(Save ,nameof(Save ),GET_TYPE.GameObject);
         Setting = GET(Setting ,nameof(Setting ),GET_TYPE.GameObject);
+        Resume = GET(Resume ,nameof(Resume ),GET_TYPE.GameObject);
     }
 
     public override void OnEnter(params object[] args)
     {
         base.OnEnter(args);
+        Resume.GetComponentInChildren<Button>().onClick.RemoveAllListeners();
+        Resume.GetComponentInChildren<Button>().onClick.AddListener(ResumeToGame);
         Bag.GetComponentInChildren<Button>().onClick.RemoveAllListeners();
         Bag.GetComponentInChildren<Button>().onClick.AddListener(OpenBag);
         Party.GetComponentInChildren<Button>().onClick.RemoveAllListeners();
@@ -58,7 +62,7 @@ public class MainMenuUI : BaseUI
         base.OnResume();
     }
 
-    public void Resume()
+    public void ResumeToGame()
     {
         UIManager.Instance.Hide(this);
     }

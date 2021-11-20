@@ -20,6 +20,7 @@ namespace PokemonCore.Utility
             if (!File.Exists(filePath)) return default(T);
             StreamReader sr = File.OpenText(filePath);
             string data = sr.ReadToEnd();
+            sr.Close();
             T obj = JsonConvert.DeserializeObject<T>(data);
             return obj;
         }
@@ -38,7 +39,7 @@ namespace PokemonCore.Utility
             else
                 filePath = dataFilePath + fileName;
             FileStream fs;
-            if (File.Exists(filePath))
+            if (!File.Exists(filePath))
             {
                 fs =File.Create(filePath);
             }

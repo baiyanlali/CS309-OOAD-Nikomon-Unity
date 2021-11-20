@@ -126,7 +126,8 @@ namespace GamePlay.UI.UIFramework
             
             curUI.transform.SetParent(GetUIParent(curUI.Layer),false);
             
-            curUI.Init();
+            curUI.transform.SetAsLastSibling();
+            // curUI.Init();
             
             curUI.OnEnter(args);
 
@@ -195,6 +196,8 @@ namespace GamePlay.UI.UIFramework
                 if (node == until)
                 {
                     node.OnExit();
+                    if(stack.Count>0)
+                        stack.Peek().OnResume();
                     return;
                 }
 

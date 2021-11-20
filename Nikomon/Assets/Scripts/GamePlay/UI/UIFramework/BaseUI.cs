@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
@@ -27,7 +28,8 @@ namespace GamePlay.UI.UIFramework
 
         private bool CanPlayerControlBefore;
 
-        private List<Selectable> allUIAsset = new List<Selectable>();
+
+        private List<CancelTrigger> _cancelTriggers = new List<CancelTrigger>();
 
 
         /// <summary>
@@ -39,26 +41,35 @@ namespace GamePlay.UI.UIFramework
         public virtual void Init(params object[] args)
         {
             if(ExitBtn!=null)
-                ExitBtn.onClick.AddListener(OnExit);
+            {
+                ExitBtn.onClick.RemoveAllListeners();
+                ExitBtn.onClick.AddListener( ()=>UIManager.Instance.Hide(this));
+            }
+            
+            _cancelTriggers.AddRange(GetComponentsInChildren<CancelTrigger>());
+            foreach (var cancelTrigger in _cancelTriggers)
+            {
+                cancelTrigger.cancel = (o)=>StartCoroutine(DoExit());
+            }
         }
 
-        public virtual void DoExit(InputAction.CallbackContext context)
+        public IEnumerator DoExit()
         {
             if (ExitBtn != null)
             {
                 EventSystem.current.SetSelectedGameObject(ExitBtn.gameObject);
-                Invoke(nameof(OnExit),0.25f);
+                yield return new WaitForSeconds(0.25f);
+                UIManager.Instance.Hide(this);
             }
+        }
+
+        public IEnumerator TimeToExit(float time)
+        {
+            yield return new WaitForSeconds(time);
+            UIManager.Instance.Hide(this);
         }
         
-
-        public virtual void SetInteractable(bool interactable)
-        {
-            for (int i = 0; i < allUIAsset.Count; i++)
-            {
-                allUIAsset[i].interactable = interactable;
-            }
-        }
+        
 
         protected T GET<T>(BaseUI ui, T obj,string name,GET_TYPE type)where T:UnityEngine.Object
         {
@@ -70,11 +81,6 @@ namespace GamePlay.UI.UIFramework
             if (type == GET_TYPE.Component)
             {
                 T result = obj!=null ? obj : transform.Find(name).GetComponent<T>();
-                if (result is Selectable)
-                {
-                    allUIAsset.Add(result as Selectable);
-                }
-
                 return result;
             }
             else if(type==GET_TYPE.GameObject)
@@ -96,25 +102,27 @@ namespace GamePlay.UI.UIFramework
             CanPlayerControlBefore = GlobalManager.Instance.CanPlayerControlled;
             if (IsBlockPlayerControl) GlobalManager.Instance.CanPlayerControlled = false;
 
-            SetInteractable(true);
 
             if (FirstSelectable != null)
             {
                 EventSystem.current.SetSelectedGameObject(FirstSelectable.gameObject);
             }
 
-            NicomonInputSystem.Instance.NicomonInput.UI.Cancel.started += DoExit;
-
+            if (DisplayTime > 0)
+            {
+                StartCoroutine(TimeToExit(DisplayTime));
+            }
+            
         }
 
         public virtual void OnExit()
         {
+            // print("Onexit");
             if(this is IUIAnimator)(this as IUIAnimator).OnExitAnimator();
             else gameObject.SetActive(false);
 
             GlobalManager.Instance.CanPlayerControlled = CanPlayerControlBefore;
             
-            NicomonInputSystem.Instance.NicomonInput.UI.Cancel.started -= DoExit;
         }
 
         private GameObject currentSelectObj;
@@ -126,8 +134,6 @@ namespace GamePlay.UI.UIFramework
         {
             currentSelectObj = EventSystem.current.currentSelectedGameObject;
             
-            NicomonInputSystem.Instance.NicomonInput.UI.Cancel.started -= DoExit;
-            SetInteractable(false);
         }
 
         /// <summary>
@@ -135,8 +141,6 @@ namespace GamePlay.UI.UIFramework
         /// </summary>
         public virtual void OnResume()
         {
-            SetInteractable(true);
-            NicomonInputSystem.Instance.NicomonInput.UI.Cancel.started += DoExit;
             if(currentSelectObj!=null)
                 EventSystem.current.SetSelectedGameObject(currentSelectObj);
         }

@@ -29,6 +29,7 @@ namespace GamePlay.UI.MainMenuUI
         private int saveIndex;
         public override void Init(params object[] args)
         {
+            base.Init();
             if (SaveSlots.Count == 0)
             {
                 SaveSlots.AddRange(gameObject.GetComponentsInChildren<SaveSlotUI>());
@@ -40,24 +41,31 @@ namespace GamePlay.UI.MainMenuUI
                 SaveSlots[i].GetComponent<Button>().onClick.RemoveAllListeners();
                 SaveSlots[i].GetComponent<Button>().onClick.AddListener(() =>
                 {
+                    Action<bool> act = ConfirmSave;
                     if (SaveSlots[index].HasFile)
                     {
                         saveIndex = index;
-                        Action<bool> act = ConfirmSave;
                         UIManager.Instance.Show<ConfirmPanel>("SavePanelUI.HasFile",act);
                     }
                     else
                     {
-                        GlobalManager.Instance.SaveSaveData(index);
-                        UIManager.Instance.Show<ConfirmPanel>("SavePanelUI.SaveSuccessfully");
+                        saveIndex = index;
+                        // GlobalManager.Instance.SaveSaveData(index);
+                        UIManager.Instance.Show<ConfirmPanel>("SavePanelUI.SureToSave",act);
                     }
                 });
             }
         }
 
+        public override void OnPause()
+        {
+            base.OnPause();
+        }
+
         public override void OnResume()
         {
             base.OnResume();
+            print("save panel resume");
             var datas = GlobalManager.Instance.LoadAllSaveData();
             for (int i = 0; i < datas.Length; i++)
             {

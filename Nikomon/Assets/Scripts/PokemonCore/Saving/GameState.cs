@@ -23,14 +23,14 @@ namespace PokemonCore.Saving
             float version,
             DateTime timeModified,
             Trainer trainer,
-            PC pc,
+            PC playerPC,
             SeriTrainerBag trainerBag
             )
         {
             this.VERSION = version;
             this.TimeModified = timeModified;
             Trainer = trainer;
-            PlayerPC = pc;
+            PlayerPC = playerPC;
             TrainerBag = trainerBag;
         }
 

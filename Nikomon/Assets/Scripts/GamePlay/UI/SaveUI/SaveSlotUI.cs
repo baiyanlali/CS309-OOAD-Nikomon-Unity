@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using GamePlay;
 using GamePlay.UI.UIFramework;
 using UnityEngine;
@@ -17,7 +18,7 @@ public class SaveSlotUI : BaseUI
 
     public bool HasFile { get; private set; }
 
-    private Image[] PokemonImages;
+    private List<Image> PokemonImages;
 
     public override void Init(params object[] args)
     {
@@ -27,7 +28,9 @@ public class SaveSlotUI : BaseUI
         Money = GET(Money,nameof(Money),GET_TYPE.Component);
         PokemonParty = GET(PokemonParty,nameof(PokemonParty),GET_TYPE.GameObject);
 
-        PokemonImages = PokemonParty.GetComponentsInChildren<Image>();
+        PokemonImages = PokemonParty.GetComponentsInChildren<Image>().ToList();
+        PokemonImages.RemoveAt(0);
+        
     }
 
     /// <summary>
@@ -48,12 +51,12 @@ public class SaveSlotUI : BaseUI
             Name.text = data.GameState.Trainer.name;
             Money.text = "Money:" + data.GameState.Trainer.money;
 
-            for (int i = 0; i < PokemonImages.Length; i++)
+            for (int i = 0; i < PokemonImages.Count; i++)
             {
                 PokemonImages[i].gameObject.SetActive(false);
             }
             //TODO:目前没法在理论上支持更高的Pokemon party数量
-            for (int i = 0; i < Math.Min(PokemonImages.Length,data.GameState.Trainer.party.Length); i++)
+            for (int i = 0; i < Math.Min(PokemonImages.Count,data.GameState.Trainer.party.Length); i++)
             {
                 if (data.GameState.Trainer.party[i] == null) break;
                 PokemonImages[i].gameObject.SetActive(true);
@@ -67,7 +70,7 @@ public class SaveSlotUI : BaseUI
             LastTimeSaved.text = "No File Here";
             Name.text = "";
             Money.text = "";
-            for (int i = 0; i < PokemonImages.Length; i++)
+            for (int i = 0; i < PokemonImages.Count; i++)
             {
                 PokemonImages[i].gameObject.SetActive(false);
             }
