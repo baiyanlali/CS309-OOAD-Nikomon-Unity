@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using GamePlay.Messages;
+using Newtonsoft.Json;
 using UnityEngine;
 
 namespace GamePlay
@@ -6,6 +7,8 @@ namespace GamePlay
     public class ConfigSettings
     {
         public bool UseVirtualControl;
+
+        public Languages Languages;
 
         [JsonConstructor]
         public ConfigSettings(bool useVirtualControl)

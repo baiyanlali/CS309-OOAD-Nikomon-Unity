@@ -4,6 +4,7 @@ effectTemplate = {
     Round = 5,
     EffectLastType = CS.PokemonCore.Combat.Interface.EffectLastType.ALWAYS,
     EffectChance = 100,
+    isUsed=false,
     
     BeFaint = function(combatPoke)    end,
     BeSwitched = function(combatPoke) end,
@@ -26,11 +27,11 @@ effect0={
     EffectChance=100,
 
     OnMoving = function(combatMove)
-        print('Use effect 0')
+        --print('Use effect 0')
         --if combatMove.type.ID == 
         if combatMove.types.ID == combatMove.Sponsor.Type1 or combatMove.types.ID == combatMove.Sponsor.Type2  or combatMove.types.ID == combatMove.Sponsor.Type3  then
             combatMove.power=math.floor(combatMove.power*1.5)
-            print('Pokemon:'..combatMove.Sponsor.pokemon.Name..' powers up!')
+            --print('Pokemon:'..combatMove.Sponsor.pokemon.Name..' powers up!')
         end
         return combatMove
     end,
@@ -47,7 +48,7 @@ effect1={
     OnMoving=function(combatMove) 
         rand = CS.PokemonCore.Game.Instance.Random.Next(101)
         if rand>EffectChance then
-            combatMove.Target={combatMove.Sponsor.combatID}
+            combatMove.Target=combatMove.Sponsor.combatID
         end
     end
 }
@@ -57,7 +58,7 @@ effect2={
     Round=3,
     EffectLastType=CS.PokemonCore.Combat.Interface.EffectLastType.ROUND,
     EffectChance=100,
-	EffectType=SkipOneTurn, 	//is that enough ???
+	EffectType=SkipOneTurn, 	--is that enough ???
 	EffectActTime=Moving,
     
     OnChoosing=function(combatMove) 
@@ -72,7 +73,7 @@ effect3={
     EffectChance=100,
     
     OnMoving=function(combatMove) 
-        //damage to sponsor with 1/3 of sponsor's Hp
+        --damage to sponsor with 1/3 of sponsor's Hp
     end
 }
 

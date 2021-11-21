@@ -68,10 +68,13 @@ public class BagUI : MonoBehaviour
             TabElement ele = tab.GetComponent<TabElement>();
             elements.Add(ele,contents);
             var items = bag[(Item.Tag) Enum.Parse(typeof(Item.Tag), strs[i])];
+            var tabContents = contents.GetComponent<TabContent>();
             foreach (var item in items.OrEmptyIfNull())
             {
                 if (item == null) break;
                 var o = Instantiate(Resources.Load<GameObject>(path + "BagContentElement"),contents.transform);
+                if(tabContents.FirstSelectable==null)
+                    tabContents.FirstSelectable = o;
                 o.GetComponent<BagContentElementUI>().Init(item,bag[item]);
             }
         }

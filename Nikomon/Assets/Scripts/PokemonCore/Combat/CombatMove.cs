@@ -27,6 +27,8 @@ namespace PokemonCore.Combat
         public int Priority { get; set; }
         public CombatPokemon Sponsor { get; set; }
         public List<CombatPokemon> Targets { get; set; }
+        
+        public Category Category { get; set; }
 
 
         public CombatMove(Move move, Battle battle, CombatPokemon sponsor, List<CombatPokemon> targets)
@@ -43,12 +45,13 @@ namespace PokemonCore.Combat
             this.Priority = move._baseData.Priority;
             this.power = move._baseData.Power;
             battle.OnThisTurnEnd += () => { move.PP = pp; };
+            this.Category = move._baseData.Category;
         }
 
         public override string ToString()
         {
             return
-                $"{move._baseData.Name}:\n" +
+                $"{move._baseData.innerName}:\n" +
                 $"sponsor:{Sponsor.Name}\n" +
                 $"target:{(from t in Targets select t.Name).ToList().ConverToString()}\n" +
                 $"power:{power}\n";

@@ -20,18 +20,21 @@ namespace PokemonCore.Network
     public static class NetworkLogic
     {
         public static float TimeToFlush = 5;
-        public static Dictionary<IPAddress,NetworkBroadcastData> usersBroadcast=new Dictionary<IPAddress, NetworkBroadcastData>();
-        
-        public static void PairOnBattle(int trainersNum=2,int pokemonsPerTrainer=1,string password="")
+
+        public static Dictionary<IPAddress, NetworkBroadcastData> usersBroadcast =
+            new Dictionary<IPAddress, NetworkBroadcastData>();
+
+        public static void PairOnBattle(int trainersNum = 2, int pokemonsPerTrainer = 1, string password = "")
         {
             _password = password;
             _broadcastType = BroadcastType.SearchForBattle;
             _trainersNum = trainersNum;
-            _pokemonsPerTrainer=pokemonsPerTrainer;
+            _pokemonsPerTrainer = pokemonsPerTrainer;
             _randomNum = Game.Random.Next();
             NetworkLocal.StartToDetect();
             NetworkLocal.OnDetectBroadcast = OnDetectedPair;
-            NetworkLocal.StartToBroadCast(new NetworkBroadcastData(BroadcastType.SearchForBattle,_randomNum,password,Game.trainer,trainersNum,pokemonsPerTrainer));
+            NetworkLocal.StartToBroadCast(new NetworkBroadcastData(BroadcastType.SearchForBattle, _randomNum, password,
+                Game.trainer, trainersNum, pokemonsPerTrainer));
         }
 
         private static string _password;
@@ -48,6 +51,7 @@ namespace PokemonCore.Network
         }
 
         private static List<string> _pairedAddr;
+
         /// <summary>
         /// 对于初次收到
         /// </summary>
@@ -61,15 +65,15 @@ namespace PokemonCore.Network
 
             NetworkBroadcastData data = JsonConvert.DeserializeObject<NetworkBroadcastData>(password);
             if (data == null) throw new Exception("Unknown data from online");
-            if (data.password != _password && data.broadCastType!=_broadcastType) return;
-            
+            if (data.password != _password && data.broadCastType != _broadcastType) return;
+
             if (usersBroadcast.ContainsKey(result.RemoteEndPoint.Address))
                 usersBroadcast[result.RemoteEndPoint.Address] = data;
             else
-                usersBroadcast.Add(result.RemoteEndPoint.Address,data);
+                usersBroadcast.Add(result.RemoteEndPoint.Address, data);
 
             //TODO: 加入对方取消链接时的处理情况
-            if (usersBroadcast.Count == _trainersNum-1)
+            if (usersBroadcast.Count == _trainersNum - 1)
             {
                 UnityEngine.Debug.Log("Have matched, start battle");
                 int maxRandom = (from d in usersBroadcast.Values select d.randomNum).Max();
@@ -81,7 +85,6 @@ namespace PokemonCore.Network
                     isHost = true;
                     BecomeHost(_randomNum);
                     UnityEngine.Debug.Log("Become Host");
-
                 }
                 else
                 {
@@ -90,10 +93,10 @@ namespace PokemonCore.Network
                     var arr = (from d in usersBroadcast where d.Value.randomNum == maxRandom select d.Key).ToArray();
                     if (arr.Length != 1) throw new Exception("Error occured");
                     isHost = false;
-                    BecomeClient(arr[0],maxRandom);
+                    BecomeClient(arr[0], maxRandom);
                     UnityEngine.Debug.Log("Become Client");
-
                 }
+
                 NetworkLocal.StopDetect();
 
                 new Timer(new TimerCallback((o) =>
@@ -101,15 +104,15 @@ namespace PokemonCore.Network
                         NetworkLocal.StopBroadCast();
                         UnityEngine.Debug.Log("Stop broadcast");
                     }),
-                    null,1000,Timeout.Infinite);
-                
+                    null, 1000, Timeout.Infinite);
+
                 StartBattle(isHost);
             }
-            
         }
 
 
-        public static Action<List<Trainer>,List<Trainer>,List<Trainer>,List<Trainer>,bool,int> OnStartBattle;
+        public static Action<List<Trainer>, List<Trainer>, List<Trainer>, List<Trainer>, bool, int> OnStartBattle;
+
         static void StartBattle(bool isHost)
         {
             var trainers = (from d in usersBroadcast select d.Value).ToList();
@@ -117,31 +120,34 @@ namespace PokemonCore.Network
 
             List<Trainer> allies = new List<Trainer>();
             List<Trainer> oppos = new List<Trainer>();
-            
+
 
             if (_randomNum < trainers[trainers.Count / 2].randomNum)
             {
-                for (int i = 0; i < trainers.Count/2; i++)
+                for (int i = 0; i < trainers.Count / 2; i++)
                 {
                     allies.Add(trainers[i].Trainer);
                 }
-                for (int i = trainers.Count/2; i < trainers.Count; i++)
+
+                for (int i = trainers.Count / 2; i < trainers.Count; i++)
                 {
                     oppos.Add(trainers[i].Trainer);
                 }
             }
             else
             {
-                for (int i = 0; i <= trainers.Count/2; i++)
+                for (int i = 0; i <= trainers.Count / 2; i++)
                 {
                     oppos.Add(trainers[i].Trainer);
                 }
-                for (int i = trainers.Count/2 + 1; i < trainers.Count; i++)
+
+                for (int i = trainers.Count / 2 + 1; i < trainers.Count; i++)
                 {
                     allies.Add(trainers[i].Trainer);
                 }
             }
-            OnStartBattle?.Invoke(allies,oppos,null,allies.Union(oppos).ToList(),isHost,_pokemonsPerTrainer);
+
+            OnStartBattle?.Invoke(allies, oppos, null, allies.Union(oppos).ToList(), isHost, _pokemonsPerTrainer);
             // Game.Instance.StartBattle(allies,oppos,null,allies.Union(oppos).ToList(),isHost,_pokemonsPerTrainer);
             if (isHost)
             {
@@ -152,23 +158,23 @@ namespace PokemonCore.Network
                 Battle.Instance.OnUserChooseInstruction += ClientSendInstruction;
             }
         }
-        
+
         static void FlushPairs()
         {
-            Thread.Sleep((int)(TimeToFlush*1000));
+            Thread.Sleep((int) (TimeToFlush * 1000));
             _pairedAddr.Clear();
         }
-        
+
 
         static void FlushUsers(object ipAddress)
         {
-            IPAddress address=ipAddress as IPAddress;
-            Thread.Sleep((int)(TimeToFlush*1000));
-            if(address!=null)
+            IPAddress address = ipAddress as IPAddress;
+            Thread.Sleep((int) (TimeToFlush * 1000));
+            if (address != null)
                 usersBroadcast.Remove(address);
         }
-        
-        
+
+
         /// <summary>
         /// 用来解决一次性传了两或多个个Json字符串，编程：{}{}的情况
         /// </summary>
@@ -176,37 +182,53 @@ namespace PokemonCore.Network
         // TODO
         private static List<string> ParseJson(string str)
         {
+            str = string.Concat(str, StringBuffer);
             // TODO:解决一次性传两个json的问题
-             var strs = str.Split(',').ToList();
-             strs.RemoveAt(strs.Count-1);
-             UnityEngine.Debug.Log("Parse Json: "+strs.ConverToString());
-             return strs;
+            var strs = str.Split('\n').ToArray();
+            List<string> result = new List<string>();
+            for (int i = 0; i < strs.Length; i++)
+            {
+                //一般来说最后一个元素要么是空要么是没有完全接收的包
+                if (i == str.Length - 1)
+                {
+                    StringBuffer = strs[i];
+                }
+                else
+                {
+                    result.Add(strs[i]);
+                }
+            }
+
+            // strs.RemoveAt(strs.Count - 1);
+            UnityEngine.Debug.Log("Parse Json: " + result.ConverToString());
+            return result;
         }
-        
+
+        private static string StringBuffer = "";
+
         /// <summary>
         /// 玩家无法通过游戏界面选择自己是Host还是Client,所有的配对都通过UDP广播来完成，然后由第一个UDP广播的作为Host
         /// </summary>
         static void BecomeHost(int port)
         {
-            NetworkLocal.OnServerReceiveMessage = (data,client) =>
+            NetworkLocal.OnServerReceiveMessage = (data, client) =>
             {
                 string str = Encoding.UTF8.GetString(data);
-                NetworkLocal.SendToClients(str,client);
+                NetworkLocal.SendToClients(str, client);
                 UnityEngine.Debug.Log("Server Receive Message");
                 foreach (var s in ParseJson(str))
                 {
                     UnityEngine.Debug.Log(s);
                     Instruction ins = JsonConvert.DeserializeObject<Instruction>(s);
-                    Battle.Instance.ReceiveInstruction(ins,false);
+                    Battle.Instance.ReceiveInstruction(ins, false);
                 }
             };
-            
-            NetworkLocal.BuildHost(_trainersNum,port);
+
+            NetworkLocal.BuildHost(_trainersNum, port);
         }
 
-        
 
-        static void BecomeClient(IPAddress ipAddress,int port=-1)
+        static void BecomeClient(IPAddress ipAddress, int port = -1)
         {
             NetworkLocal.OnClientReceiveMessage = (data) =>
             {
@@ -217,37 +239,32 @@ namespace PokemonCore.Network
                     if (string.IsNullOrWhiteSpace(s)) continue;
                     UnityEngine.Debug.Log(s);
                     Instruction ins = JsonConvert.DeserializeObject<Instruction>(s);
-                    Battle.Instance.ReceiveInstruction(ins,false);
+                    Battle.Instance.ReceiveInstruction(ins, false);
                 }
             };
-            NetworkLocal.StartClient(ipAddress,port);
+            NetworkLocal.StartClient(ipAddress, port);
             // new Thread().Start(ipAddress);
         }
+
         static void ServerSendInstruction(Instruction instruction)
         {
-            new Thread((o1)=>{
-                string str = JsonConvert.SerializeObject(instruction)+",";
+            new Thread((o1) =>
+            {
+                string str = JsonConvert.SerializeObject(instruction) + "\n";
                 UnityEngine.Debug.Log($"Server send Instruction :{str}");
                 NetworkLocal.SendToClients(str);
             }).Start();
-            
         }
+
         //TODO：不知道用线程能不能解决卡顿的问题
         static void ClientSendInstruction(Instruction instruction)
         {
             new Thread(() =>
             {
-                string str = JsonConvert.SerializeObject(instruction)+",";
+                string str = JsonConvert.SerializeObject(instruction) + "\n";
                 UnityEngine.Debug.Log($"Client send Instruction :{str}");
                 NetworkLocal.SendToServer(str);
             }).Start();
-            
         }
-        
-
-        
-        
-        
-        
     }
 }

@@ -14,24 +14,35 @@ namespace PokemonCore.Attack.Data
     [Serializable]
     public class MoveData
     {
-        public int MoveID { get;  set; }
-        public int? Accuracy { get;  set; }
-        public int? Power { get;  set; }
-        public byte PP { get;  set; }
-        public int Priority { get;  set; }
-        
-        public int CriticalLevel { get;  set; }
-        public Targets Target { get;  set; }
-        public int Type { get;  set; }
-        public int EffectID { get;  set; }
-        public int? EffectChance { get;  set; }
-        
-        public string innerName { get;  set; }
 
-        public Category Category { get; set; }
-        public string Name => this.ToString(TextScripts.Name);
+        [Serializable]
+        public class EffectInfo
+        {
+            public int EffectID;
+            public int EffectChance;
+            public Targets TargetType;
+        }
 
-        public string Description => this.ToString(TextScripts.Description);
+        public int MoveID;
+        public int? Accuracy;
+        public int? Power;
+        public byte PP ;
+        public int Priority ;
+        
+        public int CriticalLevel ;
+        public Targets Target ;
+        public int Type ;
+        
+        // public int EffectID ;
+        // public int? EffectChance ;
+
+        public EffectInfo[] EffectInfos;
+        
+        public string innerName ;
+
+        public Category Category;
+
+        public bool MustHit;//必定命中
 
         public MoveData(
             int moveID = 0,
@@ -42,9 +53,11 @@ namespace PokemonCore.Attack.Data
             int priority = 0,
             Targets target = Targets.SELECTED_OPPONENT_POKEMON,
             int type = 0,
-            int effectID = 0,
-            int? effectChance = 0,
-            int criticalLevel=0
+            // int effectID = 0,
+            // int? effectChance = 0,
+            EffectInfo[] effectInfos=null,
+            int criticalLevel=0,
+            bool mustHit=false
         )
         {
             this.MoveID = moveID;
@@ -55,10 +68,52 @@ namespace PokemonCore.Attack.Data
             this.Priority = priority;
             this.Target = target;
             this.Type = type;
-            this.EffectID = effectID;
-            this.EffectChance = effectChance;
+            // this.EffectID = effectID;
+            // this.EffectChance = effectChance;
+            this.EffectInfos = effectInfos;
             this.CriticalLevel = criticalLevel;
+            this.MustHit = mustHit;
         }
+        
+        // public MoveData(
+        //     int moveID = 0,
+        //     string innerName="",
+        //     int? accuracy = 100,
+        //     int? power = 0,
+        //     byte pp = 0,
+        //     int priority = 0,
+        //     Targets target = Targets.SELECTED_OPPONENT_POKEMON,
+        //     int type = 0,
+        //     int effectID = 0,
+        //     int? effectChance = 0,
+        //     // EffectInfo[] effectInfos=null,
+        //     int criticalLevel=0
+        //     // bool mustHit=false
+        // )
+        // {
+        //     this.MoveID = moveID;
+        //     this.innerName = innerName;
+        //     this.Accuracy = accuracy;
+        //     this.Power = power;
+        //     this.PP = pp;
+        //     this.Priority = priority;
+        //     this.Target = target;
+        //     this.Type = type;
+        //     this.EffectInfos = new[]
+        //     {
+        //         new EffectInfo()
+        //         {
+        //             EffectChance = effectChance.HasValue ? effectChance.Value : -1,
+        //             EffectID = effectID,
+        //             TargetType = Targets.USER
+        //         }
+        //     };
+        //     // this.EffectID = effectID;
+        //     // this.EffectChance = effectChance;
+        //     // this.EffectInfos = effectInfos;
+        //     this.CriticalLevel = criticalLevel;
+        //     this.MustHit = false;
+        // }
 
         public override string ToString()
         {
@@ -68,11 +123,6 @@ namespace PokemonCore.Attack.Data
                    $"Power: {Power}\n" +
                    $"Accuracy: {Accuracy}";
         }
-
-        //TODO:FIX TO STRING FUNCTION
-        public string ToString(TextScripts ts)
-        {
-            return "";
-        }
+        
     }
 }

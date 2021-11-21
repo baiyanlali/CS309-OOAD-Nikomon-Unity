@@ -38,15 +38,15 @@ namespace PokemonCore.Combat
             string poke_target = dmg.target.Name;
             string move_name = dmg.combatMove.move._baseData.innerName;
             string dis = "";
-            if (dmg.damageMultiplyingPower > 1)
+            if (dmg.typeRate > 1)
             {
                 dis = "拔群";
             }
-            else if (dmg.damageMultiplyingPower == 0)
+            else if (dmg.typeRate == 0)
             {
                 dis = "没有";
             }
-            else if (dmg.damageMultiplyingPower < 1)
+            else if (dmg.typeRate < 1)
             {
                 dis = "不好";
             }

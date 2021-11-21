@@ -1,4 +1,5 @@
 ﻿using System;
+using GamePlay.Utilities;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -11,14 +12,19 @@ namespace GamePlay.StateMachineBehaviours
             int layerIndex)
         {
             pokemonIndentity=pokemonIndentity? pokemonIndentity: animator.gameObject.GetComponentInParent<PokemonIndentity>();
-            pokemonIndentity?.OnAnimStart();
+            // Debug.Log($">>>>>{pokemonIndentity.name}  enter:{name} {animator.GetAnimateName(stateInfo)}");
+            
+            if(pokemonIndentity!=null)
+                pokemonIndentity.OnAnimStart();
         }
 
         public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo,
             int layerIndex)
         {
             pokemonIndentity=pokemonIndentity? pokemonIndentity: animator.gameObject.GetComponentInParent<PokemonIndentity>();
-            pokemonIndentity?.OnAnimEnd();
+            // Debug.Log($"<<<<<{pokemonIndentity.name} exit:{name} {animator.GetAnimateName(stateInfo)}");
+            if(pokemonIndentity!=null)
+                pokemonIndentity.OnAnimEnd();
         }
 
         public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo,

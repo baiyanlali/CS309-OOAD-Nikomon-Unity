@@ -10,10 +10,10 @@ GameObject:
   m_Component:
   - component: {fileID: 445830265707907468}
   - component: {fileID: 4721960391332826035}
-  - component: {fileID: 5410509405342747256}
   - component: {fileID: 5775442410754317800}
   - component: {fileID: 2548555524736453542}
   - component: {fileID: 2397719735864887265}
+  - component: {fileID: 1652703983442567525}
   m_Layer: 5
   m_Name: PokemonChooserTable
   m_TagString: Untagged
@@ -38,7 +38,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 269.8061, y: 0}
-  m_SizeDelta: {x: 539.6122, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &4721960391332826035
 MonoBehaviour:
@@ -66,18 +66,6 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
---- !u!114 &5410509405342747256
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6369241107267439381}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f7fea0a09a3caae42b359fb541bf9713, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!222 &5775442410754317800
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -130,3 +118,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_HorizontalFit: 2
   m_VerticalFit: 2
+--- !u!114 &1652703983442567525
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6369241107267439381}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 46b648bf86467ef418a1a925ba0d1de6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  FirstSelectable: {fileID: 0}
+  ExitBtn: {fileID: 0}
