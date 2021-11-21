@@ -14,11 +14,12 @@ public class LoadSceneManager : MonoBehaviour
     {
         StartCoroutine(LoadLeaver(nextSceneID));
         
+        
     }
     
     IEnumerator LoadLeaver(int index)
     {
-        yield return new WaitForSeconds(100);
+        //yield return new WaitForSeconds(100);
         AsyncOperation operation = SceneManager.LoadSceneAsync(index);                                                                                               
         //operation.allowSceneActivation = false;
         while (!operation.isDone)

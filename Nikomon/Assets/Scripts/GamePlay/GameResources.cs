@@ -67,6 +67,9 @@ namespace GamePlay
             
             //DialogueChooser
             [typeof(DialogueChooserPanel)]="Prefabs/UI/DialogChooser",
+
+            //DebugTool
+            [typeof(DebugPanel)]="Prefabs/UI/DebugTool",
     };
     }
     
