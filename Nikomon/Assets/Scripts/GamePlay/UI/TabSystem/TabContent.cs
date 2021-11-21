@@ -1,11 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
+using GamePlay.UI;
 using GamePlay.UI.UIFramework;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using Button = UnityEngine.UI.Button;
 
 public class TabContent : BaseUI
 {
+
     public override void Init(params object[] args)
     {
         var cancelTrigger = gameObject.GetComponentsInChildren<CancelTrigger>();

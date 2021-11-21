@@ -24,6 +24,7 @@ public class TabSystem : MonoBehaviour
     private void Start()
     {
         if (hasInit) return;
+        hasInit = true;
         TabElements = new List<TabElement>();
         TabElements.AddRange(GetComponentsInChildren<TabElement>());
         TableContent = TableContent ? TableContent : transform.Find("TableContent");

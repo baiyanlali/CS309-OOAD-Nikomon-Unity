@@ -26,7 +26,8 @@ public class UIFrameworkTest : MonoBehaviour
     {
         _input.Player.Menu.started += (o) =>
         {
-            // UIManager.Instance.Show<BattleUIPanel>();
+            UIManager.Instance.Show<BattleStatusPanel>();
+            UIManager.Instance.Show<MovePanel>();
         };
     }
     

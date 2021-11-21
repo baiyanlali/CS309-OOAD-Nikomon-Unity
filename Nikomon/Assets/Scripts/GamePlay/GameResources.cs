@@ -15,7 +15,6 @@ using PokemonCore.Inventory;
 using PokemonCore.Monster.Data;
 using PokemonCore.Utility;
 using UnityEngine;
-using UnityEngine.UI;
 using Types = PokemonCore.Types;
 
 namespace GamePlay
@@ -31,7 +30,7 @@ namespace GamePlay
             //BagSystem
             ["Table"] = "Prefabs/UI/BagSystem/Table",
             ["BagContents"] = "Prefabs/UI/BagSystem/BagContents",
-            ["ChooseElement"] = "Prefabs/UI/ChooseElement"
+            ["ChooseElement"] = "Prefabs/UI/ChooseElement",
         };
 
         public static Dictionary<Type, string> PrefabPath = new Dictionary<Type, string>()
@@ -62,10 +61,12 @@ namespace GamePlay
             [typeof(TargetChooserHandler)] = "Prefabs/UI/BattleUI/PokemonChooserElement",
             
             //Battle
-            [typeof(MoveUI)]="Prefabs/UI/BattleUI/Move",
+            [typeof(MovePanel)]="Prefabs/UI/BattleUI/MovePanel",
             [typeof(BattlePokemonStateUI)]="Prefabs/UI/BattleUI/PokemonState",
+            [typeof(BattleStatusPanel)]="Prefabs/UI/BattleUI/BattleStatusPanel",
+            [typeof(BattleMenuPanel)]="Prefabs/UI/BattleUI/BattleMenuUI",
         
-            [typeof(DialogueChooserPanel)]="Prefabs/UI/DialogChooser",
+            [typeof(MoveElement)]="Prefabs/UI/BattleUI/MoveElement",
 
             //DebugTool
             [typeof(DebugPanel)]="Prefabs/UI/DebugTool",

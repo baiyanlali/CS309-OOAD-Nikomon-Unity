@@ -89,7 +89,7 @@ public class GlobalManager : MonoBehaviour
 
     private void Awake()
     {
-        print("Init");
+        // print("Init");
         if (s_Instance != null && s_Instance != this)
         {
             Destroy(this.gameObject);

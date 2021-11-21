@@ -61,7 +61,7 @@ namespace GamePlay.UI.PokemonChooserTable
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="args">0 for Trainer, 1 for string[] chooses, 2 for Action[] actions</param>
+        /// <param name="args">0 for Trainer, 1 for string[] chooses, 2 for Action actions</param>
         public override void OnEnter(params object[] args)
         {
             base.OnEnter(args);

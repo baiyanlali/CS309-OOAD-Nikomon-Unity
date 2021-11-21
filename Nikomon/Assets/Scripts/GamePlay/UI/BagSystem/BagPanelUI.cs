@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using GamePlay;
 using GamePlay.Messages;
 using GamePlay.UI.UIFramework;
+using PokemonCore;
 using PokemonCore.Inventory;
 using PokemonCore.Utility;
 using UnityEditor;
@@ -36,7 +37,11 @@ public class BagPanelUI : BaseUI
         GameObject bagContents = GameResources.SpawnPrefab("BagContents");
         string[] strs = Enum.GetNames(typeof(Item.Tag));
         elements = new Dictionary<TabElement, GameObject>();
-        TrainerBag bag=args[0] as TrainerBag;
+        TrainerBag bag;
+        if (args.Length >= 1)
+            bag = args[0] as TrainerBag;
+        else
+            bag = Game.bag;
 
 
         GameObject lastTable=null;//用于动态绑定navigation

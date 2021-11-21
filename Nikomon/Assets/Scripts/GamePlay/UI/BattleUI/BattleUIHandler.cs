@@ -138,13 +138,13 @@ public class BattleUIHandler : MonoBehaviour
         int count = AlliesState.transform.childCount;
         for (int i = 0; i < count; i++)
         {
-            AlliesState.transform.GetChild(i).GetComponent<BattlePokemonStateUI>()?.UpdateState();
+            // AlliesState.transform.GetChild(i).GetComponent<BattlePokemonStateUI>()?.UpdateState();
         }
 
         count = OpponentState.transform.childCount;
         for (int i = 0; i < count; i++)
         {
-            OpponentState.transform.GetChild(i).GetComponent<BattlePokemonStateUI>()?.UpdateState();
+            // OpponentState.transform.GetChild(i).GetComponent<BattlePokemonStateUI>()?.UpdateState();
         }
     }
 
@@ -155,7 +155,7 @@ public class BattleUIHandler : MonoBehaviour
         for (int i = 0; i < count; i++)
         {
             var ui = AlliesState.transform.GetChild(i).GetComponent<BattlePokemonStateUI>();
-            ui.UpdateState();
+            // ui.UpdateState();
         }
 
         count = OpponentState.transform.childCount;
@@ -163,7 +163,7 @@ public class BattleUIHandler : MonoBehaviour
         {
             var ui = OpponentState.transform.GetChild(i).GetComponent<BattlePokemonStateUI>();
 
-            ui.UpdateState();
+            // ui.UpdateState();
         }
         
         onComplete?.Invoke();
@@ -178,7 +178,7 @@ public class BattleUIHandler : MonoBehaviour
             var ui = AlliesState.transform.GetChild(i).GetComponent<BattlePokemonStateUI>();
             if (ui.pokemon.CombatID == poke.CombatID)
             {
-                ui.UpdateState(hp, onComplete);
+                // ui.UpdateState(hp, onComplete);
             }
         }
 
@@ -188,7 +188,7 @@ public class BattleUIHandler : MonoBehaviour
             var ui = OpponentState.transform.GetChild(i).GetComponent<BattlePokemonStateUI>();
             if (ui.pokemon.CombatID == poke.CombatID)
             {
-                ui.UpdateState(hp, onComplete);
+                // ui.UpdateState(hp, onComplete);
             }
         }
     }

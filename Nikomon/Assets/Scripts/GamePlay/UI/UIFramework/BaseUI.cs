@@ -9,6 +9,13 @@ using UnityEngine.UI;
 
 namespace GamePlay.UI.UIFramework
 {
+
+    enum ShowType
+    {
+        Type1,
+        Type2
+    }
+    
     public interface IUIAnimator
     {
         void OnEnterAnimator();
@@ -59,11 +66,7 @@ namespace GamePlay.UI.UIFramework
 
         public virtual void Init(params object[] args)
         {
-            if(ExitBtn!=null)
-            {
-                ExitBtn.onClick.RemoveAllListeners();
-                ExitBtn.onClick.AddListener( ()=>UIManager.Instance.Hide(this));
-            }
+            
         }
 
         public IEnumerator DoExit()
@@ -134,6 +137,13 @@ namespace GamePlay.UI.UIFramework
             this.gameObject.SetActive(true);
             this.Init(args);
             if(this is IUIAnimator)(this as IUIAnimator).OnEnterAnimator();
+
+            if(ExitBtn!=null)
+            {
+                ExitBtn.onClick.RemoveAllListeners();
+                ExitBtn.onClick.AddListener( ()=>UIManager.Instance.Hide(this));
+            }
+            
             CanPlayerControlBefore = GlobalManager.Instance.CanPlayerControlled;
             if (IsBlockPlayerControl) GlobalManager.Instance.CanPlayerControlled = false;
 
@@ -186,15 +196,10 @@ namespace GamePlay.UI.UIFramework
                 EventSystem.current.SetSelectedGameObject(currentSelectObj);
         }
 
-        public void BindListener(Button button, Action callback)
+        public virtual void OnRefresh(params object[] args)
         {
-            if (button == null) return;
-            
-            button.onClick.RemoveAllListeners();
-            button.onClick.AddListener(()=> callback());
             
         }
-        
         
     }
     
