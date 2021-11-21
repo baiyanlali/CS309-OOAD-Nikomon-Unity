@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using GamePlay.UI.UIFramework;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Debug = System.Diagnostics.Debug;
@@ -41,7 +42,8 @@ public class PlayerMovement : MonoBehaviour
             Movement();
             if (nicoInput.menu)
             {
-                GlobalManager.Instance.SaveData();
+                UIManager.Instance.Show<MainMenuUI>();
+                // GlobalManager.Instance.SaveSaveData();
             }
             if (nicoInput.accept)
             {

@@ -32,7 +32,6 @@ public class BattleUIHandler : MonoBehaviour
 
     #endregion
 
-    
 
     public static BattleUIHandler Instance
     {
@@ -154,7 +153,28 @@ public class BattleUIHandler : MonoBehaviour
         }
     }
 
-    public void UpdateStatus(CombatPokemon poke,int hp,Action onComplete)
+    public void UpdateStatus(Action onComplete = null)
+    {
+        // ShowBattleMenu();
+        int count = AlliesState.transform.childCount;
+        for (int i = 0; i < count; i++)
+        {
+            var ui = AlliesState.transform.GetChild(i).GetComponent<BattlePokemonStateUI>();
+            ui.UpdateState();
+        }
+
+        count = OpponentState.transform.childCount;
+        for (int i = 0; i < count; i++)
+        {
+            var ui = OpponentState.transform.GetChild(i).GetComponent<BattlePokemonStateUI>();
+
+            ui.UpdateState();
+        }
+        
+        onComplete?.Invoke();
+    }
+
+    public void UpdateStatus(CombatPokemon poke, int hp, Action onComplete)
     {
         ShowBattleMenu();
         int count = AlliesState.transform.childCount;
@@ -163,7 +183,7 @@ public class BattleUIHandler : MonoBehaviour
             var ui = AlliesState.transform.GetChild(i).GetComponent<BattlePokemonStateUI>();
             if (ui.pokemon.CombatID == poke.CombatID)
             {
-                ui.UpdateState(hp,onComplete);
+                ui.UpdateState(hp, onComplete);
             }
         }
 
@@ -173,12 +193,12 @@ public class BattleUIHandler : MonoBehaviour
             var ui = OpponentState.transform.GetChild(i).GetComponent<BattlePokemonStateUI>();
             if (ui.pokemon.CombatID == poke.CombatID)
             {
-                ui.UpdateState(hp,onComplete);
+                ui.UpdateState(hp, onComplete);
             }
         }
     }
 
-    public void OnReplacePokemon(CombatPokemon p1,CombatPokemon p2)
+    public void OnReplacePokemon(CombatPokemon p1, CombatPokemon p2)
     {
         gameObject.SetActive(true);
         // for (int i = 0; i < transform.childCount; i++)
@@ -193,10 +213,9 @@ public class BattleUIHandler : MonoBehaviour
         InitStateUI(opponents, OpponentState.transform);
 
         // PokemonChooserTableUI.Instance.Init(Game.trainer, new[] {"Switch Pokemon", "View Ability", "Items", "Cancel"},
-            // new Action<int>[] {SwitchPokemon, ViewAbility, ShowItems, ShowBattleMenu});
+        // new Action<int>[] {SwitchPokemon, ViewAbility, ShowItems, ShowBattleMenu});
 
         TargetChooserHandler.Init(opponents, allies);
-        
     }
 
 
@@ -214,6 +233,7 @@ public class BattleUIHandler : MonoBehaviour
     }
 
     private CombatPokemon currentPoke;
+
     public void ShowMoves(CombatPokemon poke)
     {
         currentPoke = poke;
@@ -225,6 +245,7 @@ public class BattleUIHandler : MonoBehaviour
             LayoutRebuilder.ForceRebuildLayoutImmediate(BattleUI.GetComponent<RectTransform>());
             return;
         }
+
         BattleUI.SetActive(true);
         BattleUI.transform.Find("Fight").gameObject.SetActive(true);
         BattleUI.transform.Find("Bag").gameObject.SetActive(true);
@@ -300,13 +321,13 @@ public class BattleUIHandler : MonoBehaviour
 
     public void UseItem(Item item, int target)
     {
-        UseItem(item,new List<int>(){target});
+        UseItem(item, new List<int>() {target});
     }
-    
-    public void UseItem(Item item,List<int> target)
+
+    public void UseItem(Item item, List<int> target)
     {
-        target.Insert(0,item.ID);
-        Instruction ins = new Instruction(currentPoke.CombatID, Command.Items, (int)item.tag,
+        target.Insert(0, item.ID);
+        Instruction ins = new Instruction(currentPoke.CombatID, Command.Items, (int) item.tag,
             target);
         BuildInstrustruction(ins);
     }

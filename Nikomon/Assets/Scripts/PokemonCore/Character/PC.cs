@@ -7,28 +7,12 @@ namespace PokemonCore.Character
     [Serializable]
     public class PC
     {
+        [JsonProperty]
         private int maxPokemonsPerBox, maxBox;
 
-        private Pokemon[,] pokemons;
-
-        [JsonIgnore]
-        public Pokemon[][] AllBoxes
-        {
-            get
-            {
-                Pokemon[][] arr=new Pokemon[maxBox][];
-                for (int i = 0; i < maxBox; i++)
-                {
-                    arr[i] = new Pokemon[maxPokemonsPerBox];
-                    for (int j = 0; j < maxPokemonsPerBox; j++)
-                    {
-                        arr[i][j] = pokemons[i, j];
-                    }
-                }
-
-                return arr;
-            }
-        }
+        [JsonProperty]
+        public Pokemon[][] pokemons;
+        
 
         [JsonIgnore]
         public Pokemon[] Pokemons
@@ -38,14 +22,16 @@ namespace PokemonCore.Character
                 Pokemon[] arr = new Pokemon[maxPokemonsPerBox];
                 for (int i = 0; i < maxBox; i++)
                 {
-                    arr[i] = this.pokemons[(int)this.ActiveBox, i];
+                    arr[i] = this.pokemons[(int)this.ActiveBox][i];
                 }
 
                 return arr;
             }
         }
 
+        [JsonProperty]
         public byte ActiveBox { get; private set; }
+        [JsonProperty]
         public string[] BoxNames { get; private set; }
 
         [JsonIgnore]
@@ -56,12 +42,11 @@ namespace PokemonCore.Character
                 this.ActiveBox = (byte)((uint)i % maxBox);
                 return this;
             }
-            
         }
 
 
         [JsonConstructor]
-        public PC(int maxPokemonsPerBox,int maxBox,Pokemon[,] pokemons,byte activeBox,string[] boxNames)
+        public PC(int maxPokemonsPerBox,int maxBox,Pokemon[][] pokemons,byte activeBox,string[] boxNames)
         {
             this.maxPokemonsPerBox = maxPokemonsPerBox;
             this.maxBox = maxBox;
@@ -70,15 +55,22 @@ namespace PokemonCore.Character
             this.BoxNames = boxNames;
         }
         
-        public PC(int maxPokemonsPerBox = 20, int maxBox = 40)
+        public PC(int maxPokemonsPerBox = 20, int maxBox = 8)
         {
-            this.pokemons = new Pokemon[maxBox, maxPokemonsPerBox];
+            this.maxPokemonsPerBox = maxPokemonsPerBox;
+            this.maxBox = maxBox;
+            this.pokemons = new Pokemon[maxBox][];
+
+            for (int i = 0; i < this.pokemons.Length; i++)
+            {
+                this.pokemons[i] = new Pokemon[maxPokemonsPerBox];
+            }
             this.BoxNames = new string[maxBox];
             for (int index1 = 0; index1 < maxBox; index1++)
             {
                 for (int index2 = 0; index2 < maxPokemonsPerBox; index2++)
                 {
-                    this.pokemons[index1, index2] = null;
+                    this.pokemons[index1][index2] = null;
                 }
 
                 BoxNames[index1] = $"Box {index1 + 1}";
@@ -86,54 +78,45 @@ namespace PokemonCore.Character
         }
 
         public PC(
-            Pokemon[][] pokemons = null,
+            Pokemon[][] pokemons,
             byte? box = null,
-            string[] names = null) : this(20, 40)
+            string[] names = null) : this()
         {
             if (names != null)
                 BoxNames = names;
             if (box.HasValue)
                 this.ActiveBox = (byte) ((uint) box.Value % maxBox);
             if (pokemons != null) return;
-            for (int index1 = 0; index1 < maxBox; index1++)
-            {
-                for (int index2 = 0; index2 < maxPokemonsPerBox; index2++)
-                {
-
-                    if (index1 > pokemons.Length - 1 && index2 > pokemons[index1].Length - 1)
-                        this.pokemons[index1, index2] = pokemons[index1][index2];
-                    else this.pokemons[index1, index2] = null;
-                }
-            }
+            this.pokemons = pokemons;
         }
 
-        public bool removePokemon(int boxID, int pokemonID)
+        public bool RemovePokemon(int boxID, int pokemonID)
         {
-            if (this[Convert.ToByte(boxID)].pokemons[boxID,pokemonID] == null) return false;
-            this.pokemons[boxID,pokemonID] = null;
+            if (this[Convert.ToByte(boxID)].pokemons[boxID][pokemonID] == null) return false;
+            this.pokemons[boxID][pokemonID] = null;
             return true;
         }
         
-        public bool switchPCAndPartyPokemon(Trainer trainer,int partyID,int PCBoxID)
+        public bool SwitchPCAndPartyPokemon(Trainer trainer,int partyID,int PCBoxID)
         {
             Pokemon pokemon = trainer.party[partyID];
             if (pokemon == null) return false;
             //TODO: Make this method into static
             trainer.party[partyID] = Pokemons[PCBoxID];
-            pokemons[(int) this.ActiveBox, PCBoxID] = pokemon;
+            pokemons[(int) this.ActiveBox][ PCBoxID] = pokemon;
             return true;
         }
 
-        public bool addPokemon(int boxID, int pokemonID, Pokemon pokemon)
+        public bool AddPokemon(int boxID, int pokemonID, Pokemon pokemon)
         {
-            if (pokemons[boxID, pokemonID] != null) return false;
-            pokemons[boxID, pokemonID] = pokemon;
+            if (pokemons[boxID][ pokemonID] != null) return false;
+            pokemons[boxID][ pokemonID] = pokemon;
             return true;
         }
         
-        public void swapPokemon(int box1, int poke1, int box2, int poke2)
+        public void SwapPokemon(int box1, int poke1, int box2, int poke2)
         {
-            (pokemons[box1, poke1], pokemons[box2, poke2]) = (pokemons[box2, poke2], pokemons[box1, poke1]);
+            (pokemons[box1][ poke1], pokemons[box2][ poke2]) = (pokemons[box2][ poke2], pokemons[box1][ poke1]);
         }
 
     }

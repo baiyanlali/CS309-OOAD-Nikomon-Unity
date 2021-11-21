@@ -177,14 +177,14 @@ namespace PokemonCore.Combat
 
         public CombatMove OnMoving(CombatMove cmove)
         {
-            UnityEngine.Debug.Log(cmove);
+            // UnityEngine.Debug.Log(cmove);
             foreach (var e in Effects.OrEmptyIfNull())
             {
                 if (e.OnMoving == null) continue;
                 
                 e.OnMoving(cmove);
             }
-            UnityEngine.Debug.Log(cmove);
+            // UnityEngine.Debug.Log(cmove);
             return cmove;
         }
 

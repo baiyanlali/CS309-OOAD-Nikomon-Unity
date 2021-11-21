@@ -5,6 +5,7 @@ using PokemonCore.Utility;
 
 namespace PokemonCore.Inventory
 {
+    
     public class TrainerBag
     {
         /// <summary>
@@ -74,6 +75,57 @@ namespace PokemonCore.Inventory
             if (nums > Items[item]) return false;
             Items[item] -= nums;
             return true;
+        }
+        
+    }
+
+/// <summary>
+/// 因为Trainer Bag的value Tuple没法直接反序列化，所以写一个新的可以用于序列化的类
+/// </summary>
+    public class SeriTrainerBag
+    {
+        public struct SeriItem
+        {
+            public Item.Tag Tag;
+            public int Index;
+            public int Count;
+
+            public SeriItem(Item.Tag tag, int index, int count)
+            {
+                this.Tag = tag;
+                this.Index = index;
+                this.Count = count;
+            }
+            
+        }
+
+        public List<SeriItem> items;
+
+        public SeriTrainerBag(TrainerBag bag)
+        {
+            items = new List<SeriItem>();
+            foreach (var item in bag.Items)
+            {
+                items.Add(new SeriItem(item.Key.Item1,item.Key.Item2,item.Value));
+            }
+        }
+
+        [JsonConstructor]
+        public SeriTrainerBag(SeriItem[] items)
+        {
+            this.items = new List<SeriItem>();
+            this.items.AddRange(items);
+        }
+
+        public TrainerBag ToTrainerBag()
+        {
+            Dictionary<ValueTuple<Item.Tag, int>, int> Items = new Dictionary<(Item.Tag, int), int>();
+            foreach (var item in this.items)
+            {
+                Items[(item.Tag, item.Index)] = item.Count;
+            }
+
+            return new TrainerBag(Items);
         }
         
     }

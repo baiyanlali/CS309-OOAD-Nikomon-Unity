@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using GamePlay;
+using GamePlay.UI.UIFramework;
+using GamePlay.UI.UtilUI;
 using UnityEngine;
 using UnityEngine.UI;
 using Debug = PokemonCore.Debug;
@@ -15,7 +17,7 @@ public class PokemonChooserElementUI : MonoBehaviour
     public Text LevelText;
     public int Index;
 
-    public void Init(Pokemon pokemon,int index,string[] dialogChoose,Action<int>[] actions)
+    public void Init(Pokemon pokemon, int index, string[] dialogChoose, Action<int>[] actions)
     {
         Index = index;
         PokemonIcon = PokemonIcon ? PokemonIcon : transform.Find("PokemonIcon").GetComponent<Image>();
@@ -34,13 +36,15 @@ public class PokemonChooserElementUI : MonoBehaviour
         GetComponent<Button>().onClick.AddListener(() =>
         {
             // UnityEngine.Debug.Log("Click!");
-            DialogChooserUI.Instance.ShowChooser(dialogChoose,new Vector2(0,1),
-                (o) =>
-                {
-                    //这里是宝可梦的index和选项的index
-                    actions[o]?.Invoke(Index);
-                },
-                transform as RectTransform);
+            // DialogChooserUI.Instance.ShowChooser(dialogChoose,new Vector2(0,1),
+            //     (o) =>
+            //     {
+            //         //这里是宝可梦的index和选项的index
+            //         actions[o]?.Invoke(Index);
+            //     },
+            //     transform as RectTransform);
+            Action<int> action = (o) => { actions[o]?.Invoke(Index); };
+            UIManager.Instance.Show<DialogueChooserPanel>(dialogChoose, new Vector2(0, 1), action, transform as RectTransform);
         });
     }
 
@@ -57,6 +61,5 @@ public class PokemonChooserElementUI : MonoBehaviour
         HealthBar.value = pokemon.HP / (float) pokemon.TotalHp;
         HealthText.text = $"{pokemon.HP}/{pokemon.TotalHp}";
         LevelText.text = $"Lv.{pokemon.Level}";
-        
     }
 }
