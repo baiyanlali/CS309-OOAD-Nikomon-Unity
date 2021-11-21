@@ -4,12 +4,12 @@ using UnityEngine;
 public class testMain : MonoBehaviour
 {
     // Start is called before the first frame update
-    public dialogEngine de;
-    private dialogManager dm;
+    public DialogEngine de;
+    private DialogManager dm;
     private int condition;
     void Start()
     {
-        dm = dialogManager.dialogManagerIn;
+        dm = DialogManager.dialogManagerIn;
         condition = 0;
     }
 
