@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using GamePlay.UI.BattleUI;
 using GamePlay.UI.UIFramework;
 using GamePlay.UI.UtilUI;
 using PokemonCore;
@@ -20,6 +21,15 @@ public class UIFrameworkTest : MonoBehaviour
         TestMainMenu();
     }
 
+
+    public void TestBattleMenu()
+    {
+        _input.Player.Menu.started += (o) =>
+        {
+            // UIManager.Instance.Show<BattleUIPanel>();
+        };
+    }
+    
     public void TestMainMenu()
     {
         _input.Player.Menu.started += (o) =>

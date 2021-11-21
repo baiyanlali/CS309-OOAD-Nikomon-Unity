@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using GamePlay.Core;
 using GamePlay.UI;
 using GamePlay.UI.BattleUI;
+using GamePlay.UI.Dialog;
 using GamePlay.UI.MainMenuUI;
 using GamePlay.UI.PokemonChooserTable;
 using GamePlay.UI.UIFramework;
@@ -68,6 +69,9 @@ namespace GamePlay
 
             //DebugTool
             [typeof(DebugPanel)]="Prefabs/UI/DebugTool",
+            
+            //Dialogue
+            [typeof(DialoguePanel)]="Prefabs/UI/DialogPanel"
         };
     }
 

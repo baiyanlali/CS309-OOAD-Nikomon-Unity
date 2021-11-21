@@ -17,17 +17,32 @@ public class BattlePokemonStateUI : MonoBehaviour
 
     public void Init(CombatPokemon pokemon)
     {
-        this.pokemon = pokemon;
-        NameText.text = pokemon.Name;
-        LevelText.text = "Lv." + pokemon.Level;
-        HealthText.text = pokemon.HP + "/" + pokemon.TotalHP;
-        HealthSlider.value = pokemon.HP / (float) pokemon.TotalHP;
-        ExpSlider.value = pokemon.pokemon.Exp.Current / (float) pokemon.pokemon.Exp.NextLevelExp;
+        if (this.pokemon == null || this.pokemon!=pokemon)
+        {
+            this.pokemon = pokemon;
+            NameText.text = pokemon.Name;
+            LevelText.text = "Lv." + pokemon.Level;
+            HealthText.text = pokemon.HP + "/" + pokemon.TotalHP;
+            HealthSlider.value = pokemon.HP / (float) pokemon.TotalHP;
+            ExpSlider.value = pokemon.pokemon.Exp.Current / (float) pokemon.pokemon.Exp.NextLevelExp;
+            ChangeHealthSliderColor();
 
-        ChangeHealthSliderColor();
+        }
+        else
+        {
+            LevelText.text = "Lv." + pokemon.Level;
+            LeanTween.value(HealthSlider.value, pokemon.HP / (float) pokemon.TotalHP, 1f).setOnUpdate(
+                f =>
+                {
+                    HealthSlider.value = f;
+                    ChangeHealthSliderColor();
+                    HealthText.text = Math.Floor(f) + "/" + pokemon.TotalHP;
+                });
+        }
+
     }
 
-    public void ChangeHealthSliderColor()
+    private void ChangeHealthSliderColor()
     {
         if (HealthSlider.value <= 0.2f)
         {

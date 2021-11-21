@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using GamePlay.UI.BattleUI;
 using GamePlay.UI.UIFramework;
@@ -9,13 +8,8 @@ using PokemonCore.Attack.Data;
 using PokemonCore.Combat;
 using PokemonCore.Inventory;
 using PokemonCore.Utility;
-using UnityEditor.Experimental;
 using UnityEngine;
-using UnityEngine.Events;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using Utility;
-using Debug = PokemonCore.Debug;
 
 
 public class BattleUIHandler : MonoBehaviour
@@ -47,11 +41,11 @@ public class BattleUIHandler : MonoBehaviour
     }
 
     private static BattleUIHandler s_Instance;
-    private BattleUIPanel BattleUIPanel;
-    public void Init(BattleHandler bh,BattleUIPanel uiPanel)
+    // private BattleUIPanel BattleUIPanel;
+    public void Init(BattleHandler bh)
     {
         s_Instance = this;
-        BattleUIPanel = uiPanel;
+        // BattleUIPanel = uiPanel;
         for (int i = 0; i < transform.childCount; i++)
         {
             transform.GetChild(i).gameObject.SetActive(true);
@@ -135,7 +129,7 @@ public class BattleUIHandler : MonoBehaviour
     {
         // dialogManager.dialogManagerIn.EndBattle();
         // this.gameObject.SetActive(false);
-        UIManager.Instance.Hide(BattleUIPanel);
+        // UIManager.Instance.Hide(BattleUIPanel);
     }
 
     public void UpdateUI(BattleHandler bh)

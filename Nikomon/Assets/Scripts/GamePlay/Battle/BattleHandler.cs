@@ -74,9 +74,9 @@ public class BattleHandler : MonoBehaviour
             BattleUIHandler.Instance.OnReplacePokemon(p1,p2);
             BattleFieldHandler.Instance.OnReplacePokemon(p1, p2);
         };
-        UIManager.Instance.Show<BattleUIPanel>(this);
+        // UIManager.Instance.Show<BattleUIPanel>(this);
         
-        // BattleUIHandler.Instance.Init(this);
+        BattleUIHandler.Instance.Init(this);
         BattleFieldHandler.Instance.Init(AlliesPokemons, OpponentPokemons);
 
         // DialogHandler.Instance.OnDialogFinished += (o) => { if(Game.battle!=null) BattleUIHandler.Instance.UpdateUI(this);};
