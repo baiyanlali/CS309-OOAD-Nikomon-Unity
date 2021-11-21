@@ -63,6 +63,11 @@ namespace GamePlay
             //Battle
             [typeof(MoveUI)]="Prefabs/UI/BattleUI/Move",
             [typeof(BattlePokemonStateUI)]="Prefabs/UI/BattleUI/PokemonState",
+        
+            [typeof(DialogueChooserPanel)]="Prefabs/UI/DialogChooser",
+
+            //DebugTool
+            [typeof(DebugPanel)]="Prefabs/UI/DebugTool",
         };
     }
 
