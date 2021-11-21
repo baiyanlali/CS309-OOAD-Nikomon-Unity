@@ -33,7 +33,7 @@ public class PokemonChooserElementUI : MonoBehaviour
         GetComponent<Button>().onClick.RemoveAllListeners();
         GetComponent<Button>().onClick.AddListener(() =>
         {
-            // UnityEngine.Debug.Log("Click!");
+            UnityEngine.Debug.Log("Click!");
             DialogChooserUI.Instance.ShowChooser(dialogChoose,new Vector2(0,1),
                 (o) =>
                 {
