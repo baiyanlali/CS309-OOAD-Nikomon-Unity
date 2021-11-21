@@ -29,6 +29,24 @@ namespace GamePlay.UI.UIFramework
 
         private bool CanPlayerControlBefore;
 
+        private bool _canQuitNow=true;
+
+        protected bool CanQuitNow
+        {
+            get => _canQuitNow;
+            set
+            {
+                _canQuitNow = value;
+                if(ExitBtn!=null)
+                    ExitBtn.onClick.RemoveAllListeners();
+
+                if(ExitBtn!=null && _canQuitNow)
+                {
+                    ExitBtn.onClick.AddListener( ()=>UIManager.Instance.Hide(this));
+                }
+            }
+        }
+
 
         private List<CancelTrigger> _cancelTriggers = new List<CancelTrigger>();
 
@@ -46,13 +64,11 @@ namespace GamePlay.UI.UIFramework
                 ExitBtn.onClick.RemoveAllListeners();
                 ExitBtn.onClick.AddListener( ()=>UIManager.Instance.Hide(this));
             }
-            
-            
         }
 
         public IEnumerator DoExit()
         {
-            if (ExitBtn != null)
+            if (ExitBtn != null && _canQuitNow)
             {
                 EventSystem.current.SetSelectedGameObject(ExitBtn.gameObject);
                 yield return new WaitForSeconds(0.25f);
@@ -60,7 +76,8 @@ namespace GamePlay.UI.UIFramework
             }
             else
             {
-                UIManager.Instance.Hide(this);
+                if(_canQuitNow)
+                    UIManager.Instance.Hide(this);
             }
         }
 

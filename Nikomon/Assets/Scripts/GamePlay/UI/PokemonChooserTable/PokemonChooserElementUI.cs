@@ -15,11 +15,9 @@ public class PokemonChooserElementUI : MonoBehaviour
     public Slider HealthBar;
     public Text HealthText;
     public Text LevelText;
-    public int Index;
 
-    public void Init(Pokemon pokemon, int index, string[] dialogChoose, Action<int>[] actions)
+    public void Init(Pokemon pokemon, int index, string[] dialogChoose, Action<int> actions)
     {
-        Index = index;
         PokemonIcon = PokemonIcon ? PokemonIcon : transform.Find("PokemonIcon").GetComponent<Image>();
         PokemonName = PokemonName ? PokemonName : transform.Find("PokemonName").GetComponent<Text>();
         HealthBar = HealthBar ? HealthBar : transform.Find("HealthBar").GetComponent<Slider>();
@@ -43,7 +41,7 @@ public class PokemonChooserElementUI : MonoBehaviour
             //         actions[o]?.Invoke(Index);
             //     },
             //     transform as RectTransform);
-            Action<int> action = (o) => { actions[o]?.Invoke(Index); };
+            Action<int> action = (o) => { actions?.Invoke(o); };
             UIManager.Instance.Show<DialogueChooserPanel>(dialogChoose, new Vector2(0, 1), action, transform as RectTransform);
         });
     }

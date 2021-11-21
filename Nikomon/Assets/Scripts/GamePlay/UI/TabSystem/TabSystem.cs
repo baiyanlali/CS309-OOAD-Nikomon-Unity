@@ -34,6 +34,8 @@ public class TabSystem : MonoBehaviour
             for (int i = 0; i < TableContent.childCount; i++)
             {
                 tableContents.Add(TableContent.GetChild(i).GetComponent<TabContent>());
+                if(i!=0)
+                    TableContent.GetChild(i).gameObject.SetActive(false);
             }
         }
 

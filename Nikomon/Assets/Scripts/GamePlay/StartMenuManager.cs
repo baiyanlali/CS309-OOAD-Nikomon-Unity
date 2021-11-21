@@ -1,6 +1,5 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
+using GamePlay.UI;
+using GamePlay.UI.UIFramework;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -9,7 +8,7 @@ public class StartMenuManager : MonoBehaviour
 {
     private void Start()
     {
-        
+        UIManager.Instance.Show<StartMenuUI>();
     }
 
 

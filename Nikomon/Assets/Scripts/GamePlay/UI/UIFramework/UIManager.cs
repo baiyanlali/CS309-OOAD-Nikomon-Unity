@@ -5,6 +5,7 @@ using System.Runtime.CompilerServices;
 using GamePlay.Utilities;
 using UnityEngine;
 using UnityEngine.PlayerLoop;
+using UnityEngine.SceneManagement;
 
 namespace GamePlay.UI.UIFramework
 {
@@ -79,9 +80,20 @@ namespace GamePlay.UI.UIFramework
 
         public void Init()
         {
-            
-            
+            SceneManager.sceneLoaded += (s, m) =>
+            {
+                if (m == LoadSceneMode.Single)
+                {
+                    PopAllUI(UILayer.Top);
+                    PopAllUI(UILayer.MainUI);
+                    PopAllUI(UILayer.NormalUI);
+                    PopAllUI(UILayer.PopupUI);
+                }
+            };
+
         }
+        
+        
         
         public void PushUI(BaseUI ui)
         {
@@ -116,7 +128,10 @@ namespace GamePlay.UI.UIFramework
             else
             {
                 GameObject tmp = GameResources.SpawnPrefab(typeof(T));
-                curUI = Instantiate(tmp,tmp.transform.position,tmp.transform.rotation).GetComponent<BaseUI>();
+                // if(tmp.GetComponent<RectTransform>())
+                // curUI = Instantiate(tmp,tmp.transform.position,tmp.transform.rotation).GetComponent<BaseUI>();
+                
+                curUI = Instantiate(tmp,GetUIParent(tmp.GetComponent<BaseUI>().Layer)).GetComponent<BaseUI>();
                 curUI.name = curUI.name.Replace("(Clone)", "");
                 tmp = null;
                 _uiDics.AddOrReplace(typeof(T),curUI);

@@ -30,8 +30,10 @@ public class BagPanelUI : BaseUI
 
         var bagContentElement = GameResources.SpawnPrefab(typeof(BagContentElementUI));
         //这里没办法用Spawn Prefab，因为它的类型不独特，就这样子生成吧
-        GameObject table = transform.Find("Tables/Table").gameObject;
-        GameObject bagContents = transform.Find("TableContent/BagContents").gameObject;
+        // GameObject table = transform.Find("Tables/Table").gameObject;
+        // GameObject bagContents = transform.Find("TableContent/BagContents").gameObject;
+        GameObject table = GameResources.SpawnPrefab("Table");
+        GameObject bagContents = GameResources.SpawnPrefab("BagContents");
         string[] strs = Enum.GetNames(typeof(Item.Tag));
         elements = new Dictionary<TabElement, GameObject>();
         TrainerBag bag=args[0] as TrainerBag;

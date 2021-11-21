@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using GamePlay.UI.BattleUI;
+using GamePlay.UI.UIFramework;
 using PokemonCore;
 using PokemonCore.Attack;
 using PokemonCore.Attack.Data;
@@ -45,11 +47,11 @@ public class BattleUIHandler : MonoBehaviour
     }
 
     private static BattleUIHandler s_Instance;
-
-    public void Init(BattleHandler bh)
+    private BattleUIPanel BattleUIPanel;
+    public void Init(BattleHandler bh,BattleUIPanel uiPanel)
     {
-        gameObject.SetActive(true);
         s_Instance = this;
+        BattleUIPanel = uiPanel;
         for (int i = 0; i < transform.childCount; i++)
         {
             transform.GetChild(i).gameObject.SetActive(true);
@@ -61,7 +63,6 @@ public class BattleUIHandler : MonoBehaviour
         InitStateUI(allies, AlliesState.transform);
         InitStateUI(opponents, OpponentState.transform);
 
-
         if (MoveUI.transform.childCount == 1)
         {
             for (int i = 0; i < Game.MaxMovesPerPokemon; i++)
@@ -72,17 +73,16 @@ public class BattleUIHandler : MonoBehaviour
         }
 
 
-        PokemonChooserTableUI.Instance.Init(Game.trainer, new[] {"Switch Pokemon", "View Ability", "Items", "Cancel"},
-            new Action<int>[] {SwitchPokemon, ViewAbility, ShowItems, ShowBattleMenu});
+        // PokemonChooserTableUI.Instance.Init(Game.trainer, new[] {"Switch Pokemon", "View Ability", "Items", "Cancel"},
+        //     new Action<int>[] {SwitchPokemon, ViewAbility, ShowItems, ShowBattleMenu});
 
-        TargetChooserHandler.Init(opponents, allies);
+        
+        // TargetChooserHandler.Init(opponents, allies);
 
         // dialogManager.dialogManagerIn.InitBattle(Game.battleReporter);
         DialogHandler.Instance.InitBattle(Game.battleReporter);
 
-        EventSystem.current.SetSelectedGameObject(BattleUI.gameObject.transform.GetChild(0).gameObject);
     }
-
 
     /// <summary>
     /// 目前战斗UI界面中已经有了部分素材，下次战斗时，会有几种情况
@@ -134,7 +134,8 @@ public class BattleUIHandler : MonoBehaviour
     public void EndBattle()
     {
         // dialogManager.dialogManagerIn.EndBattle();
-        this.gameObject.SetActive(false);
+        // this.gameObject.SetActive(false);
+        UIManager.Instance.Hide(BattleUIPanel);
     }
 
     public void UpdateUI(BattleHandler bh)
@@ -217,19 +218,14 @@ public class BattleUIHandler : MonoBehaviour
 
         TargetChooserHandler.Init(opponents, allies);
     }
-
-
-    public void ShowBattleMenu(int o)
-    {
-        ShowBattleMenu();
-    }
+    
 
     public void ShowBattleMenu()
     {
         BattleUI.SetActive(true);
         MoveUI.SetActive(false);
-        PokemonChooserTableUI.Instance.gameObject.SetActive(false);
-        DialogChooserUI.Instance.gameObject.SetActive(false);
+        // PokemonChooserTableUI.Instance.gameObject.SetActive(false);
+        // DialogChooserUI.Instance.gameObject.SetActive(false);
     }
 
     private CombatPokemon currentPoke;
@@ -343,18 +339,5 @@ public class BattleUIHandler : MonoBehaviour
     {
         BattleHandler.Instance.ReceiveInstruction(instruction);
     }
-
-
-    private void Update()
-    {
-        if (NicomonInputSystem.Instance.back)
-        {
-            BattleUI.SetActive(true);
-            EventSystem.current.SetSelectedGameObject(BattleUI.gameObject.transform.GetChild(0).gameObject);
-            MoveUI.SetActive(false);
-            TargetChooserHandler.Instance.gameObject.SetActive(false);
-            BagUI.Instance.gameObject.SetActive(false);
-            PokemonChooserTableUI.Instance.gameObject.SetActive(false);
-        }
-    }
+    
 }
