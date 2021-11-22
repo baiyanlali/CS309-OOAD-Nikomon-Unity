@@ -16,9 +16,8 @@ public class TabContent : BaseUI
     }
 
     
-    public virtual void OnShow()
+    public virtual void OnShow(params  object[] args)
     {
-        
     }
 
     private GameObject lastTab;
