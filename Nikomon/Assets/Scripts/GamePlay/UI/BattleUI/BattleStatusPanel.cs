@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using GamePlay.UI.UIFramework;
 using PokemonCore.Combat;
 using UnityEngine;
 
 namespace GamePlay.UI.BattleUI
-
 {
     public class BattleStatusPanel:BaseUI
     {
@@ -14,21 +14,34 @@ namespace GamePlay.UI.BattleUI
         public override bool IsBlockPlayerControl => true;
         public override void Init(params object[] args)
         {
-            BattleHandler bh=args[0] as BattleHandler;
-            
-            
-            List<CombatPokemon> allies = bh.AlliesPokemons;
-            List<CombatPokemon> opponents = bh.OpponentPokemons;
-
             AlliesState = GET(AlliesState, nameof(AlliesState), GET_TYPE.GameObject);
             OpponentState = GET(OpponentState, nameof(OpponentState), GET_TYPE.GameObject);
 
-            InitStateUI(allies, AlliesState.transform);
-            InitStateUI(opponents, OpponentState.transform);
+            PokemonStateUIPrefab = GameResources.SpawnPrefab(typeof(BattlePokemonStateUI));
+            
+            OnRefresh(args);
             
             base.Init(args);
         }
+
+        private BattleHandler bh;
+        public override void OnRefresh(params object[] args)
+        {
+            base.OnRefresh(args);
+            if(args.Length>=1)
+                bh=args[0] as BattleHandler;
+            else if (bh == null)
+                throw new Exception("No Battle Field Found");
+
+            List<CombatPokemon> allies = bh.AlliesPokemons;
+            List<CombatPokemon> opponents = bh.OpponentPokemons;
+
+            InitStateUI(allies, AlliesState.transform);
+            InitStateUI(opponents, OpponentState.transform);
+        }
         
+        
+
         /// <summary>
             /// 目前战斗UI界面中已经有了部分素材，下次战斗时，会有几种情况
             /// 1.宝可梦数量等于上一局，什么都不用改
@@ -38,7 +51,7 @@ namespace GamePlay.UI.BattleUI
             /// </summary>
             /// <param name="pokemons"></param>
             /// <param name="parent"></param>
-            private void InitStateUI(List<CombatPokemon> pokemons, Transform parent)
+        private void InitStateUI(List<CombatPokemon> pokemons, Transform parent)
             {
                 if (pokemons.Count == parent.transform.childCount)
                 {

@@ -89,7 +89,7 @@ public class GlobalManager : MonoBehaviour
 
     private void Awake()
     {
-        print("Init");
+        // print("Init");
         if (s_Instance != null && s_Instance != this)
         {
             Destroy(this.gameObject);
@@ -124,9 +124,9 @@ public class GlobalManager : MonoBehaviour
         //TODO:Delete it
         SceneManager.sceneLoaded += (o1, o2) =>
         {
+            Action<int> action = new Action<int>((o)=>print(o)); 
             BagUI.Instance?.Init(Game.bag);
-            PokemonChooserTableUI.Instance?.Init(Game.trainer, new string[] { },
-                new Action<int>[] { });
+            PokemonChooserTableUI.Instance?.Init(Game.trainer, new string[] { },action);
         };
         //
         //

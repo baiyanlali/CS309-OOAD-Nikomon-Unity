@@ -23,7 +23,7 @@ public class PokemonChooserTableUI : MonoBehaviour
     }
     public static PokemonChooserTableUI sInstance;
 
-    public void Init(Trainer trainer,string[] chooses,Action<int>[] actions)
+    public void Init(Trainer trainer,string[] chooses,Action<int> actions)
     {
         ChooserElement = ChooserElement
             ? ChooserElement

@@ -10,10 +10,11 @@ using UnityEngine;
 using UnityEngine.UI;
 
 namespace GamePlay.UI.BattleUI
-
 {
     public class TargetChooserPanel : BaseUI
     {
+        
+        
         public GameObject TargetChooserPrefab;
         public Transform Allies;
         public Transform Opponents;
@@ -33,41 +34,72 @@ namespace GamePlay.UI.BattleUI
             Cancel = GET(Cancel, "Panel/Cancel");
             
             ExitBtn = Cancel;
+            
+            Cancel.onClick.RemoveAllListeners();
+            Cancel.onClick.AddListener(()=>OnCancelChoose());
 
             base.Init(args);
 
             TargetChooserPrefab = GameResources.SpawnPrefab(typeof(PokemonChooserElementUI));
-            
-            List<CombatPokemon> opponents = args[0] as List<CombatPokemon>;
-            List<CombatPokemon> allies = args[1] as List<CombatPokemon>;
-            
-            oppoToggle = new List<TargetChooserUI>();
-            allyToggle = new List<TargetChooserUI>();
-            userToggle = new List<TargetChooserUI>();
-            var op = InitToggleUI(opponents, Opponents, oppoToggle);
-            var al = InitToggleUI(allies, Allies, allyToggle);
-            op.LinkNavigation(al,DirectionType.Horizontal);
-            al.LinkNavigation(new List<Button>(){Cancel,Submit},DirectionType.Horizontal);
-            Targets targets =(Targets)args[2];
-            ShowTargetChooser(targets);
 
-            if (args.Length >= 4)
+            ShowType type = (ShowType) args[0];
+            if (type == ShowType.Type1)
             {
-                OnChooseTarget = args[3] as Action<List<int>>;
+                List<CombatPokemon> opponents = args[1] as List<CombatPokemon>;
+                List<CombatPokemon> allies = args[2] as List<CombatPokemon>;
+            
+                oppoToggle = new List<TargetChooserUI>();
+                allyToggle = new List<TargetChooserUI>();
+                userToggle = new List<TargetChooserUI>();
+                var op = InitToggleUI(opponents, Opponents, oppoToggle);
+                var al = InitToggleUI(allies, Allies, allyToggle);
+                op.LinkNavigation(al,DirectionType.Horizontal);
+                al.LinkNavigation(new List<Button>(){Cancel,Submit},DirectionType.Horizontal);
+                Targets targets =(Targets)args[3];
+                ShowTargetChooser(targets);
+
                 if (args.Length >= 5)
                 {
-                    OnCancelChoose = args[4] as Action;
+                    OnChooseTarget = args[4] as Action<List<int>>;
+                    if (args.Length >= 6)
+                    {
+                        OnCancelChoose = args[5] as Action;
+                    }
+                }
+            }else if (type == ShowType.Type2)
+            {
+                Targets targets =(Targets)args[1];
+                ShowTargetChooser(targets);
+                if (args.Length >= 3)
+                {
+                    OnChooseTarget = args[2] as Action<List<int>>;
+                    if (args.Length >= 4)
+                    {
+                        OnCancelChoose = args[3] as Action;
+                    }
                 }
             }
-
         }
 
-        
-        
         /// <summary>
-        /// 
+        /// 0 for type,
+        /// Type1 1 and 2 for opponent and ally pokemon, 3 for target, 4 for onchoose target, 5 for cancel
+        /// Type2 1 for target, 2 for onchoose target, 3 for cancel
         /// </summary>
-        /// <param name="args">0 and 1 for opponent and ally pokemon, 2 for target, 3 for onchoose target, 4 for cancel</param>
+        /// <param name="args"></param>
+        public override void OnRefresh(params object[] args)
+        {
+            base.OnRefresh(args);
+            Init(args);
+        }
+
+
+        /// <summary>
+        /// 0 for type,
+        /// Type1 1 and 2 for opponent and ally pokemon, 3 for target, 4 for onchoose target, 5 for cancel
+        /// Type2 1 for target, 2 for onchoose target, 3 for cancel
+        /// </summary>
+        /// <param name="args"></param>
         public override void OnEnter(params object[] args)
         {
             base.OnEnter(args);
@@ -212,7 +244,10 @@ namespace GamePlay.UI.BattleUI
             {
                 FirstSelectable = Cancel.interactable ? Cancel.gameObject : Submit.gameObject;
             }
+
             if (Submit.gameObject.activeSelf)
+            {
+                Submit.onClick.RemoveAllListeners();
                 Submit.onClick.AddListener(() =>
                     {
                         targets.AddRange(from o in oppoToggle where o.toggle.isOn == true select o.Pokemon.CombatID);
@@ -221,6 +256,8 @@ namespace GamePlay.UI.BattleUI
                         UIManager.Instance.Hide(this);
                     }
                 );
+            }
+                
         }
 
         public void OnSelected()
