@@ -36,13 +36,14 @@ public class BattlePokemonStateUI : MonoBehaviour
                 {
                     HealthSlider.value = f;
                     ChangeHealthSliderColor();
-                    HealthText.text = (int)(f*pokemon.TotalHP) + "/" + pokemon.TotalHP;
+                    HealthText.text = Math.Floor(f) + "/" + pokemon.TotalHP;
                 });
         }
 
+        ChangeHealthSliderColor();
     }
 
-    private void ChangeHealthSliderColor()
+    public void ChangeHealthSliderColor()
     {
         if (HealthSlider.value <= 0.2f)
         {
@@ -58,43 +59,43 @@ public class BattlePokemonStateUI : MonoBehaviour
         }
     }
 
-    // public void UpdateState()
-    // {
-    //     LevelText.text = "Lv." + pokemon.Level;
-    //     HealthText.text = pokemon.HP + "/" + pokemon.TotalHP;
-    //     // HealthSlider.value = pokemon.HP / (float)pokemon.TotalHP;
-    //     LeanTween.value(HealthSlider.value, pokemon.HP / (float) pokemon.TotalHP, 1f).setOnUpdate(
-    //         f =>
-    //         {
-    //             HealthSlider.value = f;
-    //
-    //
-    //             ChangeHealthSliderColor();
-    //         });
-    // }
-    //
-    // public void UpdateState(Action onComplete)
-    // {
-    //     UpdateState();
-    //     // onComplete?.Invoke();
-    // }
-    //
-    // public void UpdateState(int hp, Action onComplete)
-    // {
-    //     Debug.Log($"Update State!! from :{gameObject.name}");
-    //     LevelText.text = "Lv." + pokemon.Level;
-    //     HealthText.text = pokemon.HP + "/" + pokemon.TotalHP;
-    //     // HealthSlider.value = pokemon.HP / (float)pokemon.TotalHP;
-    //     LeanTween.value(HealthSlider.value, hp / (float) pokemon.TotalHP, 1f)
-    //         .setOnUpdate(f =>
-    //         {
-    //             HealthSlider.value = f;
-    //             ChangeHealthSliderColor();
-    //         }).setOnComplete(() =>
-    //         {
-    //             Debug.Log("Update state complete");
-    //             onComplete?.Invoke();
-    //         });
-    //     
-    // }
+    public void UpdateState()
+    {
+        LevelText.text = "Lv." + pokemon.Level;
+        HealthText.text = pokemon.HP + "/" + pokemon.TotalHP;
+        // HealthSlider.value = pokemon.HP / (float)pokemon.TotalHP;
+        LeanTween.value(HealthSlider.value, pokemon.HP / (float) pokemon.TotalHP, 1f).setOnUpdate(
+            f =>
+            {
+                HealthSlider.value = f;
+
+
+                ChangeHealthSliderColor();
+            });
+    }
+
+    public void UpdateState(Action onComplete)
+    {
+        UpdateState();
+        // onComplete?.Invoke();
+    }
+
+    public void UpdateState(int hp, Action onComplete)
+    {
+        Debug.Log($"Update State!! from :{gameObject.name}");
+        LevelText.text = "Lv." + pokemon.Level;
+        HealthText.text = pokemon.HP + "/" + pokemon.TotalHP;
+        // HealthSlider.value = pokemon.HP / (float)pokemon.TotalHP;
+        LeanTween.value(HealthSlider.value, hp / (float) pokemon.TotalHP, 1f)
+            .setOnUpdate(f =>
+            {
+                HealthSlider.value = f;
+                ChangeHealthSliderColor();
+            }).setOnComplete(() =>
+            {
+                Debug.Log("Update state complete");
+                onComplete?.Invoke();
+            });
+        
+    }
 }

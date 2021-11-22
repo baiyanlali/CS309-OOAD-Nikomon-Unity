@@ -4,8 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Cinemachine;
 using GamePlay;
-using GamePlay.UI.BattleUI;
-using GamePlay.UI.UIFramework;
 using PokemonCore;
 using PokemonCore.Combat;
 using UnityEngine;
@@ -198,8 +196,7 @@ public class BattleFieldHandler : MonoBehaviour
                 dics[sequence.poke.CombatID].DoMove(sequence.param[0] as CombatMove, null);
                 break;
             case TimeSequence.SequenceTag.EndMove:
-                // BattleUIHandler.Instance.UpdateStatus();
-                UIManager.Instance.Refresh<BattleStatusPanel>();
+                BattleUIHandler.Instance.UpdateStatus();
                 BattleHandler.Instance.battle.NextMove();
                 break;
             case TimeSequence.SequenceTag.BeHit:

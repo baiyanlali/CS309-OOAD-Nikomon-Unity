@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using GamePlay.UI.BattleUI;
 using GamePlay.UI.UIFramework;
 using GamePlay.UI.UtilUI;
 using PokemonCore;
@@ -21,16 +20,18 @@ public class UIFrameworkTest : MonoBehaviour
         TestMainMenu();
     }
 
+<<<<<<< HEAD
+=======
 
     public void TestBattleMenu()
     {
         _input.Player.Menu.started += (o) =>
         {
-            UIManager.Instance.Show<BattleStatusPanel>();
-            UIManager.Instance.Show<MovePanel>();
+            // UIManager.Instance.Show<BattleUIPanel>();
         };
     }
     
+>>>>>>> parent of 89f344b5 (重要UI组件基本重写完毕，仅剩Dialogue)
     public void TestMainMenu()
     {
         _input.Player.Menu.started += (o) =>

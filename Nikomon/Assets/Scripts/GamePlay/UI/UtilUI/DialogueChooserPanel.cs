@@ -70,13 +70,14 @@ namespace GamePlay.UI.UtilUI
                 int c = i;
                 obj.GetComponent<Button>().onClick.AddListener(() =>
                 {
-                    UIManager.Instance.Hide(this);
                     OnChoose?.Invoke(c);
-                    // gameObject.SetActive(false);
+                    gameObject.SetActive(false);
                 });
             }
             selectables.AutomateNavigation(DirectionType.Vertical);
 
+
+            
         }
 
         public override void OnEnter(params object[] args)
@@ -85,7 +86,6 @@ namespace GamePlay.UI.UtilUI
             
             int width = Screen.width;
             int height = Screen.height;
-            
             RectTransform rectTrans = GetComponent<RectTransform>();
 
             rectTrans.pivot = (Vector2)args[1];
@@ -114,7 +114,7 @@ namespace GamePlay.UI.UtilUI
                 right = width;
                 finalPos.x = right - rect.width * (1 - pivot.x);
             }
-            
+
             if (down <= 0)
             {
                 down = 0;
@@ -127,7 +127,6 @@ namespace GamePlay.UI.UtilUI
             }
 
             rectTrans.anchoredPosition = finalPos;
-            
         }
     }
 }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class DialogEngine : MonoBehaviour
+public class dialogEngine : MonoBehaviour
 {
     public string debugBoxString;
 

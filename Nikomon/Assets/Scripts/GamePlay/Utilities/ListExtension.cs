@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,13 +9,12 @@ namespace GamePlay.Utilities
         Horizontal,
         Vertical
     }
-
     public static class ListExtension
     {
-        public static void AutomateNavigation<T>(this List<T> selectables, DirectionType type) where T : Selectable
+        public static void AutomateNavigation(this List<Selectable> selectables, DirectionType type)
         {
             Selectable lastOne = null;
-            if (type == DirectionType.Horizontal)
+            if(type==DirectionType.Horizontal)
             {
                 for (int i = 0; i < selectables.Count; i++)
                 {
@@ -81,45 +79,7 @@ namespace GamePlay.Utilities
 
                     lastOne = curOne;
                 }
-            }
-        }
 
-        public static void LinkNavigation<T,T2>(this List<T> selectables, List<T2> selectables2, DirectionType type)
-            where T : Selectable
-            where T2: Selectable
-        {
-            for (int i = 0; i < Math.Min(selectables.Count, selectables2.Count); i++)
-            {
-                Selectable s1 = selectables[i];
-                Selectable s2 = selectables2[i];
-
-                if (s1.navigation.mode != Navigation.Mode.Explicit)
-                {
-                    s1.navigation = new Navigation()
-                    {
-                        mode = Navigation.Mode.Explicit
-                    };
-                }
-
-                if (s2.navigation.mode != Navigation.Mode.Explicit)
-                {
-                    s2.navigation = new Navigation()
-                    {
-                        mode = Navigation.Mode.Explicit
-                    };
-                }
-
-                Navigation navi1 = s1.navigation;
-                if (type == DirectionType.Horizontal)
-                    navi1.selectOnDown = s2;
-                else navi1.selectOnRight = s2;
-                s1.navigation = navi1;
-
-                Navigation navi2 = s2.navigation;
-                if (type == DirectionType.Horizontal)
-                    navi2.selectOnUp = s1;
-                else navi1.selectOnLeft = s1;
-                s2.navigation = navi2;
             }
         }
     }

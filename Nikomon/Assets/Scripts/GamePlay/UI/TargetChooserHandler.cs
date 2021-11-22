@@ -75,6 +75,42 @@ public class TargetChooserHandler : MonoBehaviour
             if(pokemons[i].TrainerID==Game.trainer.id)
                 userToggle.Add(targetChooserUI.GetComponent<TargetChooserUI>());
         }
+        
+        // if (pokemons.Count == parent.transform.childCount)
+        // {
+        //     for (int i = 0; i < pokemons.Count; i++)
+        //     {
+        //         parent.transform.GetChild(i).GetComponent<TargetChooserUI>().Init(pokemons[i]);
+        //     }
+        // }
+        // else if (pokemons.Count > parent.transform.childCount)
+        // {
+        //     for (int i = 0; i < parent.transform.childCount; i++)
+        //     {
+        //         parent.transform.GetChild(i).GetComponent<TargetChooserUI>().Init(pokemons[i]);
+        //     }
+        //
+        //     for (int i = parent.transform.childCount; i < pokemons.Count; i++)
+        //     {
+        //         GameObject o = Instantiate(TargetChooserPrefab, parent);
+        //         o.GetComponent<TargetChooserUI>()?.Init(pokemons[i]);
+        //         toggle.Add(o.GetComponent<TargetChooserUI>());
+        //         if(pokemons[i].TrainerID==Game.trainer.id)
+        //             userToggle.Add(o.GetComponent<TargetChooserUI>());
+        //     }
+        // }
+        // else if (pokemons.Count < parent.transform.childCount)
+        // {
+        //     for (int i = 0; i < pokemons.Count; i++)
+        //     {
+        //         parent.transform.GetChild(i).GetComponent<TargetChooserUI>().Init(pokemons[i]);
+        //     }
+        //
+        //     for (int i = pokemons.Count; i < parent.transform.childCount; i++)
+        //     {
+        //         parent.transform.GetChild(i).gameObject.SetActive(false);
+        //     }
+        // }
     }
 
 

@@ -174,13 +174,13 @@ namespace PokemonCore.Utility
             double num = 16711680;
             double G = number / Math.Sqrt(Math.Sqrt((num / B)));
             Random ran = new Random();
-            if (ran.Next(1, 255) < G)
+            if (ran.Next(0, 65535) < G)
             {
-                if (ran.Next(1, 255) < G)
+                if (ran.Next(0, 65535) < G)
                 {
-                    if (ran.Next(1, 255) < G)
+                    if (ran.Next(0, 65535) < G)
                     {
-                        if (ran.Next(1, 255) < G)
+                        if (ran.Next(0, 65535) < G)
                         {
                             return true;
                         }

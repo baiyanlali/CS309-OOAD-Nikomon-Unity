@@ -5,7 +5,6 @@ using System.Runtime.CompilerServices;
 using GamePlay.Utilities;
 using UnityEngine;
 using UnityEngine.PlayerLoop;
-using UnityEngine.SceneManagement;
 
 namespace GamePlay.UI.UIFramework
 {
@@ -80,20 +79,9 @@ namespace GamePlay.UI.UIFramework
 
         public void Init()
         {
-            SceneManager.sceneLoaded += (s, m) =>
-            {
-                if (m == LoadSceneMode.Single)
-                {
-                    PopAllUI(UILayer.Top);
-                    PopAllUI(UILayer.MainUI);
-                    PopAllUI(UILayer.NormalUI);
-                    PopAllUI(UILayer.PopupUI);
-                }
-            };
-
+            
+            
         }
-        
-        
         
         public void PushUI(BaseUI ui)
         {
@@ -128,10 +116,7 @@ namespace GamePlay.UI.UIFramework
             else
             {
                 GameObject tmp = GameResources.SpawnPrefab(typeof(T));
-                // if(tmp.GetComponent<RectTransform>())
-                // curUI = Instantiate(tmp,tmp.transform.position,tmp.transform.rotation).GetComponent<BaseUI>();
-                
-                curUI = Instantiate(tmp,GetUIParent(tmp.GetComponent<BaseUI>().Layer)).GetComponent<BaseUI>();
+                curUI = Instantiate(tmp,tmp.transform.position,tmp.transform.rotation).GetComponent<BaseUI>();
                 curUI.name = curUI.name.Replace("(Clone)", "");
                 tmp = null;
                 _uiDics.AddOrReplace(typeof(T),curUI);
@@ -147,15 +132,6 @@ namespace GamePlay.UI.UIFramework
             
             curUI.OnEnter(args);
 
-        }
-
-        public void Hide<T>() where T : BaseUI
-        {
-            Type type = typeof(T);
-            if (_uiDics.ContainsKey(type))
-            {
-                Hide(_uiDics[type]);
-            }
         }
 
         public void Hide<T>(T obj)where T:BaseUI
@@ -207,37 +183,6 @@ namespace GamePlay.UI.UIFramework
             }
         }
 
-        public void Refresh<T>(params object[] args)where T:BaseUI
-        {
-            Type type = typeof(T);
-            if (!_uiDics.ContainsKey(type))
-            {
-                
-                GameObject tmp = GameResources.SpawnPrefab(typeof(T));
-                // if(tmp.GetComponent<RectTransform>())
-                // curUI = Instantiate(tmp,tmp.transform.position,tmp.transform.rotation).GetComponent<BaseUI>();
-                
-                var curUI = Instantiate(tmp,GetUIParent(tmp.GetComponent<BaseUI>().Layer)).GetComponent<BaseUI>();
-                curUI.name = curUI.name.Replace("(Clone)", "");
-                tmp = null;
-                _uiDics.AddOrReplace(typeof(T),curUI);
-                curUI.gameObject.SetActive(false);
-            }
-            
-            _uiDics[type].OnRefresh(args);
-        }
-
-        public T GetUI<T>() where T : BaseUI
-        {
-            Type type = typeof(T);
-            if (_uiDics.ContainsKey(type))
-            {
-                return _uiDics[type].GetComponent<T>();
-            }
-
-            throw new Exception($"no such ui {type} found");
-        }
-        
         /// <summary>
         /// 弹出ui，直到until弹出为止
         /// </summary>

@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using GamePlay.UI.BattleUI;
 using GamePlay.UI.UIFramework;
 using PokemonCore;
@@ -72,45 +71,36 @@ public class BattleHandler : MonoBehaviour
         };
         battle.OnReplacePokemon += (p1, p2) =>
         {
-            // BattleUIHandler.Instance.OnReplacePokemon(p1,p2);
-            UIManager.Instance.Refresh<BattleStatusPanel>();
+            BattleUIHandler.Instance.OnReplacePokemon(p1,p2);
             BattleFieldHandler.Instance.OnReplacePokemon(p1, p2);
         };
         // UIManager.Instance.Show<BattleUIPanel>(this);
         
-        
-        // BattleUIHandler.Instance.Init(this);
+        BattleUIHandler.Instance.Init(this);
         BattleFieldHandler.Instance.Init(AlliesPokemons, OpponentPokemons);
 
         // DialogHandler.Instance.OnDialogFinished += (o) => { if(Game.battle!=null) BattleUIHandler.Instance.UpdateUI(this);};
-
-        UIManager.Instance.Show<BattleStatusPanel>(this);
 
         battle.OnMove += OnMove;
         battle.OnHit += OnHit;
         battle.OnHitted += OnHitted;
         
-        // print("Complete BattleHandler Init");
+        
         // OnTurnBegin();
         
         GlobalManager.Instance.CompleteBattleInit();
     }
 
-    public CombatPokemon CurrentPokemon;
-
     public void ShowPokeMove(CombatPokemon poke)
     {
-        print(">>>>>>show move!<<<<<<<");
-        // EventPool.Schedule(() => { BattleUIHandler.Instance.ShowMoves(poke);});
-        CurrentPokemon = poke;
-        EventPool.Schedule(() => { UIManager.Instance.Refresh<MovePanel>(poke.pokemon.moves.ToList());});
+        // print("show move!");
+        EventPool.Schedule(() => { BattleUIHandler.Instance.ShowMoves(poke);});
     }
     
     public void EndBattle()
     {
-        UIManager.Instance.PopAllUI(UILayer.NormalUI);
-        // BattleUIHandler.Instance.EndBattle();
-        CurrentPokemon = null;
+        
+        BattleUIHandler.Instance.EndBattle();
         BattleFieldHandler.Instance.EndBattle();
     }
 
@@ -143,8 +133,7 @@ public class BattleHandler : MonoBehaviour
 
         EventPool.Schedule(() =>
         {
-            // BattleUIHandler.Instance.BattleUI.SetActive(true);
-            UIManager.Instance.Show<BattleMenuPanel>();
+            BattleUIHandler.Instance.BattleUI.SetActive(true);
         });
         
         

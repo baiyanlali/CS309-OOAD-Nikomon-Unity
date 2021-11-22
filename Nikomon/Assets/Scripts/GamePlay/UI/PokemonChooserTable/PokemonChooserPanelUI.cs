@@ -20,10 +20,7 @@ namespace GamePlay.UI.PokemonChooserTable
             Trainer trainer=args[0] as Trainer;
             _trainer = trainer;
             string[] chooses = args[1] as string[];
-            Action<int> actions = args[2] as Action<int>;
-            int lastIndex = -1;
-            if (args.Length >= 4)
-                lastIndex = (int)args[3];
+            Action<int>[] actions = args[2] as Action<int>[];
 
             ChooserElement = GameResources.SpawnPrefab(typeof(PokemonChooserElementUI));
 
@@ -61,7 +58,7 @@ namespace GamePlay.UI.PokemonChooserTable
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="args">0 for Trainer, 1 for string[] chooses, 2 for Action actions</param>
+        /// <param name="args">0 for Trainer, 1 for string[] chooses, 2 for Action[] actions</param>
         public override void OnEnter(params object[] args)
         {
             base.OnEnter(args);

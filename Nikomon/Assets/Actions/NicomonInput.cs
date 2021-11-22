@@ -418,14 +418,6 @@ public class @NicomonInput : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Vector2"",
                     ""processors"": """",
                     ""interactions"": """"
-                },
-                {
-                    ""name"": ""Debug"",
-                    ""type"": ""Button"",
-                    ""id"": ""9ca8a454-a9fd-4c65-9c71-14954c0787e8"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -868,17 +860,6 @@ public class @NicomonInput : IInputActionCollection, IDisposable
                     ""action"": ""Click"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""81b937c9-cbec-4262-93ef-f7dc4009aa97"",
-                    ""path"": ""<Keyboard>/backquote"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Keyboard&Mouse"",
-                    ""action"": ""Debug"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -962,7 +943,6 @@ public class @NicomonInput : IInputActionCollection, IDisposable
         m_UI_Submit = m_UI.FindAction("Submit", throwIfNotFound: true);
         m_UI_Cancel = m_UI.FindAction("Cancel", throwIfNotFound: true);
         m_UI_ScrollWheel = m_UI.FindAction("ScrollWheel", throwIfNotFound: true);
-        m_UI_Debug = m_UI.FindAction("Debug", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -1091,7 +1071,6 @@ public class @NicomonInput : IInputActionCollection, IDisposable
     private readonly InputAction m_UI_Submit;
     private readonly InputAction m_UI_Cancel;
     private readonly InputAction m_UI_ScrollWheel;
-    private readonly InputAction m_UI_Debug;
     public struct UIActions
     {
         private @NicomonInput m_Wrapper;
@@ -1102,7 +1081,6 @@ public class @NicomonInput : IInputActionCollection, IDisposable
         public InputAction @Submit => m_Wrapper.m_UI_Submit;
         public InputAction @Cancel => m_Wrapper.m_UI_Cancel;
         public InputAction @ScrollWheel => m_Wrapper.m_UI_ScrollWheel;
-        public InputAction @Debug => m_Wrapper.m_UI_Debug;
         public InputActionMap Get() { return m_Wrapper.m_UI; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1130,9 +1108,6 @@ public class @NicomonInput : IInputActionCollection, IDisposable
                 @ScrollWheel.started -= m_Wrapper.m_UIActionsCallbackInterface.OnScrollWheel;
                 @ScrollWheel.performed -= m_Wrapper.m_UIActionsCallbackInterface.OnScrollWheel;
                 @ScrollWheel.canceled -= m_Wrapper.m_UIActionsCallbackInterface.OnScrollWheel;
-                @Debug.started -= m_Wrapper.m_UIActionsCallbackInterface.OnDebug;
-                @Debug.performed -= m_Wrapper.m_UIActionsCallbackInterface.OnDebug;
-                @Debug.canceled -= m_Wrapper.m_UIActionsCallbackInterface.OnDebug;
             }
             m_Wrapper.m_UIActionsCallbackInterface = instance;
             if (instance != null)
@@ -1155,9 +1130,6 @@ public class @NicomonInput : IInputActionCollection, IDisposable
                 @ScrollWheel.started += instance.OnScrollWheel;
                 @ScrollWheel.performed += instance.OnScrollWheel;
                 @ScrollWheel.canceled += instance.OnScrollWheel;
-                @Debug.started += instance.OnDebug;
-                @Debug.performed += instance.OnDebug;
-                @Debug.canceled += instance.OnDebug;
             }
         }
     }
@@ -1224,6 +1196,5 @@ public class @NicomonInput : IInputActionCollection, IDisposable
         void OnSubmit(InputAction.CallbackContext context);
         void OnCancel(InputAction.CallbackContext context);
         void OnScrollWheel(InputAction.CallbackContext context);
-        void OnDebug(InputAction.CallbackContext context);
     }
 }
