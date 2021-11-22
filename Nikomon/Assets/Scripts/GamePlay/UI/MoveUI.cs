@@ -47,6 +47,7 @@ public class MoveUI:MonoBehaviour
     private void OnClick()
     {
         // print("Click");
+        // UIManager.Instance.Show<BattleUIPanel>();
         BattleUIHandler.Instance.ChooseMove(move,index);
     }
 

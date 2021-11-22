@@ -46,8 +46,6 @@ namespace GamePlay.UI.UIFramework
                 ExitBtn.onClick.RemoveAllListeners();
                 ExitBtn.onClick.AddListener( ()=>UIManager.Instance.Hide(this));
             }
-            
-            
         }
 
         public IEnumerator DoExit()

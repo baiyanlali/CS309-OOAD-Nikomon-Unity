@@ -27,8 +27,11 @@ namespace GamePlay
 
         public static Dictionary<string, string> PrefabPathStr = new Dictionary<string, string>()
         {
-            ["ChooseElement"]="Prefabs/UI/ChooseElement",
             ["PCSlot"]="Prefabs/UI/PC/slot"
+            //BagSystem
+            ["Table"] = "Prefabs/UI/BagSystem/Table",
+            ["BagContents"] = "Prefabs/UI/BagSystem/BagContents",
+            ["ChooseElement"] = "Prefabs/UI/ChooseElement"
         };
 
         public static Dictionary<Type, string> PrefabPath = new Dictionary<Type, string>()
@@ -66,7 +69,10 @@ namespace GamePlay
             [typeof(PokemonChooserPanelUI)]="Prefabs/UI/PokemonChooserTable/PokemonChooserTable",
             [typeof(PokemonChooserElementUI)]="Prefabs/UI/PokemonChooserTable/PokemonStatButton",
             
-            //DialogueChooser
+            //Battle
+            [typeof(MoveUI)]="Prefabs/UI/BattleUI/Move",
+            [typeof(BattlePokemonStateUI)]="Prefabs/UI/BattleUI/PokemonState",
+        
             [typeof(DialogueChooserPanel)]="Prefabs/UI/DialogChooser",
 
             [typeof(PCPanel)]="Prefabs/UI/PCPanel"

@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using GamePlay.UI.BattleUI;
+using GamePlay.UI.UIFramework;
 using PokemonCore;
 using PokemonCore.Combat;
 using UnityEngine;
@@ -72,6 +74,8 @@ public class BattleHandler : MonoBehaviour
             BattleUIHandler.Instance.OnReplacePokemon(p1,p2);
             BattleFieldHandler.Instance.OnReplacePokemon(p1, p2);
         };
+        // UIManager.Instance.Show<BattleUIPanel>(this);
+        
         BattleUIHandler.Instance.Init(this);
         BattleFieldHandler.Instance.Init(AlliesPokemons, OpponentPokemons);
 
@@ -95,6 +99,7 @@ public class BattleHandler : MonoBehaviour
     
     public void EndBattle()
     {
+        
         BattleUIHandler.Instance.EndBattle();
         BattleFieldHandler.Instance.EndBattle();
     }

@@ -26,7 +26,8 @@ public class StartMenuManager : MonoBehaviour
             return;
         }
         GlobalManager.Instance.game.CreateNewSaveFile(text.text,false);
-        SceneManager.LoadSceneAsync(1);
+        //SceneManager.LoadSceneAsync(1);
+        SceneTransmitor.LoadSceneID(1);
     }
 
     
