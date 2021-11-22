@@ -16,9 +16,11 @@ public class PokemonChooserElementUI : MonoBehaviour
     public Text HealthText;
     public Text LevelText;
     public int Index;
+    public Pokemon Poke;
 
     public void Init(Pokemon pokemon, int index, string[] dialogChoose, Action<int>[] actions)
     {
+        Poke = pokemon;
         Index = index;
         PokemonIcon = PokemonIcon ? PokemonIcon : transform.Find("PokemonIcon").GetComponent<Image>();
         PokemonName = PokemonName ? PokemonName : transform.Find("PokemonName").GetComponent<Text>();
@@ -50,6 +52,7 @@ public class PokemonChooserElementUI : MonoBehaviour
 
     public void UpdateData(Pokemon pokemon)
     {
+        Poke = pokemon;
         PokemonIcon = PokemonIcon ? PokemonIcon : transform.Find("PokemonIcon").GetComponent<Image>();
         PokemonName = PokemonName ? PokemonName : transform.Find("PokemonName").GetComponent<Text>();
         HealthBar = HealthBar ? HealthBar : transform.Find("HealthBar").GetComponent<Slider>();

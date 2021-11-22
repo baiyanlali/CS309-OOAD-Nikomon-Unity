@@ -36,6 +36,12 @@ public class PCManager : MonoBehaviour
     {
         //for(int i = 0; i < instance.myPC.pokemonList.Count; i++)
         //先清空一下instance的slots,不知道作用大不大？
+        for (int i = 0; i < instance.imageGrid.transform.childCount; i++)
+        {
+            if(instance.imageGrid.transform.childCount == 0)
+                break;
+            Destroy(instance.imageGrid.transform.GetChild(i).gameObject);
+        }
         instance.slots.Clear();
         Debug.Log(instance.imageGrid.transform.childCount);
         for (int i = 0; i < instance.myPC.itemList.Count; i++)
@@ -60,8 +66,8 @@ public class PCManager : MonoBehaviour
         if (instance.slots[number].GetComponent<Slot>().pcItem.pokemon == null)
         {
             instance.Name.text = instance.slots[number].GetComponent<Slot>().number.ToString();
-            instance.HP.text = "bbb";
-            instance.ATK.text = "ccc";
+            instance.HP.text = instance.slots[number].GetComponent<Slot>().pcItem.itemName;
+            instance.ATK.text = instance.slots[number].GetComponent<Slot>().pcItem.itemInform;
             instance.DEF.text = "ddd";
             instance.SPA.text = "eee";
             instance.SPD.text = "fff";

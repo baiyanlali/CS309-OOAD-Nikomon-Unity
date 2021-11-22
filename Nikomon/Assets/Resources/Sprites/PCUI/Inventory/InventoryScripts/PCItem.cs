@@ -14,7 +14,6 @@ public class PCItem : ScriptableObject
     public Pokemon pokemon;
     public void Init(Pokemon poke)
     {
-        //TODO: change to translator
         itemName = poke.IsNicknamed ? poke.Name : poke.Name;
         itemImage = GameResources.PokemonIcons[poke.ID];
         itemNumber = poke.ID;

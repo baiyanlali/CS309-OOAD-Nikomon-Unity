@@ -1,5 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using GamePlay.UI.UIFramework;
+using GamePlay.UI.UtilUI;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -25,8 +28,9 @@ public class Slot :MonoBehaviour
         {
             PCManager.refreshMenu();
             PCManager.refreshInformation(number);
+            /*
             DialogChooserUI.Instance.transform.SetParent(itemInSlot.transform.parent.parent);
-            DialogChooserUI.Instance.ShowChooser(new string[] { "Open", "Close" }, new Vector2(0, 0), (o) =>
+            DialogChooserUI.Instance.ShowChooser(new string[] { "Open", "Close" }, new Vector2(0, 1), (o) =>
             {
                 switch (o)
                 {
@@ -37,7 +41,21 @@ public class Slot :MonoBehaviour
                         Debug.Log(1);
                         break;
                 }
-            }, itemInSlot.transform.parent as RectTransform);
+            }, itemInSlot.transform.parent as RectTransform);*/
+            Action<int> action = (o) =>
+            {
+                switch (o)
+                {
+                    case 0:
+                        Debug.Log(0);
+                        break;
+                    case 1:
+                        Debug.Log(1);
+                        break;
+                }
+            };
+            UIManager.Instance.Show<DialogueChooserPanel>(new string[] { "Open", "Close" }, new Vector2(0, 1),action, itemInSlot.transform.parent as RectTransform);
+            
             PCManager.openInform();
             judge = 1;
         }
@@ -53,6 +71,7 @@ public class Slot :MonoBehaviour
 
     public void SetupSlot(PCItem item,int num)
     {
+        number = num;
         if(item == null)//这个格子里面没有精灵的情况
         {
             itemInSlot.SetActive(false);
@@ -61,7 +80,6 @@ public class Slot :MonoBehaviour
         slotImage.sprite = item.itemImage;
         slotNum.text = item.itemNumber.ToString();//应该最后没有用的
         pcItem = item;//为了更新显示信息用的
-        number = num;
     }
     public void Update()
     {

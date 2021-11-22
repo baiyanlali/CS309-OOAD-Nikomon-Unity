@@ -27,7 +27,8 @@ namespace GamePlay
 
         public static Dictionary<string, string> PrefabPathStr = new Dictionary<string, string>()
         {
-            ["ChooseElement"]="Prefabs/UI/ChooseElement"
+            ["ChooseElement"]="Prefabs/UI/ChooseElement",
+            ["PCSlot"]="Prefabs/UI/PC/slot"
         };
 
         public static Dictionary<Type, string> PrefabPath = new Dictionary<Type, string>()
@@ -67,6 +68,8 @@ namespace GamePlay
             
             //DialogueChooser
             [typeof(DialogueChooserPanel)]="Prefabs/UI/DialogChooser",
+
+            [typeof(PCPanel)]="Prefabs/UI/PCPanel"
     };
     }
     
