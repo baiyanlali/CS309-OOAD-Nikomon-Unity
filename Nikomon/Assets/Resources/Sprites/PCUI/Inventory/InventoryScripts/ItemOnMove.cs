@@ -11,10 +11,12 @@ public class ItemOnMove : MonoBehaviour,IBeginDragHandler,IDragHandler,IEndDragH
     private int currentItemID;
     public bool judge = true;
     public PCItem temp;
+    public Pokemon TempPokemon;
     public void OnBeginDrag(PointerEventData eventData)
     {
         //Debug.Log(currentItemID);
         temp = transform.parent.GetComponent<Slot>().pcItem;//新加的不知道对错，准备让pcItem随着transform的移动而移动！！！
+        TempPokemon = transform.parent.GetComponent<Slot>().pcItem.pokemon;
         transform.parent.GetComponent<Slot>().pcItem=null;//新加的不知道对错
         originalParent = transform.parent;
         Debug.Log(currentItemID);
@@ -90,14 +92,22 @@ public class ItemOnMove : MonoBehaviour,IBeginDragHandler,IDragHandler,IEndDragH
                 Debug.Log("shit");
                 transform.position = originalParent.position; //transform是item
                 transform.SetParent(originalParent);
-                var temp = eventData.pointerCurrentRaycast.gameObject.GetComponent<PokemonChooserElementUI>().Poke;
+                var token = eventData.pointerCurrentRaycast.gameObject.GetComponent<PokemonChooserElementUI>().Poke;
+                if (token == null)
+                {
+                    Debug.Log("pokenmon in PokemonChooserElementUI is shit");
+                }
+                if (TempPokemon == null)
+                {
+                    Debug.Log("pokenmon in item is shit");
+                }
                 eventData.pointerCurrentRaycast.gameObject.GetComponent<PokemonChooserElementUI>().UpdateData(
-                    transform.GetComponentInParent<Slot>().pcItem
-                        .pokemon); //用pcItem中的pokenmon来更新按钮里面的信息的,但是不知道对不对（目前的item里面的pokemon都是null）所以目前没法debug！
+                    TempPokemon); //用pcItem中的pokenmon来更新按钮里面的信息的,但是不知道对不对（目前的item里面的pokemon都是null）所以目前没法debug！
                 
                 //还缺用按钮里面的pokemon去更新PC里面的精灵
                 AdditemToPCInventory additemToPCInventory = new AdditemToPCInventory();//这样初始化不知道对不对
-                additemToPCInventory.AddNewItem(temp, currentItemID);
+                additemToPCInventory.AddNewItem(token, currentItemID);
+                PCManager.Refresh();
                 /*
                 myPC.itemList[eventData.pointerCurrentRaycast.gameObject.GetComponentInParent<Slot>().number] =
                 myPC.itemList[currentItemID];

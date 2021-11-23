@@ -7,7 +7,7 @@ public class SaveContentUI : TabContent
 {
     public List<SaveSlotUI> SaveSlots=new List<SaveSlotUI>();
 
-    public override void OnShow(params object[] args)
+    public override void OnShow()
     {
         base.OnShow();
         

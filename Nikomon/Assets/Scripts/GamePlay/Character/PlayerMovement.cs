@@ -20,6 +20,10 @@ public class PlayerMovement : MonoBehaviour
         VirtualController=GameObject.Find("VirtualController");
         if (nicoInput == null)
             nicoInput = FindObjectOfType<NicomonInputSystem>();
+        nicoInput.NicomonInput.UI.Debug.started += (o) =>
+        {
+            UIManager.Instance.Show<DebugPanel>();
+        };
     }
 
     void Update()
@@ -47,7 +51,8 @@ public class PlayerMovement : MonoBehaviour
             }
             if (nicoInput.accept)
             {
-                CheckInteractable();
+              
+               // CheckInteractable();
             }
         }
     }

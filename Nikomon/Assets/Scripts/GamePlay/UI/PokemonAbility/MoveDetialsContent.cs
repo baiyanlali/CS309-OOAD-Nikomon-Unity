@@ -11,14 +11,22 @@ namespace GamePlay.UI.PokemonAbility
         /// 
         /// </summary>
         /// <param name="args">0 for pokemon</param>
-        public override void OnShow(params object[] args)
+        // public override void OnShow(params object[] args)
+        // {
+        //     base.OnShow();
+        //
+        //     MoveUIPrefab = GameResources.SpawnPrefab(typeof(MoveUI));
+        //     
+        //
+        //     Pokemon pokemon = (Pokemon)args[0];
+        //     
+        // }
+        public override void OnShow()
         {
             base.OnShow();
-
+        
             MoveUIPrefab = GameResources.SpawnPrefab(typeof(MoveUI));
             
-
-            Pokemon pokemon = (Pokemon)args[0];
             
         }
 

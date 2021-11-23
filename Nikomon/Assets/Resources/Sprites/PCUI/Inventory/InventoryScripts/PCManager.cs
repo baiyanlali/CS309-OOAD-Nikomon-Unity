@@ -24,10 +24,13 @@ public class PCManager : MonoBehaviour
         if (instance != null)
             Destroy(this);
         instance = this;
+        imageGrid.SetActive(true);
+        instance.information.SetActive(false);
     }
 
     private void OnEnable()
     {
+        imageGrid.SetActive(true);
         Refresh();
     }
 
@@ -52,15 +55,15 @@ public class PCManager : MonoBehaviour
         }
     }
 
-    public static void refreshMenu()
-    {
-        for (int i = 0; i < instance.myPC.itemList.Count; i++)
-        {
-            instance.slots[i].GetComponent<Slot>().menu.SetActive(false);
-            instance.slots[i].GetComponent<Slot>().judge = 0;
-
-        }
-    }
+    // public static void refreshMenu()
+    // {
+    //     for (int i = 0; i < instance.myPC.itemList.Count; i++)
+    //     {
+    //         instance.slots[i].GetComponent<Slot>().menu.SetActive(false);
+    //         instance.slots[i].GetComponent<Slot>().judge = 0;
+    //
+    //     }
+    // }
     public static void refreshInformation(int number)
     {
         if (instance.slots[number].GetComponent<Slot>().pcItem.pokemon == null)

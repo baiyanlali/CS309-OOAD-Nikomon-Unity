@@ -24,6 +24,7 @@ public class TabSystem : MonoBehaviour
     private void Start()
     {
         if (hasInit) return;
+        hasInit = true;
         TabElements = new List<TabElement>();
         TabElements.AddRange(GetComponentsInChildren<TabElement>());
         TableContent = TableContent ? TableContent : transform.Find("TableContent");
@@ -34,6 +35,8 @@ public class TabSystem : MonoBehaviour
             for (int i = 0; i < TableContent.childCount; i++)
             {
                 tableContents.Add(TableContent.GetChild(i).GetComponent<TabContent>());
+                if(i!=0)
+                    TableContent.GetChild(i).gameObject.SetActive(false);
             }
         }
 

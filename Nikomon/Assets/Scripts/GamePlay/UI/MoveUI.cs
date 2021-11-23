@@ -1,6 +1,8 @@
 ﻿
 using System;
 using GamePlay;
+using GamePlay.UI.BattleUI;
+using GamePlay.UI.UIFramework;
 using PokemonCore.Attack;
 using PokemonCore.Combat;
 using UnityEngine;
@@ -48,7 +50,7 @@ public class MoveUI:MonoBehaviour
     {
         // print("Click");
         // UIManager.Instance.Show<BattleUIPanel>();
-        BattleUIHandler.Instance.ChooseMove(move,index);
+        // BattleUIHandler.Instance.ChooseMove(move,index);
     }
 
 }

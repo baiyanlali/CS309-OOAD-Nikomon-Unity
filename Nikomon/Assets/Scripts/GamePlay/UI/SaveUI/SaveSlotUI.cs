@@ -23,6 +23,7 @@ public class SaveSlotUI : BaseUI
 
     public override void Init(params object[] args)
     {
+        base.Init(args);
         Title = GET(Title,nameof(Title),GET_TYPE.Component);
         LastTimeSaved = GET(LastTimeSaved,nameof(LastTimeSaved),GET_TYPE.Component);
         Name = GET(Name,nameof(Name),GET_TYPE.Component);

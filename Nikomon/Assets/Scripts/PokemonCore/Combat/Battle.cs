@@ -294,7 +294,7 @@ namespace PokemonCore.Combat
         public void CompleteInit()
         {
             OnTurnBegin?.Invoke();
-
+            // UnityEngine.Debug.Log("Complete Battle Log");
             if(MyPokeWithNoInstructions.Count!=0)
                 ShowPokeMove?.Invoke(MyPokeWithNoInstructions[0]);
         }
