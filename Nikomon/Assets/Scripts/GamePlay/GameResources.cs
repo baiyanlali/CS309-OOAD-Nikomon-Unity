@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using GamePlay.Core;
 using GamePlay.UI;
+using GamePlay.UI.BagSystem;
 using GamePlay.UI.BattleUI;
 using GamePlay.UI.Dialog;
 using GamePlay.UI.MainMenuUI;
@@ -48,6 +49,7 @@ namespace GamePlay
             //bag
             [typeof(BagPanelUI)] = "Prefabs/UI/BagSystem/BagTable", 
             [typeof(BagContentElementUI)] = "Prefabs/UI/BagSystem/BagContentElement", 
+            [typeof(StorePanelUI)]="Prefabs/UI/BagSystem/StorePanel",
 
             //PokemonChooserPanel
             [typeof(PokemonChooserPanelUI)] = "Prefabs/UI/PokemonChooserTable/PokemonChooserTable", 

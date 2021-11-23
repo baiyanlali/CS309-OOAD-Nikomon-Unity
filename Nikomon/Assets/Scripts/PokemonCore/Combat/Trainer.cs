@@ -10,7 +10,27 @@ namespace PokemonCore.Combat
     {
         public string name { get; private set; }
         public int id { get; private set; }
-        public int money { get; private set; }
+
+        private int money;
+
+        [JsonIgnore]
+        public int Money
+        {
+            get
+            {
+                return money;
+            }
+            set
+            {
+                if (value < 0)
+                    money = 0;
+                else
+                {
+                    money = value;
+                }
+            }
+        }
+
         public Pokemon[] party { get; set; }
 
         public bool isMale;

@@ -90,14 +90,14 @@ public class ItemOnMove : MonoBehaviour,IBeginDragHandler,IDragHandler,IEndDragH
                 Debug.Log("shit");
                 transform.position = originalParent.position; //transform是item
                 transform.SetParent(originalParent);
-                var temp = eventData.pointerCurrentRaycast.gameObject.GetComponent<PokemonChooserElementUI>().Poke;
+                // var temp = eventData.pointerCurrentRaycast.gameObject.GetComponent<PokemonChooserElementUI>().Poke;
                 eventData.pointerCurrentRaycast.gameObject.GetComponent<PokemonChooserElementUI>().UpdateData(
                     transform.GetComponentInParent<Slot>().pcItem
                         .pokemon); //用pcItem中的pokenmon来更新按钮里面的信息的,但是不知道对不对（目前的item里面的pokemon都是null）所以目前没法debug！
                 
                 //还缺用按钮里面的pokemon去更新PC里面的精灵
                 AdditemToPCInventory additemToPCInventory = new AdditemToPCInventory();//这样初始化不知道对不对
-                additemToPCInventory.AddNewItem(temp, currentItemID);
+                // additemToPCInventory.AddNewItem(temp, currentItemID);
                 /*
                 myPC.itemList[eventData.pointerCurrentRaycast.gameObject.GetComponentInParent<Slot>().number] =
                 myPC.itemList[currentItemID];
