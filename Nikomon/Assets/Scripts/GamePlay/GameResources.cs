@@ -31,6 +31,7 @@ namespace GamePlay
             ["Table"] = "Prefabs/UI/BagSystem/Table",
             ["BagContents"] = "Prefabs/UI/BagSystem/BagContents",
             ["ChooseElement"] = "Prefabs/UI/ChooseElement",
+            ["Slot"]="Prefabs/UI/PC/slot"
         };
 
         public static Dictionary<Type, string> PrefabPath = new Dictionary<Type, string>()
@@ -72,7 +73,10 @@ namespace GamePlay
             [typeof(DebugPanel)]="Prefabs/UI/DebugTool",
             
             //Dialogue
-            [typeof(DialoguePanel)]="Prefabs/UI/DialogPanel"
+            [typeof(DialoguePanel)]="Prefabs/UI/DialogPanel",
+            
+            //PC
+            [typeof(PCManager)]="Prefabs/UI/PC/PC"
         };
     }
 

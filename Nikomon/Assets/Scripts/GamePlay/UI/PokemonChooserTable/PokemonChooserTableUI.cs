@@ -10,21 +10,9 @@ public class PokemonChooserTableUI : MonoBehaviour
 {
     private GameObject ChooserElement;
 
-    public static PokemonChooserTableUI Instance
-    {
-        get
-        {
-            if (sInstance != null) return sInstance;
-            sInstance = FindObjectOfType<PokemonChooserTableUI>();
-            if (sInstance != null) return sInstance;
-            // throw new Exception("懒得写了");
-            return sInstance;
-        }
-    }
-    public static PokemonChooserTableUI sInstance;
-
     public void Init(Trainer trainer,string[] chooses,Action<int> actions)
     {
+        //TODO: Change this method
         ChooserElement = ChooserElement
             ? ChooserElement
             : Resources.Load<GameObject>("Prefabs/UI/PokemonChooserTable/PokemonStatButton");
@@ -53,8 +41,8 @@ public class PokemonChooserTableUI : MonoBehaviour
             transform.GetChild(i).GetComponent<PokemonChooserElementUI>().Init(trainer.party[i],i,chooses,actions);
         }
         
-        gameObject.SetActive(false);
-        EventSystem.current.SetSelectedGameObject(transform.GetChild(0).gameObject);
+        // gameObject.SetActive(false);
+        // EventSystem.current.SetSelectedGameObject(transform.GetChild(0).gameObject);
     }
 
     public void UpdateData()

@@ -1,130 +1,143 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 using GamePlay;
+using GamePlay.Messages;
+using GamePlay.UI.UIFramework;
+using PokemonCore.Character;
+using PokemonCore.Combat;
+using PokemonCore.Inventory;
+using UnityEditor.VersionControl;
 
-public class PCManager : MonoBehaviour
+public class PCManager : BaseUI
 {
 
-    static PCManager instance;
+    public PC pc;
+    public Trainer trainer;
 
-    public PCInventory myPC;
     public GameObject imageGrid;//PC里面的格子。
     public GameObject information;
     public Text Name,HP, ATK, DEF, SPA, SPD, SPE;
+
+    public PokemonChooserTableUI TableUI;
     //public PCImage imagePrefab;
     //public Text information;//介绍宝可梦的信息。(先不要)
 
-    public List<GameObject> slots = new List<GameObject>();
+    public List<Slot> slots = new List<Slot>();
     public GameObject emptySlot;
 
     private void Awake()
     {
-        if (instance != null)
-            Destroy(this);
-        instance = this;
         imageGrid.SetActive(true);
-        instance.information.SetActive(false);
+        if (emptySlot == null)
+            emptySlot = GameResources.SpawnPrefab("Slot");
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="args">0 for trainer, 1 for pc</param>
+    public override void OnEnter(params object[] args)
+    {
+        base.OnEnter(args);
+        if (args != null)
+        {
+            trainer=args[0] as Trainer;
+            
+            pc = args[1] as PC;
+        }
+        
+        imageGrid.SetActive(true);
+        if (emptySlot == null)
+            emptySlot = GameResources.SpawnPrefab("Slot");
+
+        OnRefresh();
+        
     }
 
     private void OnEnable()
     {
         imageGrid.SetActive(true);
-        Refresh();
+        // OnRefresh();
     }
 
-
-    public static void Refresh()
+    public override void OnRefresh(params object[] args)
     {
-        //for(int i = 0; i < instance.myPC.pokemonList.Count; i++)
-        //先清空一下instance的slots,不知道作用大不大？
-        for (int i = 0; i < instance.imageGrid.transform.childCount; i++)
-        {
-            if(instance.imageGrid.transform.childCount == 0)
-                break;
-            Destroy(instance.imageGrid.transform.GetChild(i).gameObject);
-        }
-        instance.slots.Clear();
-        Debug.Log(instance.imageGrid.transform.childCount);
-        for (int i = 0; i < instance.myPC.itemList.Count; i++)
-        {
-            instance.slots.Add(Instantiate(instance.emptySlot));
-            instance.slots[i].transform.SetParent(instance.imageGrid.transform);
-            instance.slots[i].GetComponent<Slot>().SetupSlot(instance.myPC.itemList[i],i);
-        }
-    }
+        base.OnRefresh(args);
 
-    // public static void refreshMenu()
-    // {
-    //     for (int i = 0; i < instance.myPC.itemList.Count; i++)
-    //     {
-    //         instance.slots[i].GetComponent<Slot>().menu.SetActive(false);
-    //         instance.slots[i].GetComponent<Slot>().judge = 0;
-    //
-    //     }
-    // }
-    public static void refreshInformation(int number)
-    {
-        if (instance.slots[number].GetComponent<Slot>().pcItem.pokemon == null)
+        if (slots.Count == 0)
         {
-            instance.Name.text = instance.slots[number].GetComponent<Slot>().number.ToString();
-            instance.HP.text = instance.slots[number].GetComponent<Slot>().pcItem.itemName;
-            instance.ATK.text = instance.slots[number].GetComponent<Slot>().pcItem.itemInform;
-            instance.DEF.text = "ddd";
-            instance.SPA.text = "eee";
-            instance.SPD.text = "fff";
-            instance.SPE.text = "ggg";
+            for (int i = 0; i < pc.Pokemons.Length; i++)
+            {
+                slots.Add(Instantiate(emptySlot).GetComponent<Slot>());
+                slots[i].transform.SetParent(imageGrid.transform);
+                slots[i].GetComponent<Slot>().SetupSlot(pc.Pokemons[i],i,RefreshInformation,ShowInfo);
+            }
         }
         else
         {
-            instance.Name.text = instance.slots[number].GetComponent<Slot>().pcItem.pokemon.Name.ToString();
-            instance.HP.text = instance.slots[number].GetComponent<Slot>().pcItem.pokemon.HP.ToString();
-            instance.ATK.text = instance.slots[number].GetComponent<Slot>().pcItem.pokemon.ATK.ToString();
-            instance.DEF.text = instance.slots[number].GetComponent<Slot>().pcItem.pokemon.DEF.ToString();
-            instance.SPA.text = instance.slots[number].GetComponent<Slot>().pcItem.pokemon.SPA.ToString();
-            instance.SPD.text = instance.slots[number].GetComponent<Slot>().pcItem.pokemon.SPD.ToString();
-            instance.SPE.text = instance.slots[number].GetComponent<Slot>().pcItem.pokemon.SPE.ToString();
+            for (int i = 0; i < pc.Pokemons.Length; i++)
+            {
+                slots[i].GetComponent<Slot>().SetupSlot(pc.Pokemons[i],i,RefreshInformation,ShowInfo);
+            }
+        }
+        
+        // for (int i = 0; i < imageGrid.transform.childCount; i++)
+        // {
+        //     if(imageGrid.transform.childCount == 0)
+        //         break;
+        //     Destroy(imageGrid.transform.GetChild(i).gameObject);
+        // }
+        // slots.Clear();
+        // Debug.Log(imageGrid.transform.childCount);
+        // for (int i = 0; i < pc.Pokemons.Length; i++)
+        // {
+        //     slots.Add(Instantiate(emptySlot).GetComponent<Slot>());
+        //     slots[i].transform.SetParent(imageGrid.transform);
+        //     slots[i].GetComponent<Slot>().SetupSlot(pc.Pokemons[i],i,RefreshInformation,ShowInfo);
+        // }
+        
+        TableUI.Init(trainer,new []{"Show Ability","Cancel"},HandleChooserTalbeUI);
+    }
+
+    private void HandleChooserTalbeUI(int index)
+    {
+        print(index);
+    }
+    
+
+    public void RefreshInformation(int number)
+    {
+        if (slots[number].pokemon == null)
+        {
+            Name.text = slots[number].index.ToString();
+            HP.text = Messages.Get(slots[number].pokemon.Name);
+            ATK.text = slots[number].pokemon.ATK.ToString();
+            DEF.text = "ddd";
+            SPA.text = "eee";
+            SPD.text = "fff";
+            SPE.text = "ggg";
+        }
+        else
+        {
+            Name.text = slots[number].pokemon.Name.ToString();
+            HP.text = slots[number].pokemon.HP.ToString();
+            ATK.text = slots[number].pokemon.ATK.ToString();
+            DEF.text = slots[number].pokemon.DEF.ToString();
+            SPA.text = slots[number].pokemon.SPA.ToString();
+            SPD.text = slots[number].pokemon.SPD.ToString();
+            SPE.text = slots[number].pokemon.SPE.ToString();
         }
     }
-    public static void openInform()
+
+
+    public void ShowInfo(bool isShow)
     {
-        instance.information.SetActive(true);
+        information.SetActive(isShow);
     }
 
-    public static void closeInform()
-    {
-        instance.information.SetActive(false);
-    }
 
-    //public static void CreateNewPCImage(PCItem item)//或者直接传一个pokemon？？（目前是准备pokemon和PCitem交互，然后PCitem和这个交互）
-    //    //TODO:应该是不需要item的直接pokemon交互就行！！！！这个加到捕捉里面！！！
-    //{
-    //    PCImage newItem = Instantiate(instance.imagePrefab, instance.imageGrid.transform.position, Quaternion.identity);
-    //    newItem.gameObject.transform.SetParent(instance.imageGrid.transform);
-    //    newItem.pcItem = item;
-    //    newItem.image.sprite = item.itemImage;
-    //    newItem.number.text = item.itemNumber.ToString();
-
-    //}
-
-    ////在每一次捕捉里面判断，如果背包满了就加进仓库里面，如果没满就弄进背包里面！！！
-    //public void CreateNewPCImage(Pokemon pokemon)
-    //{
-
-    //    PCImage newItem = Instantiate(instance.imagePrefab, instance.imageGrid.transform.position, Quaternion.identity);
-    //    newItem.gameObject.transform.SetParent(instance.imageGrid.transform);
-    //    newItem.pokemon = pokemon;
-    //    newItem.image.sprite = GameResources.PokemonIcons[pokemon.ID];
-    //    newItem.number.text = pokemon.ID.ToString();
-    //    myPC.pokemonList.Add(pokemon);
-
-    //}
-    /*
-             //TODO: change to translator
-        itemName = pokemon.IsNicknamed ? pokemon.Name : pokemon.Name;
-        itemImage = GameResources.PokemonIcons[pokemon.ID];
-        itemNumber = pokemon.ID;
-     */
 }
 

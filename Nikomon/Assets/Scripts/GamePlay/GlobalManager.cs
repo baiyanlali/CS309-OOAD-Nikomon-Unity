@@ -125,8 +125,8 @@ public class GlobalManager : MonoBehaviour
         SceneManager.sceneLoaded += (o1, o2) =>
         {
             Action<int> action = new Action<int>((o)=>print(o)); 
-            BagUI.Instance?.Init(Game.bag);
-            PokemonChooserTableUI.Instance?.Init(Game.trainer, new string[] { },action);
+            // BagUI.Instance?.Init(Game.bag);
+            // PokemonChooserTableUI.Instance?.Init(Game.trainer, new string[] { },action);
         };
         //
         //
