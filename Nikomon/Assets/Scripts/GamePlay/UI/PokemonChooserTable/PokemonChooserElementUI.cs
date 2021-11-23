@@ -50,7 +50,6 @@ public class PokemonChooserElementUI : MonoBehaviour
 
     public void UpdateData(Pokemon pokemon)
     {
-        Poke = pokemon;
         PokemonIcon = PokemonIcon ? PokemonIcon : transform.Find("PokemonIcon").GetComponent<Image>();
         PokemonName = PokemonName ? PokemonName : transform.Find("PokemonName").GetComponent<Text>();
         HealthBar = HealthBar ? HealthBar : transform.Find("HealthBar").GetComponent<Slider>();

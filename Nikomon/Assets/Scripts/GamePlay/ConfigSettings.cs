@@ -8,7 +8,7 @@ namespace GamePlay
     {
         public bool UseVirtualControl;
 
-        public Languages Languages;
+        public string Languages;
 
         [JsonConstructor]
         public ConfigSettings(bool useVirtualControl)
