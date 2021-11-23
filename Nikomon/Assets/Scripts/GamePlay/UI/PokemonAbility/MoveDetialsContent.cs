@@ -21,7 +21,7 @@ namespace GamePlay.UI.PokemonAbility
         //     Pokemon pokemon = (Pokemon)args[0];
         //     
         // }
-        public override void OnShow()
+        public override void OnShow(params object[] args)
         {
             base.OnShow();
         
