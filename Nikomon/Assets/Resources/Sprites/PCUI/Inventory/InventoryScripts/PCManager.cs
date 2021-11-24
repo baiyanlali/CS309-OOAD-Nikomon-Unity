@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,6 +7,7 @@ using UnityEngine.UI;
 using GamePlay;
 using GamePlay.Messages;
 using GamePlay.UI.UIFramework;
+using GamePlay.UI.UtilUI;
 using PokemonCore.Character;
 using PokemonCore.Combat;
 using PokemonCore.Inventory;
@@ -27,6 +29,8 @@ public class PCManager : BaseUI
 
     public List<Slot> slots = new List<Slot>();
     public GameObject emptySlot;
+    private bool[] judge;
+    public bool[] exchangeIndex;//用于交换作用的！！！目前是想设它为26长的一个布尔数组，前六位是背包，后20位是PC
 
     private void Awake()
     {
@@ -45,9 +49,19 @@ public class PCManager : BaseUI
         if (args != null)
         {
             trainer=args[0] as Trainer;
-            
             pc = args[1] as PC;
+            judge = new bool[trainer.party.Length];
+            exchangeIndex = new bool[trainer.party.Length+pc.Pokemons.Length];
+            for (int i = 0; i < judge.Length; i++)
+            {
+                judge[i] = false;
+            }
+            for (int i = 0; i < exchangeIndex.Length; i++)
+            {
+                exchangeIndex[i] = false;
+            }
         }
+
         
         imageGrid.SetActive(true);
         if (emptySlot == null)
@@ -104,10 +118,117 @@ public class PCManager : BaseUI
 
     private void HandleChooserTalbeUI(int chooseIndex,int bagIndex)
     {
-        // print(index);
+        print(chooseIndex+" "+bagIndex);
+        switch (chooseIndex)
+        {
+            case 0:
+                Debug.Log("查看信息");
+                if (!judge[bagIndex] )
+                {
+                    RefreshInformationButton(bagIndex);
+                    ShowInfo(true);
+                    for (int i = 0; i < judge.Length; i++)
+                    {
+                        judge[i] = false;
+                    }
+                    judge[bagIndex] = true;
+                }
+                else
+                {
+                    ShowInfo(false);
+                    judge[bagIndex] = false;
+                }
+                break;
+            case 1:
+                Debug.Log("交换");
+                for (int i = 0; i < exchangeIndex.Length; i++)
+                {
+                    if (exchangeIndex[i])
+                    {
+                        if (i <= 5)
+                        {//背包里面的交换!
+                            exchangeIndex[i] = false;
+                            Pokemon temp = trainer.party[i];
+                            trainer.party[i] = trainer.party[bagIndex];
+                            trainer.party[bagIndex] = temp;
+                            TableUI.ExchangeData(trainer);
+                            return;
+                        }
+                        else
+                        {//先标记的PC，然后再选择了背包里面的宝可梦进行交换！！！
+                            exchangeIndex[i] = false;
+                            pc.SwitchPCAndPartyPokemon(trainer, bagIndex, i-6);
+                            UIManager.Instance.Refresh<PCManager>();
+                            return;
+                        }
+                    }
+                }
+                exchangeIndex[bagIndex] = true;
+                break;
+            case 2:
+                Debug.Log("持有物");
+                break;
+            case 3:
+                Debug.Log("放生");
+                Action<bool> action = (Action<bool>) ((o) =>
+                {
+                    if (o == true)
+                    {
+                        trainer.party[bagIndex] = null;
+                        for (int i = bagIndex; i < trainer.party.Length-1; i++)
+                        {
+                            trainer.party[i] = trainer.party[i + 1];
+                        }
+                        trainer.party[trainer.party.Length-1] = null;
+                        
+                        //TableUI.Init(trainer,new []{"查看信息", "标记","持有物","放生","查看能力","取消"},HandleChooserTalbeUI);
+                        TableUI.UpdateData(trainer);
+                    
+                        //UIManager.Instance.Refresh<PCManager>();
+                    }
+                    else
+                    {
+                    
+                    }
+                });
+                UIManager.Instance.Show<ConfirmPanel>("Are you sure to release this pokemon?", action);
+                    
+                break;
+            case 4:
+                Debug.Log("查看能力");
+                break;
+            case 5:
+                Debug.Log("取消");
+                break;
+        }
+        
     }
     
 
+    public void RefreshInformationButton(int number)
+    {
+        if (trainer.party[number] == null)
+        {
+            Name.text = number.ToString();
+            HP.text = "bbb";
+            ATK.text = "ccc";
+            DEF.text = "ddd";
+            SPA.text = "eee";
+            SPD.text = "fff";
+            SPE.text = "ggg";
+        }
+        else
+        {
+            Pokemon temp = trainer.party[number];
+            Name.text = temp.Name.ToString();
+            HP.text = temp.HP.ToString();
+            ATK.text = temp.ATK.ToString();
+            DEF.text = temp.DEF.ToString();
+            SPA.text = temp.ToString();
+            SPD.text = temp.ToString();
+            SPE.text = temp.ToString();
+        }
+    }
     public void RefreshInformation(int number)
     {
         if (slots[number].pokemon == null)
@@ -131,7 +252,6 @@ public class PCManager : BaseUI
             SPE.text = slots[number].pokemon.SPE.ToString();
         }
     }
-
 
     public void ShowInfo(bool isShow)
     {

@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using GamePlay;
 using GamePlay.UI.UIFramework;
 using GamePlay.UI.UtilUI;
+using PokemonCore.Character;
+using PokemonCore.Combat;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
@@ -25,6 +27,9 @@ public class Slot :MonoBehaviour
 
     public Action<int> RefreshInformation;
     public Action<bool> ShowInfo;
+    private PC _pc;
+    private Trainer _trainer;
+
     public void OnClicked()
     {
         Action<int> action = (o) =>
@@ -50,28 +55,54 @@ public class Slot :MonoBehaviour
                     }
                     break;
                 case 1:
-                    Debug.Log("标记");
+                    Debug.Log("交换1");
+                    _pc ??= UIManager.Instance.GetUI<PCManager>().pc;
+                    _trainer ??= UIManager.Instance.GetUI<PCManager>().trainer;
+                    bool[] exchangeIndex = UIManager.Instance.GetUI<PCManager>().exchangeIndex;
+                    for (int i = 0; i < exchangeIndex.Length; i++)
+                    {
+                        if (exchangeIndex[i])
+                        {
+                            if (i <= 5)
+                            {
+                                //i<=5说明上一个选择的宝可梦是位于背包的。这种情况是先标记背包再标记PC的时候
+                                exchangeIndex[i] = false;
+                                _pc.SwitchPCAndPartyPokemon(_trainer, i, index);
+                                UIManager.Instance.Refresh<PCManager>();
+                                return;
+                            }
+                            else
+                            {
+                                //这种情况是PC内部进行交换的！！！
+                                exchangeIndex[i] = false;
+                                _pc.SwapPokemon(_pc.ActiveBox, i-6, _pc.ActiveBox, index);
+                                UIManager.Instance.Refresh<PCManager>();
+                                return;
+                            }
+                        }
+                    }
+                    exchangeIndex[index+ 6] = true;//因为前六个是背包！！！
                     break;
                 case 2:
                     Debug.Log("持有物");
                     break;
                 case 3:
                     Debug.Log("放生");
-                    UIManager.Instance.Show<ConfirmPanel>("Are you sure to release this pokemon?", (Action<bool>)((o) =>
+                    Action<bool> action = (Action<bool>) ((o) =>
                     {
                         if (o == true)
                         {
-                            // pcItem = null;
-                            
-                            // transform.Find("Item").GetComponent<ItemOnMove>().myPC.itemList[number] = null;
-                            // PCManager.Refresh();
+                            _pc ??= UIManager.Instance.GetUI<PCManager>().pc;
+                            _pc.Pokemons[index] = null;
+                    
                             UIManager.Instance.Refresh<PCManager>();
                         }
                         else
                         {
-                            
+                    
                         }
-                    }));
+                    });
+                    UIManager.Instance.Show<ConfirmPanel>("Are you sure to release this pokemon?", action);
                     
                     break;
                 case 4:

@@ -15,7 +15,14 @@ public class PCTest : MonoBehaviour
         GlobalManager.Instance.LoadAllSaveData();
         Trainer trainer = new Trainer("JDY", true);
         Pokemon wyf = new Pokemon(1, 50);
+        Pokemon AIfanfan = new Pokemon(7, 50);
+        Pokemon AIfanfan2 = new Pokemon(1, 30);
+        // trainer.AddPokemon(AIfanfan);
+        // trainer.AddPokemon(AIfanfan2);
         trainer.AddPokemon(wyf);
+        trainer.AddPokemon(AIfanfan);
+        trainer.AddPokemon(AIfanfan2);
+        trainer.AddPokemon(AIfanfan);
         // PCManager.TableUI.Init(trainer,new []{"Show Ability","Cancel"},HandleTableUI);
 
         PC pc = new PC();

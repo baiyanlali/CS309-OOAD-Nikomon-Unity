@@ -47,9 +47,29 @@ public class PokemonChooserTableUI : MonoBehaviour
         // EventSystem.current.SetSelectedGameObject(transform.GetChild(0).gameObject);
     }
 
-    public void UpdateData()
+    public void ExchangeData(Trainer trainer)
     {
-        Trainer trainer = Game.trainer;
+        for (int i = 0; i < transform.childCount; i++)
+        {
+            if (trainer.party[i] == null) break;
+            transform.GetChild(i).gameObject.SetActive(true);
+            transform.GetChild(i).GetComponent<PokemonChooserElementUI>().UpdateData(trainer.party[i]);
+        }
+        gameObject.SetActive(true);
+    }
+    public void UpdateData(Trainer trainer)
+    {
+        // for (int i = 0; i < transform.childCount; i++)
+        // {
+        //     if (trainer.party[i] == null)
+        //     {
+        //         break;
+        //     }
+        //     transform.GetChild(i).gameObject.SetActive(true);
+        //     transform.GetChild(i).GetComponent<PokemonChooserElementUI>().UpdateData(trainer.party[i]);
+        // }
+        //Destroy(transform.GetChild(bagIndex).gameObject);
+        Destroy(transform.GetChild(transform.childCount-1).gameObject);
         for (int i = 0; i < transform.childCount; i++)
         {
             if (trainer.party[i] == null) break;
