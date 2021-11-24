@@ -99,7 +99,7 @@ public class PCManager : BaseUI
         //     slots[i].GetComponent<Slot>().SetupSlot(pc.Pokemons[i],i,RefreshInformation,ShowInfo);
         // }
         
-        TableUI.Init(trainer,new []{"Show Ability","Cancel"},HandleChooserTalbeUI);
+        TableUI.Init(trainer,new []{"查看信息", "标记","持有物","放生","查看能力","取消"},HandleChooserTalbeUI);
     }
 
     private void HandleChooserTalbeUI(int index)
