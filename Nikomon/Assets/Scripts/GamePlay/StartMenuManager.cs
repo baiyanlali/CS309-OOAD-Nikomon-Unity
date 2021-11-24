@@ -23,6 +23,7 @@ public class StartMenuManager : MonoBehaviour
     {
         if (string.IsNullOrWhiteSpace(text))
         {
+            print("No name given");
             return;
         }
         GlobalManager.Instance.game.CreateNewSaveFile(text,false);

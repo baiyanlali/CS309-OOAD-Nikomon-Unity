@@ -102,9 +102,9 @@ public class PCManager : BaseUI
         TableUI.Init(trainer,new []{"Show Ability","Cancel"},HandleChooserTalbeUI);
     }
 
-    private void HandleChooserTalbeUI(int index)
+    private void HandleChooserTalbeUI(int chooseIndex,int bagIndex)
     {
-        print(index);
+        // print(index);
     }
     
 

@@ -20,7 +20,8 @@ public class SaveContentUI : TabContent
             SaveSlots[i].GetComponent<Button>().onClick.RemoveAllListeners();
             SaveSlots[i].GetComponent<Button>().onClick.AddListener(() =>
             {
-                GlobalManager.Instance.InitGameWithDataIndex(index);
+                if(SaveSlots[index].HasFile==true)
+                    GlobalManager.Instance.InitGameWithDataIndex(index);
             });
         }
     }

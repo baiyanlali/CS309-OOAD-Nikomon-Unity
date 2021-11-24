@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using GamePlay;
 using GamePlay.Messages;
 using GamePlay.UI.UIFramework;
@@ -22,7 +23,7 @@ public class BagPanelUI : BaseUI
     /// <summary>
     /// 
     /// </summary>
-    /// <param name="args">0 for TrainerBag</param>
+    /// <param name="args">0 for TrainerBag,(optional)1 for List(string) of action and 2 Action(int,Item) </param>
     public override void Init(params object[] args)
     {
         base.Init(args);
@@ -30,21 +31,32 @@ public class BagPanelUI : BaseUI
         BagTable = GET(BagTable, nameof(BagTable));
 
         var bagContentElement = GameResources.SpawnPrefab(typeof(BagContentElementUI));
-        //这里没办法用Spawn Prefab，因为它的类型不独特，就这样子生成吧
-        // GameObject table = transform.Find("Tables/Table").gameObject;
-        // GameObject bagContents = transform.Find("TableContent/BagContents").gameObject;
         GameObject table = GameResources.SpawnPrefab("Table");
         GameObject bagContents = GameResources.SpawnPrefab("BagContents");
         string[] strs = Enum.GetNames(typeof(Item.Tag));
         elements = new Dictionary<TabElement, GameObject>();
         TrainerBag bag;
+        List<string> options = null;
+        Action<int, Item> onChooseOption = null;
         if (args.Length >= 1)
+        {
             bag = args[0] as TrainerBag;
+            if (args.Length>=2)
+            {
+                options = (args[1] as List<string>);
+                if (args.Length >= 3)
+                {
+                    onChooseOption = (Action<int, Item>) args[2];
+                }
+            }
+        }
         else
             bag = Game.bag;
 
 
         GameObject lastTable=null;//用于动态绑定navigation
+        
+        //用于每一个tab content的显示
         for (int i = 0; i < strs.Length; i++)
         {
             GameObject tab = Instantiate(table);
@@ -115,7 +127,7 @@ public class BagPanelUI : BaseUI
                     navi.selectOnDown = o.GetComponent<Selectable>();
                     lastItem.GetComponent<Selectable>().navigation = navi;
                 }
-                o.GetComponent<BagContentElementUI>().Init(item,bag[item]);
+                o.GetComponent<BagContentElementUI>().Init(item,bag[item],options,onChooseOption);
                 
                 lastItem = o;
 

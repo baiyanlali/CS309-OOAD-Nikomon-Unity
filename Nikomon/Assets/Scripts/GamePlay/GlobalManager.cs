@@ -144,7 +144,7 @@ public class GlobalManager : MonoBehaviour
         SaveSaveData(CurrentDataSlot);
     }
 
-    public void SaveSaveData(int slot)
+    public SaveData SaveSaveData(int slot)
     {
         var state = game.GetSave;
         Vector3 position=Vector3.zero;
@@ -154,8 +154,10 @@ public class GlobalManager : MonoBehaviour
         //TODO
         SaveData save=new SaveData(state,"TODO",position,SceneManager.GetActiveScene().buildIndex,Config);
         SaveLoad.Save(GameConst.SaveFileName+slot,save,GameConst.SaveFilePath);
+
+        return save;
         // game.SaveData(slot);
-        
+
         // UIManager.Instance.Show<SavingSignatureUI>();
     }
 

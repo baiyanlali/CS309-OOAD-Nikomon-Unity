@@ -21,8 +21,8 @@ public class NPC : MonoBehaviour,IInteractive
 
     public void OnInteractive()
     {
-        DialogHandler.Instance.InitBattle(null);
-        GlobalManager.Instance.StartBattle(null,new List<Trainer>(){_trainer},false,1);
+        // DialogHandler.Instance.InitBattle(null);
+        // GlobalManager.Instance.StartBattle(null,new List<Trainer>(){_trainer},false,1);
     }
 
     public void OnInteractive(GameObject obj)

@@ -14,13 +14,13 @@ namespace GamePlay.UI.UtilUI
         /// <summary>
         ///
         /// </summary>
-        /// <param name="args">0 for string[] chooser, 1 for Vec2 wantedPivot, 2 for Action OnChoose, 3 for RectTransform</param>
+        /// <param name="args">0 for List(string) chooser, 1 for Vec2 wantedPivot, 2 for Action OnChoose, 3 for RectTransform</param>
         public override void Init(params object[] args)
         {
             base.Init(args);
 
 
-            string[] chooser = args[0] as string[];
+            List<string> chooser = args[0] as List<string>;
             Vector2 wantedPivot = (Vector2) args[1];
             Action<int> OnChoose = null;
             if(args.Length>=3)
@@ -37,24 +37,24 @@ namespace GamePlay.UI.UtilUI
             }
 
 
-            if (chooser.Length > Content.childCount)
+            if (chooser.Count > Content.childCount)
             {
                 GameObject obj = GameResources.SpawnPrefab("ChooseElement");
 
-                for (int i = Content.childCount; i < chooser.Length; i++)
+                for (int i = Content.childCount; i < chooser.Count; i++)
                 {
                     var btn = Instantiate(obj, Content);
                 }
             }
-            else if (chooser.Length < Content.childCount)
+            else if (chooser.Count < Content.childCount)
             {
-                for (int i = chooser.Length; i < Content.childCount; i++)
+                for (int i = chooser.Count; i < Content.childCount; i++)
                 {
                     Content.GetChild(i).gameObject.SetActive(false);
                 }
             }
 
-            for (int i = 0; i < Mathf.Min(chooser.Length, Content.childCount); i++)
+            for (int i = 0; i < Mathf.Min(chooser.Count, Content.childCount); i++)
             {
                 Transform obj = Content.GetChild(i);
 

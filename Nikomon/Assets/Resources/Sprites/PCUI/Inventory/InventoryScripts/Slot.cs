@@ -82,7 +82,7 @@ public class Slot :MonoBehaviour
                     break;
             }
         };
-        UIManager.Instance.Show<DialogueChooserPanel>(new string[]
+        UIManager.Instance.Show<DialogueChooserPanel>(new List<string>
         {
             "查看信息", "标记","持有物","放生","查看能力","取消"
         }, new Vector2(0, 1),action, itemInSlot.transform.parent as RectTransform);

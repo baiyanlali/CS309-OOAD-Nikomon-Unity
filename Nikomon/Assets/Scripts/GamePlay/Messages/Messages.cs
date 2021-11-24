@@ -8,9 +8,10 @@ namespace GamePlay.Messages
 {
     public static class Messages
     {
-        private static Dictionary<string, string> Translator;
+        private static Dictionary<string, string> Translator=new Dictionary<string, string>();
 
         private static string _currentCulture;
+        
         public static string Current_culture
         {
             get => _currentCulture;
@@ -33,7 +34,10 @@ namespace GamePlay.Messages
         
         public static string Get(string str)
         {
-            return Translator[str];
+            if (Translator.TryGetValue(str, out string var))
+                return var;
+            else
+                return str;
         }
         
     }
