@@ -169,6 +169,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6846027999664191022}
   - component: {fileID: 6846027999664191021}
+  - component: {fileID: 1208692002261524692}
   - component: {fileID: 6846027999664191020}
   - component: {fileID: 6846027999664191011}
   m_Layer: 5
@@ -206,7 +207,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6846027999664191023}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4b0cfdcbd7980d24d877ad757b3cf7f4, type: 3}
   m_Name: 
@@ -214,6 +215,27 @@ MonoBehaviour:
   DialogText: {fileID: 6846027999598148384}
   nicoInput: {fileID: 0}
   ShowNext: {fileID: 6846028001198614729}
+--- !u!114 &1208692002261524692
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6846027999664191023}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bcc1f6d8b8822ca41a9cf28815ef5093, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  debugBoxString: 
+  selectClip: {fileID: 0}
+  scrollSpeed: 0.1
+  chosenIndex: 0
+  defaultChoiceWidth: 86
+  defaultChoiceY: 0
+  dialogLines: 2
+  fontSize: 20
+  fadeSpeed: 7
 --- !u!114 &6846027999664191020
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -228,6 +250,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   FirstSelectable: {fileID: 6846028001185544036}
   ExitBtn: {fileID: 6846028001185544024}
+  de: {fileID: 1208692002261524692}
+  debugBoxString: 
+  TweenTime: 0.2
 --- !u!225 &6846027999664191011
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -410,7 +435,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -83, y: 56.547}
+  m_AnchoredPosition: {x: -83, y: 55}
   m_SizeDelta: {x: 113.0933, y: 113.0931}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6846028001198614734

@@ -16,7 +16,7 @@ public class LoadSceneManager : MonoBehaviour
         
     private void Start()
     {
-        print(nextSceneID);
+        // print(nextSceneID);
         if (nextSceneID != -1)
         {
             StartCoroutine(LoadLeaver(nextSceneID));
@@ -31,7 +31,10 @@ public class LoadSceneManager : MonoBehaviour
     }
     IEnumerator LoadLeaver(int index)
     {
-        //yield return new WaitForSeconds(100);
+        yield return new WaitForSeconds(0.7f);
+        text.text = String.Format("{0:N1} ", 0.5 * 111.111111) + "%";
+        yield return new WaitForSeconds(0.7f);
+        text.text = String.Format("{0:N1} ", 0.7 * 111.111111) + "%";
         AsyncOperation operation = SceneManager.LoadSceneAsync(index);                                                                                               
         //operation.allowSceneActivation = false;
         while (!operation.isDone)
