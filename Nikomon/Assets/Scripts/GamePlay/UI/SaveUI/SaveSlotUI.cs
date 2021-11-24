@@ -6,10 +6,11 @@ using System.Linq;
 using GamePlay;
 using GamePlay.UI.UIFramework;
 using GamePlay.UI.UtilUI;
+using GamePlay.Utilities;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class SaveSlotUI : BaseUI
+public class SaveSlotUI : MonoBehaviour
 {
     public Text Title;
     public Text LastTimeSaved;
@@ -21,14 +22,18 @@ public class SaveSlotUI : BaseUI
 
     private List<Image> PokemonImages;
 
-    public override void Init(params object[] args)
+    public void Init()
     {
-        base.Init(args);
-        Title = GET(Title,nameof(Title),GET_TYPE.Component);
-        LastTimeSaved = GET(LastTimeSaved,nameof(LastTimeSaved),GET_TYPE.Component);
-        Name = GET(Name,nameof(Name),GET_TYPE.Component);
-        Money = GET(Money,nameof(Money),GET_TYPE.Component);
-        PokemonParty = GET(PokemonParty,nameof(PokemonParty),GET_TYPE.GameObject);
+        this.GET(ref Title, nameof(Title));
+        this.GET(ref LastTimeSaved, nameof(LastTimeSaved));
+        this.GET(ref Name, nameof(Name));
+        this.GET(ref Money, nameof(Money));
+        this.GET(ref PokemonParty, nameof(PokemonParty));
+        // Title = this.GET(Title,nameof(Title),GET_TYPE.Component);
+        // LastTimeSaved = GET(LastTimeSaved,nameof(LastTimeSaved),GET_TYPE.Component);
+        // Name = GET(Name,nameof(Name),GET_TYPE.Component);
+        // Money = GET(Money,nameof(Money),GET_TYPE.Component);
+        // PokemonParty = GET(PokemonParty,nameof(PokemonParty),GET_TYPE.GameObject);
         // for (int i = 0; i < PokemonParty.transform.childCount; i++)
         // {
         //     PokemonParty.transform.GetChild(i).gameObject.SetActive(true);
@@ -44,12 +49,10 @@ public class SaveSlotUI : BaseUI
     /// 
     /// </summary>
     /// <param name="args">0 for index, 1 for save data</param>
-    public override void OnEnter(params object[] args)
+    public void OnEnter(int slot,SaveData data)
     {
-        base.OnEnter(args);
+        Init();
         
-        int? slot = args[0] as int?;
-        SaveData data=args[1] as SaveData;
         if (data != null && data.GameState!=null)
         {
             HasFile = true;
@@ -87,9 +90,5 @@ public class SaveSlotUI : BaseUI
             
         }
     }
-
-    public override void OnExit()
-    {
-        base.OnExit();
-    }
+    
 }

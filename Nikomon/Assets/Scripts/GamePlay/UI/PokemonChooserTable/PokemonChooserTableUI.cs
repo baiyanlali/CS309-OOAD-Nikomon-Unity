@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using GamePlay;
 using PokemonCore;
 using PokemonCore.Combat;
 using UnityEngine;
@@ -10,12 +11,13 @@ public class PokemonChooserTableUI : MonoBehaviour
 {
     private GameObject ChooserElement;
 
-    public void Init(Trainer trainer,string[] chooses,Action<int> actions)
+    public void Init(Trainer trainer,string[] chooses,Action<int,int> actions)
     {
-        //TODO: Change this method
-        ChooserElement = ChooserElement
-            ? ChooserElement
-            : Resources.Load<GameObject>("Prefabs/UI/PokemonChooserTable/PokemonStatButton");
+        // ChooserElement = ChooserElement
+        //     ? ChooserElement
+        //     : Resources.Load<GameObject>("Prefabs/UI/PokemonChooserTable/PokemonStatButton");
+
+        ChooserElement = GameResources.SpawnPrefab(typeof(PokemonChooserElementUI));
 
         int pokes = trainer.bagPokemons;
         

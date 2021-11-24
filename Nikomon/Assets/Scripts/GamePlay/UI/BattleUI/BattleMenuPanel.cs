@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using GamePlay.UI.PokemonChooserTable;
 using GamePlay.UI.UIFramework;
 using PokemonCore;
@@ -12,19 +13,50 @@ using UnityEngine.UI;
 
 namespace GamePlay.UI.BattleUI
 {
-    public class BattleMenuPanel:BaseUI
+    public class BattleMenuPanel : BaseUI
     {
         private Button Fight;
         private Button Pokemon;
         private Button Bag;
         private Button Run;
 
-        private string[] PokemonChooses = new[] {"Switch","Show Ability","Close"};
-        
-        
-        private void HandlePokemonChoose(int index)
+        private readonly string[] PokemonChooses = new[] {"Switch", "Show Ability", "Cancel"};
+        private readonly string[] BagChooses = new[] {"Use", "Cancel"};
+
+
+        private void HandlePokemonChoose(int chooseIndex, int bagIndex)
         {
-            print(PokemonChooses[index]);
+            // print(PokemonChooses[index]);
+            switch (chooseIndex)
+            {
+                case 0: //Switch
+                    if (Game.trainer.party[bagIndex] == null || Game.trainer.pokemonOnTheBattle[bagIndex]) return;
+                    Instruction ins = new Instruction(currentPoke.CombatID, Command.SwitchPokemon, bagIndex,
+                        null);
+                    BuildInstrustruction(ins);
+                    break;
+
+                case 1: //Show Ability
+
+                    break;
+                case 2: //Cancel
+                    // UIManager.Instance.Hide(this);
+                    break;
+            }
+        }
+
+        private void HandleItem(int optionIndex, Item item)
+        {
+            switch (optionIndex)
+            {
+                case 0:
+                    // UIManager.Instance.Show<TargetChooserPanel>();
+                    //TODO:实现更复杂的效果
+                    UseItem(item,BattleHandler.Instance.OpponentPokemons[0].CombatID);
+                    break;
+                case 1:
+                    break;
+            }
         }
 
         public override void Init(params object[] args)
@@ -37,29 +69,37 @@ namespace GamePlay.UI.BattleUI
             Run = GET(Run, nameof(Run));
 
             FirstSelectable = Fight.gameObject;
-            
+
             Fight.onClick.RemoveAllListeners();
             Pokemon.onClick.RemoveAllListeners();
             Bag.onClick.RemoveAllListeners();
             Run.onClick.RemoveAllListeners();
 
-            Fight.onClick.AddListener(() =>
-            {
-                UIManager.Instance.Show<MovePanel>((Action<int>)ChooseMove);
-            });
+            //Init Fight
+            Fight.onClick.AddListener(() => { UIManager.Instance.Show<MovePanel>((Action<int>) ChooseMove); });
+
+            //Init Pokemon
             Pokemon.onClick.AddListener(() =>
             {
                 UIManager.Instance.Show<PokemonChooserPanelUI>(Game.trainer,
                     PokemonChooses,
-                    (Action<int>)HandlePokemonChoose
-                    );
+                    (Action<int, int>) HandlePokemonChoose
+                );
             });
-            Bag.onClick.AddListener(() => { UIManager.Instance.Show<BagPanelUI>(); });
+
+            //Init Bag
+            Bag.onClick.AddListener(() =>
+            {
+                UIManager.Instance.Show<BagPanelUI>(Game.bag, BagChooses.ToList(), (Action<int,Item>) HandleItem);
+            });
+
+
+            //Init Run
             Run.onClick.AddListener(ToRun);
-            
         }
 
         private CombatPokemon currentPoke => BattleHandler.Instance.CurrentPokemon;
+
         public void SwitchPokemon(int index)
         {
             UnityEngine.Debug.Log($"Choose switch to index:{index}");
@@ -88,7 +128,7 @@ namespace GamePlay.UI.BattleUI
                 null);
             BuildInstrustruction(ins);
         }
-        
+
         public void ChooseMove(int index)
         {
             Move move = currentPoke.pokemon.moves[index];
@@ -114,13 +154,13 @@ namespace GamePlay.UI.BattleUI
                     move._baseData.Target,
                     onChoose,
                     onCancel
-                        );
+                );
             }
-            
+
             UIManager.Instance.Hide(this);
         }
 
-        private void OnChooseTarget(List<int> targets,int index)
+        private void OnChooseTarget(List<int> targets, int index)
         {
             UnityEngine.Debug.Log(targets.ConverToString());
             Instruction instruction =
@@ -128,12 +168,11 @@ namespace GamePlay.UI.BattleUI
                     targets);
             BuildInstrustruction(instruction);
         }
-        
-        
+
+
         public void BuildInstrustruction(Instruction instruction)
         {
             BattleHandler.Instance.ReceiveInstruction(instruction);
         }
-
     }
 }

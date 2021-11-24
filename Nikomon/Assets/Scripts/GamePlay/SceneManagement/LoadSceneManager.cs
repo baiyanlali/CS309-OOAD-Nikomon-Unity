@@ -16,7 +16,7 @@ public class LoadSceneManager : MonoBehaviour
         
     private void Start()
     {
-        print(nextSceneID);
+        // print(nextSceneID);
         if (nextSceneID != -1)
         {
             StartCoroutine(LoadLeaver(nextSceneID));
