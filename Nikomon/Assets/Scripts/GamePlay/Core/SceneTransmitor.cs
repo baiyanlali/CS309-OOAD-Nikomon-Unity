@@ -15,4 +15,5 @@ public static class SceneTransmitor
         SceneManager.LoadScene("LoadScene");
         LoadSceneManager.nextSceneName = name;
     }
+    
 }
