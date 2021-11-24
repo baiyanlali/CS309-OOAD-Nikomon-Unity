@@ -19,7 +19,8 @@ public class PCPanel : BaseUI
         Titles = GET(Titles, "TableContent/Title", GET_TYPE.GameObject);
         text = GET(text, "TableContent/Title/Text");
         PCManager = GET(PCManager, "TableContent");//绑定脚本!!!
-        PCManager.Refresh();
+        // PCManager.Refresh();
+        
         GameObject obj = GameResources.SpawnPrefab("PCSlot");
         Instantiate(obj);
 

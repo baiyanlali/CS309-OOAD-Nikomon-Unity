@@ -15,9 +15,11 @@ public class PokemonChooserElementUI : MonoBehaviour
     public Slider HealthBar;
     public Text HealthText;
     public Text LevelText;
+    public Pokemon Poke;
 
     public void Init(Pokemon pokemon, int index, string[] dialogChoose, Action<int> actions)
     {
+        Poke = pokemon;
         PokemonIcon = PokemonIcon ? PokemonIcon : transform.Find("PokemonIcon").GetComponent<Image>();
         PokemonName = PokemonName ? PokemonName : transform.Find("PokemonName").GetComponent<Text>();
         HealthBar = HealthBar ? HealthBar : transform.Find("HealthBar").GetComponent<Slider>();

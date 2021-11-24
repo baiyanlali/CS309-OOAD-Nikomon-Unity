@@ -1,88 +1,108 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using GamePlay;
 using GamePlay.UI.UIFramework;
 using GamePlay.UI.UtilUI;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public class Slot :MonoBehaviour
 //PCImage的升级版
 {
 
-    public PCItem pcItem;//pcItem有宝可梦的信息。
+    // public PCItem pcItem;//pcItem有宝可梦的信息。
     public Image slotImage;//储存图片
-    public Text slotNum;
     //直接用宝可梦
     //public Pokemon pokemon;
     public GameObject itemInSlot;
-    public GameObject menu;
     //public PCManager PCManager;
     public int judge=0;
-    public int number = 0;
+    public int index = 0;
 
+    public Pokemon pokemon;
 
+    public Action<int> RefreshInformation;
+    public Action<bool> ShowInfo;
     public void OnClicked()
     {
-        if (judge == 0)
+        Action<int> action = (o) =>
         {
-            PCManager.refreshMenu();
-            PCManager.refreshInformation(number);
-            /*
-            DialogChooserUI.Instance.transform.SetParent(itemInSlot.transform.parent.parent);
-            DialogChooserUI.Instance.ShowChooser(new string[] { "Open", "Close" }, new Vector2(0, 1), (o) =>
+            switch (o)
             {
-                switch (o)
-                {
-                    case 0:
-                        Debug.Log(0);
-                        break;
-                    case 1:
-                        Debug.Log(1);
-                        break;
-                }
-            }, itemInSlot.transform.parent as RectTransform);*/
-            Action<int> action = (o) =>
-            {
-                switch (o)
-                {
-                    case 0:
-                        Debug.Log(0);
-                        break;
-                    case 1:
-                        Debug.Log(1);
-                        break;
-                }
-            };
-            UIManager.Instance.Show<DialogueChooserPanel>(new string[] { "Open", "Close" }, new Vector2(0, 1),action, itemInSlot.transform.parent as RectTransform);
-            
-            PCManager.openInform();
-            judge = 1;
-        }
-        else
+                case 0:
+                    Debug.Log("查看信息");
+                    if (judge == 0)
+                    {
+                        //PCManager.refreshMenu();
+                        // PCManager.refreshInformation(number);
+                        RefreshInformation(index);
+                        // PCManager.openInform();
+                        ShowInfo(true);
+                        judge = 1;
+                    }
+                    else
+                    {
+                        // PCManager.closeInform();
+                        ShowInfo(false);
+                        judge = 0;
+                    }
+                    break;
+                case 1:
+                    Debug.Log("标记");
+                    break;
+                case 2:
+                    Debug.Log("持有物");
+                    break;
+                case 3:
+                    Debug.Log("放生");
+                    UIManager.Instance.Show<ConfirmPanel>("Are you sure to release this pokemon?", (Action<bool>)((o) =>
+                    {
+                        if (o == true)
+                        {
+                            // pcItem = null;
+                            
+                            // transform.Find("Item").GetComponent<ItemOnMove>().myPC.itemList[number] = null;
+                            // PCManager.Refresh();
+                            UIManager.Instance.Refresh<PCManager>();
+                        }
+                        else
+                        {
+                            
+                        }
+                    }));
+                    
+                    break;
+                case 4:
+                    Debug.Log("查看能力");
+                    break;
+                case 5:
+                    Debug.Log("取消");
+                    break;
+            }
+        };
+        UIManager.Instance.Show<DialogueChooserPanel>(new string[]
         {
-            Debug.Log("111111111");
-            //menu.SetActive(false);
-            PCManager.closeInform();
-
-            judge = 0;
-        }
+            "查看信息", "标记","持有物","放生","查看能力","取消"
+        }, new Vector2(0, 1),action, itemInSlot.transform.parent as RectTransform);
     }
 
-    public void SetupSlot(PCItem item,int num)
+    public void SetupSlot(Pokemon item,int num,Action<int> refresh,Action<bool> showinfo)
     {
-        number = num;
+        pokemon = item;
+        index = num;
+        this.RefreshInformation = refresh;
+        this.ShowInfo = showinfo;
         if(item == null)//这个格子里面没有精灵的情况
         {
             itemInSlot.SetActive(false);
             return;
         }
-        slotImage.sprite = item.itemImage;
-        slotNum.text = item.itemNumber.ToString();//应该最后没有用的
-        pcItem = item;//为了更新显示信息用的
-    }
-    public void Update()
-    {
+        itemInSlot.SetActive(true);
+        slotImage.sprite = GameResources.PokemonIcons[item.ID];
+        
         
     }
+
 }

@@ -51,7 +51,7 @@ public class SaveSlotUI : BaseUI
             Title.text = "Save " + slot;
             LastTimeSaved.text = data.GameState.TimeModified.ToString("yyyy-MM-dd HH:mm");
             Name.text = data.GameState.Trainer.name;
-            Money.text = "Money:" + data.GameState.Trainer.money;
+            Money.text = "Money:" + data.GameState.Trainer.Money;
 
             for (int i = 0; i < PokemonImages.Count; i++)
             {

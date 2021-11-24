@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using GamePlay.Core;
 using GamePlay.UI;
+using GamePlay.UI.BagSystem;
 using GamePlay.UI.BattleUI;
 using GamePlay.UI.Dialog;
 using GamePlay.UI.MainMenuUI;
@@ -31,6 +32,7 @@ namespace GamePlay
             ["Table"] = "Prefabs/UI/BagSystem/Table",
             ["BagContents"] = "Prefabs/UI/BagSystem/BagContents",
             ["ChooseElement"] = "Prefabs/UI/ChooseElement",
+            ["Slot"]="Prefabs/UI/PC/slot"
         };
 
         public static Dictionary<Type, string> PrefabPath = new Dictionary<Type, string>()
@@ -48,6 +50,7 @@ namespace GamePlay
             //bag
             [typeof(BagPanelUI)] = "Prefabs/UI/BagSystem/BagTable", 
             [typeof(BagContentElementUI)] = "Prefabs/UI/BagSystem/BagContentElement", 
+            [typeof(StorePanelUI)]="Prefabs/UI/BagSystem/StorePanel",
 
             //PokemonChooserPanel
             [typeof(PokemonChooserPanelUI)] = "Prefabs/UI/PokemonChooserTable/PokemonChooserTable", 
@@ -72,7 +75,10 @@ namespace GamePlay
             [typeof(DebugPanel)]="Prefabs/UI/DebugTool",
             
             //Dialogue
-            [typeof(DialoguePanel)]="Prefabs/UI/DialogPanel"
+            [typeof(DialoguePanel)]="Prefabs/UI/DialogPanel",
+            
+            //PC
+            [typeof(PCManager)]="Prefabs/UI/PC/PC"
         };
     }
 

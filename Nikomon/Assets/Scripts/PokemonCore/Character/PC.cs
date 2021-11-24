@@ -19,13 +19,7 @@ namespace PokemonCore.Character
         {
             get
             {
-                Pokemon[] arr = new Pokemon[maxPokemonsPerBox];
-                for (int i = 0; i < maxBox; i++)
-                {
-                    arr[i] = this.pokemons[(int)this.ActiveBox][i];
-                }
-
-                return arr;
+                return pokemons[(int) this.ActiveBox];
             }
         }
 
@@ -68,6 +62,7 @@ namespace PokemonCore.Character
             this.BoxNames = new string[maxBox];
             for (int index1 = 0; index1 < maxBox; index1++)
             {
+                
                 for (int index2 = 0; index2 < maxPokemonsPerBox; index2++)
                 {
                     this.pokemons[index1][index2] = null;
