@@ -102,9 +102,9 @@ public class PCManager : BaseUI
         TableUI.Init(trainer,new []{"查看信息", "标记","持有物","放生","查看能力","取消"},HandleChooserTalbeUI);
     }
 
-    private void HandleChooserTalbeUI(int index)
+    private void HandleChooserTalbeUI(int chooseIndex,int bagIndex)
     {
-        print(index);
+        // print(index);
     }
     
 

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using GamePlay.UI.BattleUI;
 using GamePlay.UI.UIFramework;
+using GamePlay.UI.UtilUI;
 using PokemonCore;
 using PokemonCore.Combat;
 using UnityEngine;
@@ -77,8 +78,11 @@ public class BattleHandler : MonoBehaviour
             BattleFieldHandler.Instance.OnReplacePokemon(p1, p2);
         };
         // UIManager.Instance.Show<BattleUIPanel>(this);
-        
-        
+
+        Game.battleReporter.OnReport += (o) =>
+        {
+            UIManager.Instance.Show<DialogPanel>(o);
+        };
         // BattleUIHandler.Instance.Init(this);
         BattleFieldHandler.Instance.Init(AlliesPokemons, OpponentPokemons);
 
@@ -100,7 +104,7 @@ public class BattleHandler : MonoBehaviour
 
     public void ShowPokeMove(CombatPokemon poke)
     {
-        print(">>>>>>show move!<<<<<<<");
+        // print(">>>>>>show move!<<<<<<<");
         // EventPool.Schedule(() => { BattleUIHandler.Instance.ShowMoves(poke);});
         CurrentPokemon = poke;
         EventPool.Schedule(() => { UIManager.Instance.Refresh<MovePanel>(poke.pokemon.moves.ToList());});

@@ -20,7 +20,7 @@ namespace GamePlay.UI.PokemonChooserTable
             Trainer trainer=args[0] as Trainer;
             _trainer = trainer;
             string[] chooses = args[1] as string[];
-            Action<int> actions = args[2] as Action<int>;
+            Action<int,int> actions = args[2] as Action<int,int>;
             int lastIndex = -1;
             if (args.Length >= 4)
                 lastIndex = (int)args[3];

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using GamePlay;
 using GamePlay.UI.UIFramework;
 using GamePlay.UI.UtilUI;
@@ -16,10 +17,12 @@ public class PokemonChooserElementUI : MonoBehaviour
     public Text HealthText;
     public Text LevelText;
     public Pokemon Poke;
+    public int IndexInBag;
 
-    public void Init(Pokemon pokemon, int index, string[] dialogChoose, Action<int> actions)
+    public void Init(Pokemon pokemon, int index, string[] dialogChoose, Action<int,int> actions)
     {
         Poke = pokemon;
+        IndexInBag = index;
         PokemonIcon = PokemonIcon ? PokemonIcon : transform.Find("PokemonIcon").GetComponent<Image>();
         PokemonName = PokemonName ? PokemonName : transform.Find("PokemonName").GetComponent<Text>();
         HealthBar = HealthBar ? HealthBar : transform.Find("HealthBar").GetComponent<Slider>();
@@ -35,16 +38,9 @@ public class PokemonChooserElementUI : MonoBehaviour
         GetComponent<Button>().onClick.RemoveAllListeners();
         GetComponent<Button>().onClick.AddListener(() =>
         {
-            // UnityEngine.Debug.Log("Click!");
-            // DialogChooserUI.Instance.ShowChooser(dialogChoose,new Vector2(0,1),
-            //     (o) =>
-            //     {
-            //         //这里是宝可梦的index和选项的index
-            //         actions[o]?.Invoke(Index);
-            //     },
-            //     transform as RectTransform);
-            Action<int> action = (o) => { actions?.Invoke(o); };
-            UIManager.Instance.Show<DialogueChooserPanel>(dialogChoose, new Vector2(0, 1), action, transform as RectTransform);
+            //不仅回传选了选项中第几个，还回传现在是背包中第几个宝可梦
+            Action<int> action = (o) => { actions?.Invoke(o,index); };
+            UIManager.Instance.Show<DialogueChooserPanel>(dialogChoose.ToList(), new Vector2(0, 1), action, transform as RectTransform);
         });
     }
 

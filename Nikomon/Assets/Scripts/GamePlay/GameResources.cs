@@ -4,7 +4,6 @@ using GamePlay.Core;
 using GamePlay.UI;
 using GamePlay.UI.BagSystem;
 using GamePlay.UI.BattleUI;
-using GamePlay.UI.Dialog;
 using GamePlay.UI.MainMenuUI;
 using GamePlay.UI.PokemonChooserTable;
 using GamePlay.UI.UIFramework;
@@ -75,7 +74,7 @@ namespace GamePlay
             [typeof(DebugPanel)]="Prefabs/UI/DebugTool",
             
             //Dialogue
-            [typeof(DialoguePanel)]="Prefabs/UI/DialogPanel",
+            [typeof(DialogPanel)]="Prefabs/UI/DialogPanel",
             
             //PC
             [typeof(PCManager)]="Prefabs/UI/PC/PC"

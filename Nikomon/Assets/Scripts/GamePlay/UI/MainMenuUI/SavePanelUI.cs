@@ -11,19 +11,20 @@ namespace GamePlay.UI.MainMenuUI
     {
         public override UILayer Layer => UILayer.NormalUI;
 
+        public Button ExitButton;
         public List<SaveSlotUI> SaveSlots = new List<SaveSlotUI>();
 
 
+        
         public override void OnEnter(params object[] args)
         {
             base.OnEnter();
-
-            Init();
             var datas = GlobalManager.Instance.LoadAllSaveData();
             for (int i = 0; i < datas.Length; i++)
             {
                 SaveSlots[i].OnEnter(i, datas[i]);
             }
+
         }
 
         private int saveIndex;
@@ -41,44 +42,37 @@ namespace GamePlay.UI.MainMenuUI
                 SaveSlots[i].GetComponent<Button>().onClick.RemoveAllListeners();
                 SaveSlots[i].GetComponent<Button>().onClick.AddListener(() =>
                 {
-                    Action<bool> act = ConfirmSave;
+                    Action<bool> action = (isSave) =>
+                    {
+                        ConfirmSave(isSave, index);
+                    };
                     if (SaveSlots[index].HasFile)
                     {
                         saveIndex = index;
-                        UIManager.Instance.Show<ConfirmPanel>("SavePanelUI.HasFile",act);
+                        UIManager.Instance.Show<ConfirmPanel>("SavePanelUI.HasFile", action);
                     }
                     else
                     {
                         saveIndex = index;
                         // GlobalManager.Instance.SaveSaveData(index);
-                        UIManager.Instance.Show<ConfirmPanel>("SavePanelUI.SureToSave",act);
+                        UIManager.Instance.Show<ConfirmPanel>("SavePanelUI.SureToSave",action);
                     }
                 });
             }
-        }
+            
+            ExitButton = GET(ExitButton, nameof(ExitButton));
+            ExitBtn = ExitButton;
 
-        public override void OnPause()
-        {
-            base.OnPause();
         }
+        
 
-        public override void OnResume()
-        {
-            base.OnResume();
-            print("save panel resume");
-            var datas = GlobalManager.Instance.LoadAllSaveData();
-            for (int i = 0; i < datas.Length; i++)
-            {
-                SaveSlots[i].OnEnter(i, datas[i]);
-            }
-        }
-
-        public void ConfirmSave(bool isConfirmed)
+        public void ConfirmSave(bool isConfirmed,int index)
         {
             if(isConfirmed)
             {
-                GlobalManager.Instance.SaveSaveData(saveIndex);
-                UIManager.Instance.Show<ConfirmPanel>("SavePanelUI.SaveSuccessfully",null);
+                var save = GlobalManager.Instance.SaveSaveData(saveIndex);
+                SaveSlots[index].OnEnter(index,save);
+                // UIManager.Instance.Show<ConfirmPanel>("SavePanelUI.SaveSuccessfully",null);
             }
         }
     }

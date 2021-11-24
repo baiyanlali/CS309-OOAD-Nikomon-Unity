@@ -45,7 +45,8 @@ namespace PokemonCore.Utility
             }
             else
             {
-                fs =File.OpenWrite(filePath);
+                File.Delete(filePath);
+                fs =File.Open(filePath,FileMode.CreateNew,FileAccess.Write);
             }
 
             string jsonData =JsonConvert.SerializeObject(data);
