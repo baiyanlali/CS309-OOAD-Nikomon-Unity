@@ -141,7 +141,10 @@ namespace GamePlay.UI.UIFramework
             if(ExitBtn!=null)
             {
                 ExitBtn.onClick.RemoveAllListeners();
-                ExitBtn.onClick.AddListener( ()=>UIManager.Instance.Hide(this));
+                ExitBtn.onClick.AddListener( ()=>
+                {
+                    UIManager.Instance.Hide(this);
+                });
             }
             
             CanPlayerControlBefore = GlobalManager.Instance.CanPlayerControlled;
