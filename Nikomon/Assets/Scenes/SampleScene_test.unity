@@ -1195,7 +1195,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 14db3989c43390344aaba377e7e33121, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  camera: {fileID: 0}
   HorizontalRotateSpeed: 3
   VerticalRotateSpeed: 3
 --- !u!1 &705507993
@@ -2447,7 +2446,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1363034941}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 26, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -2468,7 +2467,7 @@ MonoBehaviour:
   Pokemons: 010000000400000007000000110000001900000059000000
   maxLevel: 30
   minLevel: 35
-  maxPokemonNum: 6
+  maxPokemonNum: 25
 --- !u!135 &1363034944
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -2565,7 +2564,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 100000, guid: 661464e19c087564badb2bf5230c842c, type: 3}
       propertyPath: m_Name
-      value: Ground_03 (5)
+      value: Ground
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 661464e19c087564badb2bf5230c842c, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 4294967295
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 661464e19c087564badb2bf5230c842c, type: 3}
       propertyPath: m_RootOrder
@@ -3400,7 +3403,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1486838539}
-  m_LocalRotation: {x: -0.7005253, y: 0.023608565, z: 0.023200078, w: 0.7128596}
+  m_LocalRotation: {x: -0.70052516, y: 0.023609405, z: 0.0232009, w: 0.71285963}
   m_LocalPosition: {x: -4.8999996, y: 10.6, z: -54}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:

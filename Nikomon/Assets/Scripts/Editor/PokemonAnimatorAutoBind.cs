@@ -24,6 +24,7 @@ public class PokemonAnimatorAutoBind
         var obj = Selection.gameObjects;
         foreach (var o in obj)
         {
+            o.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
             // AnimatorController anim = AssetImporterEditor.FindObjectOfType<AnimatorController>();
             // Debug.Log(anim.name);
             Bind(o.GetComponentInChildren<Animator>());
@@ -176,8 +177,25 @@ public class PokemonAnimatorAutoBind
         trans.AddCondition(AnimatorConditionMode.If,0,"startBattle");
         trans.duration = 0;
         trans.hasExitTime = false;
+
+        ChildAnimatorState idle;
         
-        var idle = animatorStates["Fight_idle"];
+        if (animatorStates.ContainsKey("Fight_idle"))
+        {
+            idle  = animatorStates["Fight_idle"];
+
+
+        }
+        else
+        {
+            idle = new ChildAnimatorState()
+            {
+                state = new AnimatorState()
+                {
+                    name = "Fight_idle"
+                }
+            };
+        }
         idle.position = new Vector3(block_width*4, 0);
         childAnimatorStates.Add(idle);
         
@@ -208,8 +226,40 @@ public class PokemonAnimatorAutoBind
         }
         else
         {
-            var appear = animatorStates["Fight_appear"];
-            var release = animatorStates["Fight_release"];
+            ChildAnimatorState appear;
+            ChildAnimatorState release;
+            if (animatorStates.ContainsKey("Fight_appear"))
+            {
+                appear = animatorStates["Fight_appear"];
+
+            }
+            else
+            {
+                appear = new ChildAnimatorState()
+                {
+                    state = new AnimatorState()
+                    {
+                        name = "Fight_appear"
+                    }
+                };
+            }
+            
+            if (animatorStates.ContainsKey("Fight_release"))
+            {
+                release = animatorStates["Fight_release"];
+
+            }
+            else
+            {
+                release = new ChildAnimatorState()
+                {
+                    state = new AnimatorState()
+                    {
+                        name = "Fight_release"
+                    }
+                };
+            }
+            
 
 
             appear.state.AddStateMachineBehaviour<PokemonBattleSMB>();
@@ -242,11 +292,78 @@ public class PokemonAnimatorAutoBind
             trans.hasExitTime = true;
             // drop.state.AddTransition(idle.state).hasExitTime = true;
         }
+
+        ChildAnimatorState attack;
+        ChildAnimatorState no_touch_attack;
+        ChildAnimatorState be_attacked;
+        ChildAnimatorState lost;
+        if (animatorStates.ContainsKey("Fight_attack"))
+        {
+            attack = animatorStates["Fight_attack"];
+        }
+        else
+        {
+            attack = new ChildAnimatorState()
+            {
+                state = new AnimatorState()
+                {
+                    name = "Fight_attack"
+                }
+            };
+        }
         
-        var attack = animatorStates["Fight_attack"];
-        var no_touch_attack = animatorStates["Fight_no_touch_attack"];
-        var be_attacked = animatorStates["Fight_be_attacked"];
-        var lost = animatorStates["Fight_lost"];
+        if (animatorStates.ContainsKey("Fight_no_touch_attack"))
+        {
+            no_touch_attack = animatorStates["Fight_no_touch_attack"];
+
+        }
+        else
+        {
+            no_touch_attack = new ChildAnimatorState()
+            {
+                state = new AnimatorState()
+                {
+                    name = "Fight_no_touch_attack"
+                }
+            };
+        }
+        
+        
+        if (animatorStates.ContainsKey("Fight_be_attacked"))
+        {
+            be_attacked = animatorStates["Fight_be_attacked"];
+
+
+        }
+        else
+        {
+            be_attacked = new ChildAnimatorState()
+            {
+                state = new AnimatorState()
+                {
+                    name = "Fight_be_attacked"
+                }
+            };
+        }
+        
+        if (animatorStates.ContainsKey("Fight_lost"))
+        {
+            lost = animatorStates["Fight_lost"];
+
+
+        }
+        else
+        {
+            lost = new ChildAnimatorState()
+            {
+                state = new AnimatorState()
+                {
+                    name = "Fight_lost"
+                }
+            };
+        }
+
+        
 
         attack.state.AddStateMachineBehaviour<PokemonBattleSMB>();
         no_touch_attack.state.AddStateMachineBehaviour<PokemonBattleSMB>();
@@ -275,8 +392,10 @@ public class PokemonAnimatorAutoBind
         lost.state.AddExitTransition().hasExitTime=true;
         
         #endregion
-        
-        
+
+        if (animatorStates.ContainsKey("Movement_idle"))
+        {
+            
         idle = animatorStates["Movement_idle"];
         idle.position = new Vector3(block_width*2,-block_height*4);
         
@@ -313,6 +432,9 @@ public class PokemonAnimatorAutoBind
         run.state.AddTransition(idle.state).AddCondition(AnimatorConditionMode.IfNot,1,"isRunning");
         
         #endregion
+        
+        }
+
         
         #endregion
 

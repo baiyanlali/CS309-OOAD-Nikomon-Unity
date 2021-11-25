@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using GamePlay;
+using PokemonCore;
 using UnityEngine;
 
 public class PokemonGenerator : MonoBehaviour
@@ -16,6 +18,7 @@ public class PokemonGenerator : MonoBehaviour
     private List<PokemonIndentity> pokemonIndentities;
     void Start()
     {
+        Pokemons = Game.PokemonsData.Keys.ToArray();
         
         pokemonIndentities = new List<PokemonIndentity>();
         for (int i = 0; i < maxPokemonNum; i++)

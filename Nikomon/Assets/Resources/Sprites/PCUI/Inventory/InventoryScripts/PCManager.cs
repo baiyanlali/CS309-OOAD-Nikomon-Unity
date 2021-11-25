@@ -271,14 +271,27 @@ public class PCManager : BaseUI
         }
         else
         {
-            Pokemon temp = trainer.party[number];
-            Name.text = temp.Name.ToString();
-            HP.text = temp.HP.ToString();
-            ATK.text = temp.ATK.ToString();
-            DEF.text = temp.DEF.ToString();
-            SPA.text = temp.ToString();
-            SPD.text = temp.ToString();
-            SPE.text = temp.ToString();
+            Pokemon pokemon = trainer.party[number];
+            Name.text = pokemon.Name.ToString();
+            HP.text = pokemon.HP.ToString();
+            ATK.text = pokemon.ATK.ToString();
+            DEF.text = pokemon.DEF.ToString();
+            SPA.text = pokemon.SPA.ToString();
+            SPD.text = pokemon.SPD.ToString();
+            SPE.text = pokemon.SPE.ToString();
+            for (int i = 0; i < pokemon.moves.Length; i++)
+            {
+                if (pokemon.moves[i] == null)
+                {
+                    _moveElements[i].gameObject.SetActive(false);
+                }
+                else
+                {
+                    _moveElements[i].Init(pokemon.moves[i]);
+                    _moveElements[i].gameObject.SetActive(true);
+                }
+                
+            }
         }
     }
     public void RefreshInformation(Pokemon pokemon)

@@ -536,7 +536,7 @@ namespace PokemonCore.Combat
                     Game.Instance.AddPokemon(p.pokemon);
                 }
 
-                Trainers[p.TrainerID].RemovePokemon(p.pokemon);
+                Trainers[p.TrainerID].CatchPokemon(p.pokemon);
                 opponentsPokemons.Remove(p);
             }
         }

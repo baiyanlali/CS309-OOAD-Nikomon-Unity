@@ -31,11 +31,7 @@ public class ItemOnMove : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDr
         gameObject.name = "Item" + NameIndexed.ToString();
         NameIndexed += 1;
     }
-
-    private void OnDestroy()
-    {
-        print("Destroy:" + gameObject.name);
-    }
+    
 
     public void OnBeginDrag(PointerEventData eventData)
     {

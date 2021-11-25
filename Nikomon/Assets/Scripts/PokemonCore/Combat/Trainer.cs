@@ -8,6 +8,15 @@ namespace PokemonCore.Combat
     [Serializable]
     public class Trainer
     {
+        public enum TrainerType
+        {
+            Player,
+            Boss,
+            NPC,
+            Wild
+        }
+
+        
         public string name { get; private set; }
         public int id { get; private set; }
 
@@ -37,6 +46,8 @@ namespace PokemonCore.Combat
 
         public int pokedexNums;
 
+        private TrainerType _trainerType;
+
         [JsonConstructor]
         public Trainer(string name, int id, int money, Pokemon[] party, bool isMale, int pokedexNums)
         {
@@ -47,6 +58,7 @@ namespace PokemonCore.Combat
             this.isMale = isMale;
             this.pokedexNums = pokedexNums;
             pokemonOnTheBattle = new bool[party.Length];
+            this._trainerType = TrainerType.Player;
         }
 
         public Trainer(string name, bool isMale)
@@ -61,6 +73,13 @@ namespace PokemonCore.Combat
             pokedexNums = 0;
         }
 
+        public static Trainer ProduceWild(string name,bool isMale)
+        {
+            var trainer = new Trainer(name,isMale);
+            trainer._trainerType = TrainerType.Wild;
+            return trainer;
+        }
+        
         [JsonIgnore] public bool[] pokemonOnTheBattle;
 
         [JsonIgnore]
@@ -193,6 +212,21 @@ namespace PokemonCore.Combat
                 }
                 else break;
             }
+        }
+
+        public bool CatchPokemon(Pokemon poke)
+        {
+            if (_trainerType != TrainerType.Wild) return false;
+            for (int i = 0; i < pokemonCount; i++)
+            {
+                if (poke == party[i])
+                {
+                    party[i] = null;
+                    ReArrayParty();
+                    return true;
+                }
+            }
+            return false;
         }
 
         public bool RemovePokemon(Pokemon poke)

@@ -112,6 +112,7 @@ public class BattleHandler : MonoBehaviour
     
     public void EndBattle()
     {
+        print("End Battle");
         UIManager.Instance.PopAllUI(UILayer.NormalUI);
         // BattleUIHandler.Instance.EndBattle();
         CurrentPokemon = null;

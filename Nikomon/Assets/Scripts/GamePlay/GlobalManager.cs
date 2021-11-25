@@ -265,9 +265,10 @@ public class GlobalManager : MonoBehaviour
     /// <param name="pokemon">野外对战遇到的仅有的一只宝可梦</param>
     public void StartBattle(Pokemon pokemon)
     {
-        Trainer trainer = new Trainer(pokemon.Name, pokemon.isMale);
+        Trainer trainer = Trainer.ProduceWild(pokemon.Name, pokemon.isMale);
         trainer.party[0] = pokemon;
         pokemon.TrainerID = trainer.id;
+        
         StartBattle(null, new List<Trainer>(new[] {trainer}), true);
     }
 

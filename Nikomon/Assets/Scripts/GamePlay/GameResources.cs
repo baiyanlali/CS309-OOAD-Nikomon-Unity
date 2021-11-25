@@ -212,7 +212,7 @@ namespace GamePlay
                 if (obj == null)
                 {
                     obj = Resources.Load<GameObject>("Prefabs/Pokemons/" + t.ID + t.innerName + "M");
-                    if (obj == null) throw new Exception($"Pokemon Prefabs Not Found:{t.ID},{t.innerName}");
+                    if (obj == null) UnityEngine.Debug.LogError($"Pokemon Prefabs Not Found:{t.ID},{t.innerName}");
                     var obj2 = Resources.Load<GameObject>("Prefabs/Pokemons/" + t.ID + t.innerName + "F");
                     Pokemons.Add(t.ID, new[] {obj, obj2});
                 }

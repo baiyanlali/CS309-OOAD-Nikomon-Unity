@@ -53,7 +53,7 @@ public class SaveSprites
             // System.IO.Directory.CreateDirectory(outPath);
             foreach (Sprite sprite in sprites)
             {
-                // if (!Regex.IsMatch(sprite.name, @"^\d")) continue; //判断是否是以数字开头
+                if (!Regex.IsMatch(sprite.name, @"^\d")) continue; //判断是否是以数字开头
                 Texture2D tex = new Texture2D((int) sprite.rect.width, (int) sprite.rect.height,
                     sprite.texture.format, false);
                 tex.SetPixels(sprite.texture.GetPixels((int) sprite.rect.xMin, (int) sprite.rect.yMin,
