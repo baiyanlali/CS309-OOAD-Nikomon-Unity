@@ -27,7 +27,7 @@ public class ItemOnMove : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDr
 
     private void Start()
     {
-        print("New Item On Move" + NameIndexed);
+        // print("New Item On Move" + NameIndexed);
         gameObject.name = "Item" + NameIndexed.ToString();
         NameIndexed += 1;
     }
@@ -72,9 +72,9 @@ public class ItemOnMove : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDr
             _pc.SwapPokemon(_pc.ActiveBox, mySlot.index, _pc.ActiveBox, slot.index);
             // (mySlot.pokemon, slot.pokemon) = (slot.pokemon, mySlot.pokemon);
         }
-        else if (obj.GetComponent<PokemonChooserElementUI>())
+        else if (obj.GetComponent<PCParty>())
         {
-            PokemonChooserElementUI chooser = obj.GetComponent<PokemonChooserElementUI>();
+            PCParty chooser = obj.GetComponent<PCParty>();
             int index = -1;
             mySlot.pokemon = chooser.Poke;
             for (int i = 0; i < _trainer.party.Length; i++)
@@ -97,116 +97,5 @@ public class ItemOnMove : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDr
         GetComponent<CanvasGroup>().blocksRaycasts = true;
 
         UIManager.Instance.Refresh<PCManager>();
-
-        // if (eventData.pointerCurrentRaycast.gameObject.name == "Image") //移到的位置有精灵
-        // {
-        //     Debug.Log(eventData.pointerCurrentRaycast.gameObject.transform.parent.parent.name);
-        //     transform.SetParent(eventData.pointerCurrentRaycast.gameObject.transform.parent.parent);
-        //     transform.position = eventData.pointerPressRaycast.gameObject.transform.parent.parent.position;
-        //     //改变myPC里面的list！
-        //     
-        //     var token = myPC.itemList[currentItemID];
-        //     myPC.itemList[currentItemID] =
-        //         myPC.itemList[eventData.pointerCurrentRaycast.gameObject.GetComponentInParent<Slot>().number];
-        //     myPC.itemList[eventData.pointerCurrentRaycast.gameObject.GetComponentInParent<Slot>().number] = token;
-        //     //
-        //     eventData.pointerCurrentRaycast.gameObject.transform.parent.position = originalParent.position;
-        //     eventData.pointerCurrentRaycast.gameObject.transform.parent.SetParent(originalParent);
-        //     eventData.pointerCurrentRaycast.gameObject.transform.parent.parent.GetComponent<Slot>().pokemon =
-        //         transform.parent.GetComponent<Slot>().pokemon;
-        //     transform.parent.GetComponent<Slot>().pokemon = temp;
-        //     GetComponent<CanvasGroup>().blocksRaycasts = true;
-        //
-        //     // PCManager.Refresh(); //为了更新显示信息！！！
-        //     UIManager.Instance.Refresh<PCManager>();
-        //     return;
-        // }
-        // else if (eventData.pointerCurrentRaycast.gameObject.name == "slot(Clone)") //移到的位置没有精灵
-        // {
-        //     if (eventData.pointerCurrentRaycast.gameObject.GetComponentInParent<Slot>().number == currentItemID)
-        //     {
-        //         //要考虑移动回自己位置的情况！！！！
-        //         transform.position = originalParent.position;
-        //         transform.SetParent(originalParent);
-        //         transform.parent.GetComponent<Slot>().pokemon = temp; //新加的不知道对错
-        //         GetComponent<CanvasGroup>().blocksRaycasts = true;
-        //         return;
-        //     }
-        //
-        //     transform.SetParent(eventData.pointerCurrentRaycast.gameObject.transform);
-        //     transform.position = eventData.pointerPressRaycast.gameObject.transform.position;
-        //     //改变myPC里面的list！
-        //     myPC.itemList[eventData.pointerCurrentRaycast.gameObject.GetComponentInParent<Slot>().number] =
-        //         myPC.itemList[currentItemID];
-        //     myPC.itemList[currentItemID] = null;
-        //
-        //     //
-        //     transform.parent.GetComponent<Slot>().pokemon = temp; 
-        //     eventData.pointerCurrentRaycast.gameObject.transform.Find("Item").position = originalParent.position;
-        //     eventData.pointerCurrentRaycast.gameObject.transform.Find("Item").SetParent(originalParent);
-        //     GetComponent<CanvasGroup>().blocksRaycasts = true;
-        //     UIManager.Instance.Refresh<PCManager>();
-        //     // PCManager.Refresh(); //为了可以正常显示information！！！
-        //     return;
-        // }
-        // else if (eventData.pointerCurrentRaycast.gameObject.name == "PokemonStatButton")
-        // {
-        //     //TODO：按钮和item的转化！！！
-        //     Debug.Log("shit");
-        //     transform.position = originalParent.position; //transform是item
-        //     transform.SetParent(originalParent);
-        //     var token = eventData.pointerCurrentRaycast.gameObject.GetComponent<PokemonChooserElementUI>().Poke;
-        //     if (token == null)
-        //     {
-        //         Debug.Log("pokenmon in PokemonChooserElementUI is shit");
-        //     }
-        //     if (TempPokemon == null)
-        //     {
-        //         Debug.Log("pokenmon in item is shit");
-        //     }
-        //     eventData.pointerCurrentRaycast.gameObject.GetComponent<PokemonChooserElementUI>().UpdateData(
-        //         TempPokemon); //用pcItem中的pokenmon来更新按钮里面的信息的,但是不知道对不对（目前的item里面的pokemon都是null）所以目前没法debug！
-        //     
-        //     //还缺用按钮里面的pokemon去更新PC里面的精灵
-        //     AdditemToPCInventory additemToPCInventory = new AdditemToPCInventory();//这样初始化不知道对不对
-        //     additemToPCInventory.AddNewItem(token, currentItemID);
-        //     UIManager.Instance.Refresh<PCManager>();
-        //     // PCManager.Refresh();
-        //     /*
-        //     myPC.itemList[eventData.pointerCurrentRaycast.gameObject.GetComponentInParent<Slot>().number] =
-        //     myPC.itemList[currentItemID];
-        //     myPC.itemList[currentItemID] = null;
-        //      */
-        //     //上面的是把PC里面的宝可梦移到没有宝可梦的格子里面的方法可以参考一下更改itemlist！！！！
-        //     //eventData.pointerCurrentRaycast.gameObject.transform.Find("Item").SetParent(originalParent);
-        //     GetComponent<CanvasGroup>().blocksRaycasts = true;
-        //     return;
-        // }
-        // else if (eventData.pointerCurrentRaycast.gameObject == null) //目前没有用，可以补充！！！！
-        // {
-        //     transform.position = originalParent.position;
-        //     transform.SetParent(originalParent);
-        //     transform.parent.GetComponent<Slot>().pokemon = temp; 
-        //     GetComponent<CanvasGroup>().blocksRaycasts = true;
-        // }
-        // else
-        // {
-        //     transform.position = originalParent.position;
-        //     transform.SetParent(originalParent);
-        //     transform.parent.GetComponent<Slot>().pokemon = temp; 
-        //     GetComponent<CanvasGroup>().blocksRaycasts = true;
-        // }
-
-
-        // catch (NullReferenceException e)
-        // {
-        //     //有可能是拖拽的最终位置是个NULLReference，亦或者var temp = eventData.pointerCurrentRaycast.gameObject.GetComponent<PokemonChooserElementUI>().Poke;是null！
-        //     //两种来到这里的可能
-        //     Debug.Log("NullReferenceException");
-        //     transform.position = originalParent.position;
-        //     transform.SetParent(originalParent);
-        //     transform.parent.GetComponent<Slot>().pokemon = temp; //新加的不知道对错
-        //     GetComponent<CanvasGroup>().blocksRaycasts = true;
-        // }
     }
 }

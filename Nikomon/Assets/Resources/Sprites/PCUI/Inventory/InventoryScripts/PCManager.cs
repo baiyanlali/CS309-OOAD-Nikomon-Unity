@@ -6,12 +6,15 @@ using UnityEngine;
 using UnityEngine.UI;
 using GamePlay;
 using GamePlay.Messages;
+using GamePlay.UI.BattleUI;
 using GamePlay.UI.UIFramework;
 using GamePlay.UI.UtilUI;
+using PokemonCore;
 using PokemonCore.Character;
 using PokemonCore.Combat;
 using PokemonCore.Inventory;
 using UnityEditor.VersionControl;
+using Debug = UnityEngine.Debug;
 
 public class PCManager : BaseUI
 {
@@ -19,18 +22,27 @@ public class PCManager : BaseUI
     public PC pc;
     public Trainer trainer;
 
+    public override bool IsOnly => true;
+
+    public Text BoxTitle;
+
     public GameObject imageGrid;//PC里面的格子。
     public GameObject information;
     public Text Name,HP, ATK, DEF, SPA, SPD, SPE;
 
-    public PokemonChooserTableUI TableUI;
-    //public PCImage imagePrefab;
-    //public Text information;//介绍宝可梦的信息。(先不要)
+    public PartyInPC TableUI;//加了个<PCParty>
 
     public List<Slot> slots = new List<Slot>();
     public GameObject emptySlot;
     private bool[] judge;
     public bool[] exchangeIndex;//用于交换作用的！！！目前是想设它为26长的一个布尔数组，前六位是背包，后20位是PC
+    public bool[] ifhasPokemon;//用于检测有没有宝可梦的
+
+    public Transform MoveDetial;
+
+    private GameObject MoveElementPrefab;
+
+    private List<MoveElement> _moveElements=new List<MoveElement>();
 
     private void Awake()
     {
@@ -45,6 +57,16 @@ public class PCManager : BaseUI
     /// <param name="args">0 for trainer, 1 for pc</param>
     public override void OnEnter(params object[] args)
     {
+        MoveElementPrefab = GameResources.SpawnPrefab(typeof(MoveElement));
+        if (_moveElements.Count == 0)
+        {
+            for (int i = 0; i < Game.MaxMovesPerPokemon; i++)
+            {
+                GameObject obj = Instantiate(MoveElementPrefab, MoveDetial);
+                obj.name = "Move" + i;
+                _moveElements.Add(obj.GetComponent<MoveElement>());
+            }
+        }
         base.OnEnter(args);
         if (args != null)
         {
@@ -59,6 +81,10 @@ public class PCManager : BaseUI
             for (int i = 0; i < exchangeIndex.Length; i++)
             {
                 exchangeIndex[i] = false;
+            }
+            for (int i = 0; i < ifhasPokemon.Length; i++)
+            {
+                ifhasPokemon[i] = false;
             }
         }
 
@@ -81,6 +107,7 @@ public class PCManager : BaseUI
     {
         base.OnRefresh(args);
 
+        //pc.P
         if (slots.Count == 0)
         {
             for (int i = 0; i < pc.Pokemons.Length; i++)
@@ -97,28 +124,14 @@ public class PCManager : BaseUI
                 slots[i].GetComponent<Slot>().SetupSlot(pc.Pokemons[i],i,RefreshInformation,ShowInfo);
             }
         }
-        
-        // for (int i = 0; i < imageGrid.transform.childCount; i++)
-        // {
-        //     if(imageGrid.transform.childCount == 0)
-        //         break;
-        //     Destroy(imageGrid.transform.GetChild(i).gameObject);
-        // }
-        // slots.Clear();
-        // Debug.Log(imageGrid.transform.childCount);
-        // for (int i = 0; i < pc.Pokemons.Length; i++)
-        // {
-        //     slots.Add(Instantiate(emptySlot).GetComponent<Slot>());
-        //     slots[i].transform.SetParent(imageGrid.transform);
-        //     slots[i].GetComponent<Slot>().SetupSlot(pc.Pokemons[i],i,RefreshInformation,ShowInfo);
-        // }
-        
-        TableUI.Init(trainer,new []{"查看信息", "标记","持有物","放生","查看能力","取消"},HandleChooserTalbeUI);
+
+        BoxTitle.text = pc.BoxNames[pc.ActiveBox];
+        TableUI.Init(trainer,new []{"查看信息", "标记","持有物","放生","放入仓库","取消"},HandleChooserTalbeUI);
     }
 
     private void HandleChooserTalbeUI(int chooseIndex,int bagIndex)
     {
-        print(chooseIndex+" "+bagIndex);
+        // print(chooseIndex+" "+bagIndex);
         switch (chooseIndex)
         {
             case 0:
@@ -148,9 +161,7 @@ public class PCManager : BaseUI
                         if (i <= 5)
                         {//背包里面的交换!
                             exchangeIndex[i] = false;
-                            Pokemon temp = trainer.party[i];
-                            trainer.party[i] = trainer.party[bagIndex];
-                            trainer.party[bagIndex] = temp;
+                            (trainer.party[i], trainer.party[bagIndex]) = (trainer.party[bagIndex], trainer.party[i]);
                             TableUI.ExchangeData(trainer);
                             return;
                         }
@@ -174,12 +185,19 @@ public class PCManager : BaseUI
                 {
                     if (o == true)
                     {
-                        trainer.party[bagIndex] = null;
-                        for (int i = bagIndex; i < trainer.party.Length-1; i++)
+                        // trainer.party[bagIndex] = null;
+                        bool result = trainer.RemovePokemon(bagIndex);
+                        if (result == false)
                         {
-                            trainer.party[i] = trainer.party[i + 1];
+                            UIManager.Instance.Show<ConfirmPanel>("Your party need at least one pokemon");
+                            return;
                         }
-                        trainer.party[trainer.party.Length-1] = null;
+                        // for (int i = bagIndex; i < trainer.party.Length-1; i++)
+                        // {
+                        //     trainer.party[i] = trainer.party[i + 1];
+                        // }
+                        // trainer.party[trainer.party.Length-1] = null;
+                        
                         
                         //TableUI.Init(trainer,new []{"查看信息", "标记","持有物","放生","查看能力","取消"},HandleChooserTalbeUI);
                         TableUI.UpdateData(trainer);
@@ -195,7 +213,41 @@ public class PCManager : BaseUI
                     
                 break;
             case 4:
-                Debug.Log("查看能力");
+                Debug.Log("放入仓库");
+                Pokemon temp4 = trainer.party[bagIndex];
+                // trainer.party[bagIndex] = null;
+                // for (int i = bagIndex; i < trainer.party.Length-1; i++)
+                // {
+                //     trainer.party[i] = trainer.party[i + 1];
+                // }
+                // trainer.party[trainer.party.Length-1] = null;
+                bool result = trainer.RemovePokemon(bagIndex);
+                if (result == false)
+                {
+                    UIManager.Instance.Show<ConfirmPanel>("Your party need at least one pokemon");
+                    return;
+                }
+                
+                TableUI.UpdateData(trainer);
+                // for (int i = 0; i < pc.Pokemons.Length; i++)
+                // {
+                //     if (pc.Pokemons[i] == null)
+                //     {
+                //         pc.Pokemons[i] = temp4;
+                //         break;
+                //     }
+                // }
+                result = pc.AddPokemon(temp4);
+                if (result == false)
+                {
+                    UIManager.Instance.Show<ConfirmPanel>("Your PC is full which is UNBELIEVEBLE!!!");
+                    trainer.AddPokemon(temp4);
+                    TableUI.UpdateData(trainer);
+                    return;
+                }
+                
+                //pc.Pokemons[19] = temp4;
+                UIManager.Instance.Refresh<PCManager>();
                 break;
             case 5:
                 Debug.Log("取消");
@@ -229,33 +281,61 @@ public class PCManager : BaseUI
             SPE.text = temp.ToString();
         }
     }
-    public void RefreshInformation(int number)
+    public void RefreshInformation(Pokemon pokemon)
     {
-        if (slots[number].pokemon == null)
+        if (pokemon == null)
         {
-            Name.text = slots[number].index.ToString();
-            HP.text = Messages.Get(slots[number].pokemon.Name);
-            ATK.text = slots[number].pokemon.ATK.ToString();
-            DEF.text = "ddd";
-            SPA.text = "eee";
-            SPD.text = "fff";
-            SPE.text = "ggg";
+            Name.text = string.Empty;
+            HP.text = string.Empty;
+            ATK.text = string.Empty;
+            DEF.text = string.Empty;
+            SPA.text = string.Empty;
+            SPD.text = string.Empty;
+            SPE.text = string.Empty;
         }
         else
         {
-            Name.text = slots[number].pokemon.Name.ToString();
-            HP.text = slots[number].pokemon.HP.ToString();
-            ATK.text = slots[number].pokemon.ATK.ToString();
-            DEF.text = slots[number].pokemon.DEF.ToString();
-            SPA.text = slots[number].pokemon.SPA.ToString();
-            SPD.text = slots[number].pokemon.SPD.ToString();
-            SPE.text = slots[number].pokemon.SPE.ToString();
+            Name.text = pokemon.Name;
+            HP.text = pokemon.HP.ToString();
+            ATK.text = pokemon.ATK.ToString();
+            DEF.text = pokemon.DEF.ToString();
+            SPA.text = pokemon.SPA.ToString();
+            SPD.text = pokemon.SPD.ToString();
+            SPE.text = pokemon.SPE.ToString();
+
+            for (int i = 0; i < pokemon.moves.Length; i++)
+            {
+                if (pokemon.moves[i] == null)
+                {
+                    _moveElements[i].gameObject.SetActive(false);
+                }
+                else
+                {
+                    _moveElements[i].Init(pokemon.moves[i]);
+                    _moveElements[i].gameObject.SetActive(true);
+                }
+                
+            }
         }
     }
 
     public void ShowInfo(bool isShow)
     {
         information.SetActive(isShow);
+        
+        
+    }
+
+    public void NextPC()
+    {
+        pc.ChangeActiveBox(1);
+        OnRefresh();
+    }
+
+    public void PreviousPC()
+    {
+        pc.ChangeActiveBox(-1);
+        OnRefresh();
     }
 
 

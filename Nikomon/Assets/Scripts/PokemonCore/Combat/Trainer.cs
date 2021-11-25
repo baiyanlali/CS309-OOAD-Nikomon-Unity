@@ -195,13 +195,37 @@ namespace PokemonCore.Combat
             }
         }
 
-        public void RemovePokemon(Pokemon poke)
+        public bool RemovePokemon(Pokemon poke)
+        {
+            if (pokemonCount <= 1||poke==null)
+            {
+                return false;
+            }
+            for (int i = 0; i < pokemonCount; i++)
+            {
+                if (poke == party[i])
+                {
+                    party[i] = null;
+                    ReArrayParty();
+                    return true;
+
+                }
+            }
+
+            return false;
+        }
+
+        public bool RemovePokemon(int index)
         {
             for (int i = 0; i < pokemonCount; i++)
             {
-                if (poke == party[i]) party[i] = null;
-                ReArrayParty();
+                if (i == index)
+                {
+                   return RemovePokemon(party[i]);
+                }
             }
+
+            return false;
         }
     }
 }

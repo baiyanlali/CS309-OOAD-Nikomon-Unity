@@ -25,7 +25,7 @@ public class Slot :MonoBehaviour
 
     public Pokemon pokemon;
 
-    public Action<int> RefreshInformation;
+    public Action<Pokemon> RefreshInformation;
     public Action<bool> ShowInfo;
     private PC _pc;
     private Trainer _trainer;
@@ -34,6 +34,8 @@ public class Slot :MonoBehaviour
     {
         Action<int> action = (o) =>
         {
+            _pc ??= UIManager.Instance.GetUI<PCManager>().pc;
+            _trainer ??= UIManager.Instance.GetUI<PCManager>().trainer;
             switch (o)
             {
                 case 0:
@@ -42,7 +44,7 @@ public class Slot :MonoBehaviour
                     {
                         //PCManager.refreshMenu();
                         // PCManager.refreshInformation(number);
-                        RefreshInformation(index);
+                        RefreshInformation(pokemon);
                         // PCManager.openInform();
                         ShowInfo(true);
                         judge = 1;
@@ -56,8 +58,6 @@ public class Slot :MonoBehaviour
                     break;
                 case 1:
                     Debug.Log("交换1");
-                    _pc ??= UIManager.Instance.GetUI<PCManager>().pc;
-                    _trainer ??= UIManager.Instance.GetUI<PCManager>().trainer;
                     bool[] exchangeIndex = UIManager.Instance.GetUI<PCManager>().exchangeIndex;
                     for (int i = 0; i < exchangeIndex.Length; i++)
                     {
@@ -92,8 +92,7 @@ public class Slot :MonoBehaviour
                     {
                         if (o == true)
                         {
-                            _pc ??= UIManager.Instance.GetUI<PCManager>().pc;
-                            _pc.Pokemons[index] = null;
+                            _pc.RemovePokemon(_pc.ActiveBox,index);
                     
                             UIManager.Instance.Refresh<PCManager>();
                         }
@@ -106,7 +105,19 @@ public class Slot :MonoBehaviour
                     
                     break;
                 case 4:
-                    Debug.Log("查看能力");
+                    Debug.Log("加入背包");
+                    for (int i = 0; i < _trainer.party.Length; i++)
+                    {
+                        if (_trainer.party[i] == null)
+                        {
+                            (_trainer.party[i], _pc.Pokemons[index]) = (_pc.Pokemons[index],_trainer.party[i]);
+                            UIManager.Instance.Refresh<PCManager>();
+                            return;
+                        }
+                    }
+                    
+                    UIManager.Instance.Show<ConfirmPanel>("Your party is full");
+                    
                     break;
                 case 5:
                     Debug.Log("取消");
@@ -115,11 +126,11 @@ public class Slot :MonoBehaviour
         };
         UIManager.Instance.Show<DialogueChooserPanel>(new List<string>
         {
-            "查看信息", "标记","持有物","放生","查看能力","取消"
+            "查看信息", "标记","持有物","放生","加入背包","取消"
         }, new Vector2(0, 1),action, itemInSlot.transform.parent as RectTransform);
     }
 
-    public void SetupSlot(Pokemon item,int num,Action<int> refresh,Action<bool> showinfo)
+    public void SetupSlot(Pokemon item,int num,Action<Pokemon> refresh,Action<bool> showinfo)
     {
         pokemon = item;
         index = num;

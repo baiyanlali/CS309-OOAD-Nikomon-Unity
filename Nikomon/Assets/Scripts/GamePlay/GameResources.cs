@@ -77,7 +77,8 @@ namespace GamePlay
             [typeof(DialogPanel)]="Prefabs/UI/DialogPanel",
             
             //PC
-            [typeof(PCManager)]="Prefabs/UI/PC/PC"
+            [typeof(PCManager)]="Prefabs/UI/PC/PC",
+            [typeof(PCParty)]="Prefabs/UI/PC/Party"
         };
     }
 
