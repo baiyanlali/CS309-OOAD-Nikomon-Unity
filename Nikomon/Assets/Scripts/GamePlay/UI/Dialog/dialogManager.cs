@@ -3,19 +3,29 @@ using System.Collections.Generic;
 using System.IO;
 using PokemonCore.Combat;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class DialogManager : MonoBehaviour
 {
 
     //对话框消失的方式，目前分为按Accept消失和按时间Automatic消失两种
     
-    public static DialogManager dialogManagerIn;
     private string[] dialogList;
     private DialogEngine de;
+    public string debugBoxString;
 
+    private Image dialogBox;
+    private Text dialogBoxText;
+    // private Text dialogBoxTextShadow;
+    private CanvasGroup dialogCanvasGroup;
+
+    private Image choiceBox;
+    private Text choiceBoxText;
+    // private Text choiceBoxTextShadow;
+    private Image choiceBoxSelect;
     private void Awake()
     {
-        dialogManagerIn = this;
+        //dialogManagerIn = this;
         de = transform.GetComponent<DialogEngine>();
         this.gameObject.SetActive(false);
     }

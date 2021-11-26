@@ -29,27 +29,17 @@ public class DialogEngine : MonoBehaviour
     public int dialogLines = 2;
     public int fontSize = 20;
 
-    public float fadeSpeed = 7f;
+    public float fadeSpeed = 1f;
+    private Transform trangleTrn;
 
     private Transform dialogBoxTrn;
     private void Awake()
     {
-        dialogBoxTrn = transform.Find("DialogBox");
-        dialogBox = dialogBoxTrn.Find("boxBG").GetComponent<Image>();
-        dialogBoxText = dialogBoxTrn.Find("boxText").GetComponent<Text>();
-        // dialogBoxTextShadow = dialogBoxTrn.Find("boxTextShadow").GetComponent<Text>();
-        dialogCanvasGroup = dialogBoxTrn.transform.GetComponent<CanvasGroup>();
-
-
-/*        Transform choiceBoxTrn = transform.Find("ChoiceBox");
-        choiceBox = choiceBoxTrn.GetComponent<Image>();
-        choiceBoxText = choiceBoxTrn.Find("boxText").GetComponent<Text>();
-        choiceBoxTextShadow = choiceBoxTrn.Find("boxTextShadow").GetComponent<Text>();
-        choiceBoxSelect = choiceBoxTrn.Find("boxSelect").GetComponent<Image>();
-
-        defaultChoiceY = Mathf.FloorToInt(choiceBox.rectTransform.localPosition.y);
-        fontSize = Mathf.RoundToInt((dialogBoxBorder.rectTransform.sizeDelta.y - 16f) /dialogLines);*/
-
+        dialogBoxTrn = transform.Find("DialogPanel");
+        dialogBoxText = dialogBoxTrn.transform.Find("DialogText").GetComponent<Text>();
+        dialogCanvasGroup = transform.GetComponent<CanvasGroup>();
+        trangleTrn = transform.GetChild(1).GetChild(1).transform;
+        
         //test area
         PlayerPrefs.SetInt("dialogStyle",1);
     }
@@ -199,7 +189,6 @@ public class DialogEngine : MonoBehaviour
         else
         {
             dialogBoxText.text += " <color=#0000></color>";
-            // dialogBoxTextShadow.text = dialogBoxText.text;
 
             while (Time.time < startTime + (secPerChar)) //realize the function of delay display
             {
@@ -224,47 +213,9 @@ public class DialogEngine : MonoBehaviour
         dialogBoxTrn.gameObject.SetActive(true);
         dialogBoxText.text = "";
         dialogBoxText.fontSize = fontSize;
-        // dialogBoxTextShadow.fontSize = fontSize;
-        // dialogBoxTextShadow.text = dialogBoxText.text;
-        /*        float alpha = 1f;
-                dialogCanvasGroup.alpha = 0;
-                while (true)
-                {
-                    dialogCanvasGroup.alpha = Mathf.Lerp(dialogCanvasGroup.alpha, alpha, 0.01f * Time.deltaTime);
-                    Debug.Log(0.01f * Time.deltaTime);
-                    if (Mathf.Abs(alpha - dialogCanvasGroup.alpha) <= 0.01)
-                    {
-                        dialogCanvasGroup.alpha = alpha;
-                        yield return null;
-                    }
-                }*/
+
         yield return StartCoroutine(fadeEffect(1));
-        #region discard code
-        //boxBG(o.x, line.y ) ->dialogBoxTrn.size
-        /*dialogBoxBorder.rectTransform.sizeDelta = new Vector2(dialogBoxBorder.rectTransform.sizeDelta.x, Mathf.Round((float)lines * frontSize) + 16);
 
-        dialogBox.rectTransform.sizeDelta = dialogBoxTrn.gameObject.GetComponent<RectTransform>().sizeDelta;
-        dialogBoxText.rectTransform.localPosition = new Vector3(dialogBoxText.rectTransform.localPosition.x,-110f + Mathf.Round((float)lines * frontSize), 0);
-        dialogBoxTextShadow.rectTransform.localPosition = new Vector3(dialogBoxText.rectTransform.localPosition.x, dialogBoxText.rectTransform.localPosition.y - 1f, 0);
-        */
-        //The rise effect of sign
-        /*if (sign)
-        {
-            float increment = 0f;
-            while (increment < 1)
-            {
-                increment += (1f / 0.2f) * Time.deltaTime;
-                if (increment > 1)
-                {
-                    increment = 1;
-                }
-
-                dialogBox.rectTransform.localPosition = new Vector2(dialogBox.rectTransform.localPosition.x,
-                    -dialogBox.rectTransform.sizeDelta.y + (dialogBox.rectTransform.sizeDelta.y * increment));
-                yield return null;
-            }
-        }*/
-        #endregion
     }
     
     public IEnumerator fadeEffect(int alpha)
@@ -276,13 +227,25 @@ public class DialogEngine : MonoBehaviour
             yield return null;
             // Debug.Log(cg.alpha);
             if (Mathf.Abs(alpha - cg.alpha) <= 0.01)
-                {
-                    cg.alpha = alpha;
-                }
+            {
+                cg.alpha = alpha;
+            }
         }
         
     }
-    
+
+    public IEnumerator floatingTriagle()
+    {
+        float diff = 0.1f;
+        while (true)
+        {
+            trangleTrn.position = new Vector3(trangleTrn.position.x, trangleTrn.position.y - diff,
+                trangleTrn.position.z);
+            if (trangleTrn.position.y > 65) diff = -0.1f;
+            if (trangleTrn.position.y < 45) diff = 0.1f;
+
+        }
+    }
 
     public IEnumerator DrawChoiceBox()
     {

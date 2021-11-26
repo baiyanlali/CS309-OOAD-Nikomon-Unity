@@ -1,4 +1,8 @@
-﻿using Newtonsoft.Json;
+﻿using System;
+using System.Collections.Generic;
+using Newtonsoft.Json;
+using PokemonCore.Attack.Data;
+using PokemonCore.Combat.Interface;
 using PokemonCore.Utility;
 
 namespace PokemonCore.Inventory
@@ -8,9 +12,9 @@ namespace PokemonCore.Inventory
     {
         public enum Tag
         {
-            Medicine,
-            PokeBalls,
-            BattleItems,
+            Medicine,//
+            PokeBalls,//精灵球
+            BattleItems,//
             Berries,
             OtherItems,
             TMs,
@@ -22,27 +26,36 @@ namespace PokemonCore.Inventory
         public Tag tag { get;  set; }
         public int ID { get;  set; }
         public string name { get;  set; }
-        
+        public int effectId { get; set; }
+
+        private List<Object> parameterList { get; }
+
         /// <summary>
         /// 用作买卖
         /// </summary>
         public int value { get; set; }
-
+        
         [JsonConstructor]
-        public Item(Tag t,int id,string name)
+        public Item(
+            Tag tag = Tag.OtherItems,
+            int id = 0,
+            string name = "",
+            int value = 0,
+            int effectId = 0
+        )
         {
-            this.tag = t;
+            this.tag = tag;
             this.ID = id;
             this.name = name;
+            this.value = value;
+            this.effectId = effectId;
         }
 
-
-        public Item()
+        public void useItem(params object[] args)
         {
-            tag =  Tag.Berries;
-            ID = 1;
-            name = "Change this";
+            Effect e = (Game.LuaEnv.Global.Get<Effect>("effect"+effectId));//string plus int (id)
         }
+        
         
         
         
