@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using GamePlay;
 using GamePlay.UI.UIFramework;
 using GamePlay.UI.UtilUI;
+using PokemonCore.Character;
+using PokemonCore.Combat;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
@@ -23,12 +25,17 @@ public class Slot :MonoBehaviour
 
     public Pokemon pokemon;
 
-    public Action<int> RefreshInformation;
+    public Action<Pokemon> RefreshInformation;
     public Action<bool> ShowInfo;
+    private PC _pc;
+    private Trainer _trainer;
+
     public void OnClicked()
     {
         Action<int> action = (o) =>
         {
+            _pc ??= UIManager.Instance.GetUI<PCManager>().pc;
+            _trainer ??= UIManager.Instance.GetUI<PCManager>().trainer;
             switch (o)
             {
                 case 0:
@@ -37,7 +44,7 @@ public class Slot :MonoBehaviour
                     {
                         //PCManager.refreshMenu();
                         // PCManager.refreshInformation(number);
-                        RefreshInformation(index);
+                        RefreshInformation(pokemon);
                         // PCManager.openInform();
                         ShowInfo(true);
                         judge = 1;
@@ -50,32 +57,67 @@ public class Slot :MonoBehaviour
                     }
                     break;
                 case 1:
-                    Debug.Log("标记");
+                    Debug.Log("交换1");
+                    bool[] exchangeIndex = UIManager.Instance.GetUI<PCManager>().exchangeIndex;
+                    for (int i = 0; i < exchangeIndex.Length; i++)
+                    {
+                        if (exchangeIndex[i])
+                        {
+                            if (i <= 5)
+                            {
+                                //i<=5说明上一个选择的宝可梦是位于背包的。这种情况是先标记背包再标记PC的时候
+                                exchangeIndex[i] = false;
+                                _pc.SwitchPCAndPartyPokemon(_trainer, i, index);
+                                UIManager.Instance.Refresh<PCManager>();
+                                return;
+                            }
+                            else
+                            {
+                                //这种情况是PC内部进行交换的！！！
+                                exchangeIndex[i] = false;
+                                _pc.SwapPokemon(_pc.ActiveBox, i-6, _pc.ActiveBox, index);
+                                UIManager.Instance.Refresh<PCManager>();
+                                return;
+                            }
+                        }
+                    }
+                    exchangeIndex[index+ 6] = true;//因为前六个是背包！！！
                     break;
                 case 2:
                     Debug.Log("持有物");
                     break;
                 case 3:
                     Debug.Log("放生");
-                    UIManager.Instance.Show<ConfirmPanel>("Are you sure to release this pokemon?", (Action<bool>)((o) =>
+                    Action<bool> action = (Action<bool>) ((o) =>
                     {
                         if (o == true)
                         {
-                            // pcItem = null;
-                            
-                            // transform.Find("Item").GetComponent<ItemOnMove>().myPC.itemList[number] = null;
-                            // PCManager.Refresh();
+                            _pc.RemovePokemon(_pc.ActiveBox,index);
+                    
                             UIManager.Instance.Refresh<PCManager>();
                         }
                         else
                         {
-                            
+                    
                         }
-                    }));
+                    });
+                    UIManager.Instance.Show<ConfirmPanel>("Are you sure to release this pokemon?", action);
                     
                     break;
                 case 4:
-                    Debug.Log("查看能力");
+                    Debug.Log("加入背包");
+                    for (int i = 0; i < _trainer.party.Length; i++)
+                    {
+                        if (_trainer.party[i] == null)
+                        {
+                            (_trainer.party[i], _pc.Pokemons[index]) = (_pc.Pokemons[index],_trainer.party[i]);
+                            UIManager.Instance.Refresh<PCManager>();
+                            return;
+                        }
+                    }
+                    
+                    UIManager.Instance.Show<ConfirmPanel>("Your party is full");
+                    
                     break;
                 case 5:
                     Debug.Log("取消");
@@ -84,11 +126,11 @@ public class Slot :MonoBehaviour
         };
         UIManager.Instance.Show<DialogueChooserPanel>(new List<string>
         {
-            "查看信息", "标记","持有物","放生","查看能力","取消"
+            "查看信息", "标记","持有物","放生","加入背包","取消"
         }, new Vector2(0, 1),action, itemInSlot.transform.parent as RectTransform);
     }
 
-    public void SetupSlot(Pokemon item,int num,Action<int> refresh,Action<bool> showinfo)
+    public void SetupSlot(Pokemon item,int num,Action<Pokemon> refresh,Action<bool> showinfo)
     {
         pokemon = item;
         index = num;

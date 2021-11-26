@@ -142,7 +142,7 @@ namespace Editor
                         GUILayout.BeginHorizontal();
                         GUILayout.Label("Accuracy:");
                         CurrentMove.Accuracy = EditorGUILayout.IntField((int) CurrentMove.Accuracy);
-                        if (CurrentMove.Accuracy == -1) CurrentMove.Accuracy = null;
+                        // if (CurrentMove.Accuracy == -1) CurrentMove.Accuracy = null;
                         GUILayout.EndHorizontal();
                         
                         
@@ -151,7 +151,7 @@ namespace Editor
                         GUILayout.BeginHorizontal();
                         GUILayout.Label("Power:");
                         CurrentMove.Power = EditorGUILayout.IntField((int) CurrentMove.Power);
-                        if (CurrentMove.Power == -1) CurrentMove.Power = null;
+                        // if (CurrentMove.Power == -1) CurrentMove.Power = null;
                         GUILayout.EndHorizontal();
 
                         GUILayout.BeginHorizontal();

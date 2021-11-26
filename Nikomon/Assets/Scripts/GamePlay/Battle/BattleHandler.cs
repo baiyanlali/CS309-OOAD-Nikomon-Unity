@@ -113,6 +113,7 @@ public class BattleHandler : MonoBehaviour
     
     public void EndBattle()
     {
+        print("End Battle");
         UIManager.Instance.PopAllUI(UILayer.NormalUI);
         GlobalManager.Instance.CanPlayerControlled = true;
         // BattleUIHandler.Instance.EndBattle();

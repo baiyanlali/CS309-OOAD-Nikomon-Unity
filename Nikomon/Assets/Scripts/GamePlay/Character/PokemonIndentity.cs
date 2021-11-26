@@ -18,7 +18,7 @@ public class PokemonIndentity : MonoBehaviour,IInteractive
     public Pokemon pokemon;
 
     public float Time=3f;
-    public float MoveRange = 1;
+    public float MoveRange = 20;
     private float timer = 0f;
     private Animator anim;
     private Rigidbody rigid;
@@ -49,11 +49,21 @@ public class PokemonIndentity : MonoBehaviour,IInteractive
     {
         if (isBattling) return;
         timer += UnityEngine.Time.deltaTime;
-        if (timer > Time)
+
+        var result = Physics.Raycast(new Ray(transform.position, Vector3.down), 1);
+        if (result)
         {
-            Move();
-            timer = 0;
+            
         }
+        else
+        {
+            if (timer > Time)
+            {
+                Move();
+                timer = 0;
+            }
+        }
+        
     }
 
     public void DoMove(CombatMove move,Action onComplete)

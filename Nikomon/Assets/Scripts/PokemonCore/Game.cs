@@ -212,7 +212,7 @@ namespace PokemonCore
             }
             else
             {
-                
+                pc.AddPokemon(poke);
             }
         }
         

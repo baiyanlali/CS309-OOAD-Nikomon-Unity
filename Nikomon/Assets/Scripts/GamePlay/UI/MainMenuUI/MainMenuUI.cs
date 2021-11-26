@@ -18,6 +18,7 @@ public class MainMenuUI : BaseUI
     public GameObject Party;
     public GameObject Save;
     public GameObject Setting;
+    public GameObject PC;
 
     #endregion
     
@@ -33,6 +34,7 @@ public class MainMenuUI : BaseUI
         Save = GET(Save ,nameof(Save ),GET_TYPE.GameObject);
         Setting = GET(Setting ,nameof(Setting ),GET_TYPE.GameObject);
         Resume = GET(Resume ,nameof(Resume ),GET_TYPE.GameObject);
+        PC = GET(PC ,nameof(PC ),GET_TYPE.GameObject);
     }
 
     public override void OnEnter(params object[] args)
@@ -48,6 +50,9 @@ public class MainMenuUI : BaseUI
         Save.GetComponentInChildren<Button>().onClick.AddListener(OpenSave);
         Setting.GetComponentInChildren<Button>().onClick.RemoveAllListeners();
         Setting.GetComponentInChildren<Button>().onClick.AddListener(OpenSetting);
+        
+        PC.GetComponentInChildren<Button>().onClick.RemoveAllListeners();
+        PC.GetComponentInChildren<Button>().onClick.AddListener(OpenPC);
     }
 
     public override void OnExit()
@@ -89,6 +94,11 @@ public class MainMenuUI : BaseUI
     {
         print("Open Save");
         UIManager.Instance.Show<SavePanelUI>();
+    }
+
+    public void OpenPC()
+    {
+        UIManager.Instance.Show<PCManager>(Game.trainer,Game.pc);
     }
     
     
