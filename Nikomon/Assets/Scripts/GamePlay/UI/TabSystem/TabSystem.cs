@@ -49,6 +49,7 @@ public class TabSystem : MonoBehaviour
                 TabElements[i].onClick.AddListener(()=>tableContents[i1].OnEnter());
         }
         
+        OnChoose(TabElements[0]);
     }
 
     private bool hasInit = false;

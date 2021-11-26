@@ -31,10 +31,10 @@ namespace GamePlay.UI.UIFramework
 
         public virtual UILayer Layer { get; set; } =  UILayer.NormalUI;
         public virtual bool IsOnly { get; }
-        public virtual bool IsBlockPlayerControl { get; set; }
+        // public virtual bool IsBlockPlayerControl { get; set; }
         public virtual float DisplayTime { get; } = -1;//-1表示一直显示
 
-        private bool CanPlayerControlBefore;
+        // private bool CanPlayerControlBefore;
 
         private bool _canQuitNow=true;
 
@@ -147,8 +147,8 @@ namespace GamePlay.UI.UIFramework
                 });
             }
             
-            CanPlayerControlBefore = GlobalManager.Instance.CanPlayerControlled;
-            if (IsBlockPlayerControl) GlobalManager.Instance.CanPlayerControlled = false;
+            // CanPlayerControlBefore = GlobalManager.Instance.CanPlayerControlled;
+            // if (IsBlockPlayerControl) GlobalManager.Instance.CanPlayerControlled = false;
 
             
             _cancelTriggers.AddRange(GetComponentsInChildren<CancelTrigger>());
@@ -175,7 +175,7 @@ namespace GamePlay.UI.UIFramework
             if(this is IUIAnimator)(this as IUIAnimator).OnExitAnimator();
             else gameObject.SetActive(false);
 
-            GlobalManager.Instance.CanPlayerControlled = CanPlayerControlBefore;
+            // GlobalManager.Instance.CanPlayerControlled = CanPlayerControlBefore;
             
         }
 

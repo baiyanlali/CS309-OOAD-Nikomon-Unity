@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using GamePlay.UI.PokemonChooserTable;
 using GamePlay.UI.UIFramework;
+using GamePlay.UI.UtilUI;
 using PokemonCore;
 using PokemonCore.Attack;
 using PokemonCore.Attack.Data;
@@ -22,6 +23,8 @@ namespace GamePlay.UI.BattleUI
 
         private readonly string[] PokemonChooses = new[] {"Switch", "Show Ability", "Cancel"};
         private readonly string[] BagChooses = new[] {"Use", "Cancel"};
+        
+        
 
 
         private void HandlePokemonChoose(int chooseIndex, int bagIndex)
@@ -158,6 +161,7 @@ namespace GamePlay.UI.BattleUI
             }
 
             UIManager.Instance.Hide(this);
+            // UIManager.Instance.Refresh<DialogPanel>();
         }
 
         private void OnChooseTarget(List<int> targets, int index)

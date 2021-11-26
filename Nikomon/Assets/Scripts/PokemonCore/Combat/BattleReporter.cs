@@ -32,7 +32,7 @@ namespace PokemonCore.Combat
 
         public static int ReportNum = 0;
         //TODO: Add multi language support
-        public string ObserveBattle(Damage dmg)
+        public void ObserveBattle(Damage dmg)
         {
             string poke_sponsor = dmg.sponsor.Name;
             string poke_target = dmg.target.Name;
@@ -54,12 +54,12 @@ namespace PokemonCore.Combat
 
             OnReport?.Invoke($"#{++ReportNum}{poke_sponsor} 对 {poke_target} 使用了 {move_name}! 效果{dis}");
             // UnityEngine.Debug.Log($"{poke_sponsor} 对 {poke_target} 使用了 {move_name}! 效果{dis}");
-            return $"{poke_sponsor} 对 {poke_target} 使用了 {move_name}! 效果{dis}";
+            // return $"{poke_sponsor} 对 {poke_target} 使用了 {move_name}! 效果{dis}";
         }
 
         public void ShowState()
         {
-            UnityEngine.Debug.Log(Battle.Instance?.GetBattleInfo());
+            // UnityEngine.Debug.Log(Battle.Instance?.GetBattleInfo());
         }
     }
 }

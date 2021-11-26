@@ -6,7 +6,7 @@ namespace GamePlay.UI.SaveUI
     {
         public override UILayer Layer => UILayer.Top;
         public override bool IsOnly => false;
-        public override bool IsBlockPlayerControl => false;
+        // public override bool IsBlockPlayerControl => false;
 
         public override void OnEnter(params object[] args)
         {

@@ -23,7 +23,7 @@ public class MainMenuUI : BaseUI
     
     public override UILayer Layer => UILayer.NormalUI;
     public override bool IsOnly => true;
-    public override bool IsBlockPlayerControl => true;
+    // public override bool IsBlockPlayerControl => true;
 
     public override void Init(params object[] args)
     {

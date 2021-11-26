@@ -108,7 +108,7 @@ public class PokemonIndentity : MonoBehaviour,IInteractive
 
     public void OnAnimEnd()
     {
-        print("Anim End!");
+        // print("Anim End!");
         FindObjectOfType<BattleFieldHandler>().OnAnimEnd();
     }
 

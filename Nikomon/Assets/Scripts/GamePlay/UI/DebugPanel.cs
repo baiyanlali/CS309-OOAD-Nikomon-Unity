@@ -11,7 +11,7 @@ public class DebugPanel :BaseUI
     InputField InputField;
     XLua.LuaEnv luaEnv;
 
-    public override bool IsBlockPlayerControl => true;
+    // public override bool IsBlockPlayerControl => true;
 
     public override void Init(params object[] args)
     {
