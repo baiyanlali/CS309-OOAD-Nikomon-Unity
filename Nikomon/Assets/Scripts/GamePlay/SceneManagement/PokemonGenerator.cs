@@ -21,9 +21,9 @@ public class PokemonGenerator : MonoBehaviour
         Pokemons = Game.PokemonsData.Keys.ToArray();
         
         pokemonIndentities = new List<PokemonIndentity>();
-        for (int i = 0; i < maxPokemonNum; i++)
+        for (int i = 0; i < Pokemons.Length; i++)
         {
-            Pokemon pokemon = new Pokemon(Pokemons.RandomPickOne(), Random.Range(minLevel, maxLevel + 1));
+            Pokemon pokemon = new Pokemon(Pokemons[i], Random.Range(minLevel, maxLevel + 1));
             var obj = GameResources.Pokemons[pokemon.ID];
             GameObject poke=null;
             Vector2 pos = Random.insideUnitCircle*GetComponent<SphereCollider>().radius;

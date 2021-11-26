@@ -93,7 +93,7 @@ public class BattleFieldHandler : MonoBehaviour
         {
             var allyID = allies[i].pokemon.ID;
             
-            TimeSequences.Enqueue(new TimeSequence(allies[i],TimeSequence.SequenceTag.EnterScene,null));
+            // TimeSequences.Enqueue(new TimeSequence(allies[i],TimeSequence.SequenceTag.EnterScene,null));
 
             float offset = CalculatePointPosition(allies.Count, i + 1, padding);
             GameObject obj = null;
@@ -123,7 +123,7 @@ public class BattleFieldHandler : MonoBehaviour
         for (int i = 0; i < oppos.Count; i++)
         {
             var oppoID = oppos[i].pokemon.ID;
-            TimeSequences.Enqueue(new TimeSequence(allies[i],TimeSequence.SequenceTag.EnterScene,null));
+            // TimeSequences.Enqueue(new TimeSequence(allies[i],TimeSequence.SequenceTag.EnterScene,null));
 
             float offset = CalculatePointPosition(oppos.Count, oppos.Count - i, padding);
             GameObject obj = null;

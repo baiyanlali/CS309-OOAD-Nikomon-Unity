@@ -59,7 +59,7 @@ namespace PokemonCore.Combat
 
         public void ShowState()
         {
-            // UnityEngine.Debug.Log(Battle.Instance?.GetBattleInfo());
+            UnityEngine.Debug.Log(Battle.Instance?.GetBattleInfo());
         }
     }
 }

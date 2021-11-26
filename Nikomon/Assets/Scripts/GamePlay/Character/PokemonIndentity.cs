@@ -102,7 +102,8 @@ public class PokemonIndentity : MonoBehaviour,IInteractive
         // print("Init battle");
         isBattling = true;
         anim = anim ? anim : GetComponentInChildren<Animator>();
-        if(isAppear)anim.SetBool(IsAppear,true);
+        //有些宝可梦只有release状态
+        anim.SetBool(IsAppear,false);
         anim.SetTrigger(StartBattle);
     }
 

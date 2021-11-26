@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using GamePlay.StateMachineBehaviours;
 using PokemonCore.Utility;
@@ -42,6 +43,26 @@ public class PokemonAnimatorAutoBind
             ClearBind(o.GetComponentInChildren<Animator>());
         }
     }
+    
+    [MenuItem("AnimatorTools/Set Loop False")]
+    public static void SetLoopFalse()
+    {
+        var obj = Selection.objects;
+        foreach (var o in obj)
+        {
+            // AnimatorController anim = AssetImporterEditor.FindObjectOfType<AnimatorController>();
+            // Debug.Log(anim.name);
+            var anim=(AnimationClip)o;
+            anim.wrapMode = WrapMode.Once;
+            UnityEngine.Debug.Log(anim.wrapMode);
+            EditorUtility.SetDirty(anim);
+
+        }
+        
+        AssetDatabase.Refresh();
+        
+        AssetDatabase.SaveAssets();
+    }
 
 
 
@@ -70,6 +91,7 @@ public class PokemonAnimatorAutoBind
         
         for (int i = 0; i < states.Length; i++)
         {
+            states[i].state.behaviours=Array.Empty<StateMachineBehaviour>();
             var lll = states[i].state.transitions;
             foreach (var lTransition in lll)
             {
@@ -80,6 +102,12 @@ public class PokemonAnimatorAutoBind
         foreach (var t in stateMachine.anyStateTransitions)
         {
             stateMachine.RemoveAnyStateTransition(t);
+        }
+        
+
+        foreach (var t in stateMachine.entryTransitions)
+        {
+            stateMachine.RemoveEntryTransition(t);
         }
         // Debug.Log(controller.parameters.Length);
         controller.parameters = null;
@@ -203,7 +231,7 @@ public class PokemonAnimatorAutoBind
         {
             var into = animatorStates["Fight_release_without_landing"];
 
-            into.state.AddStateMachineBehaviour<PokemonBattleSMB>();
+            // into.state.AddStateMachineBehaviour<PokemonBattleSMB>();
             
             into.position = new Vector3(block_width*2,0);
             childAnimatorStates.Add(into);
@@ -262,8 +290,8 @@ public class PokemonAnimatorAutoBind
             
 
 
-            appear.state.AddStateMachineBehaviour<PokemonBattleSMB>();
-            release.state.AddStateMachineBehaviour<PokemonBattleSMB>();
+            // appear.state.AddStateMachineBehaviour<PokemonBattleSMB>();
+            // release.state.AddStateMachineBehaviour<PokemonBattleSMB>();
 
             appear.position = new Vector3(block_width*2, 0);
             release.position = new Vector3(block_width*2, -block_height);
@@ -389,8 +417,10 @@ public class PokemonAnimatorAutoBind
         be_attacked.state.AddTransition(idle.state).hasExitTime = true;
         idle.state.AddTransition(lost.state).AddCondition(AnimatorConditionMode.If,0,"lost");
 
-        lost.state.AddExitTransition().hasExitTime=true;
-        
+        // lost.state.AddExitTransition().hasExitTime=true;
+        var clip = (lost.state.motion as AnimationClip);
+        if(clip!=null)
+            clip.wrapMode=WrapMode.Once;
         #endregion
 
         if (animatorStates.ContainsKey("Movement_idle"))

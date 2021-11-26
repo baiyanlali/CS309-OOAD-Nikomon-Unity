@@ -594,7 +594,7 @@ namespace PokemonCore.Combat
 
 
             Instructions.Add(ins);
-            // UnityEngine.Debug.Log($"Received instruction:{ins}, now has {Instructions.Count} instruction(s)");
+            UnityEngine.Debug.Log($"Received instruction:{ins}, now has {Instructions.Count} instruction(s)");
 
 
             switch (ins.command)

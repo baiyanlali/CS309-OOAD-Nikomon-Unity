@@ -30,7 +30,7 @@ namespace GamePlay.UI.UtilUI
 
         public override void Init(params object[] args)
         {
-            print("On Init");
+            // print("On Init");
             base.Init(args);
             if(args!=null&&args.Length>=1)
             {
@@ -150,7 +150,7 @@ namespace GamePlay.UI.UtilUI
         
         IEnumerator DrawDialog(string str)
         {
-            print($"Start Coroutine {str}");
+            // print($"Start Coroutine {str}");
             isDrawing = true;
             StringBuilder sb = new StringBuilder();
             int index = 0;
@@ -158,13 +158,13 @@ namespace GamePlay.UI.UtilUI
             {
                 sb.Append(str[index]);
                 DialogText.text = sb.ToString();
-                print(sb.ToString());
+                // print(sb.ToString());
                 yield return new WaitForSeconds(TextSpeed);
                 index++;
             }
 
             isDrawing = false;
-            print("Finish drawDialog");
+            // print("Finish drawDialog");
             OnFinishDrawing();
             yield return null;
         }
