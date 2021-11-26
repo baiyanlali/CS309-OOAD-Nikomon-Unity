@@ -158,16 +158,6 @@ namespace Editor
             {
                 if (p.isArray && p.propertyType == SerializedPropertyType.Generic)
                 {
-                    // EditorGUILayout.BeginHorizontal();
-                    // p.isExpanded = EditorGUILayout.Foldout(p.isExpanded, p.displayName);
-                    // EditorGUILayout.EndHorizontal();
-                    //
-                    // if (p.isExpanded)
-                    // {
-                    //     EditorGUI.indentLevel++;
-                    //     DrawProperties(p,drawChildren);
-                    //     EditorGUI.indentLevel--;
-                    // }
                     if (!string.IsNullOrEmpty(lastPropPath) && p.propertyPath.Contains(lastPropPath))
                     {
                         continue;

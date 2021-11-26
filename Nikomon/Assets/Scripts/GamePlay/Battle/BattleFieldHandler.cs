@@ -186,8 +186,9 @@ public class BattleFieldHandler : MonoBehaviour
 
     public void DoNextSequence()
     {
+        if (!GlobalManager.isBattling) return;
         if (TimeSequences.Count == 0) return;
-        print($"{TimeSequences.Peek().tag}");
+        // print($"{TimeSequences.Peek().tag}");
         var sequence = TimeSequences.Dequeue();
 
         switch (sequence.tag)

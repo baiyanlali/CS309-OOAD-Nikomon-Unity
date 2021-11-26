@@ -74,7 +74,7 @@ public class BattleUIHandler : MonoBehaviour
         // TargetChooserHandler.Init(opponents, allies);
 
         // dialogManager.dialogManagerIn.InitBattle(Game.battleReporter);
-        DialogHandler.Instance.InitBattle(Game.battleReporter);
+        // DialogHandler.Instance.InitBattle(Game.battleReporter);
 
     }
 

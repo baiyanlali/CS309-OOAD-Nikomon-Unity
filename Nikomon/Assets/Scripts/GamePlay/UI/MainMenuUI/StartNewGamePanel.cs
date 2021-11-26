@@ -26,7 +26,7 @@ namespace GamePlay.UI.MainMenuUI
             StartBtn = GET(StartBtn, "Start");
             NameText = NameText!=null?NameText:transform.Find("NameText").GetComponent<InputField>();
         
-            print("Init!");
+            // print("Init!");
             StartBtn.onClick.RemoveAllListeners();
             StartBtn.onClick.AddListener(() =>
             {

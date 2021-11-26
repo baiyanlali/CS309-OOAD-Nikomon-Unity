@@ -24,23 +24,30 @@ namespace PokemonCore.Character
         }
 
         [JsonProperty]
-        public byte ActiveBox { get; private set; }
+        public int ActiveBox { get;private set; }
+
+        public void ChangeActiveBox(int offset)
+        {
+            ActiveBox += offset;
+            ActiveBox %= maxBox;
+            if (ActiveBox < 0)
+                ActiveBox += maxBox;
+
+        }
+
+        public void SetActiveBox(int index)
+        {
+            if (index >= maxBox || index < 0) return;
+            ActiveBox = index;
+        }
+        
         [JsonProperty]
         public string[] BoxNames { get; private set; }
-
-        [JsonIgnore]
-        public PC this[byte i]
-        {
-            get
-            {
-                this.ActiveBox = (byte)((uint)i % maxBox);
-                return this;
-            }
-        }
+        
 
 
         [JsonConstructor]
-        public PC(int maxPokemonsPerBox,int maxBox,Pokemon[][] pokemons,byte activeBox,string[] boxNames)
+        public PC(int maxPokemonsPerBox,int maxBox,Pokemon[][] pokemons,int activeBox,string[] boxNames)
         {
             this.maxPokemonsPerBox = maxPokemonsPerBox;
             this.maxBox = maxBox;
@@ -54,7 +61,7 @@ namespace PokemonCore.Character
             this.maxPokemonsPerBox = maxPokemonsPerBox;
             this.maxBox = maxBox;
             this.pokemons = new Pokemon[maxBox][];
-
+            ActiveBox = 0;
             for (int i = 0; i < this.pokemons.Length; i++)
             {
                 this.pokemons[i] = new Pokemon[maxPokemonsPerBox];
@@ -87,7 +94,7 @@ namespace PokemonCore.Character
 
         public bool RemovePokemon(int boxID, int pokemonID)
         {
-            if (this[Convert.ToByte(boxID)].pokemons[boxID][pokemonID] == null) return false;
+            if (pokemons[boxID][pokemonID] == null) return false;
             this.pokemons[boxID][pokemonID] = null;
             return true;
         }
@@ -114,5 +121,58 @@ namespace PokemonCore.Character
             (pokemons[box1][ poke1], pokemons[box2][ poke2]) = (pokemons[box2][ poke2], pokemons[box1][ poke1]);
         }
 
+        public bool AddPokemon(Pokemon pokemon)
+        {
+            int box,index;
+            (box, index) = FindNextSuitableSlot();
+            UnityEngine.Debug.Log((box,index));
+            if (box == -1 || index == -1)
+            {
+                return false;
+            }
+
+            AddPokemon(box, index, pokemon);
+            return true;
+        }
+        
+        //box index, in box index
+        public ValueTuple<int, int> FindNextSuitableSlot()
+        {
+            int currentIndex = ActiveBox;
+            int result = -1;
+            while (true)
+            {
+                result = FindSuitableSlotInBox(currentIndex);
+                
+                if (result >= 0)
+                {
+                    return (currentIndex, result);
+                }
+                
+                
+                currentIndex += 1;
+                currentIndex %= maxBox;
+                
+                if (currentIndex == ActiveBox)
+                {
+                    return (-1, -1);
+                }
+            }
+        }
+
+        private int FindSuitableSlotInBox(int boxIndex)
+        {
+            if (boxIndex >= maxBox||boxIndex<0)
+            {
+                return -2;
+            }
+            Pokemon[] pokes = pokemons[boxIndex];
+            for (int i = 0; i < maxPokemonsPerBox; i++)
+            {
+                if (pokes[i] == null) return i;
+            }
+
+            return -1;
+        }
     }
 }

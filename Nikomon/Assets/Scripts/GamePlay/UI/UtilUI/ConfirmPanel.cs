@@ -14,7 +14,7 @@ namespace GamePlay.UI.UtilUI
         
         public override UILayer Layer => UILayer.NormalUI;
         public override bool IsOnly => false;
-        public override bool IsBlockPlayerControl => true;
+        // public override bool IsBlockPlayerControl => true;
         public float TweenTime=0.2f;
 
         public override void Init(params object[] args)

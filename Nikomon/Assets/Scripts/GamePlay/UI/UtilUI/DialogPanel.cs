@@ -10,21 +10,36 @@ namespace GamePlay.UI.UtilUI
 {
     public class DialogPanel:BaseUI
     {
+        public enum FadeType
+        {
+            Button,
+            Automatic
+        }
         public Text DialogText;
-        private static DialogHandler sInstance;
         private Queue<string> reports;
         private string currentReport;
         public GameObject ShowNext;
         private bool isDrawing = false;
         public Action<string> OnDialogFinished;
-        public float TextSpeed=20;
+        public float TextSpeed=0.01f;
+        public float PauseTime = 1f;
 
-        public override float DisplayTime { get; } = 0.5f;
+        public override UILayer Layer  => UILayer.Top;
+
+        public FadeType fadeType=FadeType.Button;
 
         public override void Init(params object[] args)
         {
+            print("On Init");
             base.Init(args);
-            currentReport = (string) args[0];
+            if(args!=null&&args.Length>=1)
+            {
+                
+                currentReport = (string) args[0];
+                if (args.Length >= 2)
+                    fadeType = (FadeType) args[1];
+            }
+            
             reports ??= new Queue<string>();
             if (DialogText == null)
             {
@@ -47,18 +62,28 @@ namespace GamePlay.UI.UtilUI
         /// <param name="args"></param>
         public override void OnEnter(params object[] args)
         {
+            print("On Enter");
             base.OnEnter(args);
-            print(currentReport);
-            // ExitBtn.onClick.RemoveAllListeners();
-            // ExitBtn.onClick.AddListener(() =>
+            // print(currentReport);
+
+            // if (fadeType == FadeType.Button)
             // {
-            //     if (isDrawing)
-            //     {
-            //         StartDialogImmediate(currentReport);
-            //     }
-            // });
-            DialogText.text = currentReport;
-            // OnReport(currentReport);
+            //     
+            // }
+
+            // DialogText.text = currentReport;
+            if(args!=null&&args.Length>=1)
+            {
+                print("To report");
+                OnReport(currentReport);
+            }
+        }
+
+        public override void OnRefresh(params object[] args)
+        {
+            print("On Refresh");
+            base.OnRefresh(args);
+            gameObject.SetActive(true);
         }
 
         private void OnFinishDrawing()
@@ -66,13 +91,42 @@ namespace GamePlay.UI.UtilUI
             if (reports.Count == 0)
             {
                 OnDialogFinished?.Invoke("");
-                UIManager.Instance.Hide(this);
+                if(fadeType==FadeType.Automatic)
+                    StartCoroutine(PauseAndHide());
+                else
+                {
+                    ExitBtn.onClick.RemoveAllListeners();
+                    ExitBtn.onClick.AddListener(() =>
+                    {
+                        UIManager.Instance.Hide(this);
+                    });
+                    
+                }
                 // gameObject.SetActive(false);
                 return;
             }
-            print("Finish drawing");
-            currentReport = reports.Dequeue();
-            StartCoroutine(DrawDialog(currentReport));
+
+            if (fadeType == FadeType.Automatic)
+            {
+                currentReport = reports.Dequeue();
+                StartCoroutine(DrawDialog(currentReport));
+            }
+            else
+            {
+                ExitBtn.onClick.RemoveAllListeners();
+                ExitBtn.onClick.AddListener(() =>
+                {
+                    currentReport = reports.Dequeue();
+                    StartCoroutine(DrawDialog(currentReport));
+                });
+            }
+            
+        }
+
+        IEnumerator PauseAndHide()
+        {
+            yield return new WaitForSeconds(PauseTime);
+            UIManager.Instance.Hide(this);
         }
         
         private void OnReport(string report)
@@ -81,7 +135,7 @@ namespace GamePlay.UI.UtilUI
 
             if (reports.Count == 1)
             {
-                StartCoroutine(DrawDialog(report));
+                StartCoroutine(DrawDialog(reports.Dequeue()));
             }
         }
 
@@ -94,8 +148,9 @@ namespace GamePlay.UI.UtilUI
             OnFinishDrawing();
         }
         
-        private IEnumerator DrawDialog(string str)
+        IEnumerator DrawDialog(string str)
         {
+            print($"Start Coroutine {str}");
             isDrawing = true;
             StringBuilder sb = new StringBuilder();
             int index = 0;
@@ -103,12 +158,15 @@ namespace GamePlay.UI.UtilUI
             {
                 sb.Append(str[index]);
                 DialogText.text = sb.ToString();
-                yield return new WaitForSeconds(1/TextSpeed);
+                print(sb.ToString());
+                yield return new WaitForSeconds(TextSpeed);
                 index++;
             }
 
             isDrawing = false;
+            print("Finish drawDialog");
             OnFinishDrawing();
+            yield return null;
         }
     }
 }

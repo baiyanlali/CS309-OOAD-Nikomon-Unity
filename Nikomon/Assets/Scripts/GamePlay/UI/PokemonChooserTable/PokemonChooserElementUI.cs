@@ -5,11 +5,12 @@ using System.Linq;
 using GamePlay;
 using GamePlay.UI.UIFramework;
 using GamePlay.UI.UtilUI;
+// using Resources.Sprites.PCUI.Inventory.InventoryScripts;
 using UnityEngine;
 using UnityEngine.UI;
 using Debug = PokemonCore.Debug;
 
-public class PokemonChooserElementUI : MonoBehaviour
+public class PokemonChooserElementUI : PartyElement
 {
     public Image PokemonIcon;
     public Text PokemonName;
@@ -19,8 +20,9 @@ public class PokemonChooserElementUI : MonoBehaviour
     public Pokemon Poke;
     public int IndexInBag;
 
-    public void Init(Pokemon pokemon, int index, string[] dialogChoose, Action<int,int> actions)
+    public override void Init(Pokemon pokemon, int index, string[] dialogChoose, Action<int,int> actions)
     {
+        base.Init(pokemon, index, dialogChoose, actions);
         Poke = pokemon;
         IndexInBag = index;
         PokemonIcon = PokemonIcon ? PokemonIcon : transform.Find("PokemonIcon").GetComponent<Image>();
@@ -44,8 +46,9 @@ public class PokemonChooserElementUI : MonoBehaviour
         });
     }
 
-    public void UpdateData(Pokemon pokemon)
+    public override void UpdateData(Pokemon pokemon)
     {
+        base.UpdateData(pokemon);
         PokemonIcon = PokemonIcon ? PokemonIcon : transform.Find("PokemonIcon").GetComponent<Image>();
         PokemonName = PokemonName ? PokemonName : transform.Find("PokemonName").GetComponent<Text>();
         HealthBar = HealthBar ? HealthBar : transform.Find("HealthBar").GetComponent<Slider>();

@@ -11,7 +11,7 @@ namespace GamePlay.UI.BattleUI
         public GameObject AlliesState;
         public GameObject OpponentState;
         public GameObject PokemonStateUIPrefab;
-        public override bool IsBlockPlayerControl => true;
+        // public override bool IsBlockPlayerControl => true;
         public override void Init(params object[] args)
         {
             AlliesState = GET(AlliesState, nameof(AlliesState), GET_TYPE.GameObject);
