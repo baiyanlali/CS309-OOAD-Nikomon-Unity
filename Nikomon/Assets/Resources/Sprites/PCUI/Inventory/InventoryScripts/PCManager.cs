@@ -36,7 +36,7 @@ public class PCManager : BaseUI
     public GameObject emptySlot;
     private bool[] judge;
     public bool[] exchangeIndex;//用于交换作用的！！！目前是想设它为26长的一个布尔数组，前六位是背包，后20位是PC
-    public bool[] ifhasPokemon;//用于检测有没有宝可梦的
+    //public bool[] ifhasPokemon;//用于检测有没有宝可梦的
 
     public Transform MoveDetial;
 
@@ -54,9 +54,51 @@ public class PCManager : BaseUI
     /// <summary>
     /// 
     /// </summary>
-    /// <param name="args">0 for trainer, 1 for pc</param>
+    /// <param name="args">0 for trainer, 1 for pc</
+    
+    // public override void OnEnter(params object[] args)
+    // {
+    //     MoveElementPrefab = GameResources.SpawnPrefab(typeof(MoveElement));
+    //     if (_moveElements.Count == 0)
+    //     {
+    //         for (int i = 0; i < Game.MaxMovesPerPokemon; i++)
+    //         {
+    //             GameObject obj = Instantiate(MoveElementPrefab, MoveDetial);
+    //             obj.name = "Move" + i;
+    //             _moveElements.Add(obj.GetComponent<MoveElement>());
+    //         }
+    //     }
+    //     base.OnEnter(args);
+    //     if (args != null)
+    //     {
+    //         trainer=args[0] as Trainer;
+    //         pc = args[1] as PC;
+    //         judge = new bool[trainer.party.Length];
+    //         exchangeIndex = new bool[trainer.party.Length+pc.Pokemons.Length];
+    //         for (int i = 0; i < judge.Length; i++)
+    //         {
+    //             judge[i] = false;
+    //         }
+    //         for (int i = 0; i < exchangeIndex.Length; i++)
+    //         {
+    //             exchangeIndex[i] = false;
+    //         }
+    //         for (int i = 0; i < ifhasPokemon.Length; i++)
+    //         {
+    //             ifhasPokemon[i] = false;
+    //         }
+    //     }
+    //
+    //     
+    //     imageGrid.SetActive(true);
+    //     if (emptySlot == null)
+    //         emptySlot = GameResources.SpawnPrefab("Slot");
+    //
+    //     OnRefresh();
+    //     
+    // }
     public override void OnEnter(params object[] args)
-    {
+    {//12.6开始改的！
         MoveElementPrefab = GameResources.SpawnPrefab(typeof(MoveElement));
         if (_moveElements.Count == 0)
         {
@@ -73,7 +115,8 @@ public class PCManager : BaseUI
             trainer=args[0] as Trainer;
             pc = args[1] as PC;
             judge = new bool[trainer.party.Length];
-            exchangeIndex = new bool[trainer.party.Length+pc.Pokemons.Length];
+            print(pc.Pokemons.Length * pc.pokemons.Length);//160
+            exchangeIndex = new bool[trainer.party.Length+pc.Pokemons.Length * pc.pokemons.Length];
             for (int i = 0; i < judge.Length; i++)
             {
                 judge[i] = false;
@@ -82,10 +125,10 @@ public class PCManager : BaseUI
             {
                 exchangeIndex[i] = false;
             }
-            for (int i = 0; i < ifhasPokemon.Length; i++)
-            {
-                ifhasPokemon[i] = false;
-            }
+            // for (int i = 0; i < ifhasPokemon.Length; i++)
+            // {
+            //     ifhasPokemon[i] = false;
+            // }
         }
 
         
@@ -126,7 +169,7 @@ public class PCManager : BaseUI
         }
 
         BoxTitle.text = pc.BoxNames[pc.ActiveBox];
-        TableUI.Init(trainer,new []{"查看信息", "标记","持有物","放生","放入仓库","取消"},HandleChooserTalbeUI);
+        TableUI.Init(trainer,new []{"查看信息", "交换","持有物","放生","放入仓库","取消"},HandleChooserTalbeUI);
     }
 
     private void HandleChooserTalbeUI(int chooseIndex,int bagIndex)
@@ -158,6 +201,11 @@ public class PCManager : BaseUI
                 {
                     if (exchangeIndex[i])
                     {
+                        if (i == bagIndex)
+                        {
+                            exchangeIndex[i] = false;
+                            return;
+                        }
                         if (i <= 5)
                         {//背包里面的交换!
                             exchangeIndex[i] = false;
@@ -168,7 +216,10 @@ public class PCManager : BaseUI
                         else
                         {//先标记的PC，然后再选择了背包里面的宝可梦进行交换！！！
                             exchangeIndex[i] = false;
-                            pc.SwitchPCAndPartyPokemon(trainer, bagIndex, i-6);
+                            // print("PCBoxID");
+                            // print( i - 6);
+                            //pc.SwitchPCAndPartyPokemon(trainer, bagIndex, i-6);
+                            pc.SwitchPartyAndPCPokemon(trainer, bagIndex, i-6);
                             UIManager.Instance.Refresh<PCManager>();
                             return;
                         }

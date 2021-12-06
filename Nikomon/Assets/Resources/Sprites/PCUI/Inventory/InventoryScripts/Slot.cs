@@ -75,13 +75,14 @@ public class Slot :MonoBehaviour
                             {
                                 //这种情况是PC内部进行交换的！！！
                                 exchangeIndex[i] = false;
-                                _pc.SwapPokemon(_pc.ActiveBox, i-6, _pc.ActiveBox, index);
+                                _pc.SwapPokemon((i-6)/_pc.Pokemons.Length, (i-6)%_pc.Pokemons.Length, _pc.ActiveBox, index);
                                 UIManager.Instance.Refresh<PCManager>();
                                 return;
                             }
                         }
                     }
-                    exchangeIndex[index+ 6] = true;//因为前六个是背包！！！
+                    exchangeIndex[_pc.ActiveBox * _pc.Pokemons.Length + index+ 6] = true;//因为前六个是背包！！！
+                    //exchangeIndex[index+ 6] = true;//因为前六个是背包！！！
                     break;
                 case 2:
                     Debug.Log("持有物");

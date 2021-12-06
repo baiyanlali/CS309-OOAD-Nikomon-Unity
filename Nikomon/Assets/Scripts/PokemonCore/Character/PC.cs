@@ -108,6 +108,16 @@ namespace PokemonCore.Character
             pokemons[(int) this.ActiveBox][ PCBoxID] = pokemon;
             return true;
         }
+        
+        public bool SwitchPartyAndPCPokemon(Trainer trainer,int partyID,int PCnum)
+        {
+            Pokemon pokemon = trainer.party[partyID];
+            if (pokemon == null) return false;
+            //TODO: Make this method into static
+            trainer.party[partyID] = pokemons[PCnum / Pokemons.Length][PCnum % Pokemons.Length];
+            pokemons[PCnum / Pokemons.Length][PCnum % Pokemons.Length] = pokemon;
+            return true;
+        }
 
         public bool AddPokemon(int boxID, int pokemonID, Pokemon pokemon)
         {
