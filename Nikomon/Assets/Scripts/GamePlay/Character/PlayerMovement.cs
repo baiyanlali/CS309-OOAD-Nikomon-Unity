@@ -10,7 +10,9 @@ public class PlayerMovement : MonoBehaviour
 {
     public NicomonInputSystem nicoInput;
     public float InteractDepth = 5f;
-    private Animator animator;
+    [SerializeField]private Animator animator;
+
+    public InputActionAsset InputActionAsset;
 
     private GameObject VirtualController;
 
@@ -20,10 +22,15 @@ public class PlayerMovement : MonoBehaviour
         VirtualController=GameObject.Find("VirtualController");
         if (nicoInput == null)
             nicoInput = FindObjectOfType<NicomonInputSystem>();
+        if (nicoInput == null)
+        {
+            nicoInput = gameObject.AddComponent<NicomonInputSystem>();
+        }
         nicoInput.NicomonInput.UI.Debug.started += (o) =>
         {
             UIManager.Instance.Show<DebugPanel>();
         };
+
     }
 
     void Update()

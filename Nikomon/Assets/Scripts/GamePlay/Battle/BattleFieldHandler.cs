@@ -51,6 +51,10 @@ public class BattleFieldHandler : MonoBehaviour
     public Transform allyPosition;
     public Transform oppoPosition;
 
+    public Action<Damage> OnHitAnim; 
+    public Action<Damage> OnHittedAnim;
+    public Action<PokemonIndentity> OnPokemonFaintAnim;
+    public Action<PokemonIndentity,PokemonIndentity> OnReplacePokemonAnim;
 
     public static BattleFieldHandler Instance
     {
@@ -80,6 +84,11 @@ public class BattleFieldHandler : MonoBehaviour
     }
 
     private Dictionary<int, PokemonIndentity> dics;
+
+    public Dictionary<int, PokemonIndentity> FieldPokemonIndentities
+    {
+        get => dics;
+    }
 
     public void Init(List<CombatPokemon> allies, List<CombatPokemon> oppos)
     {
@@ -165,17 +174,21 @@ public class BattleFieldHandler : MonoBehaviour
     public void OnHit(Damage dmg)
     {
         TimeSequences.Enqueue(new TimeSequence(dmg.sponsor, TimeSequence.SequenceTag.OnMove, dmg.combatMove));
-
+        
         TimeSequences.Enqueue(new TimeSequence(dmg.target, TimeSequence.SequenceTag.BeHit));
         
         TimeSequences.Enqueue(new TimeSequence(dmg.sponsor, TimeSequence.SequenceTag.EndMove));
-
+        
         DoNextSequence();
+
+        // OnHitAnim?.Invoke(dmg);
     }
 
     public void OnHitted(CombatPokemon poke)
     {
         // DoNextSequence();
+        
+        
     }
 
     public void OnTurnEnd()
@@ -209,6 +222,12 @@ public class BattleFieldHandler : MonoBehaviour
         }
     }
 
+    public void MoveAnimEnd()
+    {
+        UIManager.Instance.Refresh<BattleStatusPanel>();
+        BattleHandler.Instance.battle.NextMove();
+    }
+
     public void OnAnimEnd()
     {
         DoNextSequence();
@@ -217,6 +236,8 @@ public class BattleFieldHandler : MonoBehaviour
     public void OnPokemonFainting(CombatPokemon poke)
     {
         dics[poke.CombatID].Faint();
+
+        OnPokemonFaintAnim?.Invoke(dics[poke.CombatID]);
     }
 
     public void OnReplacePokemon(CombatPokemon p1, CombatPokemon p2)
