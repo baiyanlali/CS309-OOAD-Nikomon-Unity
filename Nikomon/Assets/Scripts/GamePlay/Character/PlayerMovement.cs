@@ -89,6 +89,14 @@ public class PlayerMovement : MonoBehaviour
 
         // var isGrounded = Physics.Raycast(new Ray(transform.position,Vector3.down),1f,LayerMask.NameToLayer("Ground"));
         animator.SetBool("IsGround", isGround);
+        if (isGround)
+        {
+            animator.SetBool("IsInWater", !isGround);
+            animator.applyRootMotion = true;
+            rigid.velocity=Vector3.zero;
+            rigid.angularVelocity=Vector3.zero;
+            
+        }
     }
 
     public void AddForceToward(float force)
@@ -173,6 +181,8 @@ public class PlayerMovement : MonoBehaviour
 
             theta = Mathf.Rad2Deg * theta;
             transform.rotation = Quaternion.Euler(0, cameraForward + theta, 0);
+            rigid.angularVelocity=Vector3.zero;
+            
         }
         else
         {
