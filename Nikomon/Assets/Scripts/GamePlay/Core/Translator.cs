@@ -10,12 +10,13 @@ namespace GamePlay.Core
 
         public static void ChangeLanguage(int lang_id)
         {
-            Translate = SaveLoad.Load<Dictionary<string,string>>("");
+            Translate = GameResources.LoadLocalization("ch-CN"); //lang_id);
         }
 
         public static string TranslateStr(string str)
         {
-            return null;
+            bool hasValue = Translate.TryGetValue(str,out string result);
+            return hasValue? result:str;
         }
     }
 }

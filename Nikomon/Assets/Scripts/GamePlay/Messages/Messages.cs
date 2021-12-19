@@ -14,7 +14,15 @@ namespace GamePlay.Messages
         
         public static string Current_culture
         {
-            get => _currentCulture;
+            get
+            {
+                if (string.IsNullOrEmpty(_currentCulture))
+                {
+                    SetUp("");
+                }
+
+                return _currentCulture;
+            }
             private set
             {
                 _currentCulture = value;
@@ -29,7 +37,7 @@ namespace GamePlay.Messages
             else
                 Current_culture = lang;
             
-            Translator = SaveLoad.Load<Dictionary<string, string>>("language_" + Current_culture);
+            // Translator = SaveLoad.Load<Dictionary<string, string>>("language_" + Current_culture);
         }
         
         public static string Get(string str)

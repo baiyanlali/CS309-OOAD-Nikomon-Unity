@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using GamePlay.Core;
 using GamePlay.UI;
 using GamePlay.UI.BagSystem;
@@ -78,7 +79,10 @@ namespace GamePlay
             
             //PC
             [typeof(PCManager)]="Prefabs/UI/PC/PC",
-            [typeof(PCParty)]="Prefabs/UI/PC/Party"
+            [typeof(PCParty)]="Prefabs/UI/PC/Party",
+            
+            //Ability
+            [typeof(AbilityPanel)]="Prefabs/UI/Ability/PokeAbilityTable",
         };
     }
 
@@ -94,6 +98,28 @@ namespace GamePlay
         private static Dictionary<string, GameObject> CachedPrefabsStr = new Dictionary<string, GameObject>();
 
         #region Initial Load
+
+        public static Dictionary<string, string> LoadLocalization(string culture)
+        {
+            var text = Resources.Load<TextAsset>($"Localization/{culture}/name_{culture}").text;
+            var dics = JsonConvert.DeserializeObject<Dictionary<string, string>>(text);
+            text = Resources.Load<TextAsset>($"Localization/{culture}/skill_{culture}").text;
+            var tmp = JsonConvert.DeserializeObject<Dictionary<string, string>>(text);
+            foreach (var t in tmp)
+            {
+                dics.Add(t.Key,t.Value);
+            }
+            
+            text = Resources.Load<TextAsset>($"Localization/{culture}/tool_{culture}").text;
+            tmp = JsonConvert.DeserializeObject<Dictionary<string, string>>(text);
+            foreach (var t in tmp)
+            {
+                if(! dics.ContainsKey(t.Key))
+                    dics.Add(t.Key,t.Value);
+            }
+
+            return dics;
+        }
 
         public static Dictionary<int, int[]> LoadExperienceTable()
         {

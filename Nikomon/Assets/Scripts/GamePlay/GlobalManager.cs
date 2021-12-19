@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using GamePlay;
+using GamePlay.Core;
+using GamePlay.Messages;
 using GamePlay.UI.SaveUI;
 using GamePlay.UI.UIFramework;
 using PokemonCore;
@@ -100,6 +102,8 @@ public class GlobalManager : MonoBehaviour
 
         DontDestroyOnLoad(this);
         InitGame();
+
+        Translator.Translate = GameResources.LoadLocalization(Messages.Current_culture);
     }
 
     private void InitGame()
