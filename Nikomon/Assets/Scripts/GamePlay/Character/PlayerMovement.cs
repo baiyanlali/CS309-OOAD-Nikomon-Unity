@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using GamePlay.UI.UIFramework;
+using UnityEditor.PackageManager;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Debug = System.Diagnostics.Debug;
@@ -10,45 +11,47 @@ public class PlayerMovement : MonoBehaviour
 {
     public NicomonInputSystem nicoInput;
     public float InteractDepth = 5f;
-    [SerializeField]private Animator animator;
+    [SerializeField] private Animator animator;
 
     public InputActionAsset InputActionAsset;
 
     private GameObject VirtualController;
 
+    private Rigidbody rigid;
+
     void Start()
     {
         animator = GetComponent<Animator>();
-        VirtualController=GameObject.Find("VirtualController");
+        VirtualController = GameObject.Find("VirtualController");
         if (nicoInput == null)
             nicoInput = FindObjectOfType<NicomonInputSystem>();
         if (nicoInput == null)
         {
             nicoInput = gameObject.AddComponent<NicomonInputSystem>();
         }
-        nicoInput.NicomonInput.UI.Debug.started += (o) =>
-        {
-            UIManager.Instance.Show<DebugPanel>();
-        };
 
+        nicoInput.NicomonInput.UI.Debug.started += (o) => { UIManager.Instance.Show<DebugPanel>(); };
+
+        rigid = GetComponent<Rigidbody>();
     }
 
     void Update()
     {
-
+        CheckGrounded();
         if (GlobalManager.isBattling)
         {
-            if(GlobalManager.Instance.Config.UseVirtualControl) VirtualController?.SetActive(false);
+            if (GlobalManager.Instance.Config.UseVirtualControl) VirtualController?.SetActive(false);
             isWalking = false;
-            animator?.SetBool("IsWalking",false);
-            move=Vector2.zero;
+            animator?.SetBool("IsWalking", false);
+            move = Vector2.zero;
             return;
         }
+
         if (nicoInput == null)
             nicoInput = FindObjectOfType<NicomonInputSystem>();
         else
         {
-            if(GlobalManager.Instance.Config.UseVirtualControl) VirtualController?.SetActive(true);
+            if (GlobalManager.Instance.Config.UseVirtualControl) VirtualController?.SetActive(true);
             this.move = nicoInput.move;
             Movement();
             if (nicoInput.menu)
@@ -56,16 +59,67 @@ public class PlayerMovement : MonoBehaviour
                 UIManager.Instance.Show<MainMenuUI>();
                 // GlobalManager.Instance.SaveSaveData();
             }
+
             if (nicoInput.accept)
             {
-              
-               // CheckInteractable();
+                // CheckInteractable();
             }
         }
     }
-    
-    
-    
+
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.blue;
+
+        var position = transform.position;
+        Gizmos.DrawLine(position, position + Vector3.down * 2f);
+    }
+
+    void CheckGrounded()
+    {
+        var hits = Physics.RaycastAll(new Ray(transform.position + Vector3.up * 0.8f, Vector3.down), 2f);
+        // print(hitInfo.collider.name);
+        bool isGround = false;
+
+        foreach (var hit in hits)
+        {
+            if (hit.collider.CompareTag("Ground"))
+                isGround = true;
+        }
+
+        // var isGrounded = Physics.Raycast(new Ray(transform.position,Vector3.down),1f,LayerMask.NameToLayer("Ground"));
+        animator.SetBool("IsGround", isGround);
+    }
+
+    public void AddForceToward(float force)
+    {
+        // print("Add force");
+        if (Vector3.Angle(rigid.velocity, transform.forward) >= 45)
+        {
+            rigid.velocity = transform.forward;
+        }
+        
+        rigid.AddForce(transform.forward * force, ForceMode.Force);
+        rigid.AddForce(transform.up * force / 100f, ForceMode.Impulse);
+    }
+
+    private float rigidDrag;
+    public void CheckWater(bool isInWater)
+    {
+        animator.SetBool("IsInWater", isInWater);
+        animator.applyRootMotion = !isInWater;
+        if (isInWater)
+        {
+            rigidDrag = rigid.drag;
+            rigid.drag = 0;
+        }
+        else
+        {
+            rigid.drag = rigidDrag;
+        }
+        
+
+    }
 
 
     void CheckInteractable()
@@ -84,6 +138,19 @@ public class PlayerMovement : MonoBehaviour
         if (GlobalManager.isBattling) return;
         IInteractive interactive = other.gameObject.GetComponent<IInteractive>();
         interactive?.OnInteractive(this.gameObject);
+
+        // if (other.gameObject.CompareTag("Ground"))
+        // {
+        //     animator.SetBool("IsGround",true);
+        // }
+    }
+
+    private void OnCollisionExit(Collision other)
+    {
+        // if (other.gameObject.CompareTag("Ground"))
+        // {
+        //     animator.SetBool("IsGround",false);
+        // }
     }
 
     public void Movement()
