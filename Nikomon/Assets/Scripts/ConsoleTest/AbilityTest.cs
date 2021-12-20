@@ -13,7 +13,7 @@ public class AbilityTest : MonoBehaviour
         {
             GlobalManager.Instance.LoadAllSaveData();
             Trainer trainer = new Trainer("JDY", true);
-            Pokemon wyf = new Pokemon(1, 50);
+            Pokemon wyf = new Pokemon(3, 50);
             Pokemon AIfanfan = new Pokemon(7, 50);
             Pokemon AIfanfan2 = new Pokemon(1, 30);
             

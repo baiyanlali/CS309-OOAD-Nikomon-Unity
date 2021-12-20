@@ -19,9 +19,9 @@ namespace GamePlay.UI.UtilUI
         public Transform MoveDetial;
         public Trainer trainer;
         public Pokemon Pokemon;
-        public Text Name,HP, ATK, DEF, SPA, SPD, SPE;
         public RadarTest _radarTest;
         public Nametext _nametext;
+        public GameObject pokenmons;
         private void Awake()
         {
             // abilityTable.SetActive(true);
@@ -46,59 +46,39 @@ namespace GamePlay.UI.UtilUI
                     _moveElements.Add(obj.GetComponent<MoveElement>());
                 }
             }
-
             base.OnEnter(args);
             if (args != null)
             {
                 trainer=args[0] as Trainer;
                 Pokemon=args[1] as Pokemon;
             }
-            print(Pokemon.Name);
+            for (int i = 0; i < Pokemon.moves.Length; i++)
+            {
+                if (Pokemon.moves[i] == null)
+                {
+                    _moveElements[i].gameObject.SetActive(false);
+                }
+                else
+                {
+                    _moveElements[i].Init(Pokemon.moves[i]);
+                    _moveElements[i].gameObject.SetActive(true);
+                }
+                
+            }
+            foreach (Transform child in pokenmons.transform)
+            {
+                // print(child.name);
+                child.gameObject.SetActive(false);
+            }
+            string name = Pokemon.ID.ToString() + Pokemon.Name;
+            pokenmons.SetActive(true);
+            print(name);
+            pokenmons.transform.Find(name).gameObject.SetActive(true);
             _radarTest.Init(Pokemon);
-            _nametext.Init(Pokemon);
-            print(Pokemon.Name);
-            
+            _nametext.Init(Pokemon,trainer);
+
         }
-        
 
-
-        // public void RefreshInformation(Pokemon pokemon)
-        // {
-        //     if (pokemon == null)
-        //     {
-        //         Name.text = string.Empty;
-        //         HP.text = string.Empty;
-        //         ATK.text = string.Empty;
-        //         DEF.text = string.Empty;
-        //         SPA.text = string.Empty;
-        //         SPD.text = string.Empty;
-        //         SPE.text = string.Empty;
-        //     }
-        //     else
-        //     {
-        //         Name.text = pokemon.Name;
-        //         HP.text = pokemon.HP.ToString();
-        //         ATK.text = pokemon.ATK.ToString();
-        //         DEF.text = pokemon.DEF.ToString();
-        //         SPA.text = pokemon.SPA.ToString();
-        //         SPD.text = pokemon.SPD.ToString();
-        //         SPE.text = pokemon.SPE.ToString();
-        //
-        //         for (int i = 0; i < pokemon.moves.Length; i++)
-        //         {
-        //             if (pokemon.moves[i] == null)
-        //             {
-        //                 _moveElements[i].gameObject.SetActive(false);
-        //             }
-        //             else
-        //             {
-        //                 _moveElements[i].Init(pokemon.moves[i]);
-        //                 _moveElements[i].gameObject.SetActive(true);
-        //             }
-        //         
-        //         }
-        //     }
-        // }
         
         
         

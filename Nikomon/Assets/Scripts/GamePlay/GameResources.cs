@@ -82,7 +82,7 @@ namespace GamePlay
             [typeof(PCParty)]="Prefabs/UI/PC/Party",
             
             //Ability
-            [typeof(AbilityPanel)]="Prefabs/UI/Ability/PokeAbilityTable",
+            [typeof(AbilityPanel)]="Prefabs/UI/Ability/PokemonAbilityTable",
         };
     }
 
