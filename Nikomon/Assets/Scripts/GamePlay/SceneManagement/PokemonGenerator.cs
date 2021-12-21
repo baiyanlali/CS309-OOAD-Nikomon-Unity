@@ -27,7 +27,8 @@ public class PokemonGenerator : MonoBehaviour
             var obj = GameResources.Pokemons[pokemon.ID];
             GameObject poke=null;
             Vector2 pos = Random.insideUnitCircle*GetComponent<SphereCollider>().radius;
-            
+            pos.x += transform.position.x;
+            pos.y += transform.position.z;
             if(obj.Length==1)
                poke  = Instantiate(obj[0],new Vector3(pos.x,transform.position.y,pos.y),Quaternion.identity);
             else if (obj.Length == 2)

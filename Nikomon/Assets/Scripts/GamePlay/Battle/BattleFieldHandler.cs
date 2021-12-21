@@ -10,13 +10,14 @@ using PokemonCore;
 using PokemonCore.Combat;
 using UnityEngine;
 using UnityEngine.Playables;
+using UnityEngine.Serialization;
 using UnityEngine.Timeline;
 using Object = System.Object;
 
 
 public class BattleFieldHandler : MonoBehaviour
 {
-    [SerializeField] private PlayableDirector Director;
+    // [SerializeField] private PlayableDirector Director;
 
     public struct TimeSequence
     {
@@ -26,10 +27,11 @@ public class BattleFieldHandler : MonoBehaviour
             OnMove,
             BeHit,
             Capture,
-            BeCaptured,
+            Replace,
             Fainted,
             UseItem,
-            EndMove
+            EndMove,
+            BattleEnd
         }
 
         public CombatPokemon poke;
@@ -45,7 +47,8 @@ public class BattleFieldHandler : MonoBehaviour
     }
 
     public CinemachineTargetGroup TargetGroup;
-    public CinemachineVirtualCamera Camera;
+    public CinemachineVirtualCamera DefaultCamera;
+    public CinemachineVirtualCamera ConcentrateCamera;
 
     public float padding = 15;
     public Transform allyPosition;
@@ -92,12 +95,10 @@ public class BattleFieldHandler : MonoBehaviour
 
     public void Init(List<CombatPokemon> allies, List<CombatPokemon> oppos)
     {
-        //先暂时不用这种方法
-        Director = GetComponent<PlayableDirector>();
         TimeSequences = new Queue<TimeSequence>();
 
         dics = new Dictionary<int, PokemonIndentity>();
-        Camera.Priority = 12;
+        DefaultCamera.Priority = 12;
         for (int i = 0; i < allies.Count; i++)
         {
             var allyID = allies[i].pokemon.ID;
@@ -164,6 +165,8 @@ public class BattleFieldHandler : MonoBehaviour
 
     public void OnMove(CombatMove move)
     {
+        TimeSequences.Enqueue(new TimeSequence(move.Sponsor, TimeSequence.SequenceTag.OnMove, move));
+
         // dics[move.Sponsor.CombatID].DoMove(move,null);
         // foreach (var pokes in move.Targets)
         // {
@@ -173,22 +176,25 @@ public class BattleFieldHandler : MonoBehaviour
 
     public void OnHit(Damage dmg)
     {
-        TimeSequences.Enqueue(new TimeSequence(dmg.sponsor, TimeSequence.SequenceTag.OnMove, dmg.combatMove));
         
         TimeSequences.Enqueue(new TimeSequence(dmg.target, TimeSequence.SequenceTag.BeHit));
         
-        TimeSequences.Enqueue(new TimeSequence(dmg.sponsor, TimeSequence.SequenceTag.EndMove));
+        // TimeSequences.Enqueue(new TimeSequence(dmg.sponsor, TimeSequence.SequenceTag.EndMove));
         
-        DoNextSequence();
+        // DoNextSequence();
 
         // OnHitAnim?.Invoke(dmg);
+    }
+
+    public void OnOneMoveEnd()
+    {
+        TimeSequences.Enqueue(new TimeSequence(null, TimeSequence.SequenceTag.EndMove));
+        DoNextSequence();
     }
 
     public void OnHitted(CombatPokemon poke)
     {
         // DoNextSequence();
-        
-        
     }
 
     public void OnTurnEnd()
@@ -219,6 +225,13 @@ public class BattleFieldHandler : MonoBehaviour
             case TimeSequence.SequenceTag.BeHit:
                 dics[sequence.poke.CombatID].BeHit(null);
                 break;
+            case TimeSequence.SequenceTag.Fainted:
+                ConcentrateCamera.Priority = 11;
+                dics[sequence.poke.CombatID].Faint();
+                break;
+            case TimeSequence.SequenceTag.BattleEnd:
+                StartCoroutine(EndBattling());
+                break;
         }
     }
 
@@ -226,6 +239,7 @@ public class BattleFieldHandler : MonoBehaviour
     {
         UIManager.Instance.Refresh<BattleStatusPanel>();
         BattleHandler.Instance.battle.NextMove();
+        ConcentrateCamera.Priority = 9;
     }
 
     public void OnAnimEnd()
@@ -235,13 +249,15 @@ public class BattleFieldHandler : MonoBehaviour
 
     public void OnPokemonFainting(CombatPokemon poke)
     {
-        dics[poke.CombatID].Faint();
-
-        OnPokemonFaintAnim?.Invoke(dics[poke.CombatID]);
+        TimeSequences.Enqueue(new TimeSequence(poke, TimeSequence.SequenceTag.Fainted));
+        // dics[poke.CombatID].Faint();
+        //
+        // OnPokemonFaintAnim?.Invoke(dics[poke.CombatID]);
     }
 
     public void OnReplacePokemon(CombatPokemon p1, CombatPokemon p2)
     {
+        TimeSequences.Enqueue(new TimeSequence(null,TimeSequence.SequenceTag.Replace,p1,p2));
         Transform trans = dics[p1.CombatID].transform;
         int id = p2.pokemon.ID;
         GameObject obj = null;
@@ -269,6 +285,9 @@ public class BattleFieldHandler : MonoBehaviour
 
         dics.Remove(p1.CombatID);
         PokemonIndentity indentity = obj.AddComponent<PokemonIndentity>();
+        obj.AddComponent<Rigidbody>().detectCollisions = false;
+        obj.AddComponent<Rigidbody>().useGravity=false;
+        obj.AddComponent<Rigidbody>().isKinematic = true;
         indentity.InitBattle(false);
         dics.Add(p2.CombatID, indentity);
         Destroy(trans.gameObject);
@@ -276,12 +295,13 @@ public class BattleFieldHandler : MonoBehaviour
 
     public void EndBattle()
     {
-        StartCoroutine(EndBattling());
+        TimeSequences.Enqueue(new TimeSequence(null,TimeSequence.SequenceTag.BattleEnd));
+        // StartCoroutine(EndBattling());
     }
 
     private IEnumerator EndBattling()
     {
-        Camera.Priority = 9;
+        DefaultCamera.Priority = 9;
         yield return new WaitForSeconds(2f);
         for (int i = 0; i < allyPosition.childCount; i++)
         {

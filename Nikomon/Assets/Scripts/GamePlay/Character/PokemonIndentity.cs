@@ -18,7 +18,7 @@ public class PokemonIndentity : MonoBehaviour,IInteractive
     public Pokemon pokemon;
 
     public float Time=3f;
-    public float MoveRange = 20;
+    public float MoveRange = 2;
     private float timer = 0f;
     private Animator anim;
     private Rigidbody rigid;
@@ -38,7 +38,7 @@ public class PokemonIndentity : MonoBehaviour,IInteractive
 
     public void OnInteractive(GameObject obj)
     {
-        GameObject.FindGameObjectWithTag("BattleField").transform.position = obj.transform.position + obj.transform.forward *40f;
+        GameObject.FindGameObjectWithTag("BattleField").transform.position = obj.transform.position + obj.transform.forward *2f;
         GameObject.FindGameObjectWithTag("BattleField").transform.rotation = obj.transform.rotation;
         GlobalManager.Instance.StartBattle(pokemon);
         Destroy(this.gameObject);
@@ -86,6 +86,7 @@ public class PokemonIndentity : MonoBehaviour,IInteractive
     public void Faint()
     {
         anim.SetTrigger(Lost);
+        LeanTween.scale(this.gameObject, Vector3.zero, 1f);
     }
 
     private bool isBattling=false;

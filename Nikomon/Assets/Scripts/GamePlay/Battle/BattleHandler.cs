@@ -94,7 +94,11 @@ public class BattleHandler : MonoBehaviour
         battle.OnMove += OnMove;
         battle.OnHit += OnHit;
         battle.OnHitted += OnHitted;
-        
+        battle.OnOneMoveEnd += () =>
+        {
+            BattleFieldHandler.Instance.OnOneMoveEnd();
+        };
+
         // print("Complete BattleHandler Init");
         // OnTurnBegin();
         
