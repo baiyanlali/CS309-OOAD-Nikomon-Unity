@@ -6,7 +6,6 @@ using UnityEditor.PackageManager;
 using UnityEngine;
 using UnityEngine.Animations.Rigging;
 using UnityEngine.InputSystem;
-using Debug = System.Diagnostics.Debug;
 
 public class PlayerMovement : MonoBehaviour
 {
