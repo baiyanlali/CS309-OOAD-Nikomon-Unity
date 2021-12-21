@@ -1,15 +1,19 @@
 {
   "dependencies": {
     "com.unity.2d.sprite": "1.0.0",
+    "com.unity.animation.rigging": "1.0.3",
     "com.unity.cinemachine": "2.6.10",
     "com.unity.ide.rider": "2.0.7",
     "com.unity.ide.vscode": "1.2.4",
     "com.unity.inputsystem": "1.0.2",
+    "com.unity.postprocessing": "3.1.1",
     "com.unity.render-pipelines.universal": "10.6.0",
     "com.unity.textmeshpro": "3.0.6",
     "com.unity.timeline": "1.6.3",
     "com.unity.ugui": "1.0.0",
     "com.unity.visualeffectgraph": "10.6.0",
+    "com.yj.xlua": "1.0.0",
+    "dev.yarnspinner.unity": "2.0.0",
     "com.unity.modules.ai": "1.0.0",
     "com.unity.modules.androidjni": "1.0.0",
     "com.unity.modules.animation": "1.0.0",
@@ -43,5 +47,16 @@
     "com.unity.modules.wind": "1.0.0",
     "com.unity.modules.xr": "1.0.0"
   },
-  "registry": "https://packages-v2.unity.cn/"
+  "registry": "https://packages-v2.unity.cn/",
+  "scopedRegistries": [
+    {
+      "name": "package.openupm.com",
+      "url": "https://package.openupm.cn",
+      "scopes": [
+        "com.openupm",
+        "com.yj.xlua",
+        "dev.yarnspinner.unity"
+      ]
+    }
+  ]
 }

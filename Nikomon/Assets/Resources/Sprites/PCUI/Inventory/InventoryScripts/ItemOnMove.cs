@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using GamePlay.UI.UIFramework;
-using P3DS2U.Editor.SPICA;
 using PokemonCore.Character;
 using PokemonCore.Combat;
 using PokemonCore.Inventory;
