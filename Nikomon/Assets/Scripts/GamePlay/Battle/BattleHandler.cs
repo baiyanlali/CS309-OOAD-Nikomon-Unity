@@ -115,14 +115,14 @@ public class BattleHandler : MonoBehaviour
         EventPool.Schedule(() => { UIManager.Instance.Refresh<MovePanel>(poke.pokemon.moves.ToList());});
     }
     
-    public void EndBattle()
+    public void EndBattle(BattleResults results)
     {
         print("End Battle");
         UIManager.Instance.PopAllUI(UILayer.NormalUI);
         GlobalManager.Instance.CanPlayerControlled = true;
         // BattleUIHandler.Instance.EndBattle();
         CurrentPokemon = null;
-        BattleFieldHandler.Instance.EndBattle();
+        BattleFieldHandler.Instance.EndBattle(results);
     }
 
     public void OnHit(Damage dmg)

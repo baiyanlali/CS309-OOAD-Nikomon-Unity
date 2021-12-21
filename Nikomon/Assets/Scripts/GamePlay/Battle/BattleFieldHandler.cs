@@ -205,7 +205,7 @@ public class BattleFieldHandler : MonoBehaviour
 
     public void DoNextSequence()
     {
-        if (!GlobalManager.isBattling) return;
+        // if (!GlobalManager.isBattling) return;
         if (TimeSequences.Count == 0) return;
         // print($"{TimeSequences.Peek().tag}");
         var sequence = TimeSequences.Dequeue();
@@ -230,7 +230,7 @@ public class BattleFieldHandler : MonoBehaviour
                 dics[sequence.poke.CombatID].Faint();
                 break;
             case TimeSequence.SequenceTag.BattleEnd:
-                StartCoroutine(EndBattling());
+                StartCoroutine(EndBattling((BattleResults)sequence.param[0]));
                 break;
         }
     }
@@ -250,6 +250,7 @@ public class BattleFieldHandler : MonoBehaviour
     public void OnPokemonFainting(CombatPokemon poke)
     {
         TimeSequences.Enqueue(new TimeSequence(poke, TimeSequence.SequenceTag.Fainted));
+        DoNextSequence();
         // dics[poke.CombatID].Faint();
         //
         // OnPokemonFaintAnim?.Invoke(dics[poke.CombatID]);
@@ -293,16 +294,31 @@ public class BattleFieldHandler : MonoBehaviour
         Destroy(trans.gameObject);
     }
 
-    public void EndBattle()
+    public void EndBattle(BattleResults results)
     {
-        TimeSequences.Enqueue(new TimeSequence(null,TimeSequence.SequenceTag.BattleEnd));
+        TimeSequences.Enqueue(new TimeSequence(null,TimeSequence.SequenceTag.BattleEnd,results));
+        DoNextSequence();
         // StartCoroutine(EndBattling());
     }
 
-    private IEnumerator EndBattling()
+    private IEnumerator EndBattling(BattleResults results)
     {
+        switch (results)
+        {
+            case BattleResults.Succeed:
+            case BattleResults.Captured:
+                FindObjectOfType<PlayerMovement>().GetComponent<Animator>().Play("Victory");
+                break;
+            case BattleResults.Failed:
+                FindObjectOfType<PlayerMovement>().GetComponent<Animator>().Play("Defeat");
+                break;
+        }
+        
         DefaultCamera.Priority = 9;
+        ConcentrateCamera.Priority = 11;
+        ConcentrateCamera.LookAt = FindObjectOfType<PlayerMovement>().HeadTrans;
         yield return new WaitForSeconds(2f);
+        ConcentrateCamera.Priority = 9;
         for (int i = 0; i < allyPosition.childCount; i++)
         {
             var a = allyPosition.GetChild(i);

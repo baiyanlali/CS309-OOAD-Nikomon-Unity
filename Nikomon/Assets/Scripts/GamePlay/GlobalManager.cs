@@ -282,7 +282,7 @@ public class GlobalManager : MonoBehaviour
         {
             isBattling = false;
             print("Global: Battle END;");
-            BattleHandler.Instance.EndBattle();
+            BattleHandler.Instance.EndBattle(o);
         };
         BattleHandler.Instance.StartBattle(Game.battle);
     }

@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 70b342d8ce5c2fd48b8fa3147d48d1d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Weight: 1
+  m_Weight: 0
   m_Effectors: []
 --- !u!1 &100342421
 GameObject:
@@ -181,8 +181,8 @@ MonoBehaviour:
         transform: {fileID: 0}
         weight: 0
     m_Offset: {x: 0, y: 0, z: 0}
-    m_MinLimit: -70
-    m_MaxLimit: 70
+    m_MinLimit: -40
+    m_MaxLimit: 40
     m_AimAxis: 4
     m_UpAxis: 2
     m_WorldUpType: 0
@@ -268,8 +268,8 @@ MonoBehaviour:
         transform: {fileID: 0}
         weight: 0
     m_Offset: {x: 0, y: 0, z: 0}
-    m_MinLimit: -70
-    m_MaxLimit: 70
+    m_MinLimit: -40
+    m_MaxLimit: 40
     m_AimAxis: 4
     m_UpAxis: 2
     m_WorldUpType: 0
@@ -291,12 +291,12 @@ Rigidbody:
   m_GameObject: {fileID: 60177388697020519}
   serializedVersion: 2
   m_Mass: 50
-  m_Drag: 0
+  m_Drag: 10
   m_AngularDrag: 0
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 80
+  m_Constraints: 112
   m_CollisionDetection: 0
 --- !u!136 &961603997
 CapsuleCollider:
@@ -345,6 +345,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   nicoInput: {fileID: 0}
   InteractDepth: 5
+  HeadTrans: {fileID: 6769624233916932190}
+  GazeRig: {fileID: 87243975}
+  GazeTransform: {fileID: 668378578}
+  GazeDistance: 10
   animator: {fileID: 0}
   InputActionAsset: {fileID: 0}
 --- !u!114 &961604002
@@ -460,7 +464,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 499fc9136f5688840828072308f99c0a, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 246.1
+      value: 259.79
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 499fc9136f5688840828072308f99c0a, type: 3}
       propertyPath: m_LocalPosition.y
@@ -468,7 +472,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 499fc9136f5688840828072308f99c0a, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 203.8
+      value: 214.4
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 499fc9136f5688840828072308f99c0a, type: 3}
       propertyPath: m_LocalRotation.w

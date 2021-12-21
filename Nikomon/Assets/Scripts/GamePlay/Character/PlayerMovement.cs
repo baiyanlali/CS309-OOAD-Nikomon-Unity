@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using GamePlay.UI.UIFramework;
 using UnityEditor.PackageManager;
 using UnityEngine;
+using UnityEngine.Animations.Rigging;
 using UnityEngine.InputSystem;
 using Debug = System.Diagnostics.Debug;
 
@@ -11,6 +12,11 @@ public class PlayerMovement : MonoBehaviour
 {
     public NicomonInputSystem nicoInput;
     public float InteractDepth = 5f;
+    public Transform HeadTrans;
+
+    [Header("Gaze")] public Rig GazeRig;
+    public Transform GazeTransform;
+    public float GazeDistance;
     [SerializeField] private Animator animator;
 
     public InputActionAsset InputActionAsset;
@@ -37,6 +43,7 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
+        CheckGaze();
         CheckGrounded();
         if (GlobalManager.isBattling)
         {
@@ -47,24 +54,44 @@ public class PlayerMovement : MonoBehaviour
             return;
         }
 
-        if (nicoInput == null)
-            nicoInput = FindObjectOfType<NicomonInputSystem>();
-        else
-        {
-            if (GlobalManager.Instance.Config.UseVirtualControl) VirtualController?.SetActive(true);
-            this.move = nicoInput.move;
-            Movement();
-            if (nicoInput.menu)
-            {
-                UIManager.Instance.Show<MainMenuUI>();
-                // GlobalManager.Instance.SaveSaveData();
-            }
 
-            if (nicoInput.accept)
+        if (GlobalManager.Instance.Config.UseVirtualControl) VirtualController?.SetActive(true);
+        this.move = nicoInput.move;
+        Movement();
+        if (nicoInput.menu)
+        {
+            UIManager.Instance.Show<MainMenuUI>();
+            // GlobalManager.Instance.SaveSaveData();
+        }
+
+        if (nicoInput.accept)
+        {
+            // CheckInteractable();
+        }
+    }
+
+    private void CheckGaze()
+    {
+        if (GazeTransform == null) return;
+        var colliders = Physics.OverlapSphere(transform.position, GazeDistance);
+        if (colliders != null)
+        {
+            foreach (var collider1 in colliders)
             {
-                // CheckInteractable();
+                if (collider1.GetComponent<PokemonIndentity>() != null)
+                {
+                    GazeRig.weight = Mathf.Lerp(GazeRig.weight, 1f, 0.5f);
+                    var capsuleCollider = (collider1 as CapsuleCollider); //get the height of pokemon
+                    Vector3 position = collider1.transform.position + Vector3.up *
+                        (capsuleCollider.radius * 2) * capsuleCollider.transform.localScale.y;
+                    print(position.y);
+                    GazeTransform.position = Vector3.Lerp(GazeTransform.position, position, 1f);
+                    return;
+                }
             }
         }
+
+        GazeRig.weight = Mathf.Lerp(GazeRig.weight, 0f, 0.5f);
     }
 
     private void OnDrawGizmosSelected()
@@ -77,7 +104,7 @@ public class PlayerMovement : MonoBehaviour
 
     void CheckGrounded()
     {
-        var hits = Physics.RaycastAll(new Ray(transform.position + Vector3.up * 0.8f, Vector3.down), 2f);
+        var hits = Physics.RaycastAll(new Ray(transform.position + Vector3.up * 0.8f, Vector3.down), 3f);
         // print(hitInfo.collider.name);
         bool isGround = false;
 
@@ -93,9 +120,8 @@ public class PlayerMovement : MonoBehaviour
         {
             animator.SetBool("IsInWater", !isGround);
             animator.applyRootMotion = true;
-            rigid.velocity=Vector3.zero;
-            rigid.angularVelocity=Vector3.zero;
-            
+            rigid.velocity = Vector3.zero;
+            rigid.angularVelocity = Vector3.zero;
         }
     }
 
@@ -106,12 +132,13 @@ public class PlayerMovement : MonoBehaviour
         {
             rigid.velocity = transform.forward;
         }
-        
+
         rigid.AddForce(transform.forward * force, ForceMode.Force);
         rigid.AddForce(transform.up * force / 100f, ForceMode.Impulse);
     }
 
     private float rigidDrag;
+
     public void CheckWater(bool isInWater)
     {
         animator.SetBool("IsInWater", isInWater);
@@ -125,8 +152,6 @@ public class PlayerMovement : MonoBehaviour
         {
             rigid.drag = rigidDrag;
         }
-        
-
     }
 
 
@@ -181,8 +206,7 @@ public class PlayerMovement : MonoBehaviour
 
             theta = Mathf.Rad2Deg * theta;
             transform.rotation = Quaternion.Euler(0, cameraForward + theta, 0);
-            rigid.angularVelocity=Vector3.zero;
-            
+            rigid.angularVelocity = Vector3.zero;
         }
         else
         {
