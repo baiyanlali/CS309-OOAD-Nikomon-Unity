@@ -183,8 +183,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1955514479}
-  m_LocalRotation: {x: 0.07099302, y: -0.3143571, z: 0.023582285, w: 0.9463528}
-  m_LocalPosition: {x: 1.15, y: 0.59, z: -2.54}
+  m_LocalRotation: {x: 0.070993066, y: -0.3143569, z: 0.023582285, w: 0.94635284}
+  m_LocalPosition: {x: 1.1499996, y: 0.59, z: -2.540001}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1789694834}
@@ -392,6 +392,7 @@ GameObject:
   m_Component:
   - component: {fileID: 9216753853322018224}
   - component: {fileID: 1076728384}
+  - component: {fileID: 1959374257}
   m_Layer: 0
   m_Name: BattleField
   m_TagString: BattleField
@@ -434,6 +435,27 @@ MonoBehaviour:
   padding: 1.5
   allyPosition: {fileID: 9216753854712903745}
   oppoPosition: {fileID: 9216753855000155647}
+--- !u!320 &1959374257
+PlayableDirector:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9216753853322018255}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_PlayableAsset: {fileID: 11400000, guid: b1fbc77e41a20ef4aa9d3a82246411e4, type: 2}
+  m_InitialState: 0
+  m_WrapMode: 2
+  m_DirectorUpdateMode: 1
+  m_InitialTime: 0
+  m_SceneBindings:
+  - key: {fileID: -4736914938912386371, guid: b1fbc77e41a20ef4aa9d3a82246411e4, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: -54501282537850283, guid: b1fbc77e41a20ef4aa9d3a82246411e4, type: 2}
+    value: {fileID: 0}
+  m_ExposedReferences:
+    m_References: []
 --- !u!1 &9216753854712903744
 GameObject:
   m_ObjectHideFlags: 0
