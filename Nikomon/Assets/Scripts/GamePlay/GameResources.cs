@@ -83,6 +83,10 @@ namespace GamePlay
             
             //Ability
             [typeof(AbilityPanel)]="Prefabs/UI/Ability/PokemonAbilityTable",
+            
+            //Pokedex
+            [typeof(PokedexPanel)]="Prefabs/UI/Pokemondex/Pokedex",
+            [typeof(PokemondexElement)]="Prefabs/UI/Pokemondex/Pokemondex",
         };
     }
 
@@ -111,6 +115,14 @@ namespace GamePlay
             }
             
             text = Resources.Load<TextAsset>($"Localization/{culture}/tool_{culture}").text;
+            tmp = JsonConvert.DeserializeObject<Dictionary<string, string>>(text);
+            foreach (var t in tmp)
+            {
+                if(! dics.ContainsKey(t.Key))
+                    dics.Add(t.Key,t.Value);
+            }
+            
+            text = Resources.Load<TextAsset>($"Localization/{culture}/ui_{culture}").text;
             tmp = JsonConvert.DeserializeObject<Dictionary<string, string>>(text);
             foreach (var t in tmp)
             {
