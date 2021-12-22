@@ -14,17 +14,19 @@ effectTemplate = {
     OnHit = function(combatPoke,damage) return damage end,
     BeHurt = function(combatPoke,damage) return damage end,
     OnDamaged = function(sponsor,target) end,
+    OnMoved = function(sponsor)  end,
     OnSwitchPokemon = function(combatPoke) return True end,
-    OnEffectEnd = function(combatPoke) return True end,
+    OnEffectEnd = function(combatPoke) end,
 }
-
+EffectLastType = CS.PokemonCore.Combat.Interface.EffectLastType
+Combat = CS.PokemonCore.Combat
 
 --这个effect是所有宝可梦都拥有的一个effect，效果是如果发出来的技能和本身属性相同，则威力*1.5，注意取整
 effect0={
     ID=0,
     InnerName='SameTypePowerUp',
     Round=-1,
-    EffectLastType= CS.PokemonCore.Combat.Interface.EffectLastType.ALWAYS,
+    EffectLastType= EffectLastType.ALWAYS,
     EffectChance=100,
 
     OnMoving = function(combatMove)
@@ -35,7 +37,7 @@ effect0={
             --print('Pokemon:'..combatMove.Sponsor.pokemon.Name..' powers up!')
         end
         return combatMove
-    end,
+    end
 }
 
 
@@ -43,7 +45,7 @@ effect1={
     ID=1,
     InnerName='Chaos',
     Round=3,
-    EffectLastType=CS.PokemonCore.Combat.Interface.EffectLastType.ROUND,
+    EffectLastType=Combat.Interface.EffectLastType.ROUND,
     EffectChance=50,
     
     OnMoving=function(combatMove) 
@@ -53,29 +55,99 @@ effect1={
         end
     end
 }
-effect2={
+effect2={ --over!
     ID=2,
     InnerName='Sleep',
     Round=3,
-    EffectLastType=CS.PokemonCore.Combat.Interface.EffectLastType.ROUND,
+    EffectLastType=Combat.Interface.EffectLastType.ROUND,
     EffectChance=100,
 	EffectType=SkipOneTurn, 	--is that enough ???
 	EffectActTime=Moving,
-    
-    OnChoosing=function(combatMove) 
-        return combatMove
+    OnChoosing = function(combatPoke) 
+        instruction = new Combat.instruction(combatPoke,CS.PokemonCore.Combat.Command.Skip,-1,-1)
+        Round=Round-1
+        return instruction
     end
+    
 }
-effect3={
+effect3={ --over!
     ID=3,
     InnerName='Poison',
     Round=3,
-    EffectLastType=CS.PokemonCore.Combat.Interface.EffectLastType.ROUND,
+    EffectLastType=Combat.Interface.EffectLastType.ROUND,
     EffectChance=100,
     
-    OnMoving=function(combatMove) 
-        --damage to sponsor with 1/3 of sponsor's Hp
+    OnMoved=function(sponsor)
+        print("poision on moved test")
+        effect3.Round=effect3.Round-1
+        print(sponsor.TotalHP,sponsor.HP)
+        sponsor.HP = sponsor.HP - math.modf( sponsor.TotalHP / 8 )
+        print(sponsor.TotalHP,sponsor.HP)
+        print(sponsor)
+        --damage to sponsor with 1/8 of sponsor's Hp
     end
+}
+effect4={ --over!
+    ID = 4,
+    InnerName = 'Freeze',
+    Round = 3,
+    EffectLastType=CS.PokemonCore.Combat.Interface.EffectLastType.ROUND,
+    EffectChance=100,
+
+    OnMoving=function(combatMove)
+        effect4.Round = effect4.Round-1
+        for t in combatMove.move._baseData.MoveTag do
+            if(t=="BrokeFreeze") then
+                return
+            end
+        end
+        combatMove.target = nil
+    end
+    
+}
+
+effect5={ --over!
+    ID = 5,
+    InnerName = 'Paralysis',
+    Round = 1,
+    --25%无法使用技能
+    OnMoving=function(combatMove)
+        rand = CS.PokemonCore.Game.Random:Next(101)
+        print("Paralysis: OnMoving",rand)
+
+        if rand<100 then
+            print("Paralysis Succeed!")
+            combatMove.Targets = nil
+        end
+        effect5.Round=effect5.Round-1
+        return combatMove
+    end,
+    
+    OnEffectEnd = function(combatPoke)  
+        combatPoke.SPE = combatPoke.SPE*2
+    end,
+    
+    OnEffectBegin = function(combatPoke) 
+        combatPoke.SPE = combatPoke.SPE*0.5
+    end
+}
+
+effect6={ --over!
+    ID = 6,
+    InnerName = 'Burn',
+    Round = 1,
+    OnMoving=function(combatMove)
+        if combatMove.Category == PokemonCore.Attack.Data.Category.Physical then
+            -- TODO: 变为改变damage的rate
+            combatMove.power = combatMove.power/2
+        end
+    end
+    ,
+    OnMoved = function(sponsor)
+        sponsor.TotalHP = sponsor.TotalHP - sponsor.HP / 16
+        effect6.Round=effect6.Round-1
+    end
+
 }
 
 effect11={
@@ -87,6 +159,7 @@ effect11={
     
     OnMoving=function(combatMove) 
 		combatMove.Sponsor.ATKStateChange.set(ATKStateChange.get() + 1)
+        Round=Round-1
     end
 }
 effect12={

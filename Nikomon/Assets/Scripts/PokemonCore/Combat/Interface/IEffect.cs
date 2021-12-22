@@ -70,6 +70,8 @@ namespace PokemonCore.Combat.Interface
         public Action<CombatPokemon> BeSwitched;
         public Action<CombatPokemon> BeFainted;
         public Action<CombatPokemon> OnEffectBegin;
+        public Action<CombatPokemon> OnEffectEnd;
+        public Action<CombatPokemon> OnMoved;
 
         public Func<CombatPokemon,Instruction> OnChoosing;
         /// <summary>
@@ -84,7 +86,7 @@ namespace PokemonCore.Combat.Interface
         /// </summary>
         public Action<CombatPokemon,CombatPokemon> OnDamaged;
         public Func<CombatPokemon,bool> OnSwitchPokemon;
-        public Func<CombatPokemon,bool> OnEffectEnd;
+        
         
     }
     

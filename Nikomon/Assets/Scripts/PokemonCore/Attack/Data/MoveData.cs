@@ -23,6 +23,7 @@ namespace PokemonCore.Attack.Data
             public Targets TargetType;
         }
 
+        public int MoveTag;
         public int MoveID;
         public int Accuracy;
         public int Power;

@@ -17,8 +17,7 @@ namespace PokemonCore.Combat
         public Battle battle;
         public Move move { get; private set; }
         public List<Effect> TargetEffects { get; private set; }
-        public List<Effect> AttackerEffects { get; private set; }
-        public List<Effect> FieldEffects { get; private set; }
+
         public int? power { get; set; }
         public Types types { get; set; }
         public int TotalPP { get; set; }
@@ -46,6 +45,12 @@ namespace PokemonCore.Combat
             this.power = move._baseData.Power;
             battle.OnThisTurnEnd += () => { move.PP = pp; };
             this.Category = move._baseData.Category;
+
+            TargetEffects = new List<Effect>();
+            foreach (var effectInfo in move._baseData.EffectInfos)
+            {
+                TargetEffects.Add(Game.LuaEnv.Global.Get<Effect>("effect"+effectInfo.EffectID));
+            }
         }
 
         public override string ToString()
