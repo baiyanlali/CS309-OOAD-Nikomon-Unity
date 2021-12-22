@@ -10,6 +10,7 @@ namespace PokemonCore.Monster.Data
         public int Total { get; private set; }
         [JsonIgnore]
         public int Current => this.Total - Experience.GetExperience(levelingRate, level);
+        public int Past => Experience.GetExperience(levelingRate, level);
         [JsonIgnore]
         public byte level => Experience.GetLevelFromExperience(levelingRate, Total);
         [JsonIgnore]

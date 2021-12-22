@@ -23,8 +23,11 @@ namespace GamePlay.StateMachineBehaviours
         {
             pokemonIndentity=pokemonIndentity? pokemonIndentity: animator.gameObject.GetComponentInParent<PokemonIndentity>();
             // Debug.Log($"<<<<<{pokemonIndentity.name} exit:{name} {animator.GetAnimateName(stateInfo)}");
-            if(pokemonIndentity!=null)
-                pokemonIndentity.OnAnimEnd();
+            if (pokemonIndentity != null)
+            {
+                
+                pokemonIndentity.OnAnimEnd(stateInfo.shortNameHash);
+            }
         }
 
         public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo,

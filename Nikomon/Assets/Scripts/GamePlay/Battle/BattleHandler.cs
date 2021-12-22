@@ -70,6 +70,7 @@ public class BattleHandler : MonoBehaviour
         battle.OnPokemonFainting += (combatPoke) =>
         {
             BattleFieldHandler.Instance.OnPokemonFainting(combatPoke);
+            UIManager.Instance.Show<BattleMenuPanel>(new List<bool>(){false,true,false,true});
         };
         battle.OnReplacePokemon += (p1, p2) =>
         {
@@ -89,12 +90,15 @@ public class BattleHandler : MonoBehaviour
 
         // DialogHandler.Instance.OnDialogFinished += (o) => { if(Game.battle!=null) BattleUIHandler.Instance.UpdateUI(this);};
 
-        UIManager.Instance.Show<BattleStatusPanel>(this);
 
         battle.OnMove += OnMove;
         battle.OnHit += OnHit;
         battle.OnHitted += OnHitted;
-        
+        battle.OnOneMoveEnd += () =>
+        {
+            BattleFieldHandler.Instance.OnOneMoveEnd();
+        };
+
         // print("Complete BattleHandler Init");
         // OnTurnBegin();
         
@@ -111,14 +115,14 @@ public class BattleHandler : MonoBehaviour
         EventPool.Schedule(() => { UIManager.Instance.Refresh<MovePanel>(poke.pokemon.moves.ToList());});
     }
     
-    public void EndBattle()
+    public void EndBattle(BattleResults results)
     {
         print("End Battle");
         UIManager.Instance.PopAllUI(UILayer.NormalUI);
         GlobalManager.Instance.CanPlayerControlled = true;
         // BattleUIHandler.Instance.EndBattle();
         CurrentPokemon = null;
-        BattleFieldHandler.Instance.EndBattle();
+        BattleFieldHandler.Instance.EndBattle(results);
     }
 
     public void OnHit(Damage dmg)

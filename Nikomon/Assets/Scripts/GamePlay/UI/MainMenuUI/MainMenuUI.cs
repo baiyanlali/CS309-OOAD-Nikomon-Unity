@@ -5,6 +5,7 @@ using GamePlay.UI;
 using GamePlay.UI.MainMenuUI;
 using GamePlay.UI.PokemonChooserTable;
 using GamePlay.UI.UIFramework;
+using GamePlay.UI.UtilUI;
 using PokemonCore;
 using UnityEngine;
 using UnityEngine.UI;
@@ -88,7 +89,8 @@ public class MainMenuUI : BaseUI
     public void OpenParty()
     {
         Action<int> action = (o) => print(o);
-        UIManager.Instance.Show<PokemonChooserPanelUI>(Game.trainer,new string[]{"yes","no"},action);
+        // UIManager.Instance.Show<PokemonChooserPanelUI>(Game.trainer,new string[]{"yes","no"},action);
+        UIManager.Instance.Show<AbilityPanel>(Game.trainer,new string[]{"yes","no"},action);
     }
     public void OpenSave()
     {

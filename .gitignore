@@ -56,3 +56,23 @@ Nikomon/Assets/Bin3DS
 *.log
 Nikomon/Logs/AssetImportWorker0.log
 Nikomon/Assets.7z
+
+# Never ignore DLLs in the FMOD subfolder.
+!Nikomon/[Aa]ssets/Plugins/FMOD/**/lib/*
+
+# Don't ignore images and gizmos used by FMOD in the Unity Editor.
+!Nikomon/[Aa]ssets/Gizmos/FMOD/*
+!Nikomon/[Aa]ssets/Editor Default Resources/FMOD/*
+                    
+# Ignore the Cache folder since it is updated locally.
+Nikomon/[Aa]ssets/Plugins/FMOD/Cache/*
+                    
+# Ignore bank files in the StreamingAssets folder.
+Nikomon/[Aa]ssets/StreamingAssets/**/*.bank
+Nikomon/[Aa]ssets/StreamingAssets/**/*.bank.meta
+                    
+# If the source bank files are kept outside of the StreamingAssets folder then these can be ignored.
+# Log files can be ignored.
+Nikomon/fmod_editor.log
+
+FMOD/Nikomon/.cache

@@ -144,6 +144,8 @@ namespace PokemonCore.Combat
 
         public Action<CombatPokemon> OnPokemonFainting;
 
+        public Action OnOneMoveEnd;
+
 
         public Action<Instruction> OnUserChooseInstruction;
 
@@ -343,6 +345,8 @@ namespace PokemonCore.Combat
                     Damages.Clear();
                     
                     Moved();
+                    
+                    OnOneMoveEnd?.Invoke();
                     if (mBattleResults != BattleResults.Continue) return;
                     break;
                 case BattleActions.Moved:

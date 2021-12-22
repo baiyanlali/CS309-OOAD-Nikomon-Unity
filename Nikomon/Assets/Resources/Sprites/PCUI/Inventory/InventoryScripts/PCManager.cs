@@ -243,17 +243,7 @@ public class PCManager : BaseUI
                             UIManager.Instance.Show<ConfirmPanel>("Your party need at least one pokemon");
                             return;
                         }
-                        // for (int i = bagIndex; i < trainer.party.Length-1; i++)
-                        // {
-                        //     trainer.party[i] = trainer.party[i + 1];
-                        // }
-                        // trainer.party[trainer.party.Length-1] = null;
-                        
-                        
-                        //TableUI.Init(trainer,new []{"查看信息", "标记","持有物","放生","查看能力","取消"},HandleChooserTalbeUI);
                         TableUI.UpdateData(trainer);
-                    
-                        //UIManager.Instance.Refresh<PCManager>();
                     }
                     else
                     {
@@ -266,12 +256,6 @@ public class PCManager : BaseUI
             case 4:
                 Debug.Log("放入仓库");
                 Pokemon temp4 = trainer.party[bagIndex];
-                // trainer.party[bagIndex] = null;
-                // for (int i = bagIndex; i < trainer.party.Length-1; i++)
-                // {
-                //     trainer.party[i] = trainer.party[i + 1];
-                // }
-                // trainer.party[trainer.party.Length-1] = null;
                 bool result = trainer.RemovePokemon(bagIndex);
                 if (result == false)
                 {
@@ -280,14 +264,6 @@ public class PCManager : BaseUI
                 }
                 
                 TableUI.UpdateData(trainer);
-                // for (int i = 0; i < pc.Pokemons.Length; i++)
-                // {
-                //     if (pc.Pokemons[i] == null)
-                //     {
-                //         pc.Pokemons[i] = temp4;
-                //         break;
-                //     }
-                // }
                 result = pc.AddPokemon(temp4);
                 if (result == false)
                 {

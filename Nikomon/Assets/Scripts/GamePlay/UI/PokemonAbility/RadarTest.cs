@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using GamePlay.UI.UtilUI;
 using UnityEngine;
 
 /// <summary>
@@ -9,56 +10,84 @@ public class RadarTest : MonoBehaviour
 {
     public UIPolygon uiPolygon;
     List<float> datas = new List<float>();
+    public Pokemon pokemon;
 
-    void Start()
+    private void Awake()
     {
-        // HP
-        datas.Add(0.5f);//左下
-        // ATK
-        datas.Add(0.5f);//最下面
-        //DEF
-        datas.Add(1f);//右下
-        //SPA
-        datas.Add(0.5f);//右上
-        // SPD
-        datas.Add(0.5f);//上
-        //SPE
-        datas.Add(0.5f);//左上
-        uiPolygon.DrawPolygon(datas);
+        // pokemon = AbilityPanel.Pokemon;
+        // float hp = pokemon.HP * 1f / 255;
+        // float atk = pokemon.ATK * 1f / 255;
+        // float def = pokemon.DEF * 1f / 255;
+        // float spa = pokemon.SPA * 1f / 255;
+        // float spd = pokemon.SPD * 1f / 255;
+        // float spe = pokemon.SPE * 1f / 255;
+        // datas.Clear();
+        // // HP
+        // datas.Add(hp);//左下
+        // // ATK
+        // datas.Add(atk);//最下面
+        // //DEF
+        // datas.Add(def);//右下
+        // //SPA
+        // datas.Add(spa);//右上
+        // // SPD
+        // datas.Add(spd);//上
+        // //SPE
+        // datas.Add(spe);//左上
+        // uiPolygon.DrawPolygon(datas);
+        // datas.Clear();
+        // // HP
+        // datas.Add(0.5f);//左下
+        // // ATK
+        // datas.Add(0.5f);//最下面
+        // //DEF
+        // datas.Add(1f);//右下
+        // //SPA
+        // datas.Add(0.5f);//右上
+        // // SPD
+        // datas.Add(0.5f);//上
+        // //SPE
+        // datas.Add(0.5f);//左上
+        //
+        // uiPolygon.DrawPolygon(datas);
     }
 
     public void Init(Pokemon poke)//上限255
 
     {
-
-        //poke.Exp.ExperienceNeeded;//还需要的经验值！！！！
+        float hp = poke.HP / 255f;
+        float atk = poke.ATK / 255f;
+        float def = poke.DEF / 255f;
+        float spa = poke.SPA / 255f;
+        float spd = poke.SPD / 255f;
+        float spe = poke.SPE / 255f;
+        print(hp);
+        datas.Clear();
         // HP
-        datas.Add(0.5f);//左下
+        datas.Add(hp);//左下
         // ATK
-        datas.Add(0.5f);//最下面
+        datas.Add(atk);//最下面
         //DEF
-        datas.Add(1f);//右下
+        datas.Add(def);//右下
         //SPA
-        datas.Add(0.5f);//右上
+        datas.Add(spa);//右上
         // SPD
-        datas.Add(0.5f);//上
+        datas.Add(spd);//上
         //SPE
-        datas.Add(0.5f);//左上
+        datas.Add(spe);//左上
         uiPolygon.DrawPolygon(datas);
+        
     }
 
     private void Update()
     {
-        if(Input.GetMouseButtonDown(0))
-        {
-            Debug.Log(datas.Count);
-            for(int i=0,cnt = datas.Count;i<cnt;++i)
-            {
-                //datas[i] = Random.Range(0f, 1f);
-            }
-            // 重新更新数据
-            uiPolygon.DrawPolygon(datas);
-        }
+        
+        // 重新更新数据
+        // if (Input.GetMouseButtonDown(0))
+        // {
+            // uiPolygon.DrawPolygon(datas);
+            // print(111111);
+        // }
     }
 
 }
