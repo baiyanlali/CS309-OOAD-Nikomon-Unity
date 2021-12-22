@@ -46,6 +46,8 @@ public class BattleFieldHandler : MonoBehaviour
         }
     }
 
+    public PlayableDirector Director;
+
     public CinemachineTargetGroup TargetGroup;
     public CinemachineVirtualCamera DefaultCamera;
     public CinemachineVirtualCamera ConcentrateCamera;
@@ -58,7 +60,6 @@ public class BattleFieldHandler : MonoBehaviour
     public Action<Damage> OnHittedAnim;
     public Action<PokemonIndentity> OnPokemonFaintAnim;
     public Action<PokemonIndentity,PokemonIndentity> OnReplacePokemonAnim;
-
     public static BattleFieldHandler Instance
     {
         get
@@ -95,6 +96,7 @@ public class BattleFieldHandler : MonoBehaviour
 
     public void Init(List<CombatPokemon> allies, List<CombatPokemon> oppos)
     {
+        Director = GetComponent<PlayableDirector>();
         TimeSequences = new Queue<TimeSequence>();
 
         dics = new Dictionary<int, PokemonIndentity>();
@@ -158,6 +160,8 @@ public class BattleFieldHandler : MonoBehaviour
             dics.Add(oppos[i].CombatID, identity);
             obj.transform.localPosition = Vector3.right * offset;
             TargetGroup.AddMember(obj.transform, 1, 5);
+            
+            Director.Play();
         }
     }
 
@@ -215,22 +219,31 @@ public class BattleFieldHandler : MonoBehaviour
             case TimeSequence.SequenceTag.EnterScene:
                 break;
             case TimeSequence.SequenceTag.OnMove:
-                dics[sequence.poke.CombatID].DoMove(sequence.param[0] as CombatMove, null);
+                dics[sequence.poke.CombatID].DoMove(sequence.param[0] as CombatMove, DoNextSequence);
                 break;
             case TimeSequence.SequenceTag.EndMove:
                 // BattleUIHandler.Instance.UpdateStatus();
-                UIManager.Instance.Refresh<BattleStatusPanel>();
+                UIManager.Instance.Refresh<BattleStatusPanel>(BattleHandler.Instance);
+                UIManager.Instance.Show<BattleStatusPanel>(BattleHandler.Instance);
                 BattleHandler.Instance.battle.NextMove();
                 break;
             case TimeSequence.SequenceTag.BeHit:
-                dics[sequence.poke.CombatID].BeHit(null);
+                dics[sequence.poke.CombatID].BeHit(DoNextSequence);
                 break;
             case TimeSequence.SequenceTag.Fainted:
-                ConcentrateCamera.Priority = 11;
-                dics[sequence.poke.CombatID].Faint();
+                ConcentrateCamera.Priority = 13;
+                ConcentrateCamera.LookAt = dics[sequence.poke.CombatID].transform;
+                dics[sequence.poke.CombatID].Faint(()=>
+                {
+                    ConcentrateCamera.Priority = 9;
+                    DoNextSequence();
+                });
                 break;
             case TimeSequence.SequenceTag.BattleEnd:
                 StartCoroutine(EndBattling((BattleResults)sequence.param[0]));
+                break;
+            case TimeSequence.SequenceTag.Replace:
+                ReplacingPokemon(sequence,DoNextSequence);
                 break;
         }
     }
@@ -242,15 +255,21 @@ public class BattleFieldHandler : MonoBehaviour
         ConcentrateCamera.Priority = 9;
     }
 
-    public void OnAnimEnd()
+    public void OnReleasePokemonEnd()
     {
-        DoNextSequence();
+        UIManager.Instance.Show<BattleStatusPanel>(BattleHandler.Instance);
+    }
+    
+    public void OnAnimEnd(string endAnim)
+    {
+        print(endAnim);
+        // DoNextSequence();
     }
 
     public void OnPokemonFainting(CombatPokemon poke)
     {
         TimeSequences.Enqueue(new TimeSequence(poke, TimeSequence.SequenceTag.Fainted));
-        DoNextSequence();
+        // DoNextSequence();
         // dics[poke.CombatID].Faint();
         //
         // OnPokemonFaintAnim?.Invoke(dics[poke.CombatID]);
@@ -259,41 +278,62 @@ public class BattleFieldHandler : MonoBehaviour
     public void OnReplacePokemon(CombatPokemon p1, CombatPokemon p2)
     {
         TimeSequences.Enqueue(new TimeSequence(null,TimeSequence.SequenceTag.Replace,p1,p2));
+        // TimeSequences.Enqueue(new TimeSequence(null,TimeSequence.SequenceTag.EndMove));
+        // DoNextSequence();
+    }
+
+    private void ReplacingPokemon(TimeSequence sequence,Action onComplete)
+    {
+        CombatPokemon p1 = sequence.param[0] as CombatPokemon;
+        CombatPokemon p2 = sequence.param[1] as CombatPokemon;
         Transform trans = dics[p1.CombatID].transform;
         int id = p2.pokemon.ID;
         GameObject obj = null;
+        
+        ConcentrateCamera.Priority = 13;
+        ConcentrateCamera.LookAt = trans;
 
-        if (GameResources.Pokemons[id].Length == 1)
+        LeanTween.scale(trans.gameObject, Vector3.zero, 1f).setOnComplete(() =>
         {
-            obj = Instantiate(GameResources.Pokemons[id][0], trans.parent);
-        }
-        else if (GameResources.Pokemons[id].Length == 2)
-        {
-            if (p2.pokemon.isMale)
+            if (GameResources.Pokemons[id].Length == 1)
             {
                 obj = Instantiate(GameResources.Pokemons[id][0], trans.parent);
             }
-            else
+            else if (GameResources.Pokemons[id].Length == 2)
             {
-                obj = Instantiate(GameResources.Pokemons[id][1], trans.parent);
+                if (p2.pokemon.isMale)
+                {
+                    obj = Instantiate(GameResources.Pokemons[id][0], trans.parent);
+                }
+                else
+                {
+                    obj = Instantiate(GameResources.Pokemons[id][1], trans.parent);
+                }
             }
-        }
 
-        obj.transform.position = trans.position;
-        obj.transform.rotation = trans.rotation;
-        TargetGroup.RemoveMember(trans);
-        TargetGroup.AddMember(obj.transform, 1, 5);
-
-        dics.Remove(p1.CombatID);
-        PokemonIndentity indentity = obj.AddComponent<PokemonIndentity>();
-        obj.AddComponent<Rigidbody>().detectCollisions = false;
-        obj.AddComponent<Rigidbody>().useGravity=false;
-        obj.AddComponent<Rigidbody>().isKinematic = true;
-        indentity.InitBattle(false);
-        dics.Add(p2.CombatID, indentity);
-        Destroy(trans.gameObject);
+            obj.transform.position = trans.position;
+            obj.transform.rotation = trans.rotation;
+            Vector3 scaleOrigin = obj.transform.localScale;
+            obj.transform.localScale=Vector3.zero;
+            
+            TargetGroup.RemoveMember(trans);
+            TargetGroup.AddMember(obj.transform, 1, 5);
+            LeanTween.scale(obj, scaleOrigin , 1.5f).setOnComplete(() =>
+            {
+                dics.Remove(p1.CombatID);
+                PokemonIndentity indentity = obj.AddComponent<PokemonIndentity>();
+                obj.GetComponent<Rigidbody>().detectCollisions = false;
+                obj.GetComponent<Rigidbody>().useGravity=false;
+                obj.GetComponent<Rigidbody>().isKinematic = true;
+                indentity.InitBattle(false);
+                dics.Add(p2.CombatID, indentity);
+                Destroy(trans.gameObject);
+                ConcentrateCamera.Priority = 9;
+                onComplete?.Invoke();
+            });
+        });
+        
     }
-
     public void EndBattle(BattleResults results)
     {
         TimeSequences.Enqueue(new TimeSequence(null,TimeSequence.SequenceTag.BattleEnd,results));
@@ -315,7 +355,7 @@ public class BattleFieldHandler : MonoBehaviour
         }
         
         DefaultCamera.Priority = 9;
-        ConcentrateCamera.Priority = 11;
+        ConcentrateCamera.Priority = 13;
         ConcentrateCamera.LookAt = FindObjectOfType<PlayerMovement>().HeadTrans;
         yield return new WaitForSeconds(2f);
         ConcentrateCamera.Priority = 9;
