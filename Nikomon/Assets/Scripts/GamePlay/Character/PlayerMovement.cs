@@ -83,7 +83,7 @@ public class PlayerMovement : MonoBehaviour
                     var capsuleCollider = (collider1 as CapsuleCollider); //get the height of pokemon
                     Vector3 position = collider1.transform.position + Vector3.up *
                         (capsuleCollider.radius * 2) * capsuleCollider.transform.localScale.y;
-                    print(position.y);
+                    // print(position.y);
                     GazeTransform.position = Vector3.Lerp(GazeTransform.position, position, 1f);
                     return;
                 }

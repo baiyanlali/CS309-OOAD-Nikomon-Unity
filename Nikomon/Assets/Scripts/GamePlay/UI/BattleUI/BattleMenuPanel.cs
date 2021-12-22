@@ -66,10 +66,28 @@ namespace GamePlay.UI.BattleUI
         {
             base.Init(args);
 
+            bool[] canUse;
+            if (args == null || args.Length==0)
+            {
+                canUse = new[] {true, true, true, true};
+            }
+            else
+            {
+                canUse = (args[0] as List<bool>)?.ToArray();
+            }
+
             Fight = GET(Fight, nameof(Fight));
             Pokemon = GET(Pokemon, nameof(Pokemon));
             Bag = GET(Bag, nameof(Bag));
             Run = GET(Run, nameof(Run));
+
+            if (canUse != null)
+            {
+                Fight.interactable = canUse[0];
+                Pokemon.interactable = canUse[1];
+                Bag.interactable = canUse[2];
+                Run.interactable = canUse[3];
+            }
 
             FirstSelectable = Fight.gameObject;
 
