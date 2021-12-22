@@ -141,6 +141,8 @@ public class GlobalManager : MonoBehaviour
         game.Init(GameResources.LoadTypes(), null, GameResources.LoadPokemons(), GameResources.LoadExperienceTable(),
             natures, null, GameResources.LoadMoves(), GameResources.LoadItems());
         isBattling = false;
+        GameResources.LoadPokeItemicons();
+
     }
 
     public void SaveSaveData()

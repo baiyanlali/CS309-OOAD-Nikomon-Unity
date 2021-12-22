@@ -18,7 +18,7 @@ public class PokedexPanel : BaseUI
     private List<PokemondexElement> _pokemondexElements=new List<PokemondexElement>();
     public GameObject pokenmons;
     public Transform _Scrollbar;
-    
+
     /// <summary>
     /// 
     /// </summary>
@@ -39,6 +39,7 @@ public class PokedexPanel : BaseUI
                 obj.GetComponent<TriggerSelect>().onSelect = () =>
                 {
                     print(obj.GetComponent<PokemondexElement>().number);
+                    
                     _Scrollbar.GetComponent<Scrollbar>().value = 
                         (Game.PokemonsData.Count + 1 - obj.GetComponent<PokemondexElement>().number-0.001f) 
                         / (Game.PokemonsData.Count + 1);
