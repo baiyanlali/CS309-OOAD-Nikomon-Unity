@@ -15,7 +15,7 @@ namespace PokemonCore.Combat
             Wild
         }
 
-        public HashSet<int> PokemonCountered=new HashSet<int>();
+        public SortedSet<int> PokemonCountered=new SortedSet<int>();
         public string name { get; private set; }
         public int id { get; private set; }
 
@@ -49,7 +49,7 @@ namespace PokemonCore.Combat
 
         [JsonConstructor]
         public Trainer(string name, int id, int money, Pokemon[] party, bool isMale, int pokedexNums,
-            HashSet<int> pokemonCountered)
+            SortedSet<int> pokemonCountered)
         {
             this.name = name;
             this.id = id;

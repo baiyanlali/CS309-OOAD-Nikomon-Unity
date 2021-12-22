@@ -12,6 +12,7 @@ namespace GamePlay.UI.BattleUI
         public Text ID;
         public int number = -1;
         public string name;
+        public int id = -1;
 
         public void Init(PokemonData pokemon)
         {
@@ -21,7 +22,7 @@ namespace GamePlay.UI.BattleUI
             //print(pokemon.innerName);
             PokemonIcon.sprite = GameResources.PokemonIcons[pokemon.ID];
             ID.text = "NO." + pokemon.ID;
-            number = pokemon.ID;
+            id = pokemon.ID;
             name = pokemon.innerName;
         }
         
