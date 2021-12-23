@@ -32,6 +32,7 @@ namespace PokemonCore.Attack.Data
         public int CriticalLevel ;
         public Targets Target ;
         public int Type ;
+        public string description;
         
         // public int EffectID ;
         // public int? EffectChance ;
@@ -57,7 +58,8 @@ namespace PokemonCore.Attack.Data
             // int? effectChance = 0,
             EffectInfo[] effectInfos=null,
             int criticalLevel=0,
-            bool mustHit=false
+            bool mustHit=false,
+            string description = ""
         )
         {
             this.MoveID = moveID;
@@ -73,6 +75,7 @@ namespace PokemonCore.Attack.Data
             this.EffectInfos = effectInfos;
             this.CriticalLevel = criticalLevel;
             this.MustHit = mustHit;
+            this.description = description;
         }
         
         // public MoveData(

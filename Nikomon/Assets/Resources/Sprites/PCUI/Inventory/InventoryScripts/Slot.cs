@@ -22,6 +22,7 @@ public class Slot :MonoBehaviour
     //public PCManager PCManager;
     public int judge=0;
     public int index = 0;
+    public int number;
 
     public Pokemon pokemon;
 
@@ -40,21 +41,22 @@ public class Slot :MonoBehaviour
             {
                 case 0:
                     Debug.Log("查看信息");
-                    if (judge == 0)
-                    {
-                        //PCManager.refreshMenu();
-                        // PCManager.refreshInformation(number);
-                        RefreshInformation(pokemon);
-                        // PCManager.openInform();
-                        ShowInfo(true);
-                        judge = 1;
-                    }
-                    else
-                    {
-                        // PCManager.closeInform();
-                        ShowInfo(false);
-                        judge = 0;
-                    }
+                    UIManager.Instance.Show<AbilityPanel>(_trainer,pokemon);
+                    // if (judge == 0)
+                    // {
+                    //     //PCManager.refreshMenu();
+                    //     // PCManager.refreshInformation(number);
+                    //     RefreshInformation(pokemon);
+                    //     // PCManager.openInform();
+                    //     ShowInfo(true);
+                    //     judge = 1;
+                    // }
+                    // else
+                    // {
+                    //     // PCManager.closeInform();
+                    //     ShowInfo(false);
+                    //     judge = 0;
+                    // }
                     break;
                 case 1:
                     Debug.Log("交换1");

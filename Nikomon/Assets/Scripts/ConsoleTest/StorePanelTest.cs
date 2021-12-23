@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using GamePlay.UI.BagSystem;
 using GamePlay.UI.UIFramework;
 using PokemonCore.Combat;
+using PokemonCore.Inventory;
 using UnityEngine;
 
 public class StorePanelTest : MonoBehaviour
@@ -19,7 +20,8 @@ public class StorePanelTest : MonoBehaviour
         yield return null;
         Trainer trainer = new Trainer("JDY", true);
         trainer.Money = 3000;
-        UIManager.Instance.Show<StorePanelUI>(trainer);
+        TrainerBag bag = new TrainerBag();
+        UIManager.Instance.Show<StorePanelUI>(trainer,bag);
 
     }
 

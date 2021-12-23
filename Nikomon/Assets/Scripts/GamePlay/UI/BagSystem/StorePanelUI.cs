@@ -14,6 +14,7 @@ namespace GamePlay.UI.BagSystem
     {
         public Text MoneyNumber;
         public Trainer trainer;
+        public TrainerBag bag;
         private List<StoreContentElement> _storeElements=new List<StoreContentElement>();
         private GameObject StorePrefab;
         public Transform ItemList;
@@ -23,7 +24,7 @@ namespace GamePlay.UI.BagSystem
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="args">0 for trainer</
+        /// <param name="args">0 for trainer,1 for bag</
         /// 
         public override void OnEnter(params object[] args)
         {
@@ -71,6 +72,7 @@ namespace GamePlay.UI.BagSystem
             if (args != null)
             {
                 trainer=args[0] as Trainer;
+                bag=args[1] as TrainerBag;
             }
 
             int money = trainer.Money;
@@ -107,7 +109,14 @@ namespace GamePlay.UI.BagSystem
         public void OnBuy((Item.Tag, int) key)
         {
             //TODO:和背包互动！！！！
-            Game.bag.Add(key);
+            print(11111111);
+            print(22222222);
+            
+            bag.Add(key);
+            foreach (var temp in bag.Items)
+            {
+                print(temp);
+            }
         }
     }
 }

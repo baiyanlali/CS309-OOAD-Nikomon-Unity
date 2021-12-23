@@ -76,20 +76,12 @@ public class PokedexPanel : BaseUI
                     
                     
                 };
-                // obj.GetComponent<TriggerSelect>().onDeSelect = () =>
-                // {
-                //     _Scrollbar.GetComponent<Scrollbar>().value = 
-                //         (Game.PokemonsData.Count - obj.GetComponent<PokemondexElement>().number-0.001f) 
-                //         / Game.PokemonsData.Count;
-                //     if (_Scrollbar.GetComponent<Scrollbar>().value < 0.14)
-                //         _Scrollbar.GetComponent<Scrollbar>().value -= 0.03f;
-                //     StopCoroutine(Normal(obj));
-                // };
+
                 obj.name = "Pokedex" + i;
                 if (i == 0)
                 {
                     base.FirstSelectable = obj;
-                    print(333);
+                    // print(333);
                 }
 
                 print(obj.name);
@@ -115,15 +107,7 @@ public class PokedexPanel : BaseUI
             else num = temp.ID ;
             _pokemondexElements[num].Init(temp);
         }
-        // int j = 0;
-        // foreach (var i in trainer.PokemonCountered)
-        // {
-        //     //TODO:有问题！！！
-        //     PokemonData temp = Game.PokemonsData[i];
-        //     _pokemondexElements[j].Init(temp);
-        //     j++;
-        //     //print(_pokemondexElements[j].number);
-        // }
+
 
     }
 
