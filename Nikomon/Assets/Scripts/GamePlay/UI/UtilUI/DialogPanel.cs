@@ -28,6 +28,10 @@ namespace GamePlay.UI.UtilUI
 
         public FadeType fadeType=FadeType.Button;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="args">0 for the report string, 1 for fadetype, 2 for on continue action</param>
         public override void Init(params object[] args)
         {
             // print("On Init");

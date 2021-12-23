@@ -21,6 +21,7 @@ using PokemonCore.Inventory;
 using PokemonCore.Network;
 using PokemonCore.Utility;
 using Utility;
+using Yarn.Unity;
 
 
 /// <summary>
@@ -47,6 +48,8 @@ public class GlobalManager : MonoBehaviour
     public Game game;
 
     public ConfigSettings Config;
+
+    public DialogueRunner DialogueRunner;
 
     public int CurrentDataSlot { get; private set; }
     
@@ -104,6 +107,9 @@ public class GlobalManager : MonoBehaviour
         InitGame();
 
         Translator.Translate = GameResources.LoadLocalization(Messages.Current_culture);
+        GetComponent<LineProviderBehaviour>().textLanguageCode = Messages.Current_culture;
+        DialogueRunner = GetComponent<DialogueRunner>();
+        DialogueRunner.lineProvider = GetComponent<LineProviderBehaviour>();
     }
 
     private void InitGame()
