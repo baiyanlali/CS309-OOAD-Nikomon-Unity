@@ -11,14 +11,28 @@ public class DialogueView : DialogueViewBase
 {
     public override void RunLine(LocalizedLine dialogueLine, Action onDialogueLineFinished)
     {
-        UIManager.Instance.Show<DialogPanel>(dialogueLine.Text.Text,DialogPanel.FadeType.Button,onDialogueLineFinished);
-        
+        void FinishedDebug()
+        {
+            print("Ready for next line!");
+            onDialogueLineFinished?.Invoke();
+            ReadyForNextLine();
+        }
+        UIManager.Instance.Show<DialogPanel>(dialogueLine.Text.Text,
+            DialogPanel.FadeType.Dialogue,(Action)FinishedDebug);
     }
 
     public override void RunOptions(DialogueOption[] dialogueOptions, Action<int> onOptionSelected)
     {
         var texts = dialogueOptions
                 .Select(d => d.Line.TextWithoutCharacterName.Text);
-        UIManager.Instance.Show<DialogueChooserPanel>(texts,new Vector2(0,0),onOptionSelected);
+        // RectTransform rect = .transform as RectTransform;
+        
+        UIManager.Instance.Show<DialogueChooserPanel>(texts.ToList(),new Vector2(1,0),onOptionSelected,UIManager.Instance.GetUI<DialogPanel>().DialogueAttachment);
+    }
+
+    public override void DismissLine(Action onDismissalComplete)
+    {
+        UIManager.Instance.Hide<DialogPanel>();
+        base.DismissLine(onDismissalComplete);
     }
 }

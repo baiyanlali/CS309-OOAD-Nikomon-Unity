@@ -207,6 +207,11 @@ public class BattleFieldHandler : MonoBehaviour
         TimeSequences.Clear();
     }
 
+    // public void HandleEnterScene(Action onComplete)
+    // {
+    //     
+    // }
+
     public void DoNextSequence()
     {
         // if (!GlobalManager.isBattling) return;
@@ -217,14 +222,19 @@ public class BattleFieldHandler : MonoBehaviour
         switch (sequence.tag)
         {
             case TimeSequence.SequenceTag.EnterScene:
+                // HandleEnterScene(DoNextSequence);
                 break;
             case TimeSequence.SequenceTag.OnMove:
                 dics[sequence.poke.CombatID].DoMove(sequence.param[0] as CombatMove, DoNextSequence);
                 break;
             case TimeSequence.SequenceTag.EndMove:
                 // BattleUIHandler.Instance.UpdateStatus();
-                UIManager.Instance.Refresh<BattleStatusPanel>(BattleHandler.Instance);
-                UIManager.Instance.Show<BattleStatusPanel>(BattleHandler.Instance);
+                if (GlobalManager.isBattling)
+                {
+                    UIManager.Instance.Refresh<BattleStatusPanel>(BattleHandler.Instance);
+                    UIManager.Instance.Show<BattleStatusPanel>(BattleHandler.Instance);
+                }
+                
                 BattleHandler.Instance.battle.NextMove();
                 break;
             case TimeSequence.SequenceTag.BeHit:
