@@ -16,6 +16,7 @@ using PokemonCore.Inventory;
 using PokemonCore.Monster.Data;
 using PokemonCore.Utility;
 using UnityEngine;
+using Debug = UnityEngine.Debug;
 using Types = PokemonCore.Types;
 
 namespace GamePlay
@@ -50,7 +51,8 @@ namespace GamePlay
             //bag
             [typeof(BagPanelUI)] = "Prefabs/UI/BagSystem/BagTable", 
             [typeof(BagContentElementUI)] = "Prefabs/UI/BagSystem/BagContentElement", 
-            [typeof(StorePanelUI)]="Prefabs/UI/BagSystem/StorePanel",
+            [typeof(StorePanelUI)]="Prefabs/UI/BagSystem/Store",
+            [typeof(StoreContentElement)]="Prefabs/UI/BagSystem/StoreContentElement",
 
             //PokemonChooserPanel
             [typeof(PokemonChooserPanelUI)] = "Prefabs/UI/PokemonChooserTable/PokemonChooserTable", 
@@ -80,9 +82,14 @@ namespace GamePlay
             //PC
             [typeof(PCManager)]="Prefabs/UI/PC/PC",
             [typeof(PCParty)]="Prefabs/UI/PC/Party",
+            [typeof(Slot)]="Prefabs/UI/PC/slot",
             
             //Ability
             [typeof(AbilityPanel)]="Prefabs/UI/Ability/PokemonAbilityTable",
+            
+            //Pokedex
+            [typeof(PokedexPanel)]="Prefabs/UI/Pokemondex/Pokedex",
+            [typeof(PokemondexElement)]="Prefabs/UI/Pokemondex/Pokemondex",
         };
     }
 
@@ -93,6 +100,7 @@ namespace GamePlay
         public static Dictionary<Item.Tag, Sprite> BagIcons;
         public static Dictionary<int, Sprite> TypeIcons;
         public static Dictionary<int, Color> TypeColors;
+        public static Dictionary<(Item.Tag, int), Sprite> ItemIcons;
 
         private static Dictionary<Type, GameObject> CachedPrefabs = new Dictionary<Type, GameObject>();
         private static Dictionary<string, GameObject> CachedPrefabsStr = new Dictionary<string, GameObject>();
@@ -111,6 +119,14 @@ namespace GamePlay
             }
             
             text = Resources.Load<TextAsset>($"Localization/{culture}/tool_{culture}").text;
+            tmp = JsonConvert.DeserializeObject<Dictionary<string, string>>(text);
+            foreach (var t in tmp)
+            {
+                if(! dics.ContainsKey(t.Key))
+                    dics.Add(t.Key,t.Value);
+            }
+            
+            text = Resources.Load<TextAsset>($"Localization/{culture}/ui_{culture}").text;
             tmp = JsonConvert.DeserializeObject<Dictionary<string, string>>(text);
             foreach (var t in tmp)
             {
@@ -184,6 +200,30 @@ namespace GamePlay
             if (type == LoadDataType.Json)
             {
             }
+        }
+        
+        //TODO:!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        public static void LoadPokeItemicons()
+        {
+
+            ItemIcons = new Dictionary<(Item.Tag, int), Sprite>();
+            var tmp = Game.ItemsData;
+            // from t in tmp where t.Key==Item.Tag.PokeBalls
+            foreach (var item in tmp)
+            {
+                Debug.Log(item.Key.Item1+item.Key.Item2.ToString());
+                // ItemIcons.Add(item.Key,Resources.Load<Sprite>("Sprites/ItemIcons/"+item.Key.Item1+item.Key.Item2.ToString()));
+            }
+            foreach (var item in tmp)
+            {
+                ItemIcons.Add(item.Key,Resources.Load<Sprite>("Sprites/ItemIcons/"+item.Key.Item1+item.Key.Item2.ToString()));
+            }
+            // for (int i = 0; i < ; i++)
+            //     
+            // {
+            //     PokeBallIcons.Add(i, Resources.Load<Sprite>("Sprites/PokemonIcons/" + t.ID + t.innerName));
+            // }
+            //PokemonIcons.Add(t.ID, Resources.Load<Sprite>("Sprites/PokemonIcons/" + t.ID + t.innerName));
         }
 
         public static Dictionary<int, MoveData> LoadMoves()

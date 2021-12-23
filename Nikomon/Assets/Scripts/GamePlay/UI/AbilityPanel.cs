@@ -22,6 +22,7 @@ namespace GamePlay.UI.UtilUI
         public RadarTest _radarTest;
         public Nametext _nametext;
         public GameObject pokenmons;
+        public Text movecontent;
         private void Awake()
         {
             // abilityTable.SetActive(true);
@@ -43,6 +44,14 @@ namespace GamePlay.UI.UtilUI
                 {
                     GameObject obj = Instantiate(MoveElementPrefab, MoveDetial);
                     obj.name = "Move" + i;
+                    obj.GetComponent<TriggerSelect>().onSelect = () =>
+                    {
+                        //TODO:技能描述！！！不好处理！！！！
+                        // description;
+                        movecontent.text = obj.GetComponent<MoveElement>()._move._baseData.description;
+                        //movecontent.text = obj.name;
+
+                    };
                     _moveElements.Add(obj.GetComponent<MoveElement>());
                 }
             }

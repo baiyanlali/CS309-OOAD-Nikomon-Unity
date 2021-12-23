@@ -7,9 +7,9 @@ public class SetValue : MonoBehaviour
 {
     private void Start()
     {
-        print(this.transform.GetComponent<Scrollbar>().value);
+        //print(this.transform.GetComponent<Scrollbar>().value);
         this.transform.GetComponent<Scrollbar>().value = 0.9999f;
-        print(this.transform.GetComponent<Scrollbar>().value);
+        //print(this.transform.GetComponent<Scrollbar>().value);
         
     }
 }

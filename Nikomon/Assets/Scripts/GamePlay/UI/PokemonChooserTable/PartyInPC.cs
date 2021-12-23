@@ -2,7 +2,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using GamePlay;
+using GamePlay.UI.UIFramework;
 using PokemonCore;
+using PokemonCore.Character;
 using PokemonCore.Combat;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -10,13 +12,14 @@ public class PartyInPC : MonoBehaviour
 //public class PokemonChooserTableUI: MonoBehaviour 
 {
     private GameObject ChooserElement;
+    private PCManager _pcManager;
 
     public void Init(Trainer trainer,string[] chooses,Action<int,int> actions)
     {
         // ChooserElement = ChooserElement
         //     ? ChooserElement
         //     : Resources.Load<GameObject>("Prefabs/UI/PokemonChooserTable/PokemonStatButton");
-
+        _pcManager ??= UIManager.Instance.GetUI<PCManager>();
         ChooserElement = GameResources.SpawnPrefab(typeof(PCParty));
 
         int pokes = trainer.bagPokemons;
@@ -41,6 +44,14 @@ public class PartyInPC : MonoBehaviour
             if (trainer.party[i] == null) break;
             transform.GetChild(i).gameObject.SetActive(true);
             transform.GetChild(i).GetComponent<PCParty>().Init(trainer.party[i],i,chooses,actions);
+            GameObject obj = transform.GetChild(i).gameObject;
+            obj.GetComponent<PCParty>().IndexInBag = i;
+            obj.GetComponent<TriggerSelect>().onSelect = () =>
+            {
+                _pcManager.ShowInfo(true);
+                _pcManager.GameObjectdesc.SetActive(false);
+                _pcManager.RefreshInformation(trainer.party[obj.GetComponent<PCParty>().IndexInBag]);
+            };
         }
         
         // gameObject.SetActive(false);

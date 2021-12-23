@@ -214,6 +214,8 @@ namespace PokemonCore
             {
                 pc.AddPokemon(poke);
             }
+
+            trainer.PokemonCountered.Add(poke.ID);
         }
         
         /// <summary>
