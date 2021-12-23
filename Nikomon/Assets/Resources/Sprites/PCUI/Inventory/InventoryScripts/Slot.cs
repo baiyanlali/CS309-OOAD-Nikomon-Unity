@@ -127,10 +127,15 @@ public class Slot :MonoBehaviour
                     break;
             }
         };
-        UIManager.Instance.Show<DialogueChooserPanel>(new List<string>
+        if(pokemon == null)
+            print("wyf6888");
+        if (pokemon != null)
         {
-            "查看信息", "标记","持有物","放生","加入背包","取消"
-        }, new Vector2(0, 1),action, itemInSlot.transform.parent as RectTransform);
+            UIManager.Instance.Show<DialogueChooserPanel>(new List<string>
+            {
+                "查看信息", "标记", "持有物", "放生", "加入背包", "取消"
+            }, new Vector2(0, 1), action, itemInSlot.transform.parent as RectTransform);
+        }
     }
 
     public void SetupSlot(Pokemon item,int num,Action<Pokemon> refresh,Action<bool> showinfo)

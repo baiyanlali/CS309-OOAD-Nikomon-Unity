@@ -396,6 +396,11 @@ public class PCManager : BaseUI
             SPA.text = string.Empty;
             SPD.text = string.Empty;
             SPE.text = string.Empty;
+            for (int i = 0; i < _moveElements.Count; i++)
+            {
+
+                _moveElements[i].gameObject.SetActive(false);
+            }
         }
         else
         {
