@@ -155,7 +155,7 @@ namespace PokemonCore.Combat
         public void AddEffect(Effect e)
         {
             Effects.Add(e);
-            e.OnEffectBegin?.Invoke(this);
+            e.OnEffectBegin?.Invoke(e,this);
         }
 
         public Move lastMove;
@@ -213,7 +213,7 @@ namespace PokemonCore.Combat
             foreach (var e in Effects.OrEmptyIfNull())
             {
                 if (e.OnChoosing == null) continue;
-                Instruction i = e.OnChoosing(this);
+                Instruction i = e.OnChoosing(e,this);
                 if (i != null) return i;
             }
             // Effects.EffectUpdate(this);
@@ -232,7 +232,7 @@ namespace PokemonCore.Combat
             foreach (var e in Effects.OrEmptyIfNull())
             {
                 if (e.OnMoving == null) continue;
-                e.OnMoving(cmove);
+                e.OnMoving(e,cmove);
             }
             // UnityEngine.Debug.Log(cmove);
             // Effects.EffectUpdate(this);
@@ -244,7 +244,7 @@ namespace PokemonCore.Combat
             foreach (var e in Effects.OrEmptyIfNull())
             {
                 if (e.OnMoved == null) continue;
-                e.OnMoved(this);
+                e.OnMoved(e,this);
             }
         }
 
@@ -254,7 +254,7 @@ namespace PokemonCore.Combat
             foreach (var e in Effects.OrEmptyIfNull())
             {
                 if (e.OnSwitchPokemon == null) return true;
-                if (e.OnSwitchPokemon(this) == false) return false;
+                if (e.OnSwitchPokemon(e,this) == false) return false;
             }
             // Effects.EffectUpdate(this);
             return true;
@@ -265,7 +265,7 @@ namespace PokemonCore.Combat
             foreach (var e in Effects.OrEmptyIfNull())
             {
                 if (e.OnHit == null) continue;
-                e.OnHit(this,damage);
+                e.OnHit(e,this,damage);
             }
             // Effects.EffectUpdate(this);
             return damage;
@@ -276,7 +276,7 @@ namespace PokemonCore.Combat
             foreach (var e in Effects.OrEmptyIfNull())
             {
                 if (e.BeHurt == null) continue;
-                e.BeHurt(this,damage);
+                e.BeHurt(e,this,damage);
             }
 
 
@@ -296,7 +296,7 @@ namespace PokemonCore.Combat
             foreach (var effect in Effects.OrEmptyIfNull())
             {
                 if (effect.BeFainted == null) continue;
-                effect.BeFainted(this);
+                effect.BeFainted(effect,this);
             }
             // Effects.EffectUpdate(this);
             battle.PokemonFainting(this);

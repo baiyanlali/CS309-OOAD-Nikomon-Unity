@@ -204,6 +204,7 @@ public class BattleFieldHandler : MonoBehaviour
     public void OnTurnEnd()
     {
         // DoNextSequence();
+        UIManager.Instance.Refresh<BattleStatusPanel>(BattleHandler.Instance);
         TimeSequences.Clear();
     }
 
@@ -216,7 +217,7 @@ public class BattleFieldHandler : MonoBehaviour
     {
         // if (!GlobalManager.isBattling) return;
         if (TimeSequences.Count == 0) return;
-        print($"TimeSequence: {TimeSequences.Peek().tag}");
+        // print($"TimeSequence: {TimeSequences.Peek().tag}");
         var sequence = TimeSequences.Dequeue();
 
         switch (sequence.tag)

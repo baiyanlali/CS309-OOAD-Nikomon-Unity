@@ -96,32 +96,7 @@ namespace PokemonCore.Combat
         public List<CombatPokemon> opponentsPokemons { get; private set; }
 
         #region Effect相关
-
-        /// <summary>
-        /// 选择招式之前的Effect
-        /// </summary>
-        public List<Effect> ChoosingEffect { get; private set; }
-
-        /// <summary>
-        /// 招式生效之前的Effect->可以修改招式的Type,威力,Target等
-        /// </summary>
-        public List<Effect> MovingEffect { get; private set; }
-
-        /// <summary>
-        /// 伤害造成前的Effect->可以阻止或削减伤害的程度等
-        /// </summary>
-        public List<Effect> DamagingEffect { get; private set; }
-
-        /// <summary>
-        /// 伤害造成后的Effect->可以造成自身增减血量等效果
-        /// </summary>
-        public List<Effect> DamagedEffect { get; private set; }
-
-        /// <summary>
-        /// 招式效果结束后的效果；可以用于一些附加效果，比如寄生种子
-        /// </summary>
-        public List<Effect> MovedEffect { get; private set; }
-
+        
         /// <summary>
         /// 当前场地内的EffectList
         /// </summary>
@@ -147,10 +122,11 @@ namespace PokemonCore.Combat
 
         public Action OnOneMoveEnd;
 
-
         public Action<Instruction> OnUserChooseInstruction;
 
         public Action<bool> OnCatchPokemon;
+
+        public Action AfterChoosing;
 
         /// <summary>
         /// 目前应当显示那只宝可梦的move是由battle决定，并交给Show Poke Move来响应
@@ -210,11 +186,7 @@ namespace PokemonCore.Combat
             List<Pokemon> opponentsPokemons,
             List<Trainer> alliesTrainers,
             List<Trainer> opponentTrainers,
-            Effect[] choosingEffect = null,
-            Effect[] movingEffect = null,
-            Effect[] damagingEffect = null,
-            Effect[] damagedEffect = null,
-            Effect[] movedEffect = null)
+            List<Effect> fieldEffect = null)
         {
             Instance = this;
 
@@ -253,26 +225,12 @@ namespace PokemonCore.Combat
 
             #region init effects
 
-            this.ChoosingEffect = new List<Effect>();
-            if (choosingEffect != null)
-                this.ChoosingEffect.AddRange(choosingEffect);
-
-            this.MovingEffect = new List<Effect>();
-            if (movingEffect != null)
-                this.MovingEffect.AddRange(movingEffect);
-
-            this.DamagingEffect = new List<Effect>();
-            if (damagingEffect != null)
-                this.DamagingEffect.AddRange(damagingEffect);
-
-            this.DamagedEffect = new List<Effect>();
-            if (damagedEffect != null)
-                this.DamagedEffect.AddRange(damagedEffect);
-
-            this.MovedEffect = new List<Effect>();
-            if (movedEffect != null)
-                this.MovedEffect.AddRange(movedEffect);
-
+            this.FieldEffect = fieldEffect;
+            if (FieldEffect == null)
+            {
+                FieldEffect = new List<Effect>();
+            }
+            
             #endregion
 
             Instructions = new List<Instruction>();
@@ -294,6 +252,7 @@ namespace PokemonCore.Combat
 
                 Instance = null;
             };
+            
         }
 
         /// <summary>
@@ -302,6 +261,9 @@ namespace PokemonCore.Combat
         public void CompleteInit()
         {
             OnTurnBegin?.Invoke();
+            
+            Choosing();
+
             // UnityEngine.Debug.Log("Complete Battle Log");
             if (MyPokeWithNoInstructions.Count != 0)
                 ShowPokeMove?.Invoke(MyPokeWithNoInstructions[0]);
@@ -309,14 +271,8 @@ namespace PokemonCore.Combat
 
         public void UpdateEffect()
         {
-            
-            ChoosingEffect.EffectEliminate(null);
-            MovingEffect.EffectEliminate(null);
-            DamagingEffect.EffectEliminate(null);
-            DamagedEffect.EffectEliminate(null);
-            MovedEffect.EffectEliminate(null);
-            FieldEffect.EffectEliminate(null);
-            Pokemons.ForEach(pokemon => pokemon.Effects.EffectEliminate(pokemon));
+            FieldEffect.EffectEliminate();
+            Pokemons.ForEach(pokemon => pokemon.Effects.EffectEliminate());
         }
 
         #region new move methods
@@ -331,6 +287,7 @@ namespace PokemonCore.Combat
                     SortCombatMoves(CombatMoves);
                     ReplacePokemons(SwitchPokemons);
                     SwitchPokemons.Clear();
+
                     NextMove();
                     break;
                 case BattleActions.Moving:
@@ -340,10 +297,10 @@ namespace PokemonCore.Combat
                         //本回合结束
                         Damages.Clear();
                         mBattleActions = BattleActions.Moved;
-                        OnThisTurnEnd?.Invoke();
                         Moved();
                         UpdateEffect();
                         WinOrLose();
+                        OnThisTurnEnd?.Invoke();
                         NextMove();
                         return;
                     }
@@ -355,6 +312,7 @@ namespace PokemonCore.Combat
 
                     // SingleMoving(CombatMoves);
                     // Damaging(Damages);
+                    
                     var singleDamages = SingleMoving(CombatMoves);
                     Damaging(singleDamages);
                     WinOrLose();
@@ -367,7 +325,6 @@ namespace PokemonCore.Combat
 
                     mBattleActions = BattleActions.Choosing;
                     OnTurnBegin?.Invoke();
-
                     Choosing();
                     if (MyPokeWithNoInstructions.Count != 0)
                         ShowPokeMove?.Invoke(MyPokeWithNoInstructions[0]);
@@ -381,7 +338,7 @@ namespace PokemonCore.Combat
             if (cm.Count == 0) return null;
             var c = cm[0];
             cm.RemoveAt(0);
-
+            FieldEffect?.ForEach(effect => effect.OnMoving(effect,c));
             c = c.Sponsor.OnMoving(c);
 
             foreach (var effectInfo in c.move._baseData.EffectInfos.OrEmptyIfNull())
@@ -427,12 +384,12 @@ namespace PokemonCore.Combat
             List<Instruction> inss = (from instruction in (from pokemon in Pokemons select pokemon.OnChoosing())
                 where instruction != null
                 select instruction).ToList();
-            foreach (var e in ChoosingEffect.OrEmptyIfNull())
+            foreach (var e in FieldEffect.OrEmptyIfNull())
             {
                 foreach (var p in Pokemons)
                 {
                     if (e.OnChoosing == null) continue;
-                    Instruction i = e.OnChoosing(p);
+                    Instruction i = e.OnChoosing(e,p);
                     if (i != null) ReceiveInstruction(i, true);
                 }
             }
@@ -442,6 +399,9 @@ namespace PokemonCore.Combat
                 // OnPokemonChooseHandled?.Invoke(ins.CombatPokemonID);
                 ReceiveInstruction(ins, true);
             }
+            
+            AfterChoosing?.Invoke();
+
         }
 
         void Damaging(List<Damage> dmgs)
@@ -455,6 +415,8 @@ namespace PokemonCore.Combat
         void Damaging(Damage dmg)
         {
             if (dmg.sponsor.HP <= 0) return;
+            
+            ;
             dmg = dmg.sponsor.OnHit(dmg);
             OnHit?.Invoke(dmg);
 
@@ -463,6 +425,7 @@ namespace PokemonCore.Combat
                 OnHitted?.Invoke(dmg.target);
 
             Damages.Add(dmg);
+            FieldEffect?.ForEach(effect => Pokemons?.ForEach(pokemon => effect?.OnDamaged(effect,dmg.sponsor,dmg.target)));
 
             // else
             // {
@@ -482,6 +445,8 @@ namespace PokemonCore.Combat
         /// </summary>
         void Moved()
         {
+            FieldEffect?.ForEach(effect => Pokemons?.ForEach(pokemon => effect?.OnMoved(effect,pokemon)));
+
             foreach (CombatPokemon e in Pokemons)
             {
                 e.Moved();

@@ -7,17 +7,17 @@ effectTemplate = {
     EffectChance = 100,
     isUsed=false,
     
-    BeFaint = function(combatPoke)    end,
-    BeSwitched = function(combatPoke) end,
-    OnEffectBegin = function(combatPoke) end,
-    OnChoosing = function(combatPoke) return instruction  end,
-    OnMoving = function(combatMove,combatPoke) return combatMove end,
-    OnHit = function(combatPoke,damage) return damage end,
-    BeHurt = function(combatPoke,damage) return damage end,
-    OnDamaged = function(sponsor,target) end,
-    OnMoved = function(sponsor)  end,
-    OnSwitchPokemon = function(combatPoke) return True end,
-    OnEffectEnd = function(combatPoke) end,
+    BeFaint = function(self,combatPoke)    end,
+    BeSwitched = function(self,combatPoke) end,
+    OnEffectBegin = function(self,combatPoke) end,
+    OnChoosing = function(self,combatPoke) return instruction  end,
+    OnMoving = function(self,combatMove,combatPoke) return combatMove end,
+    OnHit = function(self,combatPoke,damage) return damage end,
+    BeHurt = function(self,combatPoke,damage) return damage end,
+    OnDamaged = function(self,sponsor,target) end,
+    OnMoved = function(self,sponsor)  end,
+    OnSwitchPokemon = function(self,combatPoke) return True end,
+    OnEffectEnd = function(self,combatPoke) end,
 }
 EffectLastType = CS.PokemonCore.Combat.Interface.EffectLastType
 Combat = CS.PokemonCore.Combat
@@ -32,7 +32,7 @@ effect0={
     EffectLastType= EffectLastType.ALWAYS,
     EffectChance=100,
 
-    OnMoving = function(combatMove)
+    OnMoving = function(self,combatMove)
         --print('Use effect 0')
         --if combatMove.type.ID == 
         if combatMove.types.ID == combatMove.Sponsor.Type1 or combatMove.types.ID == combatMove.Sponsor.Type2  or combatMove.types.ID == combatMove.Sponsor.Type3  then
@@ -43,6 +43,13 @@ effect0={
     end
 }
 
+function random(threshold)
+    rand = CS.PokemonCore.Game.Random:Next(101)
+    if rand< threshold then
+        return true
+    end
+    return false
+end
 
 effect1={
     ID=1,
@@ -51,11 +58,13 @@ effect1={
     EffectLastType=Combat.Interface.EffectLastType.ROUND,
     EffectChance=50,
     
-    OnMoving=function(combatMove) 
-        rand = CS.PokemonCore.Game.Instance.Random.Next(101)
-        if rand>EffectChance then
-            combatMove.Target=combatMove.Sponsor.combatID
+    OnMoving=function(self,combatMove)
+        if random(self.EffectChance) then
+            Game.battle:Report('宝可梦混乱了！攻击了自己！')
+            combatMove.Targets[0] = combatMove.Sponsor
         end
+        self.Round = self.Round-1
+        
     end
 }
 effect2={ --over!
@@ -64,11 +73,12 @@ effect2={ --over!
     Round=3,
     EffectLastType=Combat.Interface.EffectLastType.ROUND,
     EffectChance=100,
-	EffectType=SkipOneTurn, 	--is that enough ???
-	EffectActTime=Moving,
-    OnChoosing = function(combatPoke) 
-        instruction = new Combat.instruction(combatPoke,CS.PokemonCore.Combat.Command.Skip,-1,-1)
-        Round=Round-1
+	--EffectType=SkipOneTurn, 	--is that enough ???
+	--EffectActTime=Moving,
+    OnChoosing = function(self,combatPoke) 
+        print("skip turn")
+        instruction = Combat.Instruction(combatPoke.CombatID,CS.PokemonCore.Combat.Command.Skip,-1,-1)
+        self.Round=self.Round-1
         return instruction
     end
     
@@ -76,17 +86,15 @@ effect2={ --over!
 effect3={ --over!
     ID=3,
     InnerName='Poison',
-    Round=3,
+    Round=2,
     EffectLastType=Combat.Interface.EffectLastType.ROUND,
     EffectChance=100,
     
-    OnMoved=function(sponsor)
+    OnMoved=function(self,sponsor)
         print("poision on moved test")
-        effect3.Round=effect3.Round-1
-        print(sponsor.TotalHP,sponsor.HP)
-        sponsor.HP = sponsor.HP - math.modf( sponsor.TotalHP / 8 )
-        print(sponsor.TotalHP,sponsor.HP)
-        print(sponsor)
+        self.Round=self.Round-1
+        Game.battle:Report('宝可梦中毒了！！！')
+        sponsor.HP = sponsor.HP - math.floor( sponsor.TotalHP / 8 )
         --damage to sponsor with 1/8 of sponsor's Hp
     end
 }
@@ -97,7 +105,7 @@ effect4={ --over!
     EffectLastType=CS.PokemonCore.Combat.Interface.EffectLastType.ROUND,
     EffectChance=100,
 
-    OnMoving=function(combatMove)
+    OnMoving=function(self,combatMove)
         print(InnerName)
         effect4.Round = effect4.Round-1
         print(effect5.Round)
@@ -117,7 +125,7 @@ effect5={ --over!
     Round = 1,
     --25%无法使用技能
     
-    OnMoving=function(combatMove)
+    OnMoving=function(self,combatMove)
         print(self)
         Game.battle:Report('宝可梦被麻痹了！无法使用技能！')
         rand = CS.PokemonCore.Game.Random:Next(101)
@@ -127,36 +135,35 @@ effect5={ --over!
             print("Paralysis Succeed!")
             combatMove.Targets = nil
         end
-        --effect5.Round=effect5.Round-1
+        self.Round=self.Round-1
+        if self.Round == 0 then
+            combatMove.Sponsor.SPE = combatMove.Sponsor.SPE*2
+            print("Paralysis over",combatMove.Sponsor.SPE)
+        end
+        
         return combatMove
     end,
     
-    
-    OnEffectBegin = function(combatPoke)
-        print("Paralysis begin")
-        combatPoke.SPE = combatPoke.SPE*0.5
-    end,
-    
-    OnEffectEnd = function(combatPoke)
-        print("Paralysis over")
-        combatPoke.SPE = combatPoke.SPE*2
+    OnEffectBegin = function(self,combatPoke)
+        combatPoke.SPE = math.floor(combatPoke.SPE*0.5)
+        print("Paralysis begin",combatPoke.SPE)
     end
+    
 }
 
 effect6={ --over!
     ID = 6,
     InnerName = 'Burn',
     Round = 1,
-    OnMoving=function(combatMove)
+    OnMoving=function(self,combatMove)
         if combatMove.Category == PokemonCore.Attack.Data.Category.Physical then
-            -- TODO: 变为改变damage的rate
             combatMove.power = combatMove.power/2
         end
     end
     ,
-    OnMoved = function(sponsor)
+    OnMoved = function(self,sponsor)
         sponsor.TotalHP = sponsor.TotalHP - sponsor.HP / 16
-        effect6.Round=effect6.Round-1
+        self.Round=self.Round-1
     end
 
 }
@@ -166,14 +173,14 @@ effect10 = {
     Round = 1,
     
     
-    OnMoving=function(combatMove)
+    OnMoving=function(self,combatMove)
         if combatMove.Category == PokemonCore.Attack.Data.Category.Physical then
             -- TODO: 变为改变damage的rate
             combatMove.power = combatMove.power/2
         end
     end
 ,
-    OnMoved = function(sponsor)
+    OnMoved = function(self,sponsor)
         sponsor.TotalHP = sponsor.TotalHP - sponsor.HP / 16
         effect6.Round=effect6.Round-1
     end
@@ -186,7 +193,7 @@ effect11={
     EffectLastType=CS.PokemonCore.Combat.Interface.EffectLastType.UNTIL_SWITCH_POKEMON,
     EffectChance=100,
     
-    OnMoving=function(combatMove) 
+    OnMoving=function(self,combatMove) 
 		combatMove.Sponsor.ATKStateChange.set(ATKStateChange.get() + 1)
         Round=Round-1
     end
@@ -198,7 +205,7 @@ effect12={
     EffectLastType=CS.PokemonCore.Combat.Interface.EffectLastType.UNTIL_SWITCH_POKEMON,
     EffectChance=100,
     
-    OnMoving=function(combatMove) 
+    OnMoving=function(self,combatMove) 
 		combatMove.Sponsor.DEFStateChange.set(DEFStateChange.get() + 1)
     end
 }
@@ -209,7 +216,7 @@ effect13={
     EffectLastType=CS.PokemonCore.Combat.Interface.EffectLastType.UNTIL_SWITCH_POKEMON,
     EffectChance=100,
     
-    OnMoving=function(combatMove) 
+    OnMoving=function(self,combatMove) 
 		combatMove.Sponsor.SPAStateChange.set(SPAStateChange.get() + 1)
     end
 }
@@ -220,7 +227,7 @@ effect14={
     EffectLastType=CS.PokemonCore.Combat.Interface.EffectLastType.UNTIL_SWITCH_POKEMON,
     EffectChance=100,
     
-    OnMoving=function(combatMove) 
+    OnMoving=function(self,combatMove) 
 		combatMove.Sponsor.EvasionStateChange.set(EvasionStateChange.get() + 1)
     end
 }
@@ -231,7 +238,7 @@ effect15={
     EffectLastType=CS.PokemonCore.Combat.Interface.EffectLastType.UNTIL_SWITCH_POKEMON,
     EffectChance=100,
     
-    OnMoving=function(combatMove) 
+    OnMoving=function(self,combatMove) 
 		combatMove.Sponsor.AccuracyStateChange.set(AccuracyStateChange.get() + 12)
     end
 }
@@ -245,7 +252,7 @@ effect17={
     EffectLastType=CS.PokemonCore.Combat.Interface.EffectLastType.UNTIL_SWITCH_POKEMON,
     EffectChance=100,
     
-    OnMoving=function(combatMove) 
+    OnMoving=function(self,combatMove) 
 		combatMove.Sponsor.ATKStateChange.set(ATKStateChange.get() - 1)
     end
 }
@@ -256,7 +263,7 @@ effect18={
     EffectLastType=CS.PokemonCore.Combat.Interface.EffectLastType.UNTIL_SWITCH_POKEMON,
     EffectChance=100,
     
-    OnMoving=function(combatMove) 
+    OnMoving=function(self,combatMove) 
 		combatMove.Sponsor.DEFStateChange.set(DEFStateChange.get() - 1)
     end
 }
@@ -267,7 +274,7 @@ effect19={
     EffectLastType=CS.PokemonCore.Combat.Interface.EffectLastType.UNTIL_SWITCH_POKEMON,
     EffectChance=100,
     
-    OnMoving=function(combatMove) 
+    OnMoving=function(self,combatMove) 
 		combatMove.Sponsor.SPEStateChange.set(SPEStateChange.get() - 1)
     end
 }
@@ -278,7 +285,7 @@ effect20={
     EffectLastType=CS.PokemonCore.Combat.Interface.EffectLastType.UNTIL_SWITCH_POKEMON,
     EffectChance=100,
     
-    OnMoving=function(combatMove) 
+    OnMoving=function(self,combatMove) 
 		combatMove.Sponsor.AccuracyStateChange.set(AccuracyStateChange.get() - 1)
     end
 }
@@ -289,7 +296,7 @@ effect21={
     EffectLastType=CS.PokemonCore.Combat.Interface.EffectLastType.UNTIL_SWITCH_POKEMON,
     EffectChance=100,
     
-    OnMoving=function(combatMove) 
+    OnMoving=function(self,combatMove) 
 		combatMove.Sponsor.EvasionStateChange.set(EvasionStateChange.get() - 1)
     end
 }

@@ -43,15 +43,9 @@ namespace PokemonCore.Utility
             return list[Game.Random.Next(0, list.Count)];
         }
         
-        public static void EffectEliminate(this List<Effect> e,CombatPokemon poke)
+        public static void EffectEliminate(this List<Effect> e)
         {
             if (e == null) return;
-            e.ForEach(effect => effect.Round--);
-            if (poke != null)
-            {
-                var eliminatedEffect = e.Where(effect => effect.Round == 0).ToList();
-                eliminatedEffect.ForEach(effect => effect.OnEffectEnd?.Invoke(poke));
-            }
             e.RemoveAll(effect => effect.Round == 0);
         }
 
