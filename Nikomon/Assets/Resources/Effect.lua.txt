@@ -100,6 +100,7 @@ effect4={ --over!
     OnMoving=function(combatMove)
         print(InnerName)
         effect4.Round = effect4.Round-1
+        print(effect5.Round)
         for t in combatMove.move._baseData.MoveTag do
             if(t=="BrokeFreeze") then
                 return
@@ -113,14 +114,16 @@ effect4={ --over!
 effect5={ --over!
     ID = 5,
     InnerName = 'Paralysis',
-    Round = 1,
+    Round = 2,
     --25%无法使用技能
+    
     OnMoving=function(combatMove)
-        Game.battle:Report('宝可梦被麻痹了！')
+        print(self)
+        Game.battle:Report('宝可梦被麻痹了！无法使用技能！')
         rand = CS.PokemonCore.Game.Random:Next(101)
         print("Paralysis: OnMoving",rand)
 
-        if rand<100 then
+        if rand<101 then
             print("Paralysis Succeed!")
             combatMove.Targets = nil
         end
@@ -128,11 +131,16 @@ effect5={ --over!
         return combatMove
     end,
     
-    OnEffectEnd = function(combatPoke)  
-        combatPoke.SPE = combatPoke.SPE*2
+    OnMoved = function(combatPoke)
+
+        if effect5.Round == 0 then
+            combatPoke.SPE = combatPoke.SPE*2
+            print("Paralysis begin")
+        end
     end,
     
     OnEffectBegin = function(combatPoke) 
+        print("Paralysis over")
         combatPoke.SPE = combatPoke.SPE*0.5
     end
 }
@@ -153,6 +161,24 @@ effect6={ --over!
         effect6.Round=effect6.Round-1
     end
 
+}
+effect10 = {
+    ID = 6,
+    InnerName = 'Counter',
+    Round = 1,
+    
+    
+    OnMoving=function(combatMove)
+        if combatMove.Category == PokemonCore.Attack.Data.Category.Physical then
+            -- TODO: 变为改变damage的rate
+            combatMove.power = combatMove.power/2
+        end
+    end
+,
+    OnMoved = function(sponsor)
+        sponsor.TotalHP = sponsor.TotalHP - sponsor.HP / 16
+        effect6.Round=effect6.Round-1
+    end
 }
 
 effect11={

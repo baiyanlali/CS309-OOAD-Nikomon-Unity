@@ -7,6 +7,7 @@ using System.Text;
 using PokemonCore.Combat.Interface;
 using PokemonCore.Utility;
 using Newtonsoft.Json;
+using PokemonCore.Attack.Data;
 using PokemonCore.Inventory;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -119,7 +120,7 @@ namespace PokemonCore.Combat
         /// <summary>
         /// 招式效果结束后的效果；可以用于一些附加效果，比如寄生种子
         /// </summary>
-        public List<(Effect,CombatPokemon)> MovedEffect { get; private set; }
+        public List<Effect> MovedEffect { get; private set; }
         
         /// <summary>
         /// 当前场地内的EffectList
@@ -213,7 +214,7 @@ namespace PokemonCore.Combat
             Effect[] movingEffect = null,
             Effect[] damagingEffect = null,
             Effect[] damagedEffect = null,
-            (Effect,CombatPokemon)[] movedEffect = null)
+            Effect[] movedEffect = null)
         {
             Instance = this;
 
@@ -268,7 +269,7 @@ namespace PokemonCore.Combat
             if (damagedEffect != null)
                 this.DamagedEffect.AddRange(damagedEffect);
 
-            this.MovedEffect = new List<(Effect,CombatPokemon)>();
+            this.MovedEffect = new List<Effect>();
             if (movedEffect != null)
                 this.MovedEffect.AddRange(movedEffect);
 
@@ -318,20 +319,17 @@ namespace PokemonCore.Combat
                     SortCombatMoves(CombatMoves);
                     ReplacePokemons(SwitchPokemons);
                     SwitchPokemons.Clear();
-                    // CombatMoves.Clear();
                     NextMove();
                     break;
                 case BattleActions.Moving:
                     if (CombatMoves.Count == 0)
                     {
                         //本回合结束
+                        Damages.Clear();
                         mBattleActions = BattleActions.Moved;
                         OnThisTurnEnd?.Invoke();
-                        foreach ((Effect,CombatPokemon) e in MovedEffect.OrEmptyIfNull())
-                        {
-                            e.Item1.OnMoved?.Invoke(e.Item2);
-                        }
                         Moved();
+                        WinOrLose();
                         NextMove();
                         return;
                     }
@@ -340,13 +338,12 @@ namespace PokemonCore.Combat
                         //这里由外部调用，进行下一个招式的播放
                         mBattleActions = BattleActions.Moving;
                     }
-                    SingleMoving(CombatMoves);
-                    Damaging(Damages);
-                    Damages.Clear();
+                    // SingleMoving(CombatMoves);
+                    // Damaging(Damages);
+                    var singleDamages = SingleMoving(CombatMoves);
+                    Damaging(singleDamages);
+                    WinOrLose();
                     
-                    Moved();
-                    
-                    OnOneMoveEnd?.Invoke();
                     if (mBattleResults != BattleResults.Continue) return;
                     break;
                 case BattleActions.Moved:
@@ -362,15 +359,38 @@ namespace PokemonCore.Combat
         }
         
         
-        void SingleMoving(List<CombatMove> cm)
+        List<Damage> SingleMoving(List<CombatMove> cm)
         {
-            if (cm.Count == 0) return;
+            if (cm.Count == 0) return null;
             var c = cm[0];
             cm.RemoveAt(0);
             
             c = c.Sponsor.OnMoving(c);
+            
+            foreach (var effectInfo in c.move._baseData.EffectInfos.OrEmptyIfNull())
+            {
+                int rand = Game.Random.Next(101);
+                if (rand <= effectInfo.EffectChance)
+                {
+                    Effect effect = Game.LuaEnv.Global.Get<Effect>("effect" + effectInfo.EffectID);
+
+                    switch (effectInfo.TargetType)
+                    {
+                        case Targets.USER:
+                            c.Sponsor.AddEffect(effect);
+
+                            break;
+                        case Targets.SELECTED_OPPONENT_POKEMON:
+                        case Targets.ALL_OPPONENTS:
+                            c.Targets.ForEach(e=>e.AddEffect(effect));
+                            break;
+                    }
+                }
+            }
+            
             OnMove?.Invoke(c);
-            Damages.AddRange(GenerateDamages(c));
+            var damages = GenerateDamages(c);
+            return damages;
         }
 
 
@@ -406,27 +426,7 @@ namespace PokemonCore.Combat
                 ReceiveInstruction(ins, true);
             }
         }
-
-        /// <summary>
-        /// 招式生效之前的Effect->可以修改招式的Type,威力,Target等
-        /// </summary>
-        /// <param name="cm"></param>
-        /// <returns>因为可能命中多个目标，所以返回时一个列表</returns>
-        List<Damage> Moving(List<CombatMove> cm)
-        {
-            foreach (var c in cm.OrEmptyIfNull())
-            {
-                c.Sponsor.lastMove = c.move;
-                var c_final = c.Sponsor.OnMoving(c);
-                OnMove?.Invoke(c_final);
-                Damages.AddRange(GenerateDamages(c_final));
-            }
-
-            return Damages;
-        }
-
         
-
         void Damaging(List<Damage> dmgs)
         {
             foreach (var d in dmgs.OrEmptyIfNull())
@@ -440,10 +440,15 @@ namespace PokemonCore.Combat
             if (dmg.sponsor.HP <= 0) return;
             dmg = dmg.sponsor.OnHit(dmg);
             OnHit?.Invoke(dmg);
-            // if(dmg.target.HP>0)
+            
             dmg.target.BeHurt(dmg);
 
             OnHitted?.Invoke(dmg.target);
+            
+            Damages.Add(dmg);
+
+
+
             // else
             // {
             //     //TODO：一般来说只有2v2以上的对战才需要重新找个target
@@ -457,11 +462,21 @@ namespace PokemonCore.Combat
             
             // return cm;
         }
-
+        /// <summary>
+        /// 在回合结束后需要进行结算的Effects
+        /// </summary>
+        void Moved()
+        {
+            foreach (CombatPokemon e in Pokemons)
+            {
+                e.Moved();
+            }
+        }
+        
         /// <summary>
         /// 用来判断此turn结束后是否分出胜负
         /// </summary>
-        void Moved()
+        void WinOrLose()
         {
             if (opponentTrainers.TrainerAllFaint())
             {
@@ -475,6 +490,7 @@ namespace PokemonCore.Combat
             }
             else
             {
+                OnOneMoveEnd?.Invoke();
                 // OnThisTurnEnd?.Invoke();
             }
         }
@@ -776,7 +792,7 @@ namespace PokemonCore.Combat
 
         public void AddMoveEffect(string e, CombatPokemon poke)
         {
-            MovedEffect.Add((Game.LuaEnv.Global.Get<Effect>(e),poke));
+            //MovedEffect.Add((Game.LuaEnv.Global.Get<Effect>(e),poke));
         }
 
         public Action<string> CustomReport; 

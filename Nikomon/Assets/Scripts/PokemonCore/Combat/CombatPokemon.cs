@@ -136,9 +136,27 @@ namespace PokemonCore.Combat
 
         public int ItemID { get; }
         
-        public PokemonStatus PokemonStatus { get; set; }
+        public PokemonStatus PokemonStatus
+        {
+            get
+            {
+                bool hasStatus = PokemonStatus.TryParse(pokemon.StatusID,out PokemonStatus result);
+                if (!hasStatus) return PokemonStatus.NoStatus;
+                return result;
+            }
+            set
+            {
+                pokemon.StatusID = value.ToString();
+            } 
+        }
+        
+        public List<Effect> Effects {get; private set; }
 
-        public List<Effect> Effects { get; set; }
+        public void AddEffect(Effect e)
+        {
+            Effects.Add(e);
+            e.OnEffectBegin?.Invoke(this);
+        }
 
         public Move lastMove;
         
@@ -172,7 +190,22 @@ namespace PokemonCore.Combat
             lastMove = null;
 
             randomID = Game.Random.Next(100);
+
+            if (PokemonStatus != PokemonStatus.NoStatus)
+            {
+                Effects.Add(Game.LuaEnv.Global.Get<Effect>(statusDictionary[PokemonStatus]));
+            }
         }
+
+        private static  readonly Dictionary<PokemonStatus, string> statusDictionary = new Dictionary<PokemonStatus, string>()
+        {
+            [PokemonStatus.Burn]="effect6",
+            [PokemonStatus.Freeze]="effect4",
+            [PokemonStatus.Poison]="effect3",
+            [PokemonStatus.Sleep]="effect2",
+            [PokemonStatus.Paralysis]="effect5",
+            
+        };
 
 
         public Instruction OnChoosing()
@@ -190,12 +223,11 @@ namespace PokemonCore.Combat
         public CombatMove OnMoving(CombatMove cmove)
         {
             // UnityEngine.Debug.Log(cmove);
-            foreach (var e in cmove.TargetEffects.OrEmptyIfNull())
-            {
-                UnityEngine.Debug.Log("Not Null");
-                if (e.OnEffectBegin == null) continue;
-                e.OnEffectBegin(this);
-            }
+            // foreach (var e in cmove.Effects.OrEmptyIfNull())
+            // {
+            //     if (e.OnEffectBegin == null) continue;
+            //     e.OnEffectBegin(this);
+            // }
             
             foreach (var e in Effects.OrEmptyIfNull())
             {
@@ -205,6 +237,15 @@ namespace PokemonCore.Combat
             // UnityEngine.Debug.Log(cmove);
             Effects.EffectUpdate(this);
             return cmove;
+        }
+
+        public void Moved()
+        {
+            foreach (var e in Effects.OrEmptyIfNull())
+            {
+                if (e.OnMoved == null) continue;
+                e.OnMoved(this);
+            }
         }
 
 
@@ -246,8 +287,8 @@ namespace PokemonCore.Combat
                 OnFainting();
                 return;
             }
-            if (damage.combatMove.TargetEffects != null)
-                Effects.AddRange(damage.combatMove.TargetEffects);
+            // if (damage.combatMove.Effects != null)
+            //     Effects.AddRange(damage.combatMove.Effects);
         }
 
         public void OnFainting()

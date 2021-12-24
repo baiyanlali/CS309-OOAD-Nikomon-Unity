@@ -38,7 +38,7 @@ namespace PokemonCore.Monster
         int TrainerID { get; }
         string Name { get; }
         int ballUsed { get; }
-        int StatusID { get; }
+        string StatusID { get; }
         int SpeciesID { get; }
         int Item { get; }
         int ItemInitial { get; }

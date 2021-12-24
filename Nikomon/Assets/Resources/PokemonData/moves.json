@@ -165,14 +165,18 @@
 	},
 	{
 		"MoveID": 53,
-		"Accuracy": 40,
-		"Power": 100,
-		"PP": 30,
+		"Accuracy": 100,
+		"Power": 90,
+		"PP": 15,
 		"Priority": 0,
 		"CriticalLevel": 0,
 		"Target": 2,
 		"Type": 12,
-		"EffectInfos": [],
+		"EffectInfos": [{
+			"EffectID" : 5,
+			"EffectChance": 10,
+			"TargetType":2
+		}],
 		"innerName": "Thunderbolt",
 		"Category": 3,
 		"MustHit": false
@@ -192,7 +196,21 @@
 		"MustHit": false
 	},
 	{
-		"MoveID": 84,
+		"MoveID": 68,
+		"Accuracy": 100,
+		"Power": 0,
+		"PP": 20,
+		"Priority": -5,
+		"CriticalLevel": 0,
+		"Target": 2,
+		"Type": 12,
+		"EffectInfos": [],
+		"innerName": "Counter",
+		"Category": 2,
+		"MustHit": false
+	},
+	{
+		"MoveID": 243,
 		"Accuracy": 40,
 		"Power": 100,
 		"PP": 30,
@@ -201,7 +219,7 @@
 		"Target": 2,
 		"Type": 12,
 		"EffectInfos": [],
-		"innerName": "Thunderbolt",
+		"innerName": "Mirror Coat",
 		"Category": 3,
 		"MustHit": false
 	}
