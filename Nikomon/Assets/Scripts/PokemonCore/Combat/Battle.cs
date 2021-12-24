@@ -779,6 +779,13 @@ namespace PokemonCore.Combat
             MovedEffect.Add((Game.LuaEnv.Global.Get<Effect>(e),poke));
         }
 
+        public Action<string> CustomReport; 
+
+        public void Report(string str)
+        {
+            CustomReport?.Invoke(str);
+        }
+
         #endregion
     }
 }

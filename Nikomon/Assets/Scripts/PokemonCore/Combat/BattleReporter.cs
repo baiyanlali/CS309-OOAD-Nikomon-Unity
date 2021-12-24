@@ -28,6 +28,8 @@ namespace PokemonCore.Combat
 
                 }
             };
+
+            battle.CustomReport += (o) => OnReport?.Invoke(o);
         }
 
         public static int ReportNum = 0;
