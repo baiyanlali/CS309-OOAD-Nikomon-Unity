@@ -39,7 +39,7 @@ public class MovelearningUI : BaseUI
         if (args != null)
         {
             _Pokemon=args[0] as Pokemon;
-            _MoveData=args[0] as MoveData;
+            _MoveData=args[1] as MoveData;
             
         }
 
@@ -56,9 +56,9 @@ public class MovelearningUI : BaseUI
                 obj.GetComponent<TriggerSelect>().onSelect = () =>
                 {
                     Vector3 v = new Vector3();
-                    v.x = 1.15f;
-                    v.y = 1.15f;
-                    v.z = 1.15f;
+                    v.x = 1.1f;
+                    v.y = 1.1f;
+                    v.z = 1.1f;
                     obj.transform.localScale = v;
                     movecontent.text = obj.GetComponent<MoveElement>()._move._baseData.description;
                     Type.text = Game.TypesMap[obj.GetComponent<MoveElement>()._move._baseData.Type].Name;
@@ -79,8 +79,13 @@ public class MovelearningUI : BaseUI
                     {
                         if (o == true)
                         {
-                            _Pokemon.moves[obj.GetComponent<MoveElement>().index] = new Move(_MoveData);
-                            UIManager.Instance.Refresh<MovelearningUI>();
+                            if(obj.GetComponent<MoveElement>().index == Game.MaxMovesPerPokemon)
+                                UIManager.Instance.Hide(this);
+                            print(obj.GetComponent<MoveElement>().index);
+                            _Pokemon.ReplaceMove(obj.GetComponent<MoveElement>().index,_MoveData);
+                            // UIManager.Instance.Refresh<MovelearningUI>();
+                            print(1111111);
+                            UIManager.Instance.Hide(this);
                             // trainer.party[bagIndex] = null;
                             // if (judge == false)
                             // {
@@ -121,7 +126,6 @@ public class MovelearningUI : BaseUI
             if(i == _Pokemon.moves.Length)
                 _moveElements[i].Init(new Move(_MoveData));
             _moveElements[i].Init(_Pokemon.moves[i]);
-                
         }
         
 

@@ -46347,7 +46347,6 @@ GameObject:
   - component: {fileID: 4339635468592499641}
   - component: {fileID: 823716709165385422}
   - component: {fileID: 2162034491216204598}
-  - component: {fileID: 4418941705501147842}
   - component: {fileID: 4418941705501147846}
   m_Layer: 5
   m_Name: MoveLearnPanel
@@ -46436,27 +46435,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   TableContent: {fileID: 0}
   Tables: {fileID: 0}
---- !u!114 &4418941705501147842
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4418941705501147844}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 128f85b454d925142b732d6da970a4df, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  FirstSelectable: {fileID: 0}
-  ExitBtn: {fileID: 0}
-  trainer:
-    isMale: 0
-    pokedexNums: 0
-    pokemonOnTheBattle: 
-  PokedexDetial: {fileID: 6903276503983238574}
-  pokenmons: {fileID: 4274326072762096876}
-  _Scrollbar: {fileID: 0}
 --- !u!114 &4418941705501147846
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -46472,6 +46450,7 @@ MonoBehaviour:
   FirstSelectable: {fileID: 0}
   ExitBtn: {fileID: 0}
   _MoveData:
+    MoveTag: 0
     MoveID: 0
     Accuracy: 0
     Power: 0
@@ -68181,8 +68160,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -524.9199, y: -53.18399}
-  m_SizeDelta: {x: -1236.1, y: -825.48}
+  m_AnchoredPosition: {x: -640, y: -208}
+  m_SizeDelta: {x: -1238.9387, y: -817.12}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &6600658807597319775
 GameObject:
@@ -68295,10 +68274,10 @@ RectTransform:
   m_Father: {fileID: 6600658808077710447}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.0024719, y: -0.0010414}
-  m_SizeDelta: {x: 683.87, y: 281.47}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0.0024719238, y: -0.0010375977}
+  m_SizeDelta: {x: -0.13000488, y: -0.5299988}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6600658807901381717
 CanvasRenderer:
@@ -68377,8 +68356,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -524.93005, y: -335.10883}
-  m_SizeDelta: {x: 683.86, y: 281.4681}
+  m_AnchoredPosition: {x: -473.17358, y: -441.67938}
+  m_SizeDelta: {x: 946.347, y: 182.1094}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6600658808077710433
 CanvasRenderer:
@@ -71254,8 +71233,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -525, y: 281}
-  m_SizeDelta: {x: -1236.28, y: -666.15}
+  m_AnchoredPosition: {x: -455, y: 219.45059}
+  m_SizeDelta: {x: -910, y: -438.9012}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &6903276503461028794
 MonoBehaviour:
@@ -71370,10 +71349,10 @@ RectTransform:
   m_Father: {fileID: 6903276503461028796}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 1}
-  m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: -0.0034179688, y: -409.85504}
-  m_SizeDelta: {x: 684.00684, y: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &6903276503983238575
 MonoBehaviour:
@@ -71388,12 +71367,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Padding:
-    m_Left: 123
+    m_Left: 10
     m_Right: 0
-    m_Top: 0
+    m_Top: 60
     m_Bottom: 0
   m_ChildAlignment: 0
-  m_Spacing: 15
+  m_Spacing: 12
   m_ChildForceExpandWidth: 0
   m_ChildForceExpandHeight: 0
   m_ChildControlWidth: 0
@@ -85656,7 +85635,7 @@ GameObject:
   m_Icon: {fileID: 2974397684917235467, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &481690037749410604
 Transform:
   m_ObjectHideFlags: 0
