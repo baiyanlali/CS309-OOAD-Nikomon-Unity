@@ -1,6 +1,7 @@
 ﻿using System;
 using Newtonsoft.Json;
 using PokemonCore.Combat;
+using UnityEditor;
 
 namespace PokemonCore.Character
 {
@@ -29,6 +30,10 @@ namespace PokemonCore.Character
         public void ChangeActiveBox(int offset)
         {
             ActiveBox += offset;
+            if (maxBox == 0)
+            {
+                offset = 111;
+            }
             ActiveBox %= maxBox;
             if (ActiveBox < 0)
                 ActiveBox += maxBox;

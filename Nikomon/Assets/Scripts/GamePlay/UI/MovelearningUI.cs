@@ -25,6 +25,7 @@ public class MovelearningUI : BaseUI
     public Text Type,Power,Accuracy;
     public Text Title;
     private bool judge = false;
+    public override bool IsOnly { get; } = true;
 
     /// <summary>
     /// 

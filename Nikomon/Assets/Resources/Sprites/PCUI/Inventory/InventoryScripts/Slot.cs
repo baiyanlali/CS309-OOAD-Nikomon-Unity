@@ -7,6 +7,7 @@ using GamePlay.UI.UtilUI;
 using PokemonCore.Character;
 using PokemonCore.Combat;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
 
@@ -71,6 +72,7 @@ public class Slot :MonoBehaviour
                                 exchangeIndex[i] = false;
                                 _pc.SwitchPCAndPartyPokemon(_trainer, i, index);
                                 UIManager.Instance.Refresh<PCManager>();
+                                //EventSystem.current.SetSelectedGameObject(FirstSelectable);
                                 return;
                             }
                             else
@@ -79,6 +81,7 @@ public class Slot :MonoBehaviour
                                 exchangeIndex[i] = false;
                                 _pc.SwapPokemon((i-6)/_pc.Pokemons.Length, (i-6)%_pc.Pokemons.Length, _pc.ActiveBox, index);
                                 UIManager.Instance.Refresh<PCManager>();
+                                //EventSystem.current.SetSelectedGameObject(FirstSelectable);
                                 return;
                             }
                         }
