@@ -46,8 +46,16 @@ namespace GamePlay.UI.UtilUI
                 currentReport = (string) args[0];
                 if (args.Length >= 2)
                     fadeType = (FadeType) args[1];
+                else
+                {
+                    fadeType = FadeType.Button;
+                }
                 if (args.Length >= 3)
                     OnContinue = args[2] as Action;
+                else
+                {
+                    OnContinue = null;
+                }
             }
             
             reports ??= new Queue<string>();

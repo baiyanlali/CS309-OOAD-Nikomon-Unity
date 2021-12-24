@@ -14,7 +14,7 @@ public class DialogueView : DialogueViewBase
     {
         void FinishedDebug()
         {
-            print("Ready for next line!");
+            // print("Ready for next line!");
             onDialogueLineFinished?.Invoke();
             ReadyForNextLine();
         }

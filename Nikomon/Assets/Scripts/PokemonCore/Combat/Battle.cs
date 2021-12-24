@@ -359,6 +359,7 @@ namespace PokemonCore.Combat
                     NextMove();
                     break;
                 case BattleActions.Moving:
+                    CombatMoves = CombatMoves.Where(c => c.Sponsor.HP > 0).ToList();
                     if (CombatMoves.Count == 0)
                     {
                         //本回合结束
@@ -463,8 +464,8 @@ namespace PokemonCore.Combat
             OnHit?.Invoke(dmg);
             // if(dmg.target.HP>0)
             dmg.target.BeHurt(dmg);
-
-            OnHitted?.Invoke(dmg.target);
+            if(dmg.target.HP>0)
+                OnHitted?.Invoke(dmg.target);
             // else
             // {
             //     //TODO：一般来说只有2v2以上的对战才需要重新找个target
@@ -554,15 +555,17 @@ namespace PokemonCore.Combat
             t.pokemonOnTheBattle[t.PokemonIndex(nextPokemon)] = true;
 
             //TODO;
-            int index = alliesPokemons.IndexOf(currentPokemon);
+            
             // alliesPokemons.BinarySearch(currentPokemon);
             if (alliesPokemons.Contains(currentPokemon))
             {
+                int index = alliesPokemons.IndexOf(currentPokemon);
                 alliesPokemons.Remove(currentPokemon);
                 alliesPokemons.Insert(index, nPoke);
             }
             else if (opponentsPokemons.Contains(currentPokemon))
             {
+                int index = opponentsPokemons.IndexOf(currentPokemon);
                 opponentsPokemons.Remove(currentPokemon);
                 opponentsPokemons.Insert(index, nPoke);
             }

@@ -110,7 +110,30 @@ public class GlobalManager : MonoBehaviour
         GetComponent<LineProviderBehaviour>().textLanguageCode = Messages.Current_culture;
         DialogueRunner = GetComponent<DialogueRunner>();
         DialogueRunner.lineProvider = GetComponent<LineProviderBehaviour>();
+        SetUpDiagoueRunnder(DialogueRunner);
+
+        void SetUpDiagoueRunnder(DialogueRunner runner)
+        {
+            runner.onNodeComplete.AddListener((s) => { visitedNode.Add(s);});
+            
+            runner.AddFunction("visited",(Func<string,bool>)visited);
+            runner.AddCommandHandler("start_battle",(Action<string>)startBattleFromDialogue);
+            // runner.AddCommandHandler();
+
+            bool visited(string node)
+            {
+                // print("Add visited:(node)");
+                return visitedNode.Contains(node);
+            }
+
+            void startBattleFromDialogue(string trainerName)
+            {
+                GameObject.Find(trainerName).GetComponent<NPC>()?.StartBattle();
+            }
+        }
     }
+
+    private HashSet<string> visitedNode =new HashSet<string>();
 
     private void InitGame()
     {
@@ -129,25 +152,15 @@ public class GlobalManager : MonoBehaviour
 
         GameResources.LoadResources();
 
-        // game.OnHaveSaveFile += () =>
-        // {
-        //TODO:Delete it
-        SceneManager.sceneLoaded += (o1, o2) =>
-        {
-            Action<int> action = new Action<int>((o)=>print(o)); 
-            // BagUI.Instance?.Init(Game.bag);
-            // PokemonChooserTableUI.Instance?.Init(Game.trainer, new string[] { },action);
-        };
-        //
-        //
-        //     SceneManager.LoadScene(1);
-        // };
+
 
 
         game.Init(GameResources.LoadTypes(), null, GameResources.LoadPokemons(), GameResources.LoadExperienceTable(),
             natures, null, GameResources.LoadMoves(), GameResources.LoadItems());
         isBattling = false;
         GameResources.LoadPokeItemicons();
+
+        // GetComponent<InMemoryVariableStorage>().SetValue("$player",Game.trainer.name);
 
     }
 
@@ -209,6 +222,7 @@ public class GlobalManager : MonoBehaviour
 
     public void OnLoadedFromSave(Scene s,LoadSceneMode m)
     {
+        GetComponent<InMemoryVariableStorage>().SetValue("$player",Game.trainer.name);
         GameObject.FindWithTag("Player").transform.position = location;
         SceneManager.sceneLoaded -=  OnLoadedFromSave;
     }
@@ -219,15 +233,7 @@ public class GlobalManager : MonoBehaviour
         return result;
     }
 
-    void StartPanel()
-    {
-        Debug.Log("No Save data found");
-        GameObject obj = GameObject.Find("Canvas");
-        obj.transform.Find("StartCanvas").gameObject.SetActive(true);
-        obj.transform.Find("Start").gameObject.SetActive(false);
-    }
-
-    
+   
 
     // public void StartGame()
     // {
@@ -282,6 +288,11 @@ public class GlobalManager : MonoBehaviour
         pokemon.TrainerID = trainer.id;
         
         StartBattle(null, new List<Trainer>(new[] {trainer}), true);
+    }
+
+    public void StartBattle(NPC oppoTrainer)
+    {
+        StartBattle(null,new List<Trainer>(){oppoTrainer._trainer},true,oppoTrainer.pokemonPerTrainer);
     }
 
     public void StartBattle(List<Trainer> allies, List<Trainer> oppos, List<Trainer> AI, List<Trainer> userInternet,
