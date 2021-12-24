@@ -1,6 +1,7 @@
 using GamePlay.UI.UIFramework;
 using System.Collections;
 using System.Collections.Generic;
+using PokemonCore;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -25,7 +26,8 @@ public class DebugPanel :BaseUI
         
 
         InputField = GET(InputField, nameof(InputField));
-        luaEnv = new XLua.LuaEnv();
+        // luaEnv = new XLua.LuaEnv();
+        luaEnv = Game.LuaEnv;
 
         luaEnv.DoString("require 'Main'");
     }
