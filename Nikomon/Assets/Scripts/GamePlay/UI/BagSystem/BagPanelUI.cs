@@ -19,6 +19,7 @@ public class BagPanelUI : BaseUI
     public TabSystem BagTable;
 
     private Dictionary<TabElement, GameObject> elements;
+    //public override bool IsOnly { get; } = true;
     
     /// <summary>
     /// 

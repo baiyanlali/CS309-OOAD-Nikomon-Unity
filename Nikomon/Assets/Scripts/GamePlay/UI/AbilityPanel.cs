@@ -23,6 +23,7 @@ namespace GamePlay.UI.UtilUI
         public Nametext _nametext;
         public GameObject pokenmons;
         public Text movecontent;
+        public override bool IsOnly { get; } = true;
         private void Awake()
         {
             // abilityTable.SetActive(true);

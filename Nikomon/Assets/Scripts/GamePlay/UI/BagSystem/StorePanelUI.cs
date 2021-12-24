@@ -20,6 +20,7 @@ namespace GamePlay.UI.BagSystem
         public Transform ItemList;
         public Transform _Scrollbar;
         public Image IconImage;
+        public override bool IsOnly { get; } = true;
 
         /// <summary>
         /// 

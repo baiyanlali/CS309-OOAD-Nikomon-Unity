@@ -115,6 +115,11 @@ public class GlobalManager : MonoBehaviour
 
         void SetUpDiagoueRunnder(DialogueRunner runner)
         {
+            Messages.OnLanguageChanged += (s) =>
+            {
+                GetComponent<LineProviderBehaviour>().textLanguageCode = s;
+            };
+
             runner.onNodeComplete.AddListener((s) => { visitedNode.Add(s);});
             
             runner.AddFunction("visited",(Func<string,bool>)visited);
