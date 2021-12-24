@@ -13,7 +13,8 @@ namespace GamePlay.UI.UtilUI
         public enum FadeType
         {
             Button,
-            Automatic
+            Automatic,
+            Dialogue
         }
         public Text DialogText;
         private Queue<string> reports;
@@ -21,13 +22,20 @@ namespace GamePlay.UI.UtilUI
         public GameObject ShowNext;
         private bool isDrawing = false;
         public Action<string> OnDialogFinished;
+        public RectTransform DialogueAttachment;
         public float TextSpeed=0.01f;
         public float PauseTime = 1f;
 
-        public override UILayer Layer  => UILayer.Top;
+        public override UILayer Layer  => UILayer.NormalUI;
 
         public FadeType fadeType=FadeType.Button;
 
+        public Action OnContinue;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="args">0 for the report string, 1 for fadetype, 2 for on continue action</param>
         public override void Init(params object[] args)
         {
             // print("On Init");
@@ -38,6 +46,8 @@ namespace GamePlay.UI.UtilUI
                 currentReport = (string) args[0];
                 if (args.Length >= 2)
                     fadeType = (FadeType) args[1];
+                if (args.Length >= 3)
+                    OnContinue = args[2] as Action;
             }
             
             reports ??= new Queue<string>();
@@ -62,7 +72,11 @@ namespace GamePlay.UI.UtilUI
         /// <param name="args"></param>
         public override void OnEnter(params object[] args)
         {
-            print("On Enter");
+            if (args == null)
+            {
+                return;
+            }
+            // print("On Enter");
             base.OnEnter(args);
             // print(currentReport);
 
@@ -74,14 +88,14 @@ namespace GamePlay.UI.UtilUI
             // DialogText.text = currentReport;
             if(args!=null&&args.Length>=1)
             {
-                print("To report");
+                // print("To report");
                 OnReport(currentReport);
             }
         }
 
         public override void OnRefresh(params object[] args)
         {
-            print("On Refresh");
+            // print("On Refresh");
             base.OnRefresh(args);
             gameObject.SetActive(true);
         }
@@ -96,9 +110,12 @@ namespace GamePlay.UI.UtilUI
                 else
                 {
                     ExitBtn.onClick.RemoveAllListeners();
+                    
                     ExitBtn.onClick.AddListener(() =>
                     {
-                        UIManager.Instance.Hide(this);
+                        if(fadeType!=FadeType.Dialogue)
+                            UIManager.Instance.Hide(this);
+                        OnContinue?.Invoke();
                     });
                     
                 }
@@ -108,6 +125,7 @@ namespace GamePlay.UI.UtilUI
 
             if (fadeType == FadeType.Automatic)
             {
+                OnContinue?.Invoke();
                 currentReport = reports.Dequeue();
                 StartCoroutine(DrawDialog(currentReport));
             }
@@ -116,6 +134,7 @@ namespace GamePlay.UI.UtilUI
                 ExitBtn.onClick.RemoveAllListeners();
                 ExitBtn.onClick.AddListener(() =>
                 {
+                    OnContinue?.Invoke();
                     currentReport = reports.Dequeue();
                     StartCoroutine(DrawDialog(currentReport));
                 });

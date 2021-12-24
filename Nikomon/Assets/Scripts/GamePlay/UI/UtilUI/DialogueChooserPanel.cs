@@ -94,7 +94,6 @@ namespace GamePlay.UI.UtilUI
             LayoutRebuilder.ForceRebuildLayoutImmediate(rectTrans);
 
             Rect rect = rectTrans.rect;
-
             Vector2 vec = rectTrans.position;
 
             var pivot = rectTrans.pivot;
@@ -126,7 +125,8 @@ namespace GamePlay.UI.UtilUI
                 finalPos.y = up - rect.height * (1 - pivot.y);
             }
 
-            rectTrans.anchoredPosition = finalPos;
+            // rectTrans.anchoredPosition = finalPos;
+            rectTrans.position = finalPos;
             
         }
     }

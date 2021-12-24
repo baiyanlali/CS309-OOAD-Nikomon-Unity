@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Reflection;
+using System.Collections.Generic;
 using Newtonsoft.Json;
-using PokemonCore.Combat.Interface;
 
 namespace PokemonCore.Combat
 {
@@ -16,7 +15,7 @@ namespace PokemonCore.Combat
             Wild
         }
 
-        
+        public SortedSet<int> PokemonCountered=new SortedSet<int>();
         public string name { get; private set; }
         public int id { get; private set; }
 
@@ -49,7 +48,8 @@ namespace PokemonCore.Combat
         private TrainerType _trainerType;
 
         [JsonConstructor]
-        public Trainer(string name, int id, int money, Pokemon[] party, bool isMale, int pokedexNums)
+        public Trainer(string name, int id, int money, Pokemon[] party, bool isMale, int pokedexNums,
+            SortedSet<int> pokemonCountered)
         {
             this.name = name;
             this.id = id;
@@ -59,6 +59,7 @@ namespace PokemonCore.Combat
             this.pokedexNums = pokedexNums;
             pokemonOnTheBattle = new bool[party.Length];
             this._trainerType = TrainerType.Player;
+            this.PokemonCountered = pokemonCountered;
         }
 
         public Trainer(string name, bool isMale)

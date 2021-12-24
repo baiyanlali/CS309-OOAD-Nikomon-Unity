@@ -43,6 +43,10 @@ public class PCManager : BaseUI
     private GameObject MoveElementPrefab;
 
     private List<MoveElement> _moveElements=new List<MoveElement>();
+    public Text description;
+    public GameObject GameObjectdesc;
+    private GameObject SlotPrefab;
+    public Transform _Gird;
 
     private void Awake()
     {
@@ -50,55 +54,10 @@ public class PCManager : BaseUI
         if (emptySlot == null)
             emptySlot = GameResources.SpawnPrefab("Slot");
     }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="args">0 for trainer, 1 for pc</
     
-    // public override void OnEnter(params object[] args)
-    // {
-    //     MoveElementPrefab = GameResources.SpawnPrefab(typeof(MoveElement));
-    //     if (_moveElements.Count == 0)
-    //     {
-    //         for (int i = 0; i < Game.MaxMovesPerPokemon; i++)
-    //         {
-    //             GameObject obj = Instantiate(MoveElementPrefab, MoveDetial);
-    //             obj.name = "Move" + i;
-    //             _moveElements.Add(obj.GetComponent<MoveElement>());
-    //         }
-    //     }
-    //     base.OnEnter(args);
-    //     if (args != null)
-    //     {
-    //         trainer=args[0] as Trainer;
-    //         pc = args[1] as PC;
-    //         judge = new bool[trainer.party.Length];
-    //         exchangeIndex = new bool[trainer.party.Length+pc.Pokemons.Length];
-    //         for (int i = 0; i < judge.Length; i++)
-    //         {
-    //             judge[i] = false;
-    //         }
-    //         for (int i = 0; i < exchangeIndex.Length; i++)
-    //         {
-    //             exchangeIndex[i] = false;
-    //         }
-    //         for (int i = 0; i < ifhasPokemon.Length; i++)
-    //         {
-    //             ifhasPokemon[i] = false;
-    //         }
-    //     }
-    //
-    //     
-    //     imageGrid.SetActive(true);
-    //     if (emptySlot == null)
-    //         emptySlot = GameResources.SpawnPrefab("Slot");
-    //
-    //     OnRefresh();
-    //     
-    // }
+    
     public override void OnEnter(params object[] args)
-    {//12.6开始改的！
+    {
         MoveElementPrefab = GameResources.SpawnPrefab(typeof(MoveElement));
         if (_moveElements.Count == 0)
         {
@@ -106,6 +65,15 @@ public class PCManager : BaseUI
             {
                 GameObject obj = Instantiate(MoveElementPrefab, MoveDetial);
                 obj.name = "Move" + i;
+                obj.GetComponent<TriggerSelect>().onSelect = () =>
+                {
+                    //TODO:技能描述！！！不好处理！！！！
+                    // description;
+                    GameObjectdesc.SetActive(true);
+                    description.text = obj.GetComponent<MoveElement>()._move._baseData.description;
+                    //description.text = obj.name;
+
+                };
                 _moveElements.Add(obj.GetComponent<MoveElement>());
             }
         }
@@ -125,10 +93,6 @@ public class PCManager : BaseUI
             {
                 exchangeIndex[i] = false;
             }
-            // for (int i = 0; i < ifhasPokemon.Length; i++)
-            // {
-            //     ifhasPokemon[i] = false;
-            // }
         }
 
         
@@ -139,6 +103,61 @@ public class PCManager : BaseUI
         OnRefresh();
         
     }
+    
+    // public override void OnEnter(params object[] args)
+    // {//12.6开始改的！
+    //     MoveElementPrefab = GameResources.SpawnPrefab(typeof(MoveElement));
+    //     if (_moveElements.Count == 0)
+    //     {
+    //         for (int i = 0; i < Game.MaxMovesPerPokemon; i++)
+    //         {
+    //             GameObject obj = Instantiate(MoveElementPrefab, MoveDetial);
+    //             
+    //             
+    //             
+    //             
+    //             obj.name = "Move" + i;
+    //             obj.GetComponent<TriggerSelect>().onSelect = () =>
+    //             {
+    //               
+    //                 // description;
+    //                 //description.text = obj.GetComponent<MoveElement>()._move._baseData.description;
+    //                 description.text = obj.name;
+    //
+    //             };
+    //             _moveElements.Add(obj.GetComponent<MoveElement>());
+    //         }
+    //     }
+    //     base.OnEnter(args);
+    //     if (args != null)
+    //     {
+    //         trainer=args[0] as Trainer;
+    //         pc = args[1] as PC;
+    //         judge = new bool[trainer.party.Length];
+    //         print(pc.Pokemons.Length * pc.pokemons.Length);//160
+    //         exchangeIndex = new bool[trainer.party.Length+pc.Pokemons.Length * pc.pokemons.Length];
+    //         for (int i = 0; i < judge.Length; i++)
+    //         {
+    //             judge[i] = false;
+    //         }
+    //         for (int i = 0; i < exchangeIndex.Length; i++)
+    //         {
+    //             exchangeIndex[i] = false;
+    //         }
+    //         // for (int i = 0; i < ifhasPokemon.Length; i++)
+    //         // {
+    //         //     ifhasPokemon[i] = false;
+    //         // }
+    //     }
+    //
+    //     
+    //     imageGrid.SetActive(true);
+    //     if (emptySlot == null)
+    //         emptySlot = GameResources.SpawnPrefab("Slot");
+    //
+    //     OnRefresh();
+    //     
+    // }
 
     private void OnEnable()
     {
@@ -151,22 +170,64 @@ public class PCManager : BaseUI
         base.OnRefresh(args);
 
         //pc.P
+        SlotPrefab = GameResources.SpawnPrefab((typeof(Slot)));
         if (slots.Count == 0)
         {
             for (int i = 0; i < pc.Pokemons.Length; i++)
             {
-                slots.Add(Instantiate(emptySlot).GetComponent<Slot>());
-                slots[i].transform.SetParent(imageGrid.transform);
+                GameObject obj = Instantiate(SlotPrefab,_Gird);
+                obj.name = "slot" + i.ToString();
+                print(obj.name);
+                obj.GetComponent<Slot>().number = i;
+                obj.GetComponent<TriggerSelect>().onSelect = () =>
+                {
+                    // print(slots[i].number);
+                    //print(i);
+                    GameObjectdesc.SetActive(false);
+                    ShowInfo(true);
+                    RefreshInformation(pc.Pokemons[obj.GetComponent<Slot>().number]);
+                };
+                slots.Add(obj.GetComponent<Slot>());
                 slots[i].GetComponent<Slot>().SetupSlot(pc.Pokemons[i],i,RefreshInformation,ShowInfo);
             }
         }
         else
-        {
-            for (int i = 0; i < pc.Pokemons.Length; i++)
             {
-                slots[i].GetComponent<Slot>().SetupSlot(pc.Pokemons[i],i,RefreshInformation,ShowInfo);
+                for (int i = 0; i < pc.Pokemons.Length; i++)
+                {
+                    //换box的时候是这样
+                    slots[i].GetComponent<Slot>().SetupSlot(pc.Pokemons[i],i,RefreshInformation,ShowInfo);
+                }
             }
-        }
+        // if (slots.Count == 0)
+        // {
+        //     for (int i = 0; i < pc.Pokemons.Length; i++)
+        //     {
+        //         
+        //         //刚进去的时候box是这样
+        //         slots.Add(Instantiate(emptySlot).GetComponent<Slot>());
+        //         //GameObject obj = slots[i].gameObject;
+        //         slots[i].name = "slot" + i.ToString();
+        //         slots[i].number = i;
+        //         slots[i].GetComponent<TriggerSelect>().onSelect = () =>
+        //         {
+        //             print(slots[i].number);
+        //             ShowInfo(true);
+        //             //RefreshInformation(slots[i].pokemon);
+        //             RefreshInformation(pc.Pokemons[slots[i].number]);
+        //         };
+        //         slots[i].transform.SetParent(imageGrid.transform);
+        //         slots[i].GetComponent<Slot>().SetupSlot(pc.Pokemons[i],i,RefreshInformation,ShowInfo);
+        //     }
+        // }
+        // else
+        // {
+        //     for (int i = 0; i < pc.Pokemons.Length; i++)
+        //     {
+        //         //换box的时候是这样
+        //         slots[i].GetComponent<Slot>().SetupSlot(pc.Pokemons[i],i,RefreshInformation,ShowInfo);
+        //     }
+        // }
 
         BoxTitle.text = pc.BoxNames[pc.ActiveBox];
         TableUI.Init(trainer,new []{"查看信息", "交换","持有物","放生","放入仓库","取消"},HandleChooserTalbeUI);
@@ -175,25 +236,28 @@ public class PCManager : BaseUI
     private void HandleChooserTalbeUI(int chooseIndex,int bagIndex)
     {
         // print(chooseIndex+" "+bagIndex);
+        //背包！！！！！
         switch (chooseIndex)
         {
             case 0:
                 Debug.Log("查看信息");
-                if (!judge[bagIndex] )
-                {
-                    RefreshInformationButton(bagIndex);
-                    ShowInfo(true);
-                    for (int i = 0; i < judge.Length; i++)
-                    {
-                        judge[i] = false;
-                    }
-                    judge[bagIndex] = true;
-                }
-                else
-                {
-                    ShowInfo(false);
-                    judge[bagIndex] = false;
-                }
+                UIManager.Instance.Show<AbilityPanel>(trainer,trainer.party[bagIndex]);
+                //TODO:应该是调出神奇的abilityUI面板！！！
+                // if (!judge[bagIndex] )
+                // {
+                //     RefreshInformationButton(bagIndex);
+                //     ShowInfo(true);
+                //     for (int i = 0; i < judge.Length; i++)
+                //     {
+                //         judge[i] = false;
+                //     }
+                //     judge[bagIndex] = true;
+                // }
+                // else
+                // {
+                //     ShowInfo(false);
+                //     judge[bagIndex] = false;
+                // }
                 break;
             case 1:
                 Debug.Log("交换");
@@ -332,6 +396,11 @@ public class PCManager : BaseUI
             SPA.text = string.Empty;
             SPD.text = string.Empty;
             SPE.text = string.Empty;
+            for (int i = 0; i < _moveElements.Count; i++)
+            {
+
+                _moveElements[i].gameObject.SetActive(false);
+            }
         }
         else
         {
@@ -362,8 +431,6 @@ public class PCManager : BaseUI
     public void ShowInfo(bool isShow)
     {
         information.SetActive(isShow);
-        
-        
     }
 
     public void NextPC()
