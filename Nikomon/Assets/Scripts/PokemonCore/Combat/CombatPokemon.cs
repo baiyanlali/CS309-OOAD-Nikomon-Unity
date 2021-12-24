@@ -136,9 +136,27 @@ namespace PokemonCore.Combat
 
         public int ItemID { get; }
         
-        public PokemonStatus PokemonStatus { get; set; }
+        public PokemonStatus PokemonStatus
+        {
+            get
+            {
+                bool hasStatus = PokemonStatus.TryParse(pokemon.StatusID,out PokemonStatus result);
+                if (!hasStatus) return PokemonStatus.NoStatus;
+                return result;
+            }
+            set
+            {
+                pokemon.StatusID = value.ToString();
+            } 
+        }
+        
+        public List<Effect> Effects {get; private set; }
 
-        public List<Effect> Effects { get; set; }
+        public void AddEffect(Effect e)
+        {
+            Effects.Add(e);
+            e.OnEffectBegin?.Invoke(e,this);
+        }
 
         public Move lastMove;
         
@@ -172,7 +190,22 @@ namespace PokemonCore.Combat
             lastMove = null;
 
             randomID = Game.Random.Next(100);
+
+            if (PokemonStatus != PokemonStatus.NoStatus)
+            {
+                Effects.Add(Game.LuaEnv.Global.Get<Effect>(statusDictionary[PokemonStatus]));
+            }
         }
+
+        private static  readonly Dictionary<PokemonStatus, string> statusDictionary = new Dictionary<PokemonStatus, string>()
+        {
+            [PokemonStatus.Burn]="effect6",
+            [PokemonStatus.Freeze]="effect4",
+            [PokemonStatus.Poison]="effect3",
+            [PokemonStatus.Sleep]="effect2",
+            [PokemonStatus.Paralysis]="effect5",
+            
+        };
 
 
         public Instruction OnChoosing()
@@ -180,31 +213,39 @@ namespace PokemonCore.Combat
             foreach (var e in Effects.OrEmptyIfNull())
             {
                 if (e.OnChoosing == null) continue;
-                Instruction i = e.OnChoosing(this);
+                Instruction i = e.OnChoosing(e,this);
                 if (i != null) return i;
             }
-            Effects.EffectUpdate(this);
+            // Effects.EffectUpdate(this);
             return null;
         }
 
         public CombatMove OnMoving(CombatMove cmove)
         {
             // UnityEngine.Debug.Log(cmove);
-            foreach (var e in cmove.TargetEffects.OrEmptyIfNull())
-            {
-                UnityEngine.Debug.Log("Not Null");
-                if (e.OnEffectBegin == null) continue;
-                e.OnEffectBegin(this);
-            }
+            // foreach (var e in cmove.Effects.OrEmptyIfNull())
+            // {
+            //     if (e.OnEffectBegin == null) continue;
+            //     e.OnEffectBegin(this);
+            // }
             
             foreach (var e in Effects.OrEmptyIfNull())
             {
                 if (e.OnMoving == null) continue;
-                e.OnMoving(cmove);
+                e.OnMoving(e,cmove);
             }
             // UnityEngine.Debug.Log(cmove);
-            Effects.EffectUpdate(this);
+            // Effects.EffectUpdate(this);
             return cmove;
+        }
+
+        public void Moved()
+        {
+            foreach (var e in Effects.OrEmptyIfNull())
+            {
+                if (e.OnMoved == null) continue;
+                e.OnMoved(e,this);
+            }
         }
 
 
@@ -213,9 +254,9 @@ namespace PokemonCore.Combat
             foreach (var e in Effects.OrEmptyIfNull())
             {
                 if (e.OnSwitchPokemon == null) return true;
-                if (e.OnSwitchPokemon(this) == false) return false;
+                if (e.OnSwitchPokemon(e,this) == false) return false;
             }
-            Effects.EffectUpdate(this);
+            // Effects.EffectUpdate(this);
             return true;
         }
 
@@ -224,9 +265,9 @@ namespace PokemonCore.Combat
             foreach (var e in Effects.OrEmptyIfNull())
             {
                 if (e.OnHit == null) continue;
-                e.OnHit(this,damage);
+                e.OnHit(e,this,damage);
             }
-            Effects.EffectUpdate(this);
+            // Effects.EffectUpdate(this);
             return damage;
         }
 
@@ -235,7 +276,7 @@ namespace PokemonCore.Combat
             foreach (var e in Effects.OrEmptyIfNull())
             {
                 if (e.BeHurt == null) continue;
-                e.BeHurt(this,damage);
+                e.BeHurt(e,this,damage);
             }
 
 
@@ -246,8 +287,8 @@ namespace PokemonCore.Combat
                 OnFainting();
                 return;
             }
-            if (damage.combatMove.TargetEffects != null)
-                Effects.AddRange(damage.combatMove.TargetEffects);
+            // if (damage.combatMove.Effects != null)
+            //     Effects.AddRange(damage.combatMove.Effects);
         }
 
         public void OnFainting()
@@ -255,9 +296,9 @@ namespace PokemonCore.Combat
             foreach (var effect in Effects.OrEmptyIfNull())
             {
                 if (effect.BeFainted == null) continue;
-                effect.BeFainted(this);
+                effect.BeFainted(effect,this);
             }
-            Effects.EffectUpdate(this);
+            // Effects.EffectUpdate(this);
             battle.PokemonFainting(this);
         }
 

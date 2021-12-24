@@ -42,17 +42,13 @@ namespace PokemonCore.Utility
         {
             return list[Game.Random.Next(0, list.Count)];
         }
-
-        public static void EffectUpdate(this List<Effect> effects,CombatPokemon combatPokemon)
-        {
-            foreach (var e in effects)
-            {
-                if (e.OnEffectEnd == null) continue;
-                e.OnEffectEnd(combatPokemon);
-            }
-            effects.RemoveAll((e) => e.Round == 0);
-        }
         
+        public static void EffectEliminate(this List<Effect> e)
+        {
+            if (e == null) return;
+            e.RemoveAll(effect => effect.Round == 0);
+        }
+
 
 
     }

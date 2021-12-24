@@ -67,25 +67,25 @@ namespace PokemonCore.Combat.Interface
 
         public bool isUsed;
         
-        public Action<CombatPokemon> BeSwitched;
-        public Action<CombatPokemon> BeFainted;
-        public Action<CombatPokemon> OnEffectBegin;
-        public Action<CombatPokemon> OnEffectEnd;
-        public Action<CombatPokemon> OnMoved;
+        public Action<Effect,CombatPokemon> BeSwitched;
+        public Action<Effect,CombatPokemon> BeFainted;
+        public Action<Effect,CombatPokemon> OnEffectBegin;
+        public Action<Effect,CombatPokemon> OnEffectEnd;
+        public Action<Effect,CombatPokemon> OnMoved;
 
-        public Func<CombatPokemon,Instruction> OnChoosing;
+        public Func<Effect,CombatPokemon,Instruction> OnChoosing;
         /// <summary>
         /// param: combat move, move sponsor, the result of combat move
         /// </summary>
-        public Action<CombatMove> OnMoving;
+        public Action<Effect,CombatMove> OnMoving;
         
-        public Action<CombatPokemon,Damage> OnHit;
-        public Action<CombatPokemon,Damage> BeHurt;
+        public Action<Effect,CombatPokemon,Damage> OnHit;
+        public Action<Effect,CombatPokemon,Damage> BeHurt;
         /// <summary>
         ///sponsor, target
         /// </summary>
-        public Action<CombatPokemon,CombatPokemon> OnDamaged;
-        public Func<CombatPokemon,bool> OnSwitchPokemon;
+        public Action<Effect,CombatPokemon,CombatPokemon> OnDamaged;
+        public Func<Effect,CombatPokemon,bool> OnSwitchPokemon;
         
         
     }

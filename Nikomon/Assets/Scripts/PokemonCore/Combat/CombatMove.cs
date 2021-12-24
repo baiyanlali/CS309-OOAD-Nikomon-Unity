@@ -16,7 +16,7 @@ namespace PokemonCore.Combat
     {
         public Battle battle;
         public Move move { get; private set; }
-        public List<Effect> TargetEffects { get; private set; }
+        // public List<Effect> Effects { get; private set; }
 
         public int? power { get; set; }
         public Types types { get; set; }
@@ -46,11 +46,13 @@ namespace PokemonCore.Combat
             battle.OnThisTurnEnd += () => { move.PP = pp; };
             this.Category = move._baseData.Category;
 
-            TargetEffects = new List<Effect>();
-            foreach (var effectInfo in move._baseData.EffectInfos)
-            {
-                TargetEffects.Add(Game.LuaEnv.Global.Get<Effect>("effect"+effectInfo.EffectID));
-            }
+            // Effects = new List<Effect>();
+            // foreach (var effectInfo in move._baseData.EffectInfos)
+            // {
+            //     Effect effect = Game.LuaEnv.Global.Get<Effect>("effect" + effectInfo.EffectID);
+            //     //effect.Round = effectInfo.EffectRound;
+            //     Effects.Add(effect);
+            // }
         }
 
         public override string ToString()

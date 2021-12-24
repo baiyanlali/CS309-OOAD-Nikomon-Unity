@@ -23,7 +23,7 @@ namespace PokemonCore.Combat
                 join trainer in trainers on pokes.TrainerID equals trainer.id
                 select pokes).ToList();
 
-            battle.OnTurnBegin += DoAI;
+            battle.AfterChoosing += DoAI;
             battle.OnBattleEnd += (o) => { battle = null;};
             battle.OnPokemonFainting += OnPokemonDied;
             // battle.OnPokemonFainting += OnPokemonDied;

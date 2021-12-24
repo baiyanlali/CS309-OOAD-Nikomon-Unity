@@ -64,7 +64,7 @@ public class Pokemon : IPokemon, IEquatable<Pokemon>, IEqualityComparer<Pokemon>
     public int TrainerID { get; set; }
     public string Name { get; set; }
     public int ballUsed { get; set; }
-    public int StatusID { get; }
+    public string StatusID { get; set; }
     [JsonIgnore]
     public int SpeciesID => _base.Species;
     public int Item { get; set; }
@@ -101,7 +101,7 @@ public class Pokemon : IPokemon, IEquatable<Pokemon>, IEqualityComparer<Pokemon>
         int TrainerID,
         string name,
         int ballUsed,
-        int statusID,
+        string statusID,
         int Item,
         int itemInitial,
         ObtainMethod obtainMode,
@@ -224,7 +224,7 @@ public class Pokemon : IPokemon, IEquatable<Pokemon>, IEqualityComparer<Pokemon>
     }
     
     
-    public Pokemon(PokemonData pd,string nickName="",Trainer trainer=null,int initLevel=1,int ballUsed=0,string obtainMap="NoWhere",int statusID=0)
+    public Pokemon(PokemonData pd,string nickName="",Trainer trainer=null,int initLevel=1,int ballUsed=0,string obtainMap="NoWhere",string statusID="")
     {
         _base = pd;
         
