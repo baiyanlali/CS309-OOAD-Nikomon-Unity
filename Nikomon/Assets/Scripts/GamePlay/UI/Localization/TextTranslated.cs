@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using GamePlay.Core;
+using GamePlay.Messages;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -13,7 +14,7 @@ public class TextTranslated : Text
         base.Awake();
         if (!AutoTranslatedOnAwake) return;
         if(Application.isPlaying)
-            text = Translator.TranslateStr(text);
+            text = Messages.Get(text);
     }
     
     public override string text
@@ -35,7 +36,7 @@ public class TextTranslated : Text
             {
                 string post_value = value;
                 if(Application.isPlaying)
-                    post_value = Translator.TranslateStr(post_value);
+                    post_value = Messages.Get(post_value);
                 m_Text = post_value;
                 SetVerticesDirty();
                 SetLayoutDirty();

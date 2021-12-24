@@ -235,7 +235,7 @@ public class BattleFieldHandler : MonoBehaviour
                     UIManager.Instance.Show<BattleStatusPanel>(BattleHandler.Instance);
                 }
                 
-                BattleHandler.Instance.battle.NextMove();
+                BattleHandler.Instance.battle?.NextMove();
                 break;
             case TimeSequence.SequenceTag.BeHit:
                 dics[sequence.poke.CombatID].BeHit(DoNextSequence);

@@ -105,8 +105,9 @@ public class GlobalManager : MonoBehaviour
 
         DontDestroyOnLoad(this);
         InitGame();
-
-        Translator.Translate = GameResources.LoadLocalization(Messages.Current_culture);
+        // Messages.SetUp("");
+        // Messages.SetUp("ch-CN");
+        // Translator.Translate = GameResources.LoadLocalization(Messages.Current_culture);
         GetComponent<LineProviderBehaviour>().textLanguageCode = Messages.Current_culture;
         DialogueRunner = GetComponent<DialogueRunner>();
         DialogueRunner.lineProvider = GetComponent<LineProviderBehaviour>();

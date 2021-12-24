@@ -4,6 +4,7 @@ using System.Linq;
 using Newtonsoft.Json;
 using PokemonCore;
 using PokemonCore.Attack;
+using PokemonCore.Attack.Data;
 using PokemonCore.Combat;
 using PokemonCore.Monster;
 using PokemonCore.Monster.Data;
@@ -279,6 +280,37 @@ public class Pokemon : IPokemon, IEquatable<Pokemon>, IEqualityComparer<Pokemon>
         this.AbilityID = _base.Ability1;
     }
 
+
+    public void AddMove(int id)
+    {
+        for (int i = 0; i < moves.Length; i++)
+        {
+            if (moves[i] != null) continue;
+            moves[i] = new Move(Game.MovesData[id]);
+            break;
+        }
+    }
+    
+    public void AddMove(MoveData moveData)
+    {
+        for (int i = 0; i < moves.Length; i++)
+        {
+            if (moves[i] != null) continue;
+            moves[i] = new Move(moveData);
+            break;
+        }
+    }
+
+    public void ReplaceMove(int index, MoveData moveData)
+    {
+        moves[index] = new Move(moveData);
+    }
+
+    public void CheckEvolution()
+    {
+        
+    }
+    
     public bool Equals(Pokemon other)
     {
         return

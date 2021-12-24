@@ -92,6 +92,7 @@ namespace GamePlay.UI.UtilUI
             // {
             //     
             // }
+            StopAllCoroutines();
 
             // DialogText.text = currentReport;
             if(args!=null&&args.Length>=1)

@@ -30,8 +30,8 @@ public class Nametext : MonoBehaviour
     public void Init(Pokemon pokemon,Trainer trainer)
     {
         //TODO: change to translator
-        nameText.text = Translator.TranslateStr(pokemon.IsNicknamed ? pokemon.Name :pokemon.Name);
-        propertyText.text =Translator.TranslateStr( Game.TypesMap[pokemon.Type1.Value].Name);
+        nameText.text = pokemon.IsNicknamed ? pokemon.Name : Messages.Get(pokemon.Name);
+        propertyText.text =Messages.Get( Game.TypesMap[pokemon.Type1.Value].Name);
         // ownerText.text = pokemon.TrainerID.ToString();
         ownerText.text = trainer.name;
         // numberText.text = pokemon.AbilityID.ToString();
