@@ -90,6 +90,8 @@ namespace GamePlay
             //Pokedex
             [typeof(PokedexPanel)]="Prefabs/UI/Pokemondex/Pokedex",
             [typeof(PokemondexElement)]="Prefabs/UI/Pokemondex/Pokemondex",
+            //Movelearing
+            [typeof(MovelearningUI)]="Prefabs/UI/MoveLearning/MoveLearnPanel"
         };
     }
 
@@ -211,7 +213,7 @@ namespace GamePlay
             // from t in tmp where t.Key==Item.Tag.PokeBalls
             foreach (var item in tmp)
             {
-                Debug.Log(item.Key.Item1+item.Key.Item2.ToString());
+                // Debug.Log(item.Key.Item1+item.Key.Item2.ToString());
                 // ItemIcons.Add(item.Key,Resources.Load<Sprite>("Sprites/ItemIcons/"+item.Key.Item1+item.Key.Item2.ToString()));
             }
             foreach (var item in tmp)

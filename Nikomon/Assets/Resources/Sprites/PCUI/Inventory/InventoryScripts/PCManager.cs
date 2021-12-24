@@ -67,11 +67,14 @@ public class PCManager : BaseUI
                 obj.name = "Move" + i;
                 obj.GetComponent<TriggerSelect>().onSelect = () =>
                 {
-                    //TODO:技能描述！！！不好处理！！！！
-                    // description;
                     GameObjectdesc.SetActive(true);
                     description.text = obj.GetComponent<MoveElement>()._move._baseData.description;
                     //description.text = obj.name;
+
+                };
+                obj.GetComponent<TriggerSelect>().onDeSelect = () =>
+                {
+                    GameObjectdesc.SetActive(false);
 
                 };
                 _moveElements.Add(obj.GetComponent<MoveElement>());
@@ -181,9 +184,7 @@ public class PCManager : BaseUI
                 obj.GetComponent<Slot>().number = i;
                 obj.GetComponent<TriggerSelect>().onSelect = () =>
                 {
-                    // print(slots[i].number);
-                    //print(i);
-                    GameObjectdesc.SetActive(false);
+                    //GameObjectdesc.SetActive(false);
                     ShowInfo(true);
                     RefreshInformation(pc.Pokemons[obj.GetComponent<Slot>().number]);
                 };

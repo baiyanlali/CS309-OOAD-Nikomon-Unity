@@ -82,7 +82,8 @@ public class BattleHandler : MonoBehaviour
 
         Game.battleReporter.OnReport += (o) =>
         {
-            print(">>>>>>>>>>Show Dialogue Panel<<<<<<<");
+            // print(">>>>>>>>>>Show Dialogue Panel<<<<<<<");
+            print($"Dialogue Panel: {o}");
             UIManager.Instance.Show<DialogPanel>(o);
         };
         // BattleUIHandler.Instance.Init(this);

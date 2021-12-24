@@ -23,8 +23,8 @@ namespace GamePlay.UI.BattleUI
 
         private readonly string[] PokemonChooses = new[] {"Switch", "Show Ability", "Cancel"};
         private readonly string[] BagChooses = new[] {"Use", "Cancel"};
-        
-        
+
+        public override bool IsOnly => true;
 
 
         private void HandlePokemonChoose(int chooseIndex, int bagIndex)
@@ -37,15 +37,17 @@ namespace GamePlay.UI.BattleUI
                     Instruction ins = new Instruction(currentPoke.CombatID, Command.SwitchPokemon, bagIndex,
                         null);
                     BuildInstrustruction(ins);
+                    
                     break;
 
                 case 1: //Show Ability
-
+                    UIManager.Instance.Show<AbilityPanel>(Game.trainer,Game.trainer.party[bagIndex]);
                     break;
                 case 2: //Cancel
                     // UIManager.Instance.Hide(this);
                     break;
             }
+            UIManager.Instance.Hide<PokemonChooserPanelUI>();
         }
 
         private void HandleItem(int optionIndex, Item item)

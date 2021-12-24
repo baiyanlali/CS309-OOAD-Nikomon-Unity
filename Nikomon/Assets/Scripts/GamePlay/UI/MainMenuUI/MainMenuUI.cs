@@ -20,6 +20,7 @@ public class MainMenuUI : BaseUI
     public GameObject Save;
     public GameObject Setting;
     public GameObject PC;
+    public GameObject Pokedex;
 
     #endregion
     
@@ -36,6 +37,7 @@ public class MainMenuUI : BaseUI
         Setting = GET(Setting ,nameof(Setting ),GET_TYPE.GameObject);
         Resume = GET(Resume ,nameof(Resume ),GET_TYPE.GameObject);
         PC = GET(PC ,nameof(PC ),GET_TYPE.GameObject);
+        Pokedex = GET(Pokedex ,nameof(Pokedex),GET_TYPE.GameObject);
     }
 
     public override void OnEnter(params object[] args)
@@ -54,6 +56,8 @@ public class MainMenuUI : BaseUI
         
         PC.GetComponentInChildren<Button>().onClick.RemoveAllListeners();
         PC.GetComponentInChildren<Button>().onClick.AddListener(OpenPC);
+        Pokedex.GetComponentInChildren<Button>().onClick.RemoveAllListeners();
+        Pokedex.GetComponentInChildren<Button>().onClick.AddListener(OpenPokedex);
     }
 
     public override void OnExit()
@@ -88,9 +92,20 @@ public class MainMenuUI : BaseUI
 
     public void OpenParty()
     {
-        Action<int> action = (o) => print(o);
-        // UIManager.Instance.Show<PokemonChooserPanelUI>(Game.trainer,new string[]{"yes","no"},action);
-        UIManager.Instance.Show<AbilityPanel>(Game.trainer,new string[]{"yes","no"},action);
+        Action<int,int> action = (chooseIndex,pokemonIndex) =>
+        {
+            switch (chooseIndex)
+            {
+                case 0:
+                    UIManager.Instance.Show<AbilityPanel>(Game.trainer,Game.trainer.party[pokemonIndex]);
+                    break;
+                case 1:
+                    break;
+                default:
+                    break;
+            }
+        };
+        UIManager.Instance.Show<PokemonChooserPanelUI>(Game.trainer,new string[]{"Show Ability","Cancel"},action);
     }
     public void OpenSave()
     {
@@ -102,6 +117,9 @@ public class MainMenuUI : BaseUI
     {
         UIManager.Instance.Show<PCManager>(Game.trainer,Game.pc);
     }
-    
+    public void OpenPokedex()
+    {
+        UIManager.Instance.Show<PokedexPanel>(Game.trainer);
+    }
     
 }

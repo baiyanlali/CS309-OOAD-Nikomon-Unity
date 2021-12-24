@@ -12,6 +12,20 @@ public class TriggerSelect : MonoBehaviour,ISelectHandler, IDeselectHandler
     // public UnityEvent onSelect;
     public Action onSelect;
     public Action onDeSelect;
+    private Action onClicked;
+
+    public Action OnClicked
+    {
+        set
+        {
+            onClicked = value;
+            GetComponent<Button>().onClick.RemoveAllListeners();
+            GetComponent<Button>().onClick.AddListener(() =>
+            {
+                onClicked?.Invoke();
+            });
+        }
+    }
 
     public void OnSelect(BaseEventData eventData)
     {
@@ -22,4 +36,8 @@ public class TriggerSelect : MonoBehaviour,ISelectHandler, IDeselectHandler
     {
         onDeSelect?.Invoke();
     }
+    // public void onClicked(BaseEventData eventData)
+    // {
+    //     onClicked?.Invoke();
+    // }
 }

@@ -127,8 +127,8 @@ public class Slot :MonoBehaviour
                     break;
             }
         };
-        if(pokemon == null)
-            print("wyf6888");
+        // if(pokemon == null)
+        //     print("wyf6888");
         if (pokemon != null)
         {
             UIManager.Instance.Show<DialogueChooserPanel>(new List<string>

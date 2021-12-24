@@ -79,7 +79,7 @@ namespace GamePlay.UI.UtilUI
                 // print(child.name);
                 child.gameObject.SetActive(false);
             }
-            string name = Pokemon.ID.ToString() + Pokemon.Name;
+            string name = Pokemon.ID.ToString() + Pokemon._base.innerName;
             pokenmons.SetActive(true);
             print(name);
             pokenmons.transform.Find(name).gameObject.SetActive(true);

@@ -1,4 +1,5 @@
 ﻿using PokemonCore.Attack;
+using PokemonCore.Attack.Data;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,6 +12,7 @@ namespace GamePlay.UI.BattleUI
         public Text PP;
         public Button _button;
         public Move _move;
+        public int index;
 
         public void Init(Move move)
         {
@@ -31,6 +33,6 @@ namespace GamePlay.UI.BattleUI
             //     
             // });
         }
-        
+
     }
 }

@@ -176,7 +176,6 @@ namespace PokemonCore
             // PC pc = new PC();
         }
 
-        //TODO: for test
         public void CreateNewSaveFile(string name, bool isMale)
         {
             trainer = new Trainer(name, isMale);

@@ -4,6 +4,7 @@ using System.Linq;
 using Newtonsoft.Json;
 using PokemonCore;
 using PokemonCore.Attack;
+using PokemonCore.Attack.Data;
 using PokemonCore.Combat;
 using PokemonCore.Monster;
 using PokemonCore.Monster.Data;
@@ -141,6 +142,47 @@ public class Pokemon : IPokemon, IEquatable<Pokemon>, IEqualityComparer<Pokemon>
         this.isMale = isMale;
     }
 
+    public Pokemon(int id, int initLevel, int trainerID)
+    {
+        this.ID = id;
+        
+        Exp = new Experience(_base.GrowthRate,Game.ExperienceTable[_base.GrowthRate][initLevel-1],true);
+        
+        Type1 = _base.type1;
+        Type2 = _base.type2;
+        IV = new int[6];
+        EV = new byte[6];
+        HP = TotalHp;
+        
+        FriendShip = _base.BaseFriendship;
+        this.Name = _base.innerName;
+        
+        moves = new Move[Game.MaxMovesPerPokemon];
+        var moveOrdered= _base.LevelMoves.OrderBy(pair => -pair.Key).Where(pair => pair.Key<Level);
+        int currentMove = 0;
+        foreach (var v in moveOrdered)
+        {
+            if (currentMove >= moves.Length) break;
+            if (v.Key > Level)
+            {
+                continue;
+            }
+            else
+            {
+                foreach (var moveID in v.Value)
+                {
+                    if (currentMove >= moves.Length) break;
+                    moves[currentMove] = new Move(Game.MovesData[moveID]);
+                    currentMove++;
+                }
+            }
+        }
+        
+        this.AbilityID = _base.Ability1;
+        
+        this.TrainerID = trainerID;
+    }
+
 
     public Pokemon(int id,int initLevel)
     {
@@ -238,6 +280,37 @@ public class Pokemon : IPokemon, IEquatable<Pokemon>, IEqualityComparer<Pokemon>
         this.AbilityID = _base.Ability1;
     }
 
+
+    public void AddMove(int id)
+    {
+        for (int i = 0; i < moves.Length; i++)
+        {
+            if (moves[i] != null) continue;
+            moves[i] = new Move(Game.MovesData[id]);
+            break;
+        }
+    }
+    
+    public void AddMove(MoveData moveData)
+    {
+        for (int i = 0; i < moves.Length; i++)
+        {
+            if (moves[i] != null) continue;
+            moves[i] = new Move(moveData);
+            break;
+        }
+    }
+
+    public void ReplaceMove(int index, MoveData moveData)
+    {
+        moves[index] = new Move(moveData);
+    }
+
+    public void CheckEvolution()
+    {
+        
+    }
+    
     public bool Equals(Pokemon other)
     {
         return

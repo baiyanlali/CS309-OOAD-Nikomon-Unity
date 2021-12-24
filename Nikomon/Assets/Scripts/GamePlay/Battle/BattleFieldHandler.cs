@@ -216,7 +216,7 @@ public class BattleFieldHandler : MonoBehaviour
     {
         // if (!GlobalManager.isBattling) return;
         if (TimeSequences.Count == 0) return;
-        // print($"{TimeSequences.Peek().tag}");
+        print($"TimeSequence: {TimeSequences.Peek().tag}");
         var sequence = TimeSequences.Dequeue();
 
         switch (sequence.tag)
@@ -235,7 +235,7 @@ public class BattleFieldHandler : MonoBehaviour
                     UIManager.Instance.Show<BattleStatusPanel>(BattleHandler.Instance);
                 }
                 
-                BattleHandler.Instance.battle.NextMove();
+                BattleHandler.Instance.battle?.NextMove();
                 break;
             case TimeSequence.SequenceTag.BeHit:
                 dics[sequence.poke.CombatID].BeHit(DoNextSequence);
