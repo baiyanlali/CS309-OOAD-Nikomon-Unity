@@ -53,8 +53,21 @@ namespace GamePlay.UI.BagSystem
                         if (_Scrollbar.GetComponent<Scrollbar>().value > 0.86)
                             _Scrollbar.GetComponent<Scrollbar>().value += 0.03f;
                         print(_Scrollbar.GetComponent<Scrollbar>().value);
-                        
-                        
+                        Vector3 v = new Vector3();
+                        v.x = 1.1f;
+                        v.y = 1.1f;
+                        v.z = 1.1f;
+                        obj.transform.localScale = v;
+
+
+                    };
+                    obj.GetComponent<TriggerSelect>().onDeSelect = () =>
+                    {
+                        Vector3 v = new Vector3();
+                        v.x = 1f;
+                        v.y = 1f;
+                        v.z = 1f;
+                        obj.transform.localScale = v;
                     };
                     obj.name = "PokeStoreItem" + i;
                     if (i == 0)

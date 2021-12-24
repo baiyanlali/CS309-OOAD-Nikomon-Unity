@@ -90,6 +90,8 @@ namespace GamePlay
             //Pokedex
             [typeof(PokedexPanel)]="Prefabs/UI/Pokemondex/Pokedex",
             [typeof(PokemondexElement)]="Prefabs/UI/Pokemondex/Pokemondex",
+            //Movelearing
+            [typeof(MovelearningUI)]="Prefabs/UI/Pokemondex/MoveLearnPanel"
         };
     }
 

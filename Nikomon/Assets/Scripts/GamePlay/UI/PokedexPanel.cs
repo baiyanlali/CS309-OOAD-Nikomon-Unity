@@ -49,6 +49,11 @@ public class PokedexPanel : BaseUI
                         _Scrollbar.GetComponent<Scrollbar>().value += 0.03f;
                     //print(_Scrollbar.GetComponent<Scrollbar>().value);
                     //StartCoroutine(Normal(obj));
+                    Vector3 v = new Vector3();
+                    v.x = 1.15f;
+                    v.y = 1.15f;
+                    v.z = 1.15f;
+                    obj.transform.localScale = v;
                     if (obj.GetComponent<PokemondexElement>().id == -1)
                     {
                         //TODO:显示一个傻逼的图片来区分？或者不显示   目前有大问题number这个变量有问题！！！！！！！
@@ -76,7 +81,14 @@ public class PokedexPanel : BaseUI
                     
                     
                 };
-
+                obj.GetComponent<TriggerSelect>().onDeSelect = () =>
+                {
+                    Vector3 v = new Vector3();
+                    v.x = 1f;
+                    v.y = 1f;
+                    v.z = 1f;
+                    obj.transform.localScale = v;
+                };
                 obj.name = "Pokedex" + i;
                 if (i == 0)
                 {
@@ -95,7 +107,7 @@ public class PokedexPanel : BaseUI
         {
             trainer=args[0] as Trainer;
         }
-        print(211);
+        //print(211);
         
         foreach (var i in trainer.PokemonCountered)
         {
