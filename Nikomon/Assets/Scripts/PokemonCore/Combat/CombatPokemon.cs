@@ -9,6 +9,15 @@ using PokemonCore.Utility;
 
 namespace PokemonCore.Combat
 {
+    public enum PokemonStatus
+    {
+        NoStatus,
+        Burn,
+        Freeze,
+        Paralysis,
+        Sleep,
+        Poison,
+    }
     public class CombatPokemon
     {
         [JsonIgnore]
@@ -23,7 +32,8 @@ namespace PokemonCore.Combat
         public Pokemon pokemon { get; private set; }
         public int HP
         {
-            get { return pokemon.HP;} private set { pokemon.HP = value; }
+            get { return pokemon.HP;} 
+            set { pokemon.HP = value; }
         }
         public int TotalHP { get; private set; }
         public int ATK { get; set; }
@@ -125,6 +135,8 @@ namespace PokemonCore.Combat
         public int AbilityID { get; set; }
 
         public int ItemID { get; }
+        
+        public PokemonStatus PokemonStatus { get; set; }
 
         public List<Effect> Effects { get; set; }
 
@@ -171,20 +183,27 @@ namespace PokemonCore.Combat
                 Instruction i = e.OnChoosing(this);
                 if (i != null) return i;
             }
-
+            Effects.EffectUpdate(this);
             return null;
         }
 
         public CombatMove OnMoving(CombatMove cmove)
         {
             // UnityEngine.Debug.Log(cmove);
+            foreach (var e in cmove.TargetEffects.OrEmptyIfNull())
+            {
+                UnityEngine.Debug.Log("Not Null");
+                if (e.OnEffectBegin == null) continue;
+                e.OnEffectBegin(this);
+            }
+            
             foreach (var e in Effects.OrEmptyIfNull())
             {
                 if (e.OnMoving == null) continue;
-                
                 e.OnMoving(cmove);
             }
             // UnityEngine.Debug.Log(cmove);
+            Effects.EffectUpdate(this);
             return cmove;
         }
 
@@ -196,7 +215,7 @@ namespace PokemonCore.Combat
                 if (e.OnSwitchPokemon == null) return true;
                 if (e.OnSwitchPokemon(this) == false) return false;
             }
-
+            Effects.EffectUpdate(this);
             return true;
         }
 
@@ -207,7 +226,7 @@ namespace PokemonCore.Combat
                 if (e.OnHit == null) continue;
                 e.OnHit(this,damage);
             }
-
+            Effects.EffectUpdate(this);
             return damage;
         }
 
@@ -238,6 +257,7 @@ namespace PokemonCore.Combat
                 if (effect.BeFainted == null) continue;
                 effect.BeFainted(this);
             }
+            Effects.EffectUpdate(this);
             battle.PokemonFainting(this);
         }
 

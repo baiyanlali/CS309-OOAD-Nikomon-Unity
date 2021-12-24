@@ -26,7 +26,7 @@ namespace GamePlay.Messages
             private set
             {
                 _currentCulture = value;
-                Thread.CurrentThread.CurrentCulture = new CultureInfo(value);
+                // Thread.CurrentThread.CurrentCulture = new CultureInfo(value);
             }
         }
 
@@ -36,6 +36,8 @@ namespace GamePlay.Messages
                 Current_culture = Thread.CurrentThread.CurrentCulture.ToString();
             else
                 Current_culture = lang;
+            
+            Translator = GameResources.LoadLocalization(Current_culture); //lang_id);
             
             // Translator = SaveLoad.Load<Dictionary<string, string>>("language_" + Current_culture);
         }

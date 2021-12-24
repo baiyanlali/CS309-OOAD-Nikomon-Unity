@@ -13,6 +13,10 @@ GameObject:
   - component: {fileID: 6979511723768987121}
   - component: {fileID: 2231622470249973053}
   - component: {fileID: 1077461730}
+  - component: {fileID: 3278905519869191421}
+  - component: {fileID: 7862106994463683949}
+  - component: {fileID: 6527201335795828367}
+  - component: {fileID: 3023824188809774955}
   m_Layer: 0
   m_Name: Global
   m_TagString: Untagged
@@ -46,6 +50,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3566a406352746cd96637aa0f4b38d3c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  DialogueRunner: {fileID: 3278905519869191421}
 --- !u!114 &6979511723768987121
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -83,3 +88,76 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enable: 0
+--- !u!114 &3278905519869191421
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7182478168527000529}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4bec29c0a230741bdac901dba8da47ee, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  yarnProject: {fileID: 7545569452688597077, guid: 82a46e605e527ba4ea25f1943038ce60, type: 3}
+  _variableStorage: {fileID: 6527201335795828367}
+  dialogueViews:
+  - {fileID: 3023824188809774955}
+  startNode: Start
+  startAutomatically: 0
+  automaticallyContinueLines: 0
+  runSelectedOptionAsLine: 0
+  lineProvider: {fileID: 7862106994463683949}
+  verboseLogging: 1
+  onNodeStart:
+    m_PersistentCalls:
+      m_Calls: []
+  onNodeComplete:
+    m_PersistentCalls:
+      m_Calls: []
+  onDialogueComplete:
+    m_PersistentCalls:
+      m_Calls: []
+  onCommand:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &7862106994463683949
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7182478168527000529}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 10f0777399ec04ef6957da2ae823eb8e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  textLanguageCode: zh-CN
+--- !u!114 &6527201335795828367
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7182478168527000529}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 610c541718d694070a21327d1ae62e75, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  showDebug: 0
+  debugTextView: {fileID: 0}
+--- !u!114 &3023824188809774955
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7182478168527000529}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4df7d9bb7211faf40b26a172b8ca8aa3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

@@ -22,6 +22,7 @@ public class CameraFollower : MonoBehaviour
     {
         if (NicomonInputSystem.Instance.look != Vector2.zero)
         {
+            
             // Vector2 look = NicomonInputSystem.Instance.look;
             // var transform1 = camera.transform;
             // Vector3 offset = transform1.right * look.x * HorizontalRotateSpeed+

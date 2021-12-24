@@ -25,21 +25,28 @@ namespace PokemonCore.Combat
 
             battle.OnTurnBegin += DoAI;
             battle.OnBattleEnd += (o) => { battle = null;};
+            battle.OnPokemonFainting += OnPokemonDied;
             // battle.OnPokemonFainting += OnPokemonDied;
             // DoAI();
         }
 
         public void OnPokemonDied(CombatPokemon pokemon)
         {
-            
+            // if (pokes.Contains(pokemon))
+            // {
+            //     
+            // }
         }
-        
-        
+
+
 
         public void DoAI()
         {
-            foreach (var poke in pokes.OrEmptyIfNull())
+            CombatPokemon originalPokemon=null, replacementPokemon=null;
+            foreach (var pokemon in pokes.OrEmptyIfNull())
             {
+                originalPokemon = pokemon;
+                CombatPokemon poke = pokemon;
                 // UnityEngine.Debug.Log("AI Move");
                 //TODO: 考虑有宝可梦已经上场，但是这里仍然会牵扯到
                 if (poke.HP <= 0)
@@ -47,16 +54,21 @@ namespace PokemonCore.Combat
                     var trainer = battle.Trainers[poke.TrainerID];
                     if (trainer.lastAblePokemonIndex != -1)
                     {
-                        Instruction inss = new Instruction(poke.CombatID, Command.SwitchPokemon,trainer.lastAblePokemonIndex, null);
+                        Pokemon pNext = trainer.party[trainer.lastAblePokemonIndex];
+                        Instruction inss = new Instruction(poke.CombatID, Command.SwitchPokemon,
+                            trainer.lastAblePokemonIndex, null);
                         battle.ReceiveInstruction(inss);
-                        return;
+                        poke = battle.Pokemons.First(p => p.pokemon == pNext);
+                        replacementPokemon = poke;
+                        // return;
                     }
                     else
                     {
                         return;
                     }
-                    
+
                 }
+
                 Move[] moves = (from m in poke.pokemon.moves where m != null select m).ToArray();
                 int id = Game.Random.Next(0, moves.Length);
                 Move move = moves[id];
@@ -70,17 +82,23 @@ namespace PokemonCore.Combat
                 {
                     if (battle.alliesPokemons.Contains(poke))
                     {
-                        target = battle.opponentsPokemons[Game.Random.Next(0,battle.opponentsPokemons.Count)].CombatID;
+                        target = battle.opponentsPokemons[Game.Random.Next(0, battle.opponentsPokemons.Count)].CombatID;
                     }
-                    else if(battle.opponentsPokemons.Contains(poke))
+                    else if (battle.opponentsPokemons.Contains(poke))
                     {
-                        target = battle.alliesPokemons[Game.Random.Next(0,battle.alliesPokemons.Count)].CombatID;
+                        target = battle.alliesPokemons[Game.Random.Next(0, battle.alliesPokemons.Count)].CombatID;
                     }
                 }
-                Instruction instruction = new Instruction(poke.CombatID, Command.Move,id,target);
+
+                Instruction instruction = new Instruction(poke.CombatID, Command.Move, id, target);
                 battle.ReceiveInstruction(instruction);
             }
 
+            if (replacementPokemon != null)
+            {
+                pokes.Remove(originalPokemon);
+                pokes.Add(replacementPokemon);
+            }
         }
     }
 }

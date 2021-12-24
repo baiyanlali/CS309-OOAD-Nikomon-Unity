@@ -207,25 +207,35 @@ public class BattleFieldHandler : MonoBehaviour
         TimeSequences.Clear();
     }
 
+    // public void HandleEnterScene(Action onComplete)
+    // {
+    //     
+    // }
+
     public void DoNextSequence()
     {
         // if (!GlobalManager.isBattling) return;
         if (TimeSequences.Count == 0) return;
-        // print($"{TimeSequences.Peek().tag}");
+        print($"TimeSequence: {TimeSequences.Peek().tag}");
         var sequence = TimeSequences.Dequeue();
 
         switch (sequence.tag)
         {
             case TimeSequence.SequenceTag.EnterScene:
+                // HandleEnterScene(DoNextSequence);
                 break;
             case TimeSequence.SequenceTag.OnMove:
                 dics[sequence.poke.CombatID].DoMove(sequence.param[0] as CombatMove, DoNextSequence);
                 break;
             case TimeSequence.SequenceTag.EndMove:
                 // BattleUIHandler.Instance.UpdateStatus();
-                UIManager.Instance.Refresh<BattleStatusPanel>(BattleHandler.Instance);
-                UIManager.Instance.Show<BattleStatusPanel>(BattleHandler.Instance);
-                BattleHandler.Instance.battle.NextMove();
+                if (GlobalManager.isBattling)
+                {
+                    UIManager.Instance.Refresh<BattleStatusPanel>(BattleHandler.Instance);
+                    UIManager.Instance.Show<BattleStatusPanel>(BattleHandler.Instance);
+                }
+                
+                BattleHandler.Instance.battle?.NextMove();
                 break;
             case TimeSequence.SequenceTag.BeHit:
                 dics[sequence.poke.CombatID].BeHit(DoNextSequence);

@@ -156,7 +156,7 @@ public class PokemonIndentity : MonoBehaviour, IInteractive
         if (completeList.TryGetValue(anim, out Action oncomplete))
         {
             oncomplete?.Invoke();
-            completeList.Remove(HashToAnimName[shortNameHash]);
+            completeList.Remove(anim);
         }
         // FindObjectOfType<BattleFieldHandler>().OnAnimEnd(HashToAnimName[shortNameHash]);
     }

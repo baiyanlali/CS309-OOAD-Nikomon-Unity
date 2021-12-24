@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Newtonsoft.Json;
 
 namespace PokemonCore.Combat
@@ -144,6 +145,21 @@ namespace PokemonCore.Combat
                 }
 
                 return -1;
+            }
+        }
+
+        [JsonIgnore]
+        public List<Pokemon> currentOnBattlePokemon
+        {
+            get
+            {
+                var indexes = new List<Pokemon>();
+                for (int i = 0; i < party.Length; i++)
+                {
+                    if(pokemonOnTheBattle[i]==true)indexes.Add(party[i]);
+                }
+
+                return indexes;
             }
         }
 
