@@ -72,6 +72,10 @@ namespace GamePlay.UI.UtilUI
         /// <param name="args"></param>
         public override void OnEnter(params object[] args)
         {
+            if (args == null)
+            {
+                return;
+            }
             // print("On Enter");
             base.OnEnter(args);
             // print(currentReport);
