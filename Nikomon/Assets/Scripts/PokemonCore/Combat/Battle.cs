@@ -121,7 +121,7 @@ namespace PokemonCore.Combat
         /// 招式效果结束后的效果；可以用于一些附加效果，比如寄生种子
         /// </summary>
         public List<Effect> MovedEffect { get; private set; }
-        
+
         /// <summary>
         /// 当前场地内的EffectList
         /// </summary>
@@ -294,7 +294,6 @@ namespace PokemonCore.Combat
 
                 Instance = null;
             };
-
         }
 
         /// <summary>
@@ -304,11 +303,24 @@ namespace PokemonCore.Combat
         {
             OnTurnBegin?.Invoke();
             // UnityEngine.Debug.Log("Complete Battle Log");
-            if(MyPokeWithNoInstructions.Count!=0)
+            if (MyPokeWithNoInstructions.Count != 0)
                 ShowPokeMove?.Invoke(MyPokeWithNoInstructions[0]);
         }
-        
+
+        public void UpdateEffect()
+        {
+            
+            ChoosingEffect.EffectEliminate(null);
+            MovingEffect.EffectEliminate(null);
+            DamagingEffect.EffectEliminate(null);
+            DamagedEffect.EffectEliminate(null);
+            MovedEffect.EffectEliminate(null);
+            FieldEffect.EffectEliminate(null);
+            Pokemons.ForEach(pokemon => pokemon.Effects.EffectEliminate(pokemon));
+        }
+
         #region new move methods
+
         public void NextMove()
         {
             if (mBattleResults != BattleResults.Continue) return;
@@ -330,6 +342,7 @@ namespace PokemonCore.Combat
                         mBattleActions = BattleActions.Moved;
                         OnThisTurnEnd?.Invoke();
                         Moved();
+                        UpdateEffect();
                         WinOrLose();
                         NextMove();
                         return;
@@ -339,35 +352,38 @@ namespace PokemonCore.Combat
                         //这里由外部调用，进行下一个招式的播放
                         mBattleActions = BattleActions.Moving;
                     }
+
                     // SingleMoving(CombatMoves);
                     // Damaging(Damages);
                     var singleDamages = SingleMoving(CombatMoves);
                     Damaging(singleDamages);
                     WinOrLose();
-                    
+                    if (mBattleResults != BattleResults.Succeed && mBattleResults != BattleResults.Failed)
+                        OnOneMoveEnd?.Invoke();
+
                     if (mBattleResults != BattleResults.Continue) return;
                     break;
                 case BattleActions.Moved:
 
                     mBattleActions = BattleActions.Choosing;
                     OnTurnBegin?.Invoke();
-                    
+
                     Choosing();
-                    if(MyPokeWithNoInstructions.Count!=0)
+                    if (MyPokeWithNoInstructions.Count != 0)
                         ShowPokeMove?.Invoke(MyPokeWithNoInstructions[0]);
                     break;
             }
         }
-        
-        
+
+
         List<Damage> SingleMoving(List<CombatMove> cm)
         {
             if (cm.Count == 0) return null;
             var c = cm[0];
             cm.RemoveAt(0);
-            
+
             c = c.Sponsor.OnMoving(c);
-            
+
             foreach (var effectInfo in c.move._baseData.EffectInfos.OrEmptyIfNull())
             {
                 int rand = Game.Random.Next(101);
@@ -383,17 +399,16 @@ namespace PokemonCore.Combat
                             break;
                         case Targets.SELECTED_OPPONENT_POKEMON:
                         case Targets.ALL_OPPONENTS:
-                            c.Targets.ForEach(e=>e.AddEffect(effect));
+                            c.Targets.ForEach(e => e.AddEffect(effect));
                             break;
                     }
                 }
             }
-            
+
             OnMove?.Invoke(c);
             var damages = GenerateDamages(c);
             return damages;
         }
-
 
         #endregion
 
@@ -418,16 +433,17 @@ namespace PokemonCore.Combat
                 {
                     if (e.OnChoosing == null) continue;
                     Instruction i = e.OnChoosing(p);
-                    if (i != null) ReceiveInstruction(i,true);
+                    if (i != null) ReceiveInstruction(i, true);
                 }
             }
+
             foreach (var ins in inss.OrEmptyIfNull())
             {
                 // OnPokemonChooseHandled?.Invoke(ins.CombatPokemonID);
                 ReceiveInstruction(ins, true);
             }
         }
-        
+
         void Damaging(List<Damage> dmgs)
         {
             foreach (var d in dmgs.OrEmptyIfNull())
@@ -441,11 +457,11 @@ namespace PokemonCore.Combat
             if (dmg.sponsor.HP <= 0) return;
             dmg = dmg.sponsor.OnHit(dmg);
             OnHit?.Invoke(dmg);
-            
+
             dmg.target.BeHurt(dmg);
-            if(dmg.target.HP>0)
+            if (dmg.target.HP > 0)
                 OnHitted?.Invoke(dmg.target);
-            
+
             Damages.Add(dmg);
 
             // else
@@ -458,9 +474,9 @@ namespace PokemonCore.Combat
 
         void Damaged()
         {
-            
             // return cm;
         }
+
         /// <summary>
         /// 在回合结束后需要进行结算的Effects
         /// </summary>
@@ -471,7 +487,7 @@ namespace PokemonCore.Combat
                 e.Moved();
             }
         }
-        
+
         /// <summary>
         /// 用来判断此turn结束后是否分出胜负
         /// </summary>
@@ -489,7 +505,6 @@ namespace PokemonCore.Combat
             }
             else
             {
-                OnOneMoveEnd?.Invoke();
                 // OnThisTurnEnd?.Invoke();
             }
         }
@@ -548,7 +563,7 @@ namespace PokemonCore.Combat
             t.pokemonOnTheBattle[t.PokemonIndex(nextPokemon)] = true;
 
             //TODO;
-            
+
             // alliesPokemons.BinarySearch(currentPokemon);
             if (alliesPokemons.Contains(currentPokemon))
             {
@@ -629,13 +644,14 @@ namespace PokemonCore.Combat
                     if (combatPoke.HP <= 0)
                     {
                         Instructions.Remove(ins);
-                        ReplacePokemon(combatPoke,Trainers[combatPoke.TrainerID].party[ins.ID]);
+                        ReplacePokemon(combatPoke, Trainers[combatPoke.TrainerID].party[ins.ID]);
                     }
                     else
                     {
                         SwitchPokemons.Add(new Tuple<CombatPokemon, Pokemon>(combatPoke,
                             Trainers[combatPoke.TrainerID].party[ins.ID]));
                     }
+
                     break;
                 case Command.Run:
                     if (CanRun)
@@ -661,8 +677,7 @@ namespace PokemonCore.Combat
                     break;
             }
 
-            
-            
+
             if (Instructions.Count == Pokemons.Count)
             {
                 //如果所有指令都接收到则进入move
@@ -670,7 +685,8 @@ namespace PokemonCore.Combat
                 // UnityEngine.Debug.Log($"{Instructions.Count} instruction and {Pokemons.Count} pokemon, i can go next move");
                 // NextAction();
                 NextMove();
-            }else if (MyPokeWithNoInstructions.Count != 0 && fromUser)
+            }
+            else if (MyPokeWithNoInstructions.Count != 0 && fromUser)
             {
                 ShowPokeMove?.Invoke(MyPokeWithNoInstructions[0]);
             }
@@ -796,7 +812,7 @@ namespace PokemonCore.Combat
             //MovedEffect.Add((Game.LuaEnv.Global.Get<Effect>(e),poke));
         }
 
-        public Action<string> CustomReport; 
+        public Action<string> CustomReport;
 
         public void Report(string str)
         {

@@ -216,7 +216,7 @@ namespace PokemonCore.Combat
                 Instruction i = e.OnChoosing(this);
                 if (i != null) return i;
             }
-            Effects.EffectUpdate(this);
+            // Effects.EffectUpdate(this);
             return null;
         }
 
@@ -235,7 +235,7 @@ namespace PokemonCore.Combat
                 e.OnMoving(cmove);
             }
             // UnityEngine.Debug.Log(cmove);
-            Effects.EffectUpdate(this);
+            // Effects.EffectUpdate(this);
             return cmove;
         }
 
@@ -256,7 +256,7 @@ namespace PokemonCore.Combat
                 if (e.OnSwitchPokemon == null) return true;
                 if (e.OnSwitchPokemon(this) == false) return false;
             }
-            Effects.EffectUpdate(this);
+            // Effects.EffectUpdate(this);
             return true;
         }
 
@@ -267,7 +267,7 @@ namespace PokemonCore.Combat
                 if (e.OnHit == null) continue;
                 e.OnHit(this,damage);
             }
-            Effects.EffectUpdate(this);
+            // Effects.EffectUpdate(this);
             return damage;
         }
 
@@ -298,7 +298,7 @@ namespace PokemonCore.Combat
                 if (effect.BeFainted == null) continue;
                 effect.BeFainted(this);
             }
-            Effects.EffectUpdate(this);
+            // Effects.EffectUpdate(this);
             battle.PokemonFainting(this);
         }
 

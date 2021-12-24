@@ -114,7 +114,7 @@ effect4={ --over!
 effect5={ --over!
     ID = 5,
     InnerName = 'Paralysis',
-    Round = 2,
+    Round = 1,
     --25%无法使用技能
     
     OnMoving=function(combatMove)
@@ -127,21 +127,19 @@ effect5={ --over!
             print("Paralysis Succeed!")
             combatMove.Targets = nil
         end
-        effect5.Round=effect5.Round-1
+        --effect5.Round=effect5.Round-1
         return combatMove
     end,
     
-    OnMoved = function(combatPoke)
-
-        if effect5.Round == 0 then
-            combatPoke.SPE = combatPoke.SPE*2
-            print("Paralysis begin")
-        end
+    
+    OnEffectBegin = function(combatPoke)
+        print("Paralysis begin")
+        combatPoke.SPE = combatPoke.SPE*0.5
     end,
     
-    OnEffectBegin = function(combatPoke) 
+    OnEffectEnd = function(combatPoke)
         print("Paralysis over")
-        combatPoke.SPE = combatPoke.SPE*0.5
+        combatPoke.SPE = combatPoke.SPE*2
     end
 }
 
