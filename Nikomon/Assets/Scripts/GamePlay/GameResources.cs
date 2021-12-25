@@ -95,6 +95,8 @@ namespace GamePlay
             [typeof(MovelearningUI)]="Prefabs/UI/MoveLearning/MoveLearnPanel",
             //Setting
             [typeof(SettingUI)]="Prefabs/UI/SettingUI/SettingPanel",
+            //Evolution
+            [typeof(EvolutionPanel)]="Prefabs/UI/EvolutionUI/EvolutionPanel"
             
         };
     }
