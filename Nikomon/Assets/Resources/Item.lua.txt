@@ -1,0 +1,16 @@
+
+PokeBalls0 = {
+
+    ID=0,
+    InnerName = 'Pokemon Ball',
+    Round = 0,
+    EffectLastType = CS.PokemonCore.Combat.Interface.EffectLastType.ALWAYS,
+    EffectChance = 20,
+    isUsed=false,
+    
+    OnUseItem = function(self, combatItem)
+        print("Using Pokemon Ball")
+        Game.battle:CatchPokemon(combatItem.Sponsor,0,combatItem.Targets)
+        
+    end,
+}

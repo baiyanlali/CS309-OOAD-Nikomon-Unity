@@ -167,8 +167,9 @@ public class BattleFieldHandler : MonoBehaviour
 
     private Queue<TimeSequence> TimeSequences;
 
-    public void OnMove(CombatMove move)
+    public void OnMove(CombatAction move)
     {
+        //TODO: 加入道具的特效
         TimeSequences.Enqueue(new TimeSequence(move.Sponsor, TimeSequence.SequenceTag.OnMove, move));
 
         // dics[move.Sponsor.CombatID].DoMove(move,null);

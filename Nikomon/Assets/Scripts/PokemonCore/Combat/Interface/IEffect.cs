@@ -56,7 +56,7 @@ namespace PokemonCore.Combat.Interface
         StatusChange
     }
 
-
+    [LuaCallCSharp]
     public class Effect
     {
         public int ID;
@@ -72,6 +72,8 @@ namespace PokemonCore.Combat.Interface
         public Action<Effect,CombatPokemon> OnEffectBegin;
         public Action<Effect,CombatPokemon> OnEffectEnd;
         public Action<Effect,CombatPokemon> OnMoved;
+
+        public Action<Effect, CombatItem> OnUseItem;
 
         public Func<Effect,CombatPokemon,Instruction> OnChoosing;
         /// <summary>
@@ -90,66 +92,4 @@ namespace PokemonCore.Combat.Interface
         
     }
     
-    [CSharpCallLua]
-    public interface IEffect
-    {
-        
-        public int round { get; set; }
-        public string innerName { get; set; }
-
-
-        public EffectLastType EffectLastType { get; set; }
-        public int RoundNum { get; set; }
-
-        public int EffectChance { get; set; }
-
-        public void BeSwitched();
-
-        public void BeFainted();
-        
-        public void OnEffectBegin();
-
-
-        /// <summary>
-        /// 在选取指令的时候使用
-        /// </summary>
-        /// <param name="battle"></param>
-        /// <param name="pokemon"></param>
-        /// <returns></returns>
-        public Instruction OnChoosing(Battle battle, CombatPokemon pokemon);
-        /// <summary>
-        /// 在招式发挥效用之前使用
-        /// </summary>
-        /// <param name="battle"></param>
-        /// <param name="move"></param>
-        /// <param name="attacker"></param>
-        /// <returns></returns>
-        public CombatMove OnMoving(Battle battle, CombatMove move, CombatPokemon attacker);
-        /// <summary>
-        /// 在招式即将攻击到对方的时候使用
-        /// </summary>
-        /// <param name="battle"></param>
-        /// <param name="attacker"></param>
-        /// <returns></returns>
-        public Damage OnHit(Damage damage);
-        /// <summary>
-        /// 再招式即将攻击到对方的时候使用
-        /// </summary>
-        /// <returns></returns>
-        public Damage BeHurt(Damage damage);
-        /// <summary>
-        /// 在招式已经造成伤害后使用
-        /// </summary>
-        /// <param name="battle"></param>
-        /// <param name="attacker"></param>
-        /// <param name="defender"></param>
-        public void OnDamaged(Battle battle, CombatPokemon attacker,CombatPokemon defender);
-
-        public bool OnSwitchPokemon(CombatPokemon poke);
-
-        public bool OnEffectEnd();
-
-
-
-    }
 }
