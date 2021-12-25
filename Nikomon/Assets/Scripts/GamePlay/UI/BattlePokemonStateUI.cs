@@ -41,6 +41,8 @@ public class BattlePokemonStateUI : MonoBehaviour
         }
 
     }
+    
+    
 
     private void ChangeHealthSliderColor()
     {

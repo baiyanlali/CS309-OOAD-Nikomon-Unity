@@ -96,7 +96,11 @@ namespace GamePlay
             //Setting
             [typeof(SettingUI)]="Prefabs/UI/SettingUI/SettingPanel",
             //Evolution
-            [typeof(EvolutionPanel)]="Prefabs/UI/EvolutionUI/EvolutionPanel"
+            [typeof(EvolutionPanel)]="Prefabs/UI/EvolutionUI/EvolutionPanel",
+            //Settlement
+            [typeof(SettlementPanel)]="Prefabs/UI/SettlementUI/SettlementPanel",
+            [typeof(PokemonSettlement)]="Prefabs/UI/SettlementUI/PokemonSettlement"
+            
             
         };
     }
