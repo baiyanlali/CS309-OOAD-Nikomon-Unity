@@ -135,7 +135,7 @@ public class BattleHandler : MonoBehaviour
         BattleFieldHandler.Instance.OnHitted(pokemon);
     }
 
-    public void OnMove(CombatMove move)
+    public void OnMove(CombatAction move)
     {
         BattleFieldHandler.Instance.OnMove(move);
     }

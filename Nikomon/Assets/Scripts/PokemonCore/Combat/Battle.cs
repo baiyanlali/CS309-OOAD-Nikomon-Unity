@@ -97,11 +97,11 @@ namespace PokemonCore.Combat
         public List<CombatPokemon> opponentsPokemons { get; private set; }
 
         #region Effect相关
-        
+
         /// <summary>
         /// 当前场地内的EffectList
         /// </summary>
-        public List<Effect> FieldEffect { get; private set; }
+        public List<Effect> FieldEffect { get; private set; } = new List<Effect>();
 
         #endregion
 
@@ -109,7 +109,7 @@ namespace PokemonCore.Combat
 
         public Action<CombatPokemon> OnHitted;
 
-        public Action<CombatMove> OnMove;
+        public Action<CombatAction> OnMove;
 
         public Action OnThisTurnEnd;
 
@@ -235,7 +235,7 @@ namespace PokemonCore.Combat
             #endregion
 
             Instructions = new List<Instruction>();
-            CombatMoves = new List<CombatMove>();
+            CombatActions = new List<CombatAction>();
             SwitchPokemons = new List<Tuple<CombatPokemon, Pokemon>>();
             Damages = new List<Damage>();
             turnCount = 0;
@@ -285,15 +285,14 @@ namespace PokemonCore.Combat
             {
                 case BattleActions.Choosing:
                     mBattleActions = BattleActions.Moving;
-                    SortCombatMoves(CombatMoves);
+                    SortCombatActions(CombatActions);
                     ReplacePokemons(SwitchPokemons);
                     SwitchPokemons.Clear();
-
                     NextMove();
                     break;
                 case BattleActions.Moving:
-                    CombatMoves = CombatMoves.Where(c => c.Sponsor.HP > 0).ToList();
-                    if (CombatMoves.Count == 0)
+                    CombatActions = CombatActions.Where(c => c.Sponsor.HP > 0).ToList();
+                    if (CombatActions.Count == 0)
                     {
                         //本回合结束
                         mBattleActions = BattleActions.Moved;
@@ -313,7 +312,7 @@ namespace PokemonCore.Combat
 
                     // SingleMoving(CombatMoves);
                     
-                    var singleDamages = SingleMoving(CombatMoves);
+                    var singleDamages = SingleActioning(CombatActions);
                     Damaging(singleDamages);
                     WinOrLose();
                     if (mBattleResults != BattleResults.Succeed && mBattleResults != BattleResults.Failed)
@@ -333,39 +332,61 @@ namespace PokemonCore.Combat
         }
 
 
-        List<Damage> SingleMoving(List<CombatMove> cm)
+        List<Damage> SingleActioning(List<CombatAction> cm)
         {
             if (cm.Count == 0) return null;
-            var c = cm[0];
+            var action = cm[0];
             cm.RemoveAt(0);
-            FieldEffect?.ForEach(effect => effect.OnMoving(effect,c));
-
-            foreach (var effectInfo in c.move._baseData.EffectInfos.OrEmptyIfNull())
+            if (action is CombatMove)
             {
-                int rand = Game.Random.Next(101);
-                if (rand <= effectInfo.EffectChance)
+                var c = action as CombatMove;
+                FieldEffect?.ForEach(effect => effect.OnMoving(effect,c));
+            
+                foreach (var effectInfo in c.move._baseData.EffectInfos.OrEmptyIfNull())
                 {
-                    Effect effect = Game.LuaEnv.Global.Get<Effect>("effect" + effectInfo.EffectID);
-
-                    switch (effectInfo.TargetType)
+                    int rand = Game.Random.Next(101);
+                    if (rand <= effectInfo.EffectChance)
                     {
-                        case Targets.USER:
-                            c.Sponsor.AddEffect(effect);
+                        Effect effect = Game.LuaEnv.Global.Get<Effect>("effect" + effectInfo.EffectID);
 
-                            break;
-                        case Targets.SELECTED_OPPONENT_POKEMON:
-                        case Targets.ALL_OPPONENTS:
-                            c.Targets.ForEach(e => e.AddEffect(effect));
-                            break;
+                        switch (effectInfo.TargetType)
+                        {
+                            case Targets.USER:
+                                c.Sponsor.AddEffect(effect);
+                                break;
+                            case Targets.SELECTED_OPPONENT_POKEMON:
+                                c.Targets?.ForEach(e => e.AddEffect(effect));
+                                break;
+                            case Targets.ALL_OPPONENTS:
+                                Pokemons.ForEach(e => e.AddEffect(effect));
+                                break;
+                            case Targets.ENTIRE_FIELD:
+                                FieldEffect?.Add(effect);
+                                break;
+                        }
                     }
                 }
-            }
             
-            c = c.Sponsor.OnMoving(c);
+                c = c.Sponsor.OnMoving(c);
 
-            OnMove?.Invoke(c);
-            var damages = GenerateDamages(c);
-            return damages;
+                OnMove?.Invoke(c);
+                var damages = GenerateDamages(c);
+                return damages;
+            }
+            else if (action is CombatItem)
+            {
+                var c = action as CombatItem;
+                Effect effect = Game.LuaEnv.Global.Get<Effect>($"{c.item.tag.ToString()}{c.item.ID}");
+
+                effect?.OnUseItem(effect,c);
+                
+                // c.Targets?.ForEach(poke => poke.AddEffect(effect));
+
+                OnMove?.Invoke(c);
+                return null;
+            }
+            return null;
+
         }
 
         #endregion
@@ -373,7 +394,7 @@ namespace PokemonCore.Combat
         #region MoveAction
 
         public List<Instruction> Instructions;
-        public List<CombatMove> CombatMoves;
+        public List<CombatAction> CombatActions;
         public List<Tuple<CombatPokemon, Pokemon>> SwitchPokemons;
         public List<Damage> Damages;
 
@@ -415,30 +436,28 @@ namespace PokemonCore.Combat
 
         void Damaging(Damage dmg)
         {
-            if (dmg.sponsor.HP <= 0) return;
+            if (dmg.sponsor.HP > 0)
+            {
+                if (dmg.target.HP <= 0)
+                {
+                    dmg.target = RefindTarget(dmg);
+                }
             
-            dmg = dmg.sponsor.OnHit(dmg);
-            OnHit?.Invoke(dmg);
+                dmg = dmg.sponsor.OnHit(dmg);
+                OnHit?.Invoke(dmg);
 
-            dmg.target.BeHurt(dmg);
-            if (dmg.target.HP > 0)
-                OnHitted?.Invoke(dmg.target);
-
-            Damages.Add(dmg);
+                if (dmg.target != null)
+                {
+                    dmg.target.BeHurt(dmg);
+                    if (dmg.target.HP > 0)
+                        OnHitted?.Invoke(dmg.target);
+                    Damages.Add(dmg);
+                }
+            }
+            
             FieldEffect?.ForEach(effect => Pokemons?.ForEach(pokemon => effect?.OnDamaged(effect,dmg.sponsor,dmg.target)));
-
-            // else
-            // {
-            //     //TODO：一般来说只有2v2以上的对战才需要重新找个target
-            //     dmg.target = RefindTarget(dmg);
-            //     dmg.target.BeHurt(dmg);
-            // }
         }
-
-        void Damaged()
-        {
-            // return cm;
-        }
+        
 
         /// <summary>
         /// 在回合结束后需要进行结算的Effects
@@ -493,19 +512,15 @@ namespace PokemonCore.Combat
         /// 捕捉宝可梦！
         /// </summary>
         /// <param name="pokemons"></param>
-        public void CatchPokemon(CombatPokemon currentPoke, int pokeBall, List<int> pokemons)
+        public void CatchPokemon(CombatPokemon currentPoke, int pokeBall, List<CombatPokemon> pokemons)
         {
             //众所周知，被捕捉的宝可梦一定是opponent
             // var pokes = (from combatPokes in opponentsPokemons
             //     join pokemon in pokemons on combatPokes.CombatID equals pokemon
             //     select combatPokes).ToList();
-            List<CombatPokemon> pokes = new List<CombatPokemon>();
-            foreach (var pokemon in pokemons)
-            {
-                pokes.Add(GetCombatPokemon(pokemon));
-            }
 
-            foreach (var p in pokes.OrEmptyIfNull())
+
+            foreach (var p in pokemons.OrEmptyIfNull())
             {
                 bool result = Calculator.Catch(pokeBall, currentPoke.pokemon, p.pokemon);
                 OnCatchPokemon?.Invoke(result);
@@ -580,28 +595,29 @@ namespace PokemonCore.Combat
             switch (ins.command)
             {
                 case Command.Move:
-                    CombatMoves.Add(GenerateCombatMove(ins));
+                    CombatActions.Add(GenerateCombatMove(ins));
                     break;
                 case Command.Items:
-                    Item.Tag tag = (Item.Tag) ins.ID;
-                    int ID = ins.target[0];
-                    ins.target.RemoveAt(0);
-
-                    switch (tag)
-                    {
-                        case Item.Tag.PokeBalls:
-                            CatchPokemon(GetCombatPokemon(ins.CombatPokemonID), ID, ins.target);
-                            if (opponentTrainers.TrainerAllFaint())
-                            {
-                                mBattleResults = BattleResults.Captured;
-                                OnBattleEnd?.Invoke(BattleResults.Captured);
-                            }
-
-                            break;
-                        case Item.Tag.Berries:
-                        case Item.Tag.Medicine:
-                            break;
-                    }
+                    CombatActions.Add(GenerateCombatItem(ins));
+                    // Item.Tag tag = (Item.Tag) ins.ID;
+                    // int ID = ins.target[0];
+                    // ins.target.RemoveAt(0);
+                    //
+                    // switch (tag)
+                    // {
+                    //     case Item.Tag.PokeBalls:
+                    //         CatchPokemon(GetCombatPokemon(ins.CombatPokemonID), ID, ins.target);
+                    //         if (opponentTrainers.TrainerAllFaint())
+                    //         {
+                    //             mBattleResults = BattleResults.Captured;
+                    //             OnBattleEnd?.Invoke(BattleResults.Captured);
+                    //         }
+                    //
+                    //         break;
+                    //     case Item.Tag.Berries:
+                    //     case Item.Tag.Medicine:
+                    //         break;
+                    // }
 
                     break;
                 case Command.SwitchPokemon:
@@ -621,7 +637,6 @@ namespace PokemonCore.Combat
                 case Command.Run:
                     if (CanRun)
                     {
-                        //只有在1（trainer）v1（trainer）的时候才能run！
                         if (alliesTrainers.Contains(Trainers[ins.ID]))
                         {
                             mBattleResults = BattleResults.Ran;
@@ -633,9 +648,7 @@ namespace PokemonCore.Combat
                             OnBattleEnd?.Invoke(BattleResults.Succeed);
                         }
                     }
-                    else
-                    {
-                    }
+
 
                     break;
                 case Command.Skip:
@@ -695,9 +708,17 @@ namespace PokemonCore.Combat
             return null;
         }
 
-        public CombatMove GenerateCombatMoveFromItem()
+        public CombatItem GenerateCombatItem(Instruction ins)
         {
-            return null;
+            CombatPokemon sponsor =
+                (from poke in Pokemons where poke.CombatID == ins.CombatPokemonID select poke).ToArray()[0];
+            int itemID = ins.target[0];
+            ins.target.Remove(0);
+            List<CombatPokemon> target =
+                (from poke in Pokemons
+                    join combatPokemonID in ins.target on poke.CombatID equals combatPokemonID
+                    select poke).ToList();
+            return new CombatItem(sponsor, target, Game.ItemsData[((Item.Tag) ins.ID, itemID)]);
         }
 
         public CombatMove GenerateCombatMove(Instruction ins)
@@ -713,7 +734,7 @@ namespace PokemonCore.Combat
             return move;
         }
 
-        public void SortCombatMoves(List<CombatMove> cms)
+        public void SortCombatActions(List<CombatAction> cms)
         {
             if (cms != null && cms.Count != 0)
             {

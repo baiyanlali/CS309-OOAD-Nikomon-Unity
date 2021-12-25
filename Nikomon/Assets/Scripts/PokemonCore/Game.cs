@@ -165,7 +165,7 @@ namespace PokemonCore
             //     OnDoNotHaveSaveFile?.Invoke();
 
             LuaEnv = new LuaEnv();
-            LuaEnv.DoString("require 'Effect'");
+            LuaEnv.DoString("require 'GameMain'");
             // NatureData = new Dictionary<int, Nature>();
             // NatureData.Add(0, new Nature(0, new float[] {0, 0, 0, 0, 0}));
             // if (HaveSave)

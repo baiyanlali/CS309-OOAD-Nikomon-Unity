@@ -69,6 +69,11 @@ public class PokemonIndentity : MonoBehaviour, IInteractive
     private Dictionary<string, Action> completeList=new Dictionary<string, Action>();
     public void DoMove(CombatMove move, Action onComplete)
     {
+        if (move == null)
+        {
+            onComplete?.Invoke();
+            return;
+        }
         if (move.move._baseData.Category == Category.Physical)
         {
             anim.SetTrigger(Attack);

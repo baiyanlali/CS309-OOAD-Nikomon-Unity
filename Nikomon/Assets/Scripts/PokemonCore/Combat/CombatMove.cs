@@ -5,14 +5,42 @@ using System.Reflection;
 using PokemonCore.Attack;
 using PokemonCore.Attack.Data;
 using PokemonCore.Combat.Interface;
+using PokemonCore.Inventory;
 using PokemonCore.Utility;
 
 namespace PokemonCore.Combat
 {
+
+    public class CombatAction
+    {
+        public int Priority { get; set; }
+        public CombatPokemon Sponsor { get; set; }
+        public List<CombatPokemon> Targets { get; set; }
+    }
+
+    public class CombatItem:CombatAction
+    {
+        public Item item;
+        public CombatItem(CombatPokemon sponsor,List<CombatPokemon> targets,Item item)
+        {
+            this.item = item;
+            this.Sponsor = sponsor;
+            this.Targets = targets;
+        }
+        public override string ToString()
+        {
+            return
+                $"{item.name}:\n" +
+                $"sponsor:{Sponsor.Name}\n" +
+                $"target:{(from t in Targets select t.Name).ToList().ConverToString()}\n";
+        }
+        
+    }
+    
     /// <summary>
     /// 战斗使用的Move方法,为什么要把属性复制一遍->便于在战斗中修改
     /// </summary>
-    public class CombatMove
+    public class CombatMove:CombatAction
     {
         public Battle battle;
         public Move move { get; private set; }
@@ -23,10 +51,7 @@ namespace PokemonCore.Combat
         public int TotalPP { get; set; }
         public byte pp { get; set; }
         public int? Accuracy { get; set; }
-        public int Priority { get; set; }
-        public CombatPokemon Sponsor { get; set; }
-        public List<CombatPokemon> Targets { get; set; }
-        
+
         public Category Category { get; set; }
 
 
@@ -45,14 +70,7 @@ namespace PokemonCore.Combat
             this.power = move._baseData.Power;
             battle.OnThisTurnEnd += () => { move.PP = pp; };
             this.Category = move._baseData.Category;
-
-            // Effects = new List<Effect>();
-            // foreach (var effectInfo in move._baseData.EffectInfos)
-            // {
-            //     Effect effect = Game.LuaEnv.Global.Get<Effect>("effect" + effectInfo.EffectID);
-            //     //effect.Round = effectInfo.EffectRound;
-            //     Effects.Add(effect);
-            // }
+            
         }
 
         public override string ToString()
