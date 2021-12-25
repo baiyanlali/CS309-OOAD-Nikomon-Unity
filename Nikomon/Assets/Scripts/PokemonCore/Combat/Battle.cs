@@ -295,9 +295,9 @@ namespace PokemonCore.Combat
                     if (CombatMoves.Count == 0)
                     {
                         //本回合结束
-                        Damages.Clear();
                         mBattleActions = BattleActions.Moved;
                         Moved();
+                        Damages.Clear();
                         UpdateEffect();
                         WinOrLose();
                         OnThisTurnEnd?.Invoke();
@@ -311,7 +311,6 @@ namespace PokemonCore.Combat
                     }
 
                     // SingleMoving(CombatMoves);
-                    // Damaging(Damages);
                     
                     var singleDamages = SingleMoving(CombatMoves);
                     Damaging(singleDamages);
@@ -339,7 +338,6 @@ namespace PokemonCore.Combat
             var c = cm[0];
             cm.RemoveAt(0);
             FieldEffect?.ForEach(effect => effect.OnMoving(effect,c));
-            c = c.Sponsor.OnMoving(c);
 
             foreach (var effectInfo in c.move._baseData.EffectInfos.OrEmptyIfNull())
             {
@@ -361,6 +359,8 @@ namespace PokemonCore.Combat
                     }
                 }
             }
+            
+            c = c.Sponsor.OnMoving(c);
 
             OnMove?.Invoke(c);
             var damages = GenerateDamages(c);

@@ -14,6 +14,7 @@ using PokemonCore.Character;
 using PokemonCore.Combat;
 using PokemonCore.Inventory;
 using UnityEditor.VersionControl;
+using UnityEngine.EventSystems;
 using Debug = UnityEngine.Debug;
 
 public class PCManager : BaseUI
@@ -47,6 +48,7 @@ public class PCManager : BaseUI
     public GameObject GameObjectdesc;
     private GameObject SlotPrefab;
     public Transform _Gird;
+    
 
     private void Awake()
     {
@@ -232,6 +234,7 @@ public class PCManager : BaseUI
 
         BoxTitle.text = pc.BoxNames[pc.ActiveBox];
         TableUI.Init(trainer,new []{"查看信息", "交换","持有物","放生","放入仓库","取消"},HandleChooserTalbeUI);
+        EventSystem.current.SetSelectedGameObject(FirstSelectable);
     }
 
     private void HandleChooserTalbeUI(int chooseIndex,int bagIndex)
@@ -276,6 +279,7 @@ public class PCManager : BaseUI
                             exchangeIndex[i] = false;
                             (trainer.party[i], trainer.party[bagIndex]) = (trainer.party[bagIndex], trainer.party[i]);
                             TableUI.ExchangeData(trainer);
+                            EventSystem.current.SetSelectedGameObject(FirstSelectable);
                             return;
                         }
                         else
@@ -286,6 +290,7 @@ public class PCManager : BaseUI
                             //pc.SwitchPCAndPartyPokemon(trainer, bagIndex, i-6);
                             pc.SwitchPartyAndPCPokemon(trainer, bagIndex, i-6);
                             UIManager.Instance.Refresh<PCManager>();
+                            EventSystem.current.SetSelectedGameObject(FirstSelectable);
                             return;
                         }
                     }
@@ -309,6 +314,7 @@ public class PCManager : BaseUI
                             return;
                         }
                         TableUI.UpdateData(trainer);
+                        EventSystem.current.SetSelectedGameObject(FirstSelectable);
                     }
                     else
                     {
@@ -340,6 +346,7 @@ public class PCManager : BaseUI
                 
                 //pc.Pokemons[19] = temp4;
                 UIManager.Instance.Refresh<PCManager>();
+                EventSystem.current.SetSelectedGameObject(FirstSelectable);
                 break;
             case 5:
                 Debug.Log("取消");

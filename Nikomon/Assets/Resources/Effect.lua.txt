@@ -24,6 +24,7 @@ Combat = CS.PokemonCore.Combat
 Game=CS.PokemonCore.Game
 
 
+
 --这个effect是所有宝可梦都拥有的一个effect，效果是如果发出来的技能和本身属性相同，则威力*1.5，注意取整
 effect0={
     ID=0,
@@ -154,15 +155,19 @@ effect5={ --over!
 effect6={ --over!
     ID = 6,
     InnerName = 'Burn',
-    Round = 1,
+    Round = 4, --因为有两个效果展示，所以Round为实际round的两倍
     OnMoving=function(self,combatMove)
-        if combatMove.Category == PokemonCore.Attack.Data.Category.Physical then
-            combatMove.power = combatMove.power/2
+        print("Category",combatMove.Category)
+        if combatMove.Category == CS.PokemonCore.Attack.Data.Category.Physical then
+            Game.battle:Report('宝可梦在燃烧！造成物理伤害减半！')
+            combatMove.power = math.floor( combatMove.power/2 )
         end
+        self.Round=self.Round-1
     end
     ,
     OnMoved = function(self,sponsor)
-        sponsor.TotalHP = sponsor.TotalHP - sponsor.HP / 16
+        Game.battle:Report('宝可梦在燃烧！血量减少！')
+        sponsor.HP = sponsor.HP - math.floor( sponsor.TotalHP / 16 )
         self.Round=self.Round-1
     end
 
@@ -172,17 +177,19 @@ effect10 = {
     InnerName = 'Counter',
     Round = 1,
     
-    
-    OnMoving=function(self,combatMove)
-        if combatMove.Category == PokemonCore.Attack.Data.Category.Physical then
-            -- TODO: 变为改变damage的rate
-            combatMove.power = combatMove.power/2
+    OnMoving = function(self,combatMove)
+        print("use Counter")
+        Battle = CS.PokemonCore.Game.battle
+        print(Battle.Damages[0].finalDamage)
+        for i,d in pairs(Battle.Damages) do
+            if d.combatMove.Category == CS.PokemonCore.Attack.Data.Category.Physical then
+                Game.battle:Report('宝可梦反弹了伤害！')
+                combatMove.Targets[0].HP = combatMove.Targets[0].HP - d.finalDamage * 2
+                print("double damage")
+                break
+            end
         end
-    end
-,
-    OnMoved = function(self,sponsor)
-        sponsor.TotalHP = sponsor.TotalHP - sponsor.HP / 16
-        effect6.Round=effect6.Round-1
+        self.Round = self.Round-1
     end
 }
 
