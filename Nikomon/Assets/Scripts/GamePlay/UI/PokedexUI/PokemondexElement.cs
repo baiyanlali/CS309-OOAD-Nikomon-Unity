@@ -16,7 +16,6 @@ namespace GamePlay.UI.BattleUI
 
         public void Init(PokemonData pokemon)
         {
-            //TODO:这个Name是不是重新命名的呀？这里的Pokemon是宝可梦的类吗？
             Name.text = pokemon.innerName;
             (Name as TextTranslated).AutoTranslatedOnAwake = false;
             //print(pokemon.innerName);
