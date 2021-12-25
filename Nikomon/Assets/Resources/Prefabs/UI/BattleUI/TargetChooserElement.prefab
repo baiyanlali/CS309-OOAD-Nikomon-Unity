@@ -161,9 +161,9 @@ GameObject:
   m_Component:
   - component: {fileID: 3078430860534657238}
   - component: {fileID: 3078430860534657239}
-  - component: {fileID: 1670293353875677752}
+  - component: {fileID: 2074732450160517762}
   m_Layer: 5
-  m_Name: PokemonChooserElement
+  m_Name: TargetChooserElement
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -202,7 +202,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 0
+    m_Mode: 3
     m_WrapAround: 0
     m_SelectOnUp: {fileID: 0}
     m_SelectOnDown: {fileID: 0}
@@ -237,7 +237,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_IsOn: 0
---- !u!114 &1670293353875677752
+--- !u!114 &2074732450160517762
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -246,16 +246,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 3078430860534657237}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0920901325ef09341aad0b0debd01b6d, type: 3}
+  m_Script: {fileID: 11500000, guid: 20acd15777619d84abee7b735d536e02, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  FirstSelectable: {fileID: 0}
-  ExitBtn: {fileID: 0}
-  TargetChooserPrefab: {fileID: 0}
-  Allies: {fileID: 0}
-  Opponents: {fileID: 0}
-  Submit: {fileID: 0}
-  Cancel: {fileID: 0}
+  pokeImage: {fileID: 3078430859882219232}
+  pokeName: {fileID: 3078430860585395364}
+  trainerName: {fileID: 3078430861190929167}
+  toggle: {fileID: 3078430860534657239}
 --- !u!1 &3078430860585395362
 GameObject:
   m_ObjectHideFlags: 0

@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using GamePlay;
+using PokemonCore;
 using PokemonCore.Combat;
 using UnityEngine;
 using UnityEngine.UI;
@@ -22,7 +23,7 @@ public class TargetChooserUI : MonoBehaviour
         pokeImage.sprite = GameResources.PokemonIcons[pokemon.pokemon.ID];
         toggle = GetComponent<Toggle>();
         pokeName.text = pokemon.Name;
-        trainerName.text = "???";
+        trainerName.text = Game.battle.getTrainerByID(pokemon.TrainerID);
         toggle.onValueChanged.AddListener((e)=>
         {
             if(e==true)

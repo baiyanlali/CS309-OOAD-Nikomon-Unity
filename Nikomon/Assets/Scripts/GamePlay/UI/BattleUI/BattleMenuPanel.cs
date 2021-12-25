@@ -159,6 +159,7 @@ namespace GamePlay.UI.BattleUI
             if (move._baseData.Target == Targets.SELECTED_OPPONENT_POKEMON &&
                 BattleHandler.Instance.OpponentPokemons.Count == 1)
             {
+                UIManager.Instance.Hide(this);
                 Instruction instruction =
                     new Instruction(currentPoke.CombatID, Command.Move, index,
                         BattleHandler.Instance.OpponentPokemons[0].CombatID);
@@ -169,29 +170,31 @@ namespace GamePlay.UI.BattleUI
                 // TargetChooserHandler.ShowTargetChooser(move._baseData.Target);
                 // TargetChooserHandler.OnCancelChoose = () => { MoveUI.SetActive(true); };
                 Action<List<int>> onChoose = (o) => OnChooseTarget(o, index);
-                Action onCancel = () => UIManager.Instance.Hide(this);
+                // Action onCancel = () => UIManager.Instance.Hide<Targetch>(this);
                 UIManager.Instance.Show<TargetChooserPanel>(
                     ShowType.Type1,
                     BattleHandler.Instance.OpponentPokemons,
                     BattleHandler.Instance.AlliesPokemons,
                     move._baseData.Target,
                     onChoose,
-                    onCancel
+                    null
                 );
             }
+            void OnChooseTarget(List<int> targets, int index)
+            {
+                UIManager.Instance.Hide<TargetChooserPanel>();
+                // UIManager.Instance.Hide(this);
+                // UnityEngine.Debug.Log(targets.ConverToString());
+                Instruction instruction =
+                    new Instruction(currentPoke.CombatID, Command.Move, index,
+                        targets);
+                BuildInstrustruction(instruction);
+            }
 
-            UIManager.Instance.Hide(this);
             // UIManager.Instance.Refresh<DialogPanel>();
         }
 
-        private void OnChooseTarget(List<int> targets, int index)
-        {
-            UnityEngine.Debug.Log(targets.ConverToString());
-            Instruction instruction =
-                new Instruction(currentPoke.CombatID, Command.Move, index,
-                    targets);
-            BuildInstrustruction(instruction);
-        }
+        
 
 
         public void BuildInstrustruction(Instruction instruction)

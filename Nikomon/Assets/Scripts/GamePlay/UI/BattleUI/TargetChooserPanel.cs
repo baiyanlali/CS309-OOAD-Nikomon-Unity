@@ -13,8 +13,6 @@ namespace GamePlay.UI.BattleUI
 {
     public class TargetChooserPanel : BaseUI
     {
-        
-        
         public GameObject TargetChooserPrefab;
         public Transform Allies;
         public Transform Opponents;
@@ -28,20 +26,22 @@ namespace GamePlay.UI.BattleUI
         public Action OnCancelChoose;
         public override void Init(params object[] args)
         {
-            Allies = GET(Allies, "Panel/Ally");
-            Opponents = GET(Opponents, "Panel/Opponent");
-            Submit = GET(Submit, "Panel/Submit");
-            Cancel = GET(Cancel, "Panel/Cancel");
+            // Allies = GET(Allies, "Panel/Ally");
+            // Opponents = GET(Opponents, "Panel/Opponent");
+            // Submit = GET(Submit, "Panel/Submit");
+            // Cancel = GET(Cancel, "Panel/Cancel");
             
             ExitBtn = Cancel;
             
             Cancel.onClick.RemoveAllListeners();
-            Cancel.onClick.AddListener(()=>OnCancelChoose());
+            Cancel.onClick.AddListener(() =>
+            {
+                UIManager.Instance.Hide(this);
+                OnCancelChoose();
+            });
 
             base.Init(args);
-
-            TargetChooserPrefab = GameResources.SpawnPrefab(typeof(PokemonChooserElementUI));
-
+            
             ShowType type = (ShowType) args[0];
             if (type == ShowType.Type1)
             {
@@ -79,6 +79,11 @@ namespace GamePlay.UI.BattleUI
                     }
                 }
             }
+
+            // TargetChooserPrefab = GameResources.SpawnPrefab(typeof(PokemonChooserElementUI));
+            // TargetChooserPrefab = GameResources.SpawnPrefab(typeof(TargetChooserUI));
+
+            
         }
 
         /// <summary>
@@ -93,6 +98,7 @@ namespace GamePlay.UI.BattleUI
             Init(args);
         }
 
+        
 
         /// <summary>
         /// 0 for type,
@@ -103,6 +109,8 @@ namespace GamePlay.UI.BattleUI
         public override void OnEnter(params object[] args)
         {
             base.OnEnter(args);
+            
+            
             
         }
 
@@ -117,7 +125,11 @@ namespace GamePlay.UI.BattleUI
             }
             else if (pokemons.Count > parent.transform.childCount)
             {
-                GameObject o = Instantiate(TargetChooserPrefab, parent);
+                int chooserNeededAdded = pokemons.Count - parent.transform.childCount;
+                for (int i = 0; i < chooserNeededAdded; i++)
+                {
+                    GameObject o = Instantiate(TargetChooserPrefab, parent);
+                }
             }
 
             List<Toggle> toggles = new List<Toggle>();
@@ -127,9 +139,9 @@ namespace GamePlay.UI.BattleUI
                 targetChooserUI.gameObject.SetActive(true);
                 toggles.Add(parent.transform.GetChild(i).GetComponent<Toggle>());
                 targetChooserUI.Init(pokemons[i]);
-                toggle.Add(targetChooserUI.GetComponent<TargetChooserUI>());
+                toggle.Add(targetChooserUI);
                 if (pokemons[i].TrainerID == Game.trainer.id)
-                    userToggle.Add(targetChooserUI.GetComponent<TargetChooserUI>());
+                    userToggle.Add(targetChooserUI);
             }
             toggles.AutomateNavigation(DirectionType.Horizontal);
 

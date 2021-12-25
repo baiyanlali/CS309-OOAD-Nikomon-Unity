@@ -63,6 +63,7 @@ namespace GamePlay
 
             //TargetChooser
             [typeof(TargetChooserPanel)] = "Prefabs/UI/BattleUI/PokemonChooser", 
+            [typeof(TargetChooserUI)] = "Prefabs/UI/BattleUI/TargetChooserElement", 
             [typeof(TargetChooserHandler)] = "Prefabs/UI/BattleUI/PokemonChooserElement",
             
             //Battle

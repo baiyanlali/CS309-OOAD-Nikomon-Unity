@@ -661,6 +661,18 @@ namespace PokemonCore.Combat
 
         #region 工具方法
 
+        public string getTrainerByID(int id)
+        {
+            if (Trainers.TryGetValue(id, out Trainer trainer))
+            {
+                return trainer.name;
+            }
+            else
+            {
+                return "???";
+            }
+        }
+        
         public CombatPokemon RefindTarget(Damage dmg)
         {
             // bool isAlly = alliesPokemons.Contains(dmg.sponsor);
