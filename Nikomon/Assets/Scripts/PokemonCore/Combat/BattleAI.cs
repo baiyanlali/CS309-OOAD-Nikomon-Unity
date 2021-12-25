@@ -64,7 +64,7 @@ namespace PokemonCore.Combat
                     }
                     else
                     {
-                        return;
+                        continue;
                     }
 
                 }

@@ -24,6 +24,7 @@ public class TargetChooserUI : MonoBehaviour
         toggle = GetComponent<Toggle>();
         pokeName.text = pokemon.Name;
         trainerName.text = Game.battle.getTrainerByID(pokemon.TrainerID);
+        toggle.onValueChanged.RemoveAllListeners();
         toggle.onValueChanged.AddListener((e)=>
         {
             if(e==true)

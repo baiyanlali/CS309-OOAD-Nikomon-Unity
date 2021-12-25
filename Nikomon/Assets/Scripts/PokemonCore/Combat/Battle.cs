@@ -81,7 +81,8 @@ namespace PokemonCore.Combat
 
         public override string ToString()
         {
-            return $"{CombatPokemonID}----{command}-----{ID}";
+            var pokemon = Game.battle.GetCombatPokemon(CombatPokemonID);
+            return $"From {Game.battle.getTrainerByID(pokemon.TrainerID)}: {pokemon.Name}----{command}-----{ID}";
         }
     }
 
@@ -416,7 +417,6 @@ namespace PokemonCore.Combat
         {
             if (dmg.sponsor.HP <= 0) return;
             
-            ;
             dmg = dmg.sponsor.OnHit(dmg);
             OnHit?.Invoke(dmg);
 
@@ -643,7 +643,7 @@ namespace PokemonCore.Combat
             }
 
 
-            if (Instructions.Count == Pokemons.Count)
+            if (Instructions.Count == Pokemons.Where(pokemon => pokemon.HP>0).ToArray().Length)
             {
                 //如果所有指令都接收到则进入move
                 Instructions.Clear();

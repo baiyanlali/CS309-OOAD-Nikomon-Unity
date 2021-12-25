@@ -11,7 +11,7 @@ namespace GamePlay.UI.BattleUI
         public GameObject AlliesState;
         public GameObject OpponentState;
         public GameObject PokemonStateUIPrefab;
-        public override UILayer Layer { get; set; } =  UILayer.MainUI;
+        public override UILayer Layer =>  UILayer.MainUI;
         // public override bool IsBlockPlayerControl => true;
         public override void Init(params object[] args)
         {
