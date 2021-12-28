@@ -275,6 +275,7 @@ namespace PokemonCore.Combat
 
         public void UpdateEffect()
         {
+            FieldEffect?.ForEach(effect => effect.Round--);
             FieldEffect.EffectEliminate();
             Pokemons.ForEach(pokemon => pokemon.Effects.EffectEliminate());
         }

@@ -126,7 +126,7 @@ namespace PokemonCore.Combat
 
         public int Exp { get; }
 
-        public int? Type1 { get; private set; }
+        public int? Type1 { get; set; }
 
         public int? Type2 { get; set; }
 

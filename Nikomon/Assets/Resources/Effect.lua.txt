@@ -87,7 +87,7 @@ effect2={ --over!
 effect3={ --over!
     ID=3,
     InnerName='Poison',
-    Round=2,
+    Round=3,
     EffectLastType=Combat.Interface.EffectLastType.ROUND,
     EffectChance=100,
     
@@ -108,7 +108,7 @@ effect4={ --over!
 
     OnMoving=function(self,combatMove)
         print(InnerName)
-        effect4.Round = effect4.Round-1
+        self.Round = self.Round-1
         print(effect5.Round)
         for t in combatMove.move._baseData.MoveTag do
             if(t=="BrokeFreeze") then
@@ -127,12 +127,11 @@ effect5={ --over!
     --25%无法使用技能
     
     OnMoving=function(self,combatMove)
-        print(self)
         Game.battle:Report('宝可梦被麻痹了！无法使用技能！')
         rand = CS.PokemonCore.Game.Random:Next(101)
         print("Paralysis: OnMoving",rand)
 
-        if rand<101 then
+        if rand<25 then
             print("Paralysis Succeed!")
             combatMove.Targets = nil
         end
@@ -197,16 +196,52 @@ effect9 = {
     end
 }
 
+effect205={ --over in 12.28
+    ID = 205,
+    InnerName = 'Rollout',
+    Round = 5,
+    OnChoosing = function(self,combatPoke) 
+        print("skip turn")
+        instruction = Combat.Instruction(combatPoke.CombatID,CS.PokemonCore.Combat.Command.Skip,-1,-1)
+        self.Round=self.Round-1
+        return instruction
+    end
+
+}
+effect487={
+    ID = 487,
+    InnerName = 'Soak',
+    Round = 1,
+    OnMoving=function(self,combatMove)
+        Game.battle:Report('对手宝可梦现在是水属性的了！')
+        combatMove.Targets[0].Type2 = nil
+        combatMove.Targets[0].Type1 = 10
+
+
+    end
+}
+
+effect569={
+    ID = 569,
+    InnerName = 'Ion Deluge',
+    Round = 1, --因为有两个效果展示，所以Round为实际round的两倍
+    OnMoving=function(self,combatMove)
+        Game.battle:Report('场地布满了电浆！一般招式变为电属性')
+        if combatMove.types.ID == 0 then
+            combatMove.types = Game.TypesMap[12] --12
+        end
+    end
+}
+
 effect11={
     ID=11,
     InnerName='raiseATK',
     Round=3,
-    EffectLastType=CS.PokemonCore.Combat.Interface.EffectLastType.UNTIL_SWITCH_POKEMON,
     EffectChance=100,
     
     OnMoving=function(self,combatMove) 
 		combatMove.Sponsor.ATKStateChange.set(ATKStateChange.get() + 1)
-        Round=Round-1
+        self.Round = self.Round-1
     end
 }
 effect12={
