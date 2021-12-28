@@ -120,9 +120,11 @@ public class BattleHandler : MonoBehaviour
     {
         print("End Battle");
         UIManager.Instance.PopAllUI(UILayer.NormalUI);
+        UIManager.Instance.PopAllUI(UILayer.MainUI);
         GlobalManager.Instance.CanPlayerControlled = true;
         // BattleUIHandler.Instance.EndBattle();
         CurrentPokemon = null;
+
         BattleFieldHandler.Instance.EndBattle(results);
     }
 
