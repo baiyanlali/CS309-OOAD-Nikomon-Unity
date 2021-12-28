@@ -11,7 +11,7 @@ using UnityEngine;
 
 public class PokemonLevelUpState
 {
-    public Pokemon Pokemon;//升级前的宝可梦！！！
+    public Pokemon Pokemon;//升级后的宝可梦！！！
     public Experience ExpBefore;
 }
 

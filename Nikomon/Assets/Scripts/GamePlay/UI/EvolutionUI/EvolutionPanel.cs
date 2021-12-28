@@ -47,15 +47,55 @@ public class EvolutionPanel : BaseUI
         //_PokemonOrignal()
         
         EvolutionBalls.transform.localScale=Vector3.zero;
-        LeanTween.scale(EvolutionBalls, Vector3.one, 1).setOnComplete(() =>
+        LeanTween.scale(EvolutionBalls, Vector3.one, 2).setOnComplete(() =>
         {
             pokenmons.transform.Find(_PokemonOrignalName).gameObject.SetActive(false);
             pokenmons.transform.Find(_PokemonEvolutedName).gameObject.SetActive(true);
-            LeanTween.scale(EvolutionBalls, Vector3.zero, 1).setOnComplete(() =>
+            LeanTween.scale(EvolutionBalls, Vector3.one, 2).setOnComplete(() =>
             {
-                //pokenmons.transform.Find(_PokemonEvolutedName).gameObject.SetActive(true);
+                LeanTween.scale(EvolutionBalls, Vector3.zero, 2).setOnComplete(() =>
+                {
+                    //pokenmons.transform.Find(_PokemonEvolutedName).gameObject.SetActive(true);
+                });
             });
             
+        });
+        
+        Vector3 temp = new Vector3();
+        temp.x = 0;
+        temp.y = 0;
+        temp.z = -180;
+        LeanTween.rotate(EvolutionBalls, temp, 1).setOnComplete(() =>
+        {
+            temp.z = 0;
+            LeanTween.rotate(EvolutionBalls, temp, 1).setOnComplete(() =>
+            {
+                temp.z = 390;
+                LeanTween.rotate(EvolutionBalls, temp, 0.5f).setOnComplete(() =>
+                {
+                    temp.z = 360;
+                    LeanTween.rotate(EvolutionBalls, temp, 0.5f).setOnComplete(() =>
+                    {
+                        temp.z = 390;
+                        LeanTween.rotate(EvolutionBalls, temp, 0.5f).setOnComplete(() =>
+                        {
+                            temp.z = 360;
+                            LeanTween.rotate(EvolutionBalls, temp, 0.5f).setOnComplete(() =>
+                            {
+                                temp.z = 180;
+                                LeanTween.rotate(EvolutionBalls, temp, 1).setOnComplete(() =>
+                                {
+                                    temp.z = 0;
+                                    LeanTween.rotate(EvolutionBalls, temp, 1).setOnComplete(() =>
+                                    {
+            
+                                    });
+                                });
+                            });
+                        });
+                    });
+                });
+            });
         });
 
     }
