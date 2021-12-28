@@ -27,7 +27,7 @@ namespace PokemonCore.Attack.Data
         public int MoveID;
         public int Accuracy;
         public int Power;
-        public byte PP ;
+        public int PP ;
         public int Priority ;
         
         public int CriticalLevel ;
@@ -51,7 +51,7 @@ namespace PokemonCore.Attack.Data
             string innerName="",
             int accuracy = 100,
             int power = 0,
-            byte pp = 0,
+            int pp = 0,
             int priority = 0,
             Targets target = Targets.SELECTED_OPPONENT_POKEMON,
             int type = 0,
@@ -84,7 +84,7 @@ namespace PokemonCore.Attack.Data
         //     string innerName="",
         //     int? accuracy = 100,
         //     int? power = 0,
-        //     byte pp = 0,
+        //     int pp = 0,
         //     int priority = 0,
         //     Targets target = Targets.SELECTED_OPPONENT_POKEMON,
         //     int type = 0,

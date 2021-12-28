@@ -348,7 +348,7 @@ namespace PokemonCore.Combat
                     if (rand <= effectInfo.EffectChance)
                     {
                         Effect effect = Game.LuaEnv.Global.Get<Effect>("effect" + effectInfo.EffectID);
-
+                        UnityEngine.Debug.Log("Counter "+effectInfo.EffectID+effectInfo.TargetType);
                         switch (effectInfo.TargetType)
                         {
                             case Targets.USER:

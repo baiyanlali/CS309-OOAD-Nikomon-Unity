@@ -172,22 +172,26 @@ effect6={ --over!
     end
 
 }
-effect10 = {
-    ID = 6,
+effect9 = {
+    ID = 9,
     InnerName = 'Counter',
     Round = 1,
     
     OnMoving = function(self,combatMove)
         print("use Counter")
         Battle = CS.PokemonCore.Game.battle
-        print(Battle.Damages[0].finalDamage)
+        local count=0
         for i,d in pairs(Battle.Damages) do
+            count = count + 1
             if d.combatMove.Category == CS.PokemonCore.Attack.Data.Category.Physical then
                 Game.battle:Report('宝可梦反弹了伤害！')
                 combatMove.Targets[0].HP = combatMove.Targets[0].HP - d.finalDamage * 2
                 print("double damage")
                 break
             end
+        end
+        if count == 0 then
+            Game.battle:Report('宝可梦还没有造成伤害.....')
         end
         self.Round = self.Round-1
     end
