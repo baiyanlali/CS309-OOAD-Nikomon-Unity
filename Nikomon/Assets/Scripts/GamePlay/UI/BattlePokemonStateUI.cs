@@ -24,7 +24,7 @@ public class BattlePokemonStateUI : MonoBehaviour
             LevelText.text = "Lv." + pokemon.Level;
             HealthText.text = pokemon.HP + "/" + pokemon.TotalHP;
             HealthSlider.value = pokemon.HP / (float) pokemon.TotalHP;
-            ExpSlider.value = pokemon.pokemon.Exp.Current / (float) pokemon.pokemon.Exp.NextLevelExp;
+            ExpSlider.value = pokemon.pokemon.Exp.Current / (float) (pokemon.pokemon.Exp.NextLevelExp - pokemon.pokemon.Exp.CurLevelExp);
             ChangeHealthSliderColor();
 
         }
