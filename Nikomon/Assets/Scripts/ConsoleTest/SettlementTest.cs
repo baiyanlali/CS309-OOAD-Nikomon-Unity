@@ -38,7 +38,7 @@ public class SettlementTest : MonoBehaviour
         PokemonLevelUpState temp3 = new PokemonLevelUpState();
         var AIfanfan2_before = new Experience(AIfanfan2.Exp);
         temp3.Pokemon = AIfanfan2;
-        AIfanfan2.Exp.AddExperience(5000);
+        AIfanfan2.Exp.AddExperience(10000);
         temp3.ExpBefore = AIfanfan2_before;
         _PokemonLevelUpStates.Add(temp3);
         UIManager.Instance.Show<SettlementPanel>(_PokemonLevelUpStates);
