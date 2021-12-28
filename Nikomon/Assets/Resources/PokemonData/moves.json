@@ -321,7 +321,7 @@
 		"Target":2,
 		"Type":11,
 		"EffectInfos":[],
-		"innerName":"VineWhip",
+		"innerName":"Vine Whip",
 		"Category":2,
 		"MustHit":false
 	},
@@ -1128,7 +1128,13 @@
 		"CriticalLevel":0,
 		"Target":2,
 		"Type":11,
-		"EffectInfos":[],
+		"EffectInfos":[
+          {
+            "EffectID":5,
+            "EffectChance":100,
+            "TargetType":2
+          }
+        ],
 		"innerName":"Stun Spore",
 		"Category":1,
 		"MustHit":false
@@ -6866,7 +6872,11 @@
 		"CriticalLevel":0,
 		"Target":2,
 		"Type":10,
-		"EffectInfos":[],
+		"EffectInfos":[{
+			"EffectID":487,
+			"EffectChance":100,
+			"TargetType":0
+		}],
 		"innerName":"Soak",
 		"Category":1,
 		"MustHit":false

@@ -28,7 +28,7 @@ namespace PokemonCore.Inventory
         public string name { get;  set; }
         public int effectId { get; set; }
 
-        private List<Object> parameterList { get; }
+        public Object para { get; }
 
         /// <summary>
         /// 用作买卖
@@ -41,7 +41,8 @@ namespace PokemonCore.Inventory
             int id = 0,
             string name = "",
             int value = 0,
-            int effectId = 0
+            int effectId = 0,
+            Object para = null
         )
         {
             this.tag = tag;
@@ -49,6 +50,7 @@ namespace PokemonCore.Inventory
             this.name = name;
             this.value = value;
             this.effectId = effectId;
+            this.para = para;
         }
 
         public void useItem(params object[] args)

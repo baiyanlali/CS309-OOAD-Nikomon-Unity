@@ -14,3 +14,20 @@ PokeBalls0 = {
         
     end,
 }
+
+Medicine0 = {
+
+    ID=0,
+    InnerName = 'Potion',
+    Round = 0,
+    EffectLastType = CS.PokemonCore.Combat.Interface.EffectLastType.ALWAYS,
+    EffectChance = 100,
+    isUsed=false,
+    
+    OnUseItem = function(self, combatItem)
+        print("Using Potion")
+        
+        Game.battle:CatchPokemon(combatItem.Sponsor,0,combatItem.Targets)
+        
+    end,
+}
