@@ -22,12 +22,11 @@ public class SettlementPanel : BaseUI
     private GameObject SettlementPrefab;
     private List<PokemonSettlement> _storeElements = new List<PokemonSettlement>();
     public List<PokemonLevelUpState> _PokemonLevelUpStates = new List<PokemonLevelUpState>();
-
+    public Action OnComplete;
     /// <summary>
     /// 
     /// </summary>
-    /// <param name="args">0 for pokemondata1</
-    /// 
+    /// <param name="args">0 for pokemon level up data, 1 for oncomplete</param>
     public override void OnEnter(params object[] args)
     {
         SettlementPrefab = GameResources.SpawnPrefab(typeof(PokemonSettlement));
@@ -37,6 +36,7 @@ public class SettlementPanel : BaseUI
         if (args != null)
         {
             _PokemonLevelUpStates = args[0] as List<PokemonLevelUpState>;
+            OnComplete = args[1] as Action;
         }
         
         // _storeElements.Clear();
@@ -48,7 +48,7 @@ public class SettlementPanel : BaseUI
             GameObject obj = Instantiate(SettlementPrefab, PokemonList);
 
             obj.name = "Pokemon" + i;
-            print(obj.name);
+            // print(obj.name);
             _storeElements.Add(obj.GetComponent<PokemonSettlement>());
         }
 
@@ -72,6 +72,11 @@ public class SettlementPanel : BaseUI
             j++;
         }
 
-
+        ExitBtn.onClick.RemoveAllListeners();
+        ExitBtn.onClick.AddListener(() =>
+        {
+            UIManager.Instance.Hide<SettlementPanel>();
+            OnComplete?.Invoke();
+        });
     }
 }

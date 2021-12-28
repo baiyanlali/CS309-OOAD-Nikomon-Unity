@@ -348,6 +348,7 @@ public class BattleFieldHandler : MonoBehaviour
     }
     public void EndBattle(BattleResults results)
     {
+        print("BattleField: End battle");
         TimeSequences.Enqueue(new TimeSequence(null,TimeSequence.SequenceTag.BattleEnd,results));
         DoNextSequence();
         // StartCoroutine(EndBattling());
@@ -384,8 +385,11 @@ public class BattleFieldHandler : MonoBehaviour
             TargetGroup.RemoveMember(a);
             Destroy(a.gameObject);
         }
+        
 
         dics.Clear();
+        BattleHandler.Instance.OnBattleFieldEnd(results);
+
     }
 
     /// <summary>

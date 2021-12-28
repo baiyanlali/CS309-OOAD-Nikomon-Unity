@@ -71,8 +71,8 @@ public class Pokemon : IPokemon, IEquatable<Pokemon>, IEqualityComparer<Pokemon>
     public int ItemInitial { get; set; }
     public ObtainMethod ObtainMode { get; private set; }
     public bool IsNicknamed { get; set; }
-    public int? Type1 { get; }
-    public int? Type2 { get; }
+    public int? Type1 { get; private set; }
+    public int? Type2 { get; private set; }
     public string ObtainMap { get; set; }
     public int ObtainLevel { get; set; }
     public int AbilityID { get; set; }
@@ -292,6 +292,37 @@ public class Pokemon : IPokemon, IEquatable<Pokemon>, IEqualityComparer<Pokemon>
         IsNicknamed = beforePoke.IsNicknamed;
         moves = beforePoke.moves;
         AbilityID = beforePoke.AbilityID;
+        ObtainMap = beforePoke.ObtainMap;
+        ObtainLevel = beforePoke.ObtainLevel;
+        ObtainMode = beforePoke.ObtainMode;
+        Item = beforePoke.Item;
+        isMale = beforePoke.isMale;
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="exp"></param>
+    /// <returns>array 1 for move earned, 0 for evolution</returns>
+    public (List<int>,List<MoveData>) AddExperience(int exp)
+    {
+        int level = Exp.level;
+        Exp.AddExperience(exp);
+        List<MoveData> moveDatas = new List<MoveData>();
+        for (int i = level; i < Exp.level; i++)
+        {
+            if (!_base.LevelMoves.TryGetValue(level, out List<int> moves)) continue;
+            moves.ForEach(m =>
+            {
+                moveDatas.Add(Game.MovesData[m]);
+            });
+
+        }
+
+        List<int> evolutions = CheckEvolution();
+
+        return (evolutions, moveDatas);
+
     }
 
     public void AddMove(int id)
@@ -302,6 +333,18 @@ public class Pokemon : IPokemon, IEquatable<Pokemon>, IEqualityComparer<Pokemon>
             moves[i] = new Move(Game.MovesData[id]);
             break;
         }
+    }
+
+    public void Evolve(PokemonData data)
+    {
+        ID = data.ID;
+        if (!IsNicknamed)
+        {
+            Name = data.innerName;
+        }
+
+        Type1 = data.type1;
+        Type2 = data.type2;
     }
     
     public void AddMove(MoveData moveData)
@@ -319,9 +362,15 @@ public class Pokemon : IPokemon, IEquatable<Pokemon>, IEqualityComparer<Pokemon>
         moves[index] = new Move(moveData);
     }
 
-    public void CheckEvolution()
+    public List<int> CheckEvolution()
     {
-        
+        if (Game.LuaEnv.Global.ContainsKey($"Evolution{_base.ID}"))
+        {
+            var Evolution = Game.LuaEnv.Global.Get<Evolution>($"Evolution{_base.ID}");
+            var evolutionList = Evolution.CheckEvolution(this);
+            return evolutionList;
+        }
+        return null;
     }
     
     public bool Equals(Pokemon other)

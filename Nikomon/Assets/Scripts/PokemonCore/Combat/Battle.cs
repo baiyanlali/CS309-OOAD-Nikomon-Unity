@@ -170,6 +170,8 @@ namespace PokemonCore.Combat
         /// </summary>
         public bool isHost;
 
+        public bool CanGainExperience;
+
         /// <summary>
         /// 这个是在回合开始时判断是否有濒死的宝可梦，如果有的话就先调用方法让Trainer去换宝可梦
         /// </summary>
@@ -250,6 +252,7 @@ namespace PokemonCore.Combat
                 {
                     Game.trainer.pokemonOnTheBattle[i] = false;
                 }
+                
 
                 Instance = null;
             };
