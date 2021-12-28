@@ -98,7 +98,7 @@ public class EvolutionPanel : BaseUI
                                     temp.z = 0;
                                     LeanTween.rotate(EvolutionBalls, temp, 1).setOnComplete(() =>
                                     {
-            
+
                                     });
                                 });
                             });
@@ -106,7 +106,7 @@ public class EvolutionPanel : BaseUI
                     });
                 });
             });
-        
-        }
+
+        });
     }
 }
