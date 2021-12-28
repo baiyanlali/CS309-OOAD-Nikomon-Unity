@@ -181,8 +181,8 @@ public class BattleFieldHandler : MonoBehaviour
 
     public void OnHit(Damage dmg)
     {
-        
-        TimeSequences.Enqueue(new TimeSequence(dmg.target, TimeSequence.SequenceTag.BeHit));
+        if(dmg.target!=null)
+            TimeSequences.Enqueue(new TimeSequence(dmg.target, TimeSequence.SequenceTag.BeHit));
         
         // TimeSequences.Enqueue(new TimeSequence(dmg.sponsor, TimeSequence.SequenceTag.EndMove));
         
