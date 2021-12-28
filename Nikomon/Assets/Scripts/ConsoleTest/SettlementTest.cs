@@ -15,33 +15,32 @@ public class SettlementTest : MonoBehaviour
         Pokemon AIfanfan2 = new Pokemon(1, 30);
             
         List<PokemonLevelUpState> _PokemonLevelUpStates = new List<PokemonLevelUpState>();
-        wyf.Exp.AddExperience(500);
+        var wyf_before = new Experience(wyf.Exp);
+        wyf.Exp.AddExperience(3000);
+        
         PokemonLevelUpState temp1 = new PokemonLevelUpState();
         temp1.Pokemon = wyf;
-        Experience exp1 = wyf.Exp;
-        exp1.AddExperience(5000);
-        temp1.ExpAfter = exp1;
-        print(wyf.Exp.Current);
-        print(exp1.Current);
+        Experience exp1 = wyf_before;
+
+        temp1.ExpBefore = exp1;
         _PokemonLevelUpStates.Add(temp1);
         
         PokemonLevelUpState temp2 = new PokemonLevelUpState();
+        var AIfanfan_before = new Experience(AIfanfan.Exp);
+        AIfanfan.Exp.AddExperience(5000);
         temp2.Pokemon = AIfanfan;
-        Experience exp2 = AIfanfan.Exp;
-        exp2.AddExperience(5000);
-        temp2.ExpAfter = exp2;
+        //exp2.AddExperience(5000);
+        temp2.ExpBefore = AIfanfan_before;
         _PokemonLevelUpStates.Add(temp2);
         print(AIfanfan.Exp.Current);
-        print(exp2.Current);
+
         
         PokemonLevelUpState temp3 = new PokemonLevelUpState();
+        var AIfanfan2_before = new Experience(AIfanfan2.Exp);
         temp3.Pokemon = AIfanfan2;
-        Experience exp3 = AIfanfan2.Exp;
-        exp3.AddExperience(5000);
-        temp3.ExpAfter = exp3;
+        AIfanfan2.Exp.AddExperience(5000);
+        temp3.ExpBefore = AIfanfan2_before;
         _PokemonLevelUpStates.Add(temp3);
-        print(AIfanfan2.Exp.Current);
-        print(exp3.Current);
         UIManager.Instance.Show<SettlementPanel>(_PokemonLevelUpStates);
 
     }
