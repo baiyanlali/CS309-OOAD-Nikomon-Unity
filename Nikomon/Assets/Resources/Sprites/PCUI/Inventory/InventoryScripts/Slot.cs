@@ -136,7 +136,7 @@ public class Slot :MonoBehaviour
         {
             UIManager.Instance.Show<DialogueChooserPanel>(new List<string>
             {
-                "查看信息", "标记", "持有物", "放生", "加入背包", "取消"
+                "See ability", "Exchange","Holdings","Release","Put into Party","Cancel"
             }, new Vector2(0, 1), action, itemInSlot.transform.parent as RectTransform);
         }
     }

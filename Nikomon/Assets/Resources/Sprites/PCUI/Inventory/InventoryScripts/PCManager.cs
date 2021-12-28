@@ -233,7 +233,7 @@ public class PCManager : BaseUI
         // }
 
         BoxTitle.text = pc.BoxNames[pc.ActiveBox];
-        TableUI.Init(trainer,new []{"查看信息", "交换","持有物","放生","放入仓库","取消"},HandleChooserTalbeUI);
+        TableUI.Init(trainer,new []{"See ability", "Exchange","Holdings","Release","Put into box","Cancel"},HandleChooserTalbeUI);
         EventSystem.current.SetSelectedGameObject(FirstSelectable);
     }
 
@@ -338,7 +338,7 @@ public class PCManager : BaseUI
                 result = pc.AddPokemon(temp4);
                 if (result == false)
                 {
-                    UIManager.Instance.Show<ConfirmPanel>("Your PC is full which is UNBELIEVEBLE!!!");
+                    UIManager.Instance.Show<ConfirmPanel>("Your PC is full which is UNBELIEVEBLE!");
                     trainer.AddPokemon(temp4);
                     TableUI.UpdateData(trainer);
                     return;
