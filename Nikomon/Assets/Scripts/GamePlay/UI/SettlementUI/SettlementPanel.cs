@@ -12,7 +12,7 @@ using UnityEngine;
 public class PokemonLevelUpState
 {
     public Pokemon Pokemon;//升级前的宝可梦！！！
-    public Experience ExpAfter;
+    public Experience ExpBefore;
 }
 
 public class SettlementPanel : BaseUI
@@ -40,7 +40,7 @@ public class SettlementPanel : BaseUI
         }
         
         // _storeElements.Clear();
-        print(_PokemonLevelUpStates.Count - PokemonList.childCount);
+        // print(_PokemonLevelUpStates.Count - PokemonList.childCount);
 
         int num = _PokemonLevelUpStates.Count - PokemonList.childCount;
         for (int i = 0; i < num; i++)//有一个是新技能
@@ -61,14 +61,14 @@ public class SettlementPanel : BaseUI
         foreach (var temp in _PokemonLevelUpStates)
         {
             PokemonList.GetChild(j).gameObject.SetActive(true);
-            _storeElements[j].Init(temp.Pokemon);
+            _storeElements[j].Init(temp.Pokemon,temp.ExpBefore);
             j++;
         }
 
         j = 0;
         foreach (var temp in _PokemonLevelUpStates)
         {
-            _storeElements[j].addExp(temp.ExpAfter , temp.Pokemon.Exp);
+            _storeElements[j].addExp( temp.Pokemon.Exp,temp.ExpBefore);
             j++;
         }
 

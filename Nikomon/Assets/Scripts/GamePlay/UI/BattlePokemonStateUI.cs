@@ -14,6 +14,7 @@ public class BattlePokemonStateUI : MonoBehaviour
     public Slider HealthSlider;
     public Slider ExpSlider;
     public CombatPokemon pokemon;
+    public Color ActiveColor;
 
     public void Init(CombatPokemon pokemon)
     {
@@ -24,7 +25,7 @@ public class BattlePokemonStateUI : MonoBehaviour
             LevelText.text = "Lv." + pokemon.Level;
             HealthText.text = pokemon.HP + "/" + pokemon.TotalHP;
             HealthSlider.value = pokemon.HP / (float) pokemon.TotalHP;
-            ExpSlider.value = pokemon.pokemon.Exp.Current / (float) pokemon.pokemon.Exp.NextLevelExp;
+            ExpSlider.value = pokemon.pokemon.Exp.Current / (float) (pokemon.pokemon.Exp.NextLevelExp - pokemon.pokemon.Exp.CurLevelExp);
             ChangeHealthSliderColor();
 
         }
@@ -40,6 +41,16 @@ public class BattlePokemonStateUI : MonoBehaviour
                 });
         }
 
+    }
+
+    public void SetActive()
+    {
+        LeanTween.color(GetComponent<RectTransform>(), ActiveColor, 0.1f).setOnComplete(ChangeHealthSliderColor);
+    }
+    
+    public void SetInactive()
+    {
+        LeanTween.color(GetComponent<RectTransform>(), Color.white, 0.1f).setOnComplete(ChangeHealthSliderColor);
     }
     
     
@@ -60,43 +71,4 @@ public class BattlePokemonStateUI : MonoBehaviour
         }
     }
 
-    // public void UpdateState()
-    // {
-    //     LevelText.text = "Lv." + pokemon.Level;
-    //     HealthText.text = pokemon.HP + "/" + pokemon.TotalHP;
-    //     // HealthSlider.value = pokemon.HP / (float)pokemon.TotalHP;
-    //     LeanTween.value(HealthSlider.value, pokemon.HP / (float) pokemon.TotalHP, 1f).setOnUpdate(
-    //         f =>
-    //         {
-    //             HealthSlider.value = f;
-    //
-    //
-    //             ChangeHealthSliderColor();
-    //         });
-    // }
-    //
-    // public void UpdateState(Action onComplete)
-    // {
-    //     UpdateState();
-    //     // onComplete?.Invoke();
-    // }
-    //
-    // public void UpdateState(int hp, Action onComplete)
-    // {
-    //     Debug.Log($"Update State!! from :{gameObject.name}");
-    //     LevelText.text = "Lv." + pokemon.Level;
-    //     HealthText.text = pokemon.HP + "/" + pokemon.TotalHP;
-    //     // HealthSlider.value = pokemon.HP / (float)pokemon.TotalHP;
-    //     LeanTween.value(HealthSlider.value, hp / (float) pokemon.TotalHP, 1f)
-    //         .setOnUpdate(f =>
-    //         {
-    //             HealthSlider.value = f;
-    //             ChangeHealthSliderColor();
-    //         }).setOnComplete(() =>
-    //         {
-    //             Debug.Log("Update state complete");
-    //             onComplete?.Invoke();
-    //         });
-    //     
-    // }
 }

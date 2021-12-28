@@ -16,8 +16,10 @@ namespace PokemonCore.Monster.Data
         [JsonIgnore]
         public int NextLevelExp => Experience.GetExperience(levelingRate, level + 1);
         [JsonIgnore]
+        public int CurLevelExp => Experience.GetExperience(levelingRate, level);
+        [JsonIgnore]
         public int PointsNeeded => NextLevelExp - Total;
-        
+    
         public int levelingRate;
 
         public void AddExperience(int experienceGain)
@@ -59,6 +61,12 @@ namespace PokemonCore.Monster.Data
         {
             this.levelingRate = rate;
             Total = initialValue;
+        }
+
+        public Experience(Experience exp)
+        {
+            this.levelingRate = exp.levelingRate;
+            this.Total = exp.Total;
         }
 
         

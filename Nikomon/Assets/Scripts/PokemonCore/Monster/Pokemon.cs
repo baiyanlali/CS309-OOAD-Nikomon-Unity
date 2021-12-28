@@ -280,6 +280,19 @@ public class Pokemon : IPokemon, IEquatable<Pokemon>, IEqualityComparer<Pokemon>
         this.AbilityID = _base.Ability1;
     }
 
+    //Used for evolution
+    public Pokemon(PokemonData pd,Pokemon beforePoke)
+    {
+        _base = pd;
+        Exp = beforePoke.Exp;
+        IV = beforePoke.IV;
+        EV = beforePoke.EV;
+        FriendShip = beforePoke.FriendShip;
+        TrainerID = beforePoke.TrainerID;
+        IsNicknamed = beforePoke.IsNicknamed;
+        moves = beforePoke.moves;
+        AbilityID = beforePoke.AbilityID;
+    }
 
     public void AddMove(int id)
     {

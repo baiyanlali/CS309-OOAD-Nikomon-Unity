@@ -40,6 +40,19 @@ namespace GamePlay.UI.BattleUI
             InitStateUI(allies, AlliesState.transform);
             InitStateUI(opponents, OpponentState.transform);
         }
+
+        public void ActivePokemon(CombatPokemon pokemon)
+        {
+            for (int i = 0; i < AlliesState.transform.childCount; i++)
+            {
+                var stateui = AlliesState.transform.GetChild(i).GetComponent<BattlePokemonStateUI>();
+                stateui.SetInactive();
+                if (stateui.pokemon == pokemon)
+                {
+                    stateui.SetActive();
+                }
+            }
+        }
         
         
 

@@ -235,7 +235,8 @@ namespace GamePlay.UI.UIFramework
                 return _uiDics[type].GetComponent<T>();
             }
 
-            throw new Exception($"no such ui {type} found");
+            return null;
+            // throw new Exception($"no such ui {type} found");
         }
         
         /// <summary>
