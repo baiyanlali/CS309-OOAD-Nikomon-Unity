@@ -56,10 +56,10 @@ public class SaveSlotUI : MonoBehaviour
         if (data != null && data.GameState!=null)
         {
             HasFile = true;
-            Title.text = "Save " + slot;
+            Title.text = slot.ToString();
             LastTimeSaved.text = data.GameState.TimeModified.ToString("yyyy-MM-dd HH:mm");
             Name.text = data.GameState.Trainer.name;
-            Money.text = "Money:" + data.GameState.Trainer.Money;
+            Money.text = data.GameState.Trainer.Money.ToString();
 
             for (int i = 0; i < PokemonImages.Count; i++)
             {
@@ -78,7 +78,7 @@ public class SaveSlotUI : MonoBehaviour
         else
         {
             HasFile = false;
-            Title.text = "Save " + slot;
+            Title.text = slot.ToString();
             LastTimeSaved.text = "No File Here";
             Name.text = "";
             Money.text = "";
