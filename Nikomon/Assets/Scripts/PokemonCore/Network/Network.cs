@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using Newtonsoft.Json;
 using PokemonCore.Combat;
@@ -339,18 +340,62 @@ namespace PokemonCore.Network
         /// <returns></returns>
         public static string GetAddressIP()
         {
-            string AddressIP = string.Empty;
-            foreach (IPAddress _IPAddress in Dns.GetHostEntry(Dns.GetHostName()).AddressList)
-            {
-                //TODO: 找办法识别wsl和ether net
-                if (_IPAddress.AddressFamily.ToString() == "InterNetwork")
+            // string localIP = string.Empty;
+            // using (Socket socket = new Socket(AddressFamily.InterNetwork, 							SocketType.Dgram, 0))
+            // {
+            //     socket.Connect("8.8.8.8", 65530);
+            //     IPEndPoint endPoint = socket.LocalEndPoint as IPEndPoint;
+            //     localIP = endPoint.Address.ToString();
+            // }
+            // Console.WriteLine("IP Address = " + localIP);
+            
+            // string result = RunApp("route", "print",true);
+            // Match m = Regex.Match(result, @"0.0.0.0\s+0.0.0.0\s+(\d+.\d+.\d+.\d+)\s+(\d+.\d+.\d+.\d+)");
+            // if (m.Success)
+            // {
+            //     return m.Groups[2].Value;
+            // }
+            // else
+            // {
+                try
                 {
-                    AddressIP = _IPAddress.ToString();
-                    break;
+                    System.Net.Sockets.TcpClient c = new System.Net.Sockets.TcpClient();
+                    c.Connect("www.baidu.com", 80);
+                    string ip = ((System.Net.IPEndPoint)c.Client.LocalEndPoint).Address.ToString();
+                    c.Close();
+                    return ip;
                 }
-            }
+                catch (Exception)
+                {
+                    return null;
+                }
+            // }
+            
+            
+            // string AddressIP = string.Empty;
+            // var entries = Dns.GetHostEntry(Dns.GetHostName());
+            // for (int i = 0; i < entries.AddressList.Length; i++)
+            // {
+            //     IPAddress _IPAddress = entries.AddressList[i];
+            //     if (_IPAddress.AddressFamily.ToString() == "InterNetwork")
+            //     {
+            //         
+            //         AddressIP = _IPAddress.ToString();
+            //         break;
+            //     }
+            // }
+            
+            // foreach (IPAddress _IPAddress in .AddressList)
+            // {
+            //     //TODO: 找办法识别wsl和ether net
+            //     if (_IPAddress.AddressFamily.ToString() == "InterNetwork")
+            //     {
+            //         AddressIP = _IPAddress.ToString();
+            //         break;
+            //     }
+            // }
 
-            return AddressIP;
+            // return AddressIP;
         }
     }
 }
