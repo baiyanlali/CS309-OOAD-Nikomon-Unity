@@ -70,7 +70,8 @@ public class BattleHandler : MonoBehaviour
         battle.OnPokemonFainting += (combatPoke) =>
         {
             BattleFieldHandler.Instance.OnPokemonFainting(combatPoke);
-            UIManager.Instance.Show<BattleMenuPanel>(new List<bool>(){false,true,false,true});
+            if(Game.battle.MyPokemons.Contains(combatPoke))
+                UIManager.Instance.Show<BattleMenuPanel>(new List<bool>() {false, true, false, true});
         };
         battle.OnReplacePokemon += (p1, p2) =>
         {
@@ -95,14 +96,11 @@ public class BattleHandler : MonoBehaviour
         battle.OnMove += OnMove;
         battle.OnHit += OnHit;
         battle.OnHitted += OnHitted;
-        battle.OnOneMoveEnd += () =>
-        {
-            BattleFieldHandler.Instance.OnOneMoveEnd();
-        };
+        battle.OnOneMoveEnd += () => { BattleFieldHandler.Instance.OnOneMoveEnd(); };
 
         // print("Complete BattleHandler Init");
         // OnTurnBegin();
-        
+
         GlobalManager.Instance.CompleteBattleInit();
     }
 
@@ -113,9 +111,24 @@ public class BattleHandler : MonoBehaviour
         // print(">>>>>>show move!<<<<<<<");
         // EventPool.Schedule(() => { BattleUIHandler.Instance.ShowMoves(poke);});
         CurrentPokemon = poke;
-        EventPool.Schedule(() => { UIManager.Instance.Refresh<MovePanel>(poke.pokemon.moves.ToList());});
+        EventPool.Schedule(() =>
+        {
+            var statusPanel = UIManager.Instance.GetUI<BattleStatusPanel>();
+            if(statusPanel!=null)
+                statusPanel.ActivePokemon(poke);
+            else
+            {
+                UIManager.Instance.Show<BattleStatusPanel>(this);
+                statusPanel = UIManager.Instance.GetUI<BattleStatusPanel>();
+                if(statusPanel!=null)
+                    statusPanel.ActivePokemon(poke);
+            }
+
+            UIManager.Instance.Show<BattleMenuPanel>();
+            UIManager.Instance.Refresh<MovePanel>(poke.pokemon.moves.ToList());
+        });
     }
-    
+
     public void EndBattle(BattleResults results)
     {
         print("End Battle");
@@ -132,6 +145,7 @@ public class BattleHandler : MonoBehaviour
     {
         BattleFieldHandler.Instance.OnHit(dmg);
     }
+
     public void OnHitted(CombatPokemon pokemon)
     {
         BattleFieldHandler.Instance.OnHitted(pokemon);
@@ -146,7 +160,7 @@ public class BattleHandler : MonoBehaviour
     {
         BattleFieldHandler.Instance.OnTurnEnd();
         // UnityEngine.Debug.Log("Turn End");
-        
+
         // EventPool.Schedule(() => { BattleUIHandler.Instance.UpdateUI(this); });
     }
 
@@ -159,17 +173,14 @@ public class BattleHandler : MonoBehaviour
             // BattleUIHandler.Instance.BattleUI.SetActive(true);
             UIManager.Instance.Show<BattleMenuPanel>();
         });
-        
-        
+
+
         // print($"Current Pokemon Index: {CurrentMyPokemonIndex}");
     }
-
 
 
     public void ReceiveInstruction(Instruction instruction)
     {
         battle.ReceiveInstruction(instruction, true);
     }
-
-   
 }
