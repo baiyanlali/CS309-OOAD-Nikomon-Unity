@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using GamePlay;
@@ -21,17 +22,19 @@ public class EvolutionPanel : BaseUI
     /// <summary>
     /// 
     /// </summary>
-    /// <param name="args">0 for pokemondata1,1 for pokemondata2</
+    /// <param name="args">0 for pokemondata1,1 for pokemondata2,2 for oncomplete</param>
     /// 
     public override void OnEnter(params object[] args)
     {
         //TODO:背景图片这些都要继续美化
 
         base.OnEnter(args);
+        Action OnComplete = null;
         if (args != null)
         {
             _PokemonOrignal = args[0] as PokemonData;
             _PokemonEvoluted = args[1] as PokemonData;
+            OnComplete = args[2] as Action;
         }
         foreach (Transform child in pokenmons.transform)
         {
@@ -56,6 +59,14 @@ public class EvolutionPanel : BaseUI
                 //pokenmons.transform.Find(_PokemonEvolutedName).gameObject.SetActive(true);
             });
             
+        });
+        
+        ExitBtn.onClick.RemoveAllListeners();
+        ExitBtn.onClick.AddListener(() =>
+        {
+            // print("Back Evolution Panel");
+            UIManager.Instance.Hide(this);
+            OnComplete?.Invoke();
         });
 
     }

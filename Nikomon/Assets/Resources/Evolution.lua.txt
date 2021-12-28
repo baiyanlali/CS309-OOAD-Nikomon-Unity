@@ -1,0 +1,19 @@
+EvolutionTemple={
+    CheckEvolution = function(Pokemon)
+        if Pokemon.Level>=50 then
+            return { 1 }
+        end
+        return nil
+    end
+}
+
+
+Evolution1={
+    CheckEvolution = function(Pokemon)
+        print("Check Evolution for pokemon 1")
+        if Pokemon.Level>=50 then
+            return { 2 }
+        end
+        return nil
+    end
+}

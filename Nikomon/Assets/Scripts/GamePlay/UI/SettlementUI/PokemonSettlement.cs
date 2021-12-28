@@ -40,7 +40,7 @@ public class PokemonSettlement : MonoBehaviour
         LevelText.text = "Lv." + level;
 
         int step = ExpAfter.level - ExpBefore.level;
-        print(step);
+        // print(step);
         
         LevelUpdateTween(step, () =>
         {
