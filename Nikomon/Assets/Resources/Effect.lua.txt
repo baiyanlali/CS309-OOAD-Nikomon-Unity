@@ -180,7 +180,7 @@ effect10 = {
     OnMoving = function(self,combatMove)
         print("use Counter")
         Battle = CS.PokemonCore.Game.battle
-        print(Battle.Damages[0].finalDamage)
+        --print(Battle.Damages[0].finalDamage)
         for i,d in pairs(Battle.Damages) do
             if d.combatMove.Category == CS.PokemonCore.Attack.Data.Category.Physical then
                 Game.battle:Report('宝可梦反弹了伤害！')
