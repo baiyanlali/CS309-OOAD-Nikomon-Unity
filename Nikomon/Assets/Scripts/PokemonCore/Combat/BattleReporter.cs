@@ -36,6 +36,7 @@ namespace PokemonCore.Combat
         //TODO: Add multi language support
         public void ObserveBattle(Damage dmg)
         {
+            if (dmg.target == null) return;
             string poke_sponsor = dmg.sponsor.Name;
             string poke_target = dmg.target.Name;
             string move_name = dmg.combatMove.move._baseData.innerName;

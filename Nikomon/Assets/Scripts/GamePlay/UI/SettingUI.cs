@@ -23,7 +23,7 @@ namespace GamePlay.UI
         public override void OnEnter(params object[] args)
         {
             base.OnEnter(args);
-            print(111111);
+            // print(111111);
             ratio = ratios[0];
             Ratio.text = ratio;
             languages = Messages.Messages.Languages.Keys.ToArray();
