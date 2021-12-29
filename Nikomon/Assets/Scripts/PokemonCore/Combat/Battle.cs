@@ -380,7 +380,8 @@ namespace PokemonCore.Combat
             else if (action is CombatItem)
             {
                 var c = action as CombatItem;
-                Effect effect = Game.LuaEnv.Global.Get<Effect>($"{c.item.tag.ToString()}{c.item.ID}");
+                
+                Effect effect = Game.LuaEnv.Global.Get<Effect>($"{c.item.tag.ToString()}{c.item.effectId}");
 
                 effect?.OnUseItem(effect,c);
                 

@@ -1,3 +1,15 @@
+EffectLastType = CS.PokemonCore.Combat.Interface.EffectLastType
+Combat = CS.PokemonCore.Combat
+Game=CS.PokemonCore.Game
+
+function isInArray(t, val)
+    for _, v in ipairs(t) do
+        if v == val then
+            return true
+        end
+    end
+    return false
+end
 
 PokeBalls0 = {
 
@@ -25,9 +37,70 @@ Medicine0 = {
     isUsed=false,
     
     OnUseItem = function(self, combatItem)
-        print("Using Potion")
+        print("Using Potion 0")
+        sponsor = combatItem.Sponsor
+        local preHP = sponsor.HP
+        sponsor.HP = sponsor.HP + combatItem.item.para
+        if sponsor.HP > sponsor.TotalHP then
+            sponsor.HP = sponsor.TotalHP
+        end
+        Game.battle:Report('宝可梦回复了'..tostring(sponsor.HP - preHP))
         
-        Game.battle:CatchPokemon(combatItem.Sponsor,0,combatItem.Targets)
-        
+    end,
+}
+Medicine1 = {
+
+    ID=0,
+    InnerName = 'HealStatus',
+    Round = 0,
+    EffectLastType = CS.PokemonCore.Combat.Interface.EffectLastType.ALWAYS,
+    EffectChance = 100,
+    isUsed=false,
+
+    OnUseItem = function(self, combatItem)
+        print("使用恢复状态药")
+        sponsor = combatItem.Sponsor
+        local notRecover = 1
+        for i, e in pairs(sponsor.Effects) do
+            if e.InnerName == combatItem.item.para then
+                --FIXME:可能这种remove方法不太科学
+                sponsor.Effects:RemoveAt(i)
+                Game.battle:Report('宝可梦现在不再'..combatItem.item.para..'了！')
+                notRecover = 0
+            end
+        end
+        if notRecover then
+            Game.battle:Report('宝可梦其实没有'..combatItem.item.para)
+        end
+
+
+    end,
+}
+Medicine2 = {
+
+    ID=0,
+    InnerName = 'HealStatus',
+    Round = 0,
+    EffectLastType = CS.PokemonCore.Combat.Interface.EffectLastType.ALWAYS,
+    EffectChance = 100,
+    isUsed=false,
+
+    OnUseItem = function(self, combatItem)
+        print("使用全恢复状态药")
+        sponsor = combatItem.Sponsor
+        local notRecover = 1
+        local sts = {'Burn','Poison','Paralysis','Sleep'}
+        for i, e in pairs(sponsor.Effects) do
+            if isInArray(combatItem.item.para,e.InnerName) then
+                --FIXME:可能这种remove方法不太科学
+                sponsor.Effects[i] = nil
+                Game.battle:Report('宝可梦现在不再'..combatItem.item.para..'了！')
+                notRecover = 0
+            end
+        end
+        if notRecover then
+            Game.battle:Report('宝可梦其实没有'..combatItem.item.para)
+        end
+
     end,
 }

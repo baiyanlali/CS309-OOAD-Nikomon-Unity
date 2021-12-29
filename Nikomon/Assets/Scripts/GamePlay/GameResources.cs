@@ -255,10 +255,11 @@ namespace GamePlay
         public static Dictionary<ValueTuple<Item.Tag, int>, Item> LoadItems()
         {
             string str = Resources.Load<TextAsset>("PokemonData/" + Game.ItemFile).text;
-            Dictionary<Item.Tag, List<Item>> items =
+            Dictionary<Item.Tag, List<Item>> itemDictionary =
                 JsonConvert.DeserializeObject<Dictionary<Item.Tag, List<Item>>>(str);
+            
             var itemData = new Dictionary<ValueTuple<Item.Tag, int>, Item>();
-            foreach (var item in items)
+            foreach (var item in itemDictionary)
             {
                 var tag = item.Key;
                 var list = item.Value;
