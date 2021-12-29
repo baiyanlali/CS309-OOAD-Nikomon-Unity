@@ -82,7 +82,7 @@ namespace PokemonCore.Combat
         public override string ToString()
         {
             var pokemon = Game.battle.GetCombatPokemon(CombatPokemonID);
-            return $"From {Game.battle.getTrainerByID(pokemon.TrainerID)}: {pokemon.Name}----{command}-----{ID}";
+            return $"From {Game.battle.getTrainerNameByID(pokemon.TrainerID)}: {pokemon.Name}----{command}-----{ID}";
         }
     }
 
@@ -659,8 +659,29 @@ namespace PokemonCore.Combat
                     break;
             }
 
+            //TODO:会造成对方宝可梦无限连击的情况
 
-            if (Instructions.Count == Pokemons.Where(pokemon => pokemon.HP>0).ToArray().Length)
+            //在n v n时,如果某个trainer当前宝可梦濒死，但还有宝可梦能上场,那么count++
+            int countShouldRecieved = 0;
+
+            foreach (var pokemon in Pokemons)
+            {
+                if (pokemon.HP > 0)
+                {
+                    countShouldRecieved++;
+                    continue;
+                }
+                else
+                {
+                    if (getTrainerByID(pokemon.TrainerID).HasAblePokemonOutOfBattle())
+                    {
+                        countShouldRecieved++;
+                    }
+                }
+            }
+            
+            
+            if (Instructions.Count == Pokemons.Where(pokemon => pokemon.HP>0).ToArray().Length )
             {
                 //如果所有指令都接收到则进入move
                 Instructions.Clear();
@@ -678,7 +699,7 @@ namespace PokemonCore.Combat
 
         #region 工具方法
 
-        public string getTrainerByID(int id)
+        public string getTrainerNameByID(int id)
         {
             if (Trainers.TryGetValue(id, out Trainer trainer))
             {
@@ -687,6 +708,18 @@ namespace PokemonCore.Combat
             else
             {
                 return "???";
+            }
+        }
+        
+        public Trainer getTrainerByID(int id)
+        {
+            if (Trainers.TryGetValue(id, out Trainer trainer))
+            {
+                return trainer;
+            }
+            else
+            {
+                return null;
             }
         }
         

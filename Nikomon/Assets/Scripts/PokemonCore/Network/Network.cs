@@ -141,8 +141,7 @@ namespace PokemonCore.Network
             IPEndPoint endPoint = new IPEndPoint(IPAddress.Broadcast, BroadPort);
             while (true)
             {
-                UnityEngine.Debug.Log($"I'm sending message from:{GetAddressIP()}");
-                
+                UnityEngine.Debug.Log($"I'm sending message from:{GetAddressIP()}:{BroadPort}");
                 UDPsend.Send(buf, buf.Length, endPoint);
                 Thread.Sleep(200);
             }

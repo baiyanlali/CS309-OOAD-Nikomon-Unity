@@ -148,6 +148,16 @@ namespace PokemonCore.Combat
             }
         }
 
+        public bool HasAblePokemonOutOfBattle()
+        {
+            for (int i = 0; i < party.Length; i++)
+            {
+                if(pokemonOnTheBattle[i]==false && party[i].HP>0)return true;
+            }
+
+            return false;
+        }
+
         [JsonIgnore]
         public List<Pokemon> currentOnBattlePokemon
         {

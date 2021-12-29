@@ -23,7 +23,7 @@ public class TargetChooserUI : MonoBehaviour
         pokeImage.sprite = GameResources.PokemonIcons[pokemon.pokemon.ID];
         toggle = GetComponent<Toggle>();
         pokeName.text = pokemon.Name;
-        trainerName.text = Game.battle.getTrainerByID(pokemon.TrainerID);
+        trainerName.text = Game.battle.getTrainerNameByID(pokemon.TrainerID);
         toggle.onValueChanged.RemoveAllListeners();
         toggle.onValueChanged.AddListener((e)=>
         {
