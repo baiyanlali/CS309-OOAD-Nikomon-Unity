@@ -144,5 +144,33 @@ public class BagPanelUI : BaseUI
         };
         
     }
+    // public void OnEnterAnimator()
+    // {
+    //     gameObject.transform.localScale = Vector3.zero;
+    //     LeanTween.scale(transform as RectTransform,Vector3.one,0.3f).setOnComplete(() =>
+    //     {
+    //     
+    //     }).setEase(LeanTweenType.easeInQuart);
+    //     // gameObject.transform.localScale = Vector3.zero;
+    //     // LeanTween.scale(transform as RectTransform,Vector3.one,0.3f).setOnComplete(() =>
+    //     // {
+    //     //
+    //     // }).setEase(LeanTweenType.easeInSine);
+    // }
+    //
+    // public void OnExitAnimator()
+    // {
+    //     
+    //     gameObject.transform.localScale = Vector3.one;
+    //     LeanTween.scale(transform as RectTransform, Vector3.zero,0.3f).setOnComplete(() =>
+    //     {
+    //     
+    //     }).setEase(LeanTweenType.easeInQuart);
+    //     // gameObject.transform.localScale = Vector3.one;
+    //     // LeanTween.scale(transform as RectTransform, Vector3.zero,0.3f).setOnComplete(() =>
+    //     // {
+    //     //
+    //     // }).setEase(LeanTweenType.easeInSine);
+    // }
 
 }
