@@ -154,6 +154,14 @@ namespace PokemonCore.Combat
 
         public void AddEffect(Effect e)
         {
+            foreach (var efs in Effects)
+            {
+                if (efs.ID == e.ID)
+                {
+                    e.Round += efs.Round;
+                    return;
+                }
+            }
             Effects.Add(e);
             e.OnEffectBegin?.Invoke(e,this);
         }

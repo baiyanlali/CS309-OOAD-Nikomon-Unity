@@ -13,20 +13,9 @@ public class Nametext : MonoBehaviour
     //要先检查这些有没有绑定！！！
     public Text nameText, propertyText,ownerText,numberText;
     public Text experienceText, needExperienceText;
+    //public Text NatureContent;
     public Image exp,Expcurrent;
-    public void Start()//测试
-    {
-        //TODO: change to translator
-        // nameText.text = "222";
-        // propertyText.text = "sssss";//????
-        // ownerText.text = "sssss";//??????
-        // numberText.text = "22";
-        // experienceText.text = "333";
-        // //poke.Exp.ExperienceNeeded;//还需要的经验值！！！！
-        // needExperienceText.text = "555";
-        // Expcurrent.fillAmount = 0.5f;
 
-    }
     public void Init(Pokemon pokemon,Trainer trainer)
     {
         //TODO: change to translator
@@ -41,11 +30,10 @@ public class Nametext : MonoBehaviour
         int toLv = pokemon.Exp.level + 1;
         needExperienceText.text = pokemon.Exp.ExperienceNeeded(toLv).ToString();
         //TODO:Expcurrent.fillAmount 有问题，这样可能大于1了！！！
-        // Expcurrent.fillAmount = pokemon.Exp.Current * 1f / pokemon.Exp.ExperienceNeeded(toLv);
         Expcurrent.fillAmount = pokemon.Exp.Current * 1f / (pokemon.Exp.NextLevelExp-pokemon.Exp.Past);
-        // print(pokemon.Exp.NextLevelExp);
-        // print(pokemon.Exp.Current);
-       
+        //NatureContent.text = Game.NatureData[pokemon.NatureID].ToString();
+
+
     }
 
 }

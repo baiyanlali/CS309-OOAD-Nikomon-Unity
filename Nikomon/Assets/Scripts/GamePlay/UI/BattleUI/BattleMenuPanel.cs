@@ -10,11 +10,12 @@ using PokemonCore.Attack.Data;
 using PokemonCore.Combat;
 using PokemonCore.Inventory;
 using PokemonCore.Utility;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace GamePlay.UI.BattleUI
 {
-    public class BattleMenuPanel : BaseUI
+    public class BattleMenuPanel : BaseUI,IUIAnimator
     {
         private Button Fight;
         private Button Pokemon;
@@ -59,6 +60,7 @@ namespace GamePlay.UI.BattleUI
                     // UIManager.Instance.Show<TargetChooserPanel>();
                     //TODO:实现更复杂的效果
                     UseItem(item,BattleHandler.Instance.OpponentPokemons[0].CombatID);
+                    UIManager.Instance.Hide<BagPanelUI>();
                     break;
                 case 1:
                     break;
@@ -201,6 +203,22 @@ namespace GamePlay.UI.BattleUI
         public void BuildInstrustruction(Instruction instruction)
         {
             BattleHandler.Instance.ReceiveInstruction(instruction);
+        }
+
+        public void OnEnterAnimator()
+        {
+            LeanTween.scale(gameObject,Vector3.one,0.5f).setOnComplete(() =>
+            {
+
+            });
+        }
+
+        public void OnExitAnimator()
+        {
+            LeanTween.scale(gameObject,Vector3.zero,0.5f).setOnComplete(() =>
+            {
+
+            });
         }
     }
 }

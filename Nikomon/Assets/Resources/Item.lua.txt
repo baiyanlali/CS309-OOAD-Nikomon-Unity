@@ -61,16 +61,20 @@ Medicine1 = {
         print("使用恢复状态药")
         sponsor = combatItem.Sponsor
         local notRecover = 1
+        local remove = 0
         for i, e in pairs(sponsor.Effects) do
+            print(e.InnerName..' -- '..combatItem.item.para)
             if e.InnerName == combatItem.item.para then
-                --FIXME:可能这种remove方法不太科学
-                sponsor.Effects:RemoveAt(i)
-                Game.battle:Report('宝可梦现在不再'..combatItem.item.para..'了！')
+                remove = i
                 notRecover = 0
             end
         end
-        if notRecover then
+        print(remove)
+        if notRecover == 1 then
             Game.battle:Report('宝可梦其实没有'..combatItem.item.para)
+        else
+            sponsor.Effects:RemoveAt(remove)
+            Game.battle:Report('宝可梦现在不再'..combatItem.item.para..'了！')
         end
 
 
