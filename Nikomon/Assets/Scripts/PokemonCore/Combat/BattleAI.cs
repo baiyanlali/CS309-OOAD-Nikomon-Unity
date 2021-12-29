@@ -47,7 +47,7 @@ namespace PokemonCore.Combat
             {
                 originalPokemon = pokemon;
                 CombatPokemon poke = pokemon;
-                // UnityEngine.Debug.Log("AI Move");
+                UnityEngine.Debug.Log($"AI Move: {poke.Name}");
                 //TODO: 考虑有宝可梦已经上场，但是这里仍然会牵扯到
                 if (poke.HP <= 0)
                 {

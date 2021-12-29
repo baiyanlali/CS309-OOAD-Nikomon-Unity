@@ -28,7 +28,7 @@ namespace PokemonCore.Inventory
         public string name { get;  set; }
         public int effectId { get; set; }
 
-        public Object para { get; }
+        public Object para { get; set; }
 
         /// <summary>
         /// 用作买卖
@@ -53,10 +53,10 @@ namespace PokemonCore.Inventory
             this.para = para;
         }
 
-        public void useItem(params object[] args)
-        {
-            Effect e = (Game.LuaEnv.Global.Get<Effect>("effect"+effectId));//string plus int (id)
-        }
+        // public void useItem()
+        // {
+        //     Effect e = (Game.LuaEnv.Global.Get<Effect>("effect"+effectId));//string plus int (id)
+        // }
         
         
         
