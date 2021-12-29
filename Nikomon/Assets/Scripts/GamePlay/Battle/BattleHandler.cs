@@ -6,6 +6,7 @@ using GamePlay.UI.BattleUI;
 using GamePlay.UI.UIFramework;
 using GamePlay.UI.UtilUI;
 using PokemonCore;
+using PokemonCore.Attack.Data;
 using PokemonCore.Combat;
 using PokemonCore.Monster.Data;
 using PokemonCore.Utility;
@@ -22,6 +23,8 @@ public class BattleHandler : MonoBehaviour
     public List<CombatPokemon> OpponentPokemons => battle?.opponentsPokemons;
 
     public Battle battle => Game.battle;
+
+    public CombatPokemon OppoPoke;
 
     public static BattleHandler Instance
     {
@@ -73,7 +76,7 @@ public class BattleHandler : MonoBehaviour
         battle.OnPokemonFainting += (combatPoke) =>
         {
             BattleFieldHandler.Instance.OnPokemonFainting(combatPoke);
-            if(Game.battle.MyPokemons.Contains(combatPoke))
+            if (Game.battle.MyPokemons.Contains(combatPoke))
                 UIManager.Instance.Show<BattleMenuPanel>(new List<bool>() {false, true, false, true});
         };
         battle.OnReplacePokemon += (p1, p2) =>
@@ -101,7 +104,7 @@ public class BattleHandler : MonoBehaviour
         battle.OnHit += OnHit;
         battle.OnHitted += OnHitted;
         battle.OnOneMoveEnd += () => { BattleFieldHandler.Instance.OnOneMoveEnd(); };
-
+        OppoPoke = OpponentPokemons[0];
         // print("Complete BattleHandler Init");
         // OnTurnBegin();
 
@@ -118,13 +121,13 @@ public class BattleHandler : MonoBehaviour
         EventPool.Schedule(() =>
         {
             var statusPanel = UIManager.Instance.GetUI<BattleStatusPanel>();
-            if(statusPanel!=null)
+            if (statusPanel != null)
                 statusPanel.ActivePokemon(poke);
             else
             {
                 UIManager.Instance.Show<BattleStatusPanel>(this);
                 statusPanel = UIManager.Instance.GetUI<BattleStatusPanel>();
-                if(statusPanel!=null)
+                if (statusPanel != null)
                     statusPanel.ActivePokemon(poke);
             }
 
@@ -147,6 +150,7 @@ public class BattleHandler : MonoBehaviour
         {
             List<PokemonLevelUpState> levelUpStates = new List<PokemonLevelUpState>();
             List<(PokemonData, PokemonData, Pokemon)> pokesEvoluting = new List<(PokemonData, PokemonData, Pokemon)>();
+            List<(Pokemon, MoveData)> pokesMovesData = new List<(Pokemon, MoveData)>();
             for (int i = 0; i < Game.trainer.party.Length; i++)
             {
                 if (Game.trainer.party[i] == null) break;
@@ -156,46 +160,88 @@ public class BattleHandler : MonoBehaviour
                     ExpBefore = new Experience(poke.Exp),
                     Pokemon = poke
                 });
-                var (evolutions,movesData) = Game.trainer.party[i].AddExperience(50000);
-                if (evolutions != null && evolutions.Count>0)
+                var (evolutions, movesData) = Game.trainer.party[i].AddExperience(500000);
+                if (evolutions != null && evolutions.Count > 0)
                 {
-                    pokesEvoluting.Add((poke._base,Game.PokemonsData[evolutions[0]],poke));
+                    pokesEvoluting.Add((poke._base, Game.PokemonsData[evolutions[0]], poke));
                     // UIManager.Instance.Show<EvolutionPanel>(poke._base,Game.PokemonsData[evolutions[0]]);
                 }
+
+
+                if (movesData != null && movesData.Count > 0)
+                {
+                    pokesMovesData.Add((poke, movesData[0]));
+                }
             }
-            UIManager.Instance.Show<SettlementPanel>(levelUpStates, (Action)(() =>
+
+            if (levelUpStates.Count != 0)
             {
-                if (pokesEvoluting.Count != 0)
-                {
-                    void ShowEvolution()
+
+                    UIManager.Instance.Show<SettlementPanel>(levelUpStates, (Action) (() =>
                     {
-                        if (pokesEvoluting.Count == 0)
+                        if (pokesEvoluting.Count != 0)
                         {
-                            GlobalManager.Instance.CanPlayerControlled = true;
-                            // BattleUIHandler.Instance.EndBattle();
-                            CurrentPokemon = null;
-                            return;
-                        };
-                        var evolve = pokesEvoluting[0];
-                        pokesEvoluting.RemoveAt(0);
-                        
-                        UIManager.Instance.Show<EvolutionPanel>(evolve.Item1, evolve.Item2, (Action) (() =>
-                        {
-                            evolve.Item3.Evolve(evolve.Item2);
+                            void ShowEvolution()
+                            {
+                                if (pokesEvoluting.Count == 0)
+                                {
+                                    UIManager.Instance.PopAllUI(UILayer.MainUI);
+                                    UIManager.Instance.PopAllUI(UILayer.NormalUI);
+                                    GlobalManager.Instance.CanPlayerControlled = true;
+                                    // BattleUIHandler.Instance.EndBattle();
+                                    CurrentPokemon = null;
+                                    return;
+                                }
+
+                                ;
+                                var evolve = pokesEvoluting[0];
+                                pokesEvoluting.RemoveAt(0);
+
+                                UIManager.Instance.Show<EvolutionPanel>(evolve.Item1, evolve.Item2, (Action) (() =>
+                                {
+                                    evolve.Item3.Evolve(evolve.Item2);
+                                    ShowEvolution();
+                                }));
+                            }
+
                             ShowEvolution();
-                        }));
-                    }
-                    ShowEvolution();
-                }
-                else
-                {
-                    GlobalManager.Instance.CanPlayerControlled = true;
-                    // BattleUIHandler.Instance.EndBattle();
-                    CurrentPokemon = null;
-                }
+                        }
+                        else
+                        {
+                            void ShowMoves()
+                            {
+                                if (pokesMovesData.Count == 0)
+                                {
+                                    UIManager.Instance.PopAllUI(UILayer.MainUI);
+                                    UIManager.Instance.PopAllUI(UILayer.NormalUI);
+                                    GlobalManager.Instance.CanPlayerControlled = true;
+                                    // BattleUIHandler.Instance.EndBattle();
+                                    CurrentPokemon = null;
+                                    return;
+                                }
 
-            }));
+                                var movesData = pokesMovesData[0];
+                                if (movesData.Item1.MoveCount() < Game.MaxMovesPerPokemon)
+                                {
+                                    movesData.Item1.AddMove(movesData.Item2);
+                                }
+                                else
+                                {
+                                    UIManager.Instance.Show<MovelearningUI>(movesData.Item1, movesData.Item2,
+                                        (Action) ShowMoves);
+                                }
+                            }
 
+                            ShowMoves();
+                        }
+                        // GlobalManager.Instance.CanPlayerControlled = true;
+                        // // BattleUIHandler.Instance.EndBattle();
+                        // CurrentPokemon = null;
+                    }));
+                
+                
+            }
+            
         }
         else
         {
@@ -204,7 +250,6 @@ public class BattleHandler : MonoBehaviour
             GlobalManager.Instance.CanPlayerControlled = true;
             // BattleUIHandler.Instance.EndBattle();
             CurrentPokemon = null;
-
         }
     }
 
