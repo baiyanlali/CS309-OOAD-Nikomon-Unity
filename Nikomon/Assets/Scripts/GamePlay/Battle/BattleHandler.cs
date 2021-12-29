@@ -88,7 +88,8 @@ public class BattleHandler : MonoBehaviour
         {
             // print(">>>>>>>>>>Show Dialogue Panel<<<<<<<");
             print($"Dialogue Panel: {o}");
-            UIManager.Instance.Show<DialogPanel>(o);
+            // UIManager.Instance.Show<DialogPanel>(o);
+            UIManager.Instance.Show<BattleDialoguePanel>(o);
         };
         // BattleUIHandler.Instance.Init(this);
         BattleFieldHandler.Instance.Init(AlliesPokemons, OpponentPokemons);
@@ -135,8 +136,8 @@ public class BattleHandler : MonoBehaviour
     public void EndBattle(BattleResults results)
     {
         print("End Battle");
-        UIManager.Instance.PopAllUI(UILayer.NormalUI);
-        UIManager.Instance.PopAllUI(UILayer.MainUI);
+        // UIManager.Instance.PopAllUI(UILayer.NormalUI);
+        // UIManager.Instance.PopAllUI(UILayer.MainUI);
         BattleFieldHandler.Instance.EndBattle(results);
     }
 
@@ -198,6 +199,8 @@ public class BattleHandler : MonoBehaviour
         }
         else
         {
+            UIManager.Instance.PopAllUI(UILayer.MainUI);
+            UIManager.Instance.PopAllUI(UILayer.NormalUI);
             GlobalManager.Instance.CanPlayerControlled = true;
             // BattleUIHandler.Instance.EndBattle();
             CurrentPokemon = null;

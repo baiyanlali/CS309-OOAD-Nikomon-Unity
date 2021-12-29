@@ -33,7 +33,8 @@ namespace GamePlay.UI.BattleUI
             switch (chooseIndex)
             {
                 case 0: //Switch
-                    if (Game.trainer.party[bagIndex] == null || Game.trainer.pokemonOnTheBattle[bagIndex]) return;
+                    
+                    if (Game.trainer.party[bagIndex] == null || Game.trainer.pokemonOnTheBattle[bagIndex] || Game.trainer.party[bagIndex].HP<0) return;
                     Instruction ins = new Instruction(currentPoke.CombatID, Command.SwitchPokemon, bagIndex,
                         null);
                     BuildInstrustruction(ins);
@@ -122,19 +123,14 @@ namespace GamePlay.UI.BattleUI
         }
 
         private CombatPokemon currentPoke => BattleHandler.Instance.CurrentPokemon;
-
-        public void SwitchPokemon(int index)
-        {
-            UnityEngine.Debug.Log($"Choose switch to index:{index}");
-            if (Game.trainer.party[index] == null || Game.trainer.pokemonOnTheBattle[index]) return;
-            Instruction ins = new Instruction(currentPoke.CombatID, Command.SwitchPokemon, index,
-                null);
-            BuildInstrustruction(ins);
-        }
+        
 
         public void UseItem(Item item, int target)
         {
-            UseItem(item, new List<int>() {target});
+            if (currentPoke.HP > 0)
+            {
+                UseItem(item, new List<int>() {target});
+            }
         }
 
         public void UseItem(Item item, List<int> target)
@@ -154,6 +150,7 @@ namespace GamePlay.UI.BattleUI
 
         public void ChooseMove(int index)
         {
+            if (currentPoke.HP <= 0) return;
             Move move = currentPoke.pokemon.moves[index];
             //如果技能效果是针对对面宝可梦而且宝可梦只有一个的话
             if (move._baseData.Target == Targets.SELECTED_OPPONENT_POKEMON &&

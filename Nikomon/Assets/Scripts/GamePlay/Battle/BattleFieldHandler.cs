@@ -388,6 +388,7 @@ public class BattleFieldHandler : MonoBehaviour
         
 
         dics.Clear();
+        
         BattleHandler.Instance.OnBattleFieldEnd(results);
 
     }

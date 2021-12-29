@@ -71,6 +71,7 @@ namespace GamePlay
             [typeof(BattlePokemonStateUI)]="Prefabs/UI/BattleUI/PokemonState",
             [typeof(BattleStatusPanel)]="Prefabs/UI/BattleUI/BattleStatusPanel",
             [typeof(BattleMenuPanel)]="Prefabs/UI/BattleUI/BattleMenuUI",
+            [typeof(BattleDialoguePanel)]="Prefabs/UI/BattleUI/BattleDialoguePanel",
         
             [typeof(MoveElement)]="Prefabs/UI/BattleUI/MoveElement",
 
