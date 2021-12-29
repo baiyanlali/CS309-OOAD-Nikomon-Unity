@@ -42,10 +42,9 @@ namespace PokemonCore.Combat
 
         public void DoAI()
         {
-            CombatPokemon originalPokemon=null, replacementPokemon=null;
+            List<(CombatPokemon, CombatPokemon)> replacedPokemon = new List<(CombatPokemon, CombatPokemon)>();
             foreach (var pokemon in pokes.OrEmptyIfNull())
             {
-                originalPokemon = pokemon;
                 CombatPokemon poke = pokemon;
                 UnityEngine.Debug.Log($"AI Move: {poke.Name}");
                 //TODO: 考虑有宝可梦已经上场，但是这里仍然会牵扯到
@@ -58,8 +57,9 @@ namespace PokemonCore.Combat
                         Instruction inss = new Instruction(poke.CombatID, Command.SwitchPokemon,
                             trainer.lastAblePokemonIndex, null);
                         battle.ReceiveInstruction(inss);
+                        var originPoke = poke;
                         poke = battle.Pokemons.First(p => p.pokemon == pNext);
-                        replacementPokemon = poke;
+                        replacedPokemon.Add((originPoke,poke));
                         // return;
                     }
                     else
@@ -92,13 +92,18 @@ namespace PokemonCore.Combat
 
                 Instruction instruction = new Instruction(poke.CombatID, Command.Move, id, target);
                 battle.ReceiveInstruction(instruction);
+                
+                
+                
             }
 
-            if (replacementPokemon != null)
+            foreach (var replacePoke in replacedPokemon)
             {
-                pokes.Remove(originalPokemon);
-                pokes.Add(replacementPokemon);
+                pokes.Remove(replacePoke.Item1);
+                pokes.Add(replacePoke.Item2);
             }
+
+            
         }
     }
 }

@@ -152,6 +152,7 @@ namespace PokemonCore.Combat
         {
             for (int i = 0; i < party.Length; i++)
             {
+                if (party[i] == null) break;
                 if(pokemonOnTheBattle[i]==false && party[i].HP>0)return true;
             }
 
