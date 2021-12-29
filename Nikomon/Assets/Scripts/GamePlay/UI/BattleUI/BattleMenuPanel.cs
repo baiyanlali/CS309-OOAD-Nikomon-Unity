@@ -15,7 +15,7 @@ using UnityEngine.UI;
 
 namespace GamePlay.UI.BattleUI
 {
-    public class BattleMenuPanel : BaseUI
+    public class BattleMenuPanel : BaseUI,IUIAnimator
     {
         private Button Fight;
         private Button Pokemon;
@@ -199,6 +199,22 @@ namespace GamePlay.UI.BattleUI
         public void BuildInstrustruction(Instruction instruction)
         {
             BattleHandler.Instance.ReceiveInstruction(instruction);
+        }
+
+        public void OnEnterAnimator()
+        {
+            LeanTween.scale(gameObject,Vector3.one,0.5f).setOnComplete(() =>
+            {
+
+            });
+        }
+
+        public void OnExitAnimator()
+        {
+            LeanTween.scale(gameObject,Vector3.zero,0.5f).setOnComplete(() =>
+            {
+
+            });
         }
     }
 }
