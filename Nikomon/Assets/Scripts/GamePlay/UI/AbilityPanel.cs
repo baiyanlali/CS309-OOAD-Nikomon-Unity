@@ -21,15 +21,11 @@ namespace GamePlay.UI.UtilUI
         public Pokemon Pokemon;
         public RadarTest _radarTest;
         public Nametext _nametext;
+        public Content2text _Content2;
         public GameObject pokenmons;
         public Text movecontent;
-        //public override bool IsOnly { get; } = true;
-        private void Awake()
-        {
-            // abilityTable.SetActive(true);
-            //_radarTest.pokemon = Pokemon;
-
-        }
+        public GameObject content2;
+        public override bool IsOnly { get; } = true;
 
         /// <summary>
         /// 
@@ -84,8 +80,35 @@ namespace GamePlay.UI.UtilUI
             pokenmons.SetActive(true);
             print(name);
             pokenmons.transform.Find(name).gameObject.SetActive(true);
+            // _radarTest.Init(Pokemon);
+            // content2.GetComponent<TriggerSelect>().onDeSelect = () =>
+            // {
+            //     _nametext.Init(Pokemon,trainer);
+            //     _radarTest.Init(Pokemon);
+            // };
+            // content2.GetComponent<TriggerSelect>().onSelect = () =>
+            // {
+            //     _radarTest.Init(Pokemon);
+            // };
+            // // _nametext.Init(Pokemon,trainer);
+            // _Content2.Init(Pokemon);
+            print(Pokemon.Name);
+            
             _radarTest.Init(Pokemon);
             _nametext.Init(Pokemon,trainer);
+            _Content2.Init(Pokemon);
+            // content2.GetComponent<TriggerSelect>().onDeSelect = () =>
+            // {
+            //     _nametext.Init(Pokemon,trainer);
+            //     _radarTest.Init(Pokemon);
+            // };
+            // content2.GetComponent<TriggerSelect>().onSelect = () =>
+            // {
+            //     _radarTest.Init(Pokemon);
+            //     _Content2.Init(Pokemon);
+            // };
+
+
 
         }
 

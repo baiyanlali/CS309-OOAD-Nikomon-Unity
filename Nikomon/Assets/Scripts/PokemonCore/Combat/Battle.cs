@@ -571,7 +571,9 @@ namespace PokemonCore.Combat
                 join instruction in Instructions on poke.CombatID equals instruction.CombatPokemonID
                 select poke).ToList();
 
-        public List<CombatPokemon> MyPokeWithNoInstructions => MyPokemons.Except(MyPokeWithInstructions).ToList();
+        //当自身宝可梦是faint而且trainer没有其它可以用的宝可梦时，这个宝可梦直接跳过
+        public List<CombatPokemon> MyPokeWithNoInstructions => MyPokemons.Except(MyPokeWithInstructions)
+            .Where(pokemon => { return pokemon.HP > 0 || (pokemon.HP <= 0 && Game.trainer.HasAblePokemonOutOfBattle()); }).ToList();
 
         public bool ReceiveInstruction(Instruction ins, bool fromUser = false)
         {
@@ -659,8 +661,7 @@ namespace PokemonCore.Combat
                 case Command.Skip:
                     break;
             }
-
-            //TODO:会造成对方宝可梦无限连击的情况
+            
 
             //在n v n时,如果某个trainer当前宝可梦濒死，但还有宝可梦能上场,那么count++
             int countShouldRecieved = 0;

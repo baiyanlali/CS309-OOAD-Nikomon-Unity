@@ -128,6 +128,7 @@ public class BattleFieldHandler : MonoBehaviour
             PokemonIndentity indentity = obj.AddComponent<PokemonIndentity>();
             indentity.InitBattle(false);
             dics.Add(allies[i].CombatID, indentity);
+            // Destroy(obj.GetComponent<Rigidbody>());
             obj.transform.localPosition = Vector3.right * offset;
             TargetGroup.AddMember(obj.transform, 1, 5);
         }
@@ -158,6 +159,7 @@ public class BattleFieldHandler : MonoBehaviour
             var identity = obj.AddComponent<PokemonIndentity>();
             identity.InitBattle(true);
             dics.Add(oppos[i].CombatID, identity);
+            // Destroy(obj.GetComponent<Rigidbody>());
             obj.transform.localPosition = Vector3.right * offset;
             TargetGroup.AddMember(obj.transform, 1, 5);
             
@@ -335,11 +337,13 @@ public class BattleFieldHandler : MonoBehaviour
             {
                 dics.Remove(p1.CombatID);
                 PokemonIndentity indentity = obj.AddComponent<PokemonIndentity>();
-                obj.GetComponent<Rigidbody>().detectCollisions = false;
-                obj.GetComponent<Rigidbody>().useGravity=false;
-                obj.GetComponent<Rigidbody>().isKinematic = true;
+                // Destroy(obj.GetComponent<Rigidbody>());
+                // obj.GetComponent<Rigidbody>().detectCollisions = false;
+                // obj.GetComponent<Rigidbody>().useGravity=false;
+                // obj.GetComponent<Rigidbody>().isKinematic = true;
                 indentity.InitBattle(false);
                 dics.Add(p2.CombatID, indentity);
+                UIManager.Instance.Refresh<BattleStatusPanel>();
                 Destroy(trans.gameObject);
                 ConcentrateCamera.Priority = 9;
                 onComplete?.Invoke();
