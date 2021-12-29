@@ -243,11 +243,51 @@ namespace PokemonCore
             {
                 alliesPoke = new List<Pokemon>();
                 oppoPoke = new List<Pokemon>();
-                for (int i = 0; i < pokemonPerTrainer; i++)
+
+                //will break if pokemon per trainer achieved or null occured
+                var alliesPerTrainer = new List<Pokemon>();
+
+                foreach (var ally in allies)
                 {
-                    alliesPoke.AddRange(from pokea in allies select pokea.party[i]);
-                    oppoPoke.AddRange(from pokea in opponent select pokea.party[i]);
+                    alliesPerTrainer.Clear();
+                    for (int i = 0; i < ally.party.Length; i++)
+                    {
+                        if (ally.party[i] == null)
+                        {
+                            break;
+                        }
+                        if (ally.party[i].HP > 0)
+                        {
+                            alliesPerTrainer.Add(ally.party[i]);
+                            if (alliesPerTrainer.Count == pokemonPerTrainer) break;
+                        }
+                    }
+                    alliesPoke.AddRange(alliesPerTrainer);
                 }
+                var oppoPerTrainer = new List<Pokemon>();
+                foreach (var oppo in opponent)
+                {
+                    oppoPerTrainer.Clear();
+                    for (int i = 0; i < oppo.party.Length; i++)
+                    {
+                        if (oppo.party[i] == null)
+                        {
+                            break;
+                        }
+                        if (oppo.party[i].HP > 0)
+                        {
+                            oppoPerTrainer.Add(oppo.party[i]);
+                            if (oppoPerTrainer.Count == pokemonPerTrainer) break;
+                        }
+                    }
+                    oppoPoke.AddRange(oppoPerTrainer);
+                }
+                
+                // for (int i = 0; i < pokemonPerTrainer; i++)
+                // {
+                //     alliesPoke.AddRange(from pokea in allies select pokea.party[i]);
+                //     oppoPoke.AddRange(from pokea in opponent select pokea.party[i]);
+                // }
             }
 
             battle.OnBattleEnd += (o) =>
