@@ -10,6 +10,8 @@ public class BattleDialoguePanel : BaseUI
    
    public override void OnEnter(params object[] args)
    {
+      base.OnEnter(args);
       dialogueText.text = args[0] as string;
+      gameObject.SetActive(true);
    }
 }

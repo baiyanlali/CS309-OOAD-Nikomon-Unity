@@ -63,6 +63,7 @@ namespace GamePlay.UI.BattleUI
                 case 1:
                     break;
             }
+            UIManager.Instance.Hide<BagPanelUI>();
         }
 
         public override void Init(params object[] args)
@@ -160,6 +161,7 @@ namespace GamePlay.UI.BattleUI
                 Instruction instruction =
                     new Instruction(currentPoke.CombatID, Command.Move, index,
                         BattleHandler.Instance.OpponentPokemons[0].CombatID);
+                UIManager.Instance.Hide<MovePanel>();
                 BuildInstrustruction(instruction);
             }
             else
@@ -185,9 +187,11 @@ namespace GamePlay.UI.BattleUI
                 Instruction instruction =
                     new Instruction(currentPoke.CombatID, Command.Move, index,
                         targets);
+                UIManager.Instance.Hide<MovePanel>();
                 BuildInstrustruction(instruction);
             }
-
+            
+            
             // UIManager.Instance.Refresh<DialogPanel>();
         }
 
