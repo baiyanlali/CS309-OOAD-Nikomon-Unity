@@ -34,7 +34,7 @@ namespace GamePlay.UI.BattleUI
             {
                 case 0: //Switch
                     
-                    if (Game.trainer.party[bagIndex] == null || Game.trainer.pokemonOnTheBattle[bagIndex] || Game.trainer.party[bagIndex].HP<0) return;
+                    if (Game.trainer.party[bagIndex] == null || Game.trainer.pokemonOnTheBattle[bagIndex] || Game.trainer.party[bagIndex].HP<=0) return;
                     Instruction ins = new Instruction(currentPoke.CombatID, Command.SwitchPokemon, bagIndex,
                         null);
                     BuildInstrustruction(ins);
