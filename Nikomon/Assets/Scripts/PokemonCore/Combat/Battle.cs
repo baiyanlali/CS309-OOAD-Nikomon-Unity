@@ -681,8 +681,10 @@ namespace PokemonCore.Combat
                 }
             }
             
+            UnityEngine.Debug.Log($"Battle: Count should recieved: {countShouldRecieved}");
             
-            if (Instructions.Count == Pokemons.Where(pokemon => pokemon.HP>0).ToArray().Length )
+            
+            if (Instructions.Count == countShouldRecieved )
             {
                 //如果所有指令都接收到则进入move
                 Instructions.Clear();
