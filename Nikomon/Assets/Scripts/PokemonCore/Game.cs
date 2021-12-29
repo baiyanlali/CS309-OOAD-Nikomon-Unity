@@ -259,6 +259,7 @@ namespace PokemonCore
                         if (ally.party[i].HP > 0)
                         {
                             alliesPerTrainer.Add(ally.party[i]);
+                            if (alliesPerTrainer.Count == pokemonPerTrainer) break;
                         }
                     }
                     alliesPoke.AddRange(alliesPerTrainer);
@@ -276,6 +277,7 @@ namespace PokemonCore
                         if (oppo.party[i].HP > 0)
                         {
                             oppoPerTrainer.Add(oppo.party[i]);
+                            if (oppoPerTrainer.Count == pokemonPerTrainer) break;
                         }
                     }
                     oppoPoke.AddRange(oppoPerTrainer);
