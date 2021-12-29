@@ -290,6 +290,7 @@ public class BattleFieldHandler : MonoBehaviour
     public void OnReplacePokemon(CombatPokemon p1, CombatPokemon p2)
     {
         TimeSequences.Enqueue(new TimeSequence(null,TimeSequence.SequenceTag.Replace,p1,p2));
+        DoNextSequence();
         // TimeSequences.Enqueue(new TimeSequence(null,TimeSequence.SequenceTag.EndMove));
         // DoNextSequence();
     }
