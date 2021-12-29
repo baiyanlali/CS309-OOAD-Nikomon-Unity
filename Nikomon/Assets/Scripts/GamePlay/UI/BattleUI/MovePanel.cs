@@ -112,7 +112,7 @@ namespace GamePlay.UI.BattleUI
         public void OnEnterAnimator()
         {
             gameObject.transform.localScale = Vector3.zero;
-            LeanTween.scale(gameObject,Vector3.one,0.5f).setOnComplete(() =>
+            LeanTween.scale(gameObject,Vector3.one,0.3f).setOnComplete(() =>
             {
 
             });
@@ -121,7 +121,7 @@ namespace GamePlay.UI.BattleUI
         public void OnExitAnimator()
         {
             gameObject.transform.localScale = Vector3.one;
-            LeanTween.scale(gameObject,Vector3.zero,0.5f).setOnComplete(() =>
+            LeanTween.scale(gameObject,Vector3.zero,0.3f).setOnComplete(() =>
             {
 
             });
