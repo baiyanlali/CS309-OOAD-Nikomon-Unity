@@ -10,6 +10,7 @@ using PokemonCore.Attack.Data;
 using PokemonCore.Combat;
 using PokemonCore.Inventory;
 using PokemonCore.Utility;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace GamePlay.UI.BattleUI
@@ -59,6 +60,7 @@ namespace GamePlay.UI.BattleUI
                     // UIManager.Instance.Show<TargetChooserPanel>();
                     //TODO:实现更复杂的效果
                     UseItem(item,BattleHandler.Instance.OpponentPokemons[0].CombatID);
+                    UIManager.Instance.Hide<BagPanelUI>();
                     break;
                 case 1:
                     break;
