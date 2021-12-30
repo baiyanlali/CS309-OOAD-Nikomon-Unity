@@ -270,11 +270,11 @@ namespace PokemonCore.Network
         }
         
         
-        public static void SendToClients(string data,Socket client_except)
+        public static void SendToClients(string data,IPAddress client_except)
         {
             foreach (var client in Clients.OrEmptyIfNull())
             {
-                if (client.LocalEndPoint == client_except.LocalEndPoint) continue;
+                if (((IPEndPoint)client.LocalEndPoint).Address.ToString() == client_except.ToString()) continue;
                 SendToClient(data, client);
             }
         }
@@ -316,6 +316,7 @@ namespace PokemonCore.Network
         {
             if (ClientSocket == null) return;
             byte[] data = Encoding.UTF8.GetBytes(strs);
+            UnityEngine.Debug.Log($"Client Send to Server:{strs}");
             ClientSocket.Send(data);
         }
 

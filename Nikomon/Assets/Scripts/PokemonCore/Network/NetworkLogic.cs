@@ -214,10 +214,12 @@ namespace PokemonCore.Network
             NetworkLocal.OnServerReceiveMessage = (data, client) =>
             {
                 string str = Encoding.UTF8.GetString(data);
-                NetworkLocal.SendToClients(str, client);
-                UnityEngine.Debug.Log("Server Receive Message");
+                IPAddress clientAddress = ((IPEndPoint) client.RemoteEndPoint).Address;
+                UnityEngine.Debug.Log($"Server Receive Message from: {clientAddress.ToString()}");
+                NetworkLocal.SendToClients(str, clientAddress);
                 foreach (var s in ParseJson(str))
                 {
+                    if (string.IsNullOrEmpty(s) || string.IsNullOrWhiteSpace(s)) continue;
                     UnityEngine.Debug.Log(s);
                     Instruction ins = JsonConvert.DeserializeObject<Instruction>(s);
                     Battle.Instance.ReceiveInstruction(ins, false);
@@ -262,7 +264,7 @@ namespace PokemonCore.Network
             new Thread(() =>
             {
                 string str = JsonConvert.SerializeObject(instruction) + "\n";
-                UnityEngine.Debug.Log($"Client send Instruction :{str}");
+                // UnityEngine.Debug.Log($"Client send Instruction :{str}");
                 NetworkLocal.SendToServer(str);
             }).Start();
         }

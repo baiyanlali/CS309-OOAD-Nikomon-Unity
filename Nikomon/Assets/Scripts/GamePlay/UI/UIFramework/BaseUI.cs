@@ -29,7 +29,7 @@ namespace GamePlay.UI.UIFramework
             Component
         }
 
-        public virtual UILayer Layer { get; set; } =  UILayer.NormalUI;
+         public virtual UILayer Layer { get; set; } =  UILayer.NormalUI;
         public virtual bool IsOnly { get; }
         // public virtual bool IsBlockPlayerControl { get; set; }
         public virtual float DisplayTime { get; } = -1;//-1表示一直显示

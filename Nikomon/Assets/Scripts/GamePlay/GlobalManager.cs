@@ -111,35 +111,67 @@ public class GlobalManager : MonoBehaviour
         GetComponent<LineProviderBehaviour>().textLanguageCode = Messages.Current_culture;
         DialogueRunner = GetComponent<DialogueRunner>();
         DialogueRunner.lineProvider = GetComponent<LineProviderBehaviour>();
+        
         SetUpDiagoueRunnder(DialogueRunner);
 
-        void SetUpDiagoueRunnder(DialogueRunner runner)
+       
+    }
+    
+    private HashSet<string> visitedNode =new HashSet<string>();
+    public HashSet<string> beatedNPCS = new HashSet<string>();
+    void SetUpDiagoueRunnder(DialogueRunner runner)
+    {
+        Messages.OnLanguageChanged += (s) =>
         {
-            Messages.OnLanguageChanged += (s) =>
-            {
-                GetComponent<LineProviderBehaviour>().textLanguageCode = s;
-            };
+            GetComponent<LineProviderBehaviour>().textLanguageCode = s;
+        };
 
-            runner.onNodeComplete.AddListener((s) => { visitedNode.Add(s);});
+        runner.onNodeComplete.AddListener((s) => { visitedNode.Add(s);});
             
-            runner.AddFunction("visited",(Func<string,bool>)visited);
-            runner.AddCommandHandler("start_battle",(Action<string>)startBattleFromDialogue);
-            // runner.AddCommandHandler();
+        runner.AddFunction("visited",(Func<string,bool>)visited);
+        runner.AddFunction("beated",(Func<string,bool>)beated);
+        runner.AddCommandHandler("start_battle",(Action<string>)startBattleFromDialogue);
+        runner.AddCommandHandler<int,int>("add_pokemon",addPokemon);
+        runner.AddCommandHandler<string>("enter_scene",enterScene);
+        runner.AddCommandHandler<string>("play_music",playMusic);
+        // runner.AddCommandHandler();
 
-            bool visited(string node)
-            {
-                // print("Add visited:(node)");
-                return visitedNode.Contains(node);
-            }
+        bool visited(string node)
+        {
+            // print("Add visited:(node)");
+            return visitedNode.Contains(node);
+        }
+        
+        
 
-            void startBattleFromDialogue(string trainerName)
-            {
-                GameObject.Find(trainerName).GetComponent<NPC>()?.StartBattle();
-            }
+        bool beated(string name)
+        {
+
+            return beatedNPCS.Contains(name);
+        }
+
+        void startBattleFromDialogue(string trainerName)
+        {
+            GameObject.Find(trainerName).GetComponent<NPC>()?.StartBattle();
+        }
+
+        void addPokemon(int pokeID, int pokeLevel)
+        {
+            Game.Instance.AddPokemon(new Pokemon(pokeID,pokeLevel));
+        }
+
+        void enterScene(string scene)
+        {
+            SceneTransmitor.LoadSceneName(scene);
+        }
+
+        void playMusic(string name)
+        {
+            
         }
     }
 
-    private HashSet<string> visitedNode =new HashSet<string>();
+    
 
     private void InitGame()
     {
@@ -258,25 +290,7 @@ public class GlobalManager : MonoBehaviour
     {
         NetworkLogic.PairOff();
     }
-    //
-    // public void StartFastNetworkBattle()
-    // {
-    //     SceneManager.LoadScene(1);
-    //     SceneManager.sceneLoaded += (a, b) => { StartNetworkBattle(); };
-    // }
 
-    // void StartBattleFastTest(Scene scene, LoadSceneMode mode)
-    // {
-    //     Game.trainer.party[0] = new Pokemon(Game.PokemonsData[4], "", Game.trainer, 50, 0);
-    //     Game.trainer.party[1] = new Pokemon(Game.PokemonsData[1], "", Game.trainer, 50, 0);
-    //     Trainer trainer = new Trainer("Computer", false);
-    //     trainer.party[0] = new Pokemon(Game.PokemonsData[17], "", trainer, 50, 0);
-    //     trainer.party[1] = new Pokemon(Game.PokemonsData[7], "", trainer, 50, 0);
-    //     List<Trainer> trainers = new List<Trainer>();
-    //     trainers.Add(trainer);
-    //     game.SaveData();
-    //     StartBattle(null, trainers, true, 2);
-    // }
 
     public void StartBattle(List<Trainer> allies, List<Trainer> oppo, bool isHost, int pokemonPerTrainer = 1)
     {
@@ -311,6 +325,13 @@ public class GlobalManager : MonoBehaviour
         {
             isBattling = false;
             print("Global: Battle END;");
+            foreach (var trainer in oppos)
+            {
+                if (!beatedNPCS.Contains(trainer.name))
+                {
+                    beatedNPCS.Add(trainer.name);
+                }
+            }
             BattleHandler.Instance.EndBattle(o);
         };
         BattleHandler.Instance.StartBattle(Game.battle);

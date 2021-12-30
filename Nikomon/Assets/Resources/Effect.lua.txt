@@ -222,7 +222,7 @@ effect487={
 effect569={
     ID = 569,
     InnerName = 'Ion Deluge',
-    Round = 1, --因为有两个效果展示，所以Round为实际round的两倍
+    Round = 2, --因为有两个效果展示，所以Round为实际round的两倍
     OnMoving=function(self,combatMove)
         Game.battle:Report('场地布满了电浆！一般招式变为电属性')
         if combatMove.types.ID == 0 then
@@ -231,15 +231,33 @@ effect569={
     end
 }
 
+effect240={
+    ID = 240,
+    InnerName = 'Rainy',
+    Round = 10,
+    EffectChance = 100,
+    onMoving=function(self,combatMove)
+        if combatMove.types.Name == 'Fire' then
+            combatMove.power = math.floor( combatMove.power * 0.8 )
+            print(combatMove.move._baseData.innerName.."造成了低伤害...")
+            Game.battle:Report('在雨中'..combatMove.move._baseData.innerName..'的伤害降低')
+        end
+        if combatMove.types.Name == 'Water' then
+            combatMove.power = math.floor( combatMove.power * 1.2 )
+            print(combatMove.move._baseData.innerName.."造成了高伤害！")
+            Game.battle:Report('在雨中'..combatMove.move._baseData.innerName..'的伤害提高')
+        end
+    end
+}
+
 effect11={
     ID=11,
     InnerName='raiseATK',
-    Round=3,
+    Round=0,
     EffectChance=100,
     
     OnMoving=function(self,combatMove) 
 		combatMove.Sponsor.ATKStateChange.set(ATKStateChange.get() + 1)
-        self.Round = self.Round-1
     end
 }
 effect12={
