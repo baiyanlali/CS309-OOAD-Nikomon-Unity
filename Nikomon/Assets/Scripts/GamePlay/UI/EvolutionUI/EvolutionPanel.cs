@@ -18,6 +18,7 @@ public class EvolutionPanel : BaseUI
     public PokemonData _PokemonEvoluted;
 
     public GameObject EvolutionBalls;
+    public GameObject _Button;
     
     /// <summary>
     /// 
@@ -49,6 +50,8 @@ public class EvolutionPanel : BaseUI
         //print(211);
         //_PokemonOrignal()
         
+        _Button.SetActive(false);
+        
         EvolutionBalls.transform.localScale=Vector3.zero;
         LeanTween.scale(EvolutionBalls, Vector3.one, 2).setOnComplete(() =>
         {
@@ -59,6 +62,7 @@ public class EvolutionPanel : BaseUI
                 LeanTween.scale(EvolutionBalls, Vector3.zero, 2).setOnComplete(() =>
                 {
                     //pokenmons.transform.Find(_PokemonEvolutedName).gameObject.SetActive(true);
+                    _Button.SetActive(true);
                 });
             });
             

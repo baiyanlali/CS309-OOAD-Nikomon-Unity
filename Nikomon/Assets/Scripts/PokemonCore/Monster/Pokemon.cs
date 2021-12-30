@@ -345,6 +345,8 @@ public class Pokemon : IPokemon, IEquatable<Pokemon>, IEqualityComparer<Pokemon>
 
         Type1 = data.type1;
         Type2 = data.type2;
+
+        Game.trainer.PokemonCountered.Add(ID);
     }
     
     public void AddMove(MoveData moveData)
