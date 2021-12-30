@@ -229,11 +229,11 @@ namespace GamePlay
             ItemIcons = new Dictionary<(Item.Tag, int), Sprite>();
             var tmp = Game.ItemsData;
             // from t in tmp where t.Key==Item.Tag.PokeBalls
-            foreach (var item in tmp)
-            {
-                // Debug.Log(item.Key.Item1+item.Key.Item2.ToString());
-                // ItemIcons.Add(item.Key,Resources.Load<Sprite>("Sprites/ItemIcons/"+item.Key.Item1+item.Key.Item2.ToString()));
-            }
+            // foreach (var item in tmp)
+            // {
+            //     // Debug.Log(item.Key.Item1+item.Key.Item2.ToString());
+            //     // ItemIcons.Add(item.Key,Resources.Load<Sprite>("Sprites/ItemIcons/"+item.Key.Item1+item.Key.Item2.ToString()));
+            // }
             foreach (var item in tmp)
             {
                 ItemIcons.Add(item.Key,Resources.Load<Sprite>("Sprites/ItemIcons/"+item.Key.Item1+item.Key.Item2.ToString()));
