@@ -89,7 +89,17 @@ public class BagPanelUI : BaseUI
 
             lastTable = tab;
             tab.name = strs[i];
-            tab.transform.Find("Image").GetComponent<Image>().sprite = GameResources.BagIcons[(Item.Tag) Enum.Parse(typeof(Item.Tag),strs[i])];
+            tab.transform.GetComponent<Image>().sprite =
+                GameResources.BagIcons[(Item.Tag) Enum.Parse(typeof(Item.Tag), strs[i])];
+            // tab.transform.Find("Image").GetComponent<Image>().sprite = GameResources.BagIcons[(Item.Tag) Enum.Parse(typeof(Item.Tag),strs[i])];
+            if (tab.transform.GetComponent<TabElement>().spriteState.selectedSprite == null)
+            {
+                tab.transform.GetComponent<TabElement>().spriteState = new SpriteState()
+                {
+                    selectedSprite = Resources.Load<Sprite>("Sprites/BagIcons/" + strs[i] + "Selected") 
+                };
+            }
+            
             // tab.GetComponent<Image>().color=Color.black;
             GameObject contents = Instantiate(bagContents);
             contents.name = strs[i];
