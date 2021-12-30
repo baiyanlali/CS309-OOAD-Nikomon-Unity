@@ -251,6 +251,23 @@ effect240={
     end
 }
 
+effect10={
+    ID=10,
+    InnerName='lowerAccuracy',
+    Round=3,
+    EffectChance=100,
+
+    OnMoving=function(self,combatMove)
+        if self.Round > 2 then
+            Game.battle:Report(combatMove.Sponsor.pokemon._base.innerName..'的命中率降低了...')
+        end
+        combatMove.Accuracy = combatMove.Accuracy-50
+        if combatMove.Accuracy<0 then
+            combatMove.Accuracy = 0
+        end
+    end
+}
+
 effect11={
     ID=11,
     InnerName='raiseATK',

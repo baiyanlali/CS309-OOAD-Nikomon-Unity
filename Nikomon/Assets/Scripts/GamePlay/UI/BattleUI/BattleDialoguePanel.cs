@@ -9,8 +9,8 @@ public class BattleDialoguePanel : BaseUI,IUIAnimator
 {
    public GameObject animObject;
    public Text dialogueText;
-   [NonSerialized] public List<string> dialogTextList = new List<string>();
-   public override UILayer Layer { get; set; } =  UILayer.PopupUI;
+   public List<string> dialogTextList = new List<string>();
+   public override UILayer Layer { get;set;  } =  UILayer.PopupUI;
    public override void OnEnter(params object[] args)
    {
       base.OnEnter(args);
@@ -35,15 +35,11 @@ public class BattleDialoguePanel : BaseUI,IUIAnimator
    }
    IEnumerator displayDialog()
    {
-      while (true)
+      while (dialogTextList.Count != 0)
       {
-         if (dialogTextList.Count == 0)
-         {
-            break;
-         }
          Debug.Log("display"+dialogTextList[0]);
          dialogueText.text = dialogTextList[0];
-         yield return new WaitForSeconds(1);
+         yield return new WaitForSeconds(1.2f);
          dialogTextList.RemoveAt(0);
       }
       UIManager.Instance.Hide(this);
@@ -51,14 +47,11 @@ public class BattleDialoguePanel : BaseUI,IUIAnimator
 
    public void OnEnterAnimator()
    {
-      // animObject.transform.localScale=Vector3.zero;
-      gameObject.transform.localScale = Vector3.zero;
-      LeanTween.scale(gameObject,Vector3.one,0.2f).setOnComplete(() =>
+      if (dialogTextList.Count == 0)
       {
-      
-      });
-      
-      // LeanTween.scale(animObject,Vector3.one,0.2f).setEase(LeanTweenType.punch);
+         gameObject.transform.localScale = Vector3.zero;
+         LeanTween.scale(gameObject, Vector3.one, 0.2f).setOnComplete(() => { });
+      }
    }
 
    public void OnExitAnimator()

@@ -201,13 +201,13 @@ public class BattleHandler : MonoBehaviour
                                 {
                                     UIManager.Instance.PopAllUI(UILayer.MainUI);
                                     UIManager.Instance.PopAllUI(UILayer.NormalUI);
-                                    UIManager.Instance.PopAllUI(UILayer.PopupUI);
+                                    // UIManager.Instance.PopAllUI(UILayer.PopupUI);
                                     GlobalManager.Instance.CanPlayerControlled = true;
                                     // BattleUIHandler.Instance.EndBattle();
                                     CurrentPokemon = null;
                                     return;
                                 }
-                                print(111);
+                                // print(111);
 
                                 
                                 var evolve = pokesEvoluting[0];
@@ -230,7 +230,7 @@ public class BattleHandler : MonoBehaviour
                                 {
                                     UIManager.Instance.PopAllUI(UILayer.MainUI);
                                     UIManager.Instance.PopAllUI(UILayer.NormalUI);
-                                    UIManager.Instance.PopAllUI(UILayer.PopupUI);
+                                    // UIManager.Instance.PopAllUI(UILayer.PopupUI);
                                     GlobalManager.Instance.CanPlayerControlled = true;
                                     // BattleUIHandler.Instance.EndBattle();
                                     CurrentPokemon = null;
