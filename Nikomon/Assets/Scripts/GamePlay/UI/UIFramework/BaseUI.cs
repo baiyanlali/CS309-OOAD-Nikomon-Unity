@@ -9,18 +9,18 @@ using UnityEngine.UI;
 
 namespace GamePlay.UI.UIFramework
 {
-
     enum ShowType
     {
         Type1,
         Type2
     }
-    
+
     public interface IUIAnimator
     {
         void OnEnterAnimator();
         void OnExitAnimator();
     }
+
     public abstract class BaseUI : MonoBehaviour
     {
         public enum GET_TYPE
@@ -29,14 +29,16 @@ namespace GamePlay.UI.UIFramework
             Component
         }
 
-        public virtual UILayer Layer { get; set; } =  UILayer.NormalUI;
+        public virtual UILayer Layer { get; set; } = UILayer.NormalUI;
+
         public virtual bool IsOnly { get; }
+
         // public virtual bool IsBlockPlayerControl { get; set; }
-        public virtual float DisplayTime { get; } = -1;//-1表示一直显示
+        public virtual float DisplayTime { get; } = -1; //-1表示一直显示
 
         // private bool CanPlayerControlBefore;
 
-        private bool _canQuitNow=true;
+        private bool _canQuitNow = true;
 
         protected bool CanQuitNow
         {
@@ -44,12 +46,12 @@ namespace GamePlay.UI.UIFramework
             set
             {
                 _canQuitNow = value;
-                if(ExitBtn!=null)
+                if (ExitBtn != null)
                     ExitBtn.onClick.RemoveAllListeners();
 
-                if(ExitBtn!=null && _canQuitNow)
+                if (ExitBtn != null && _canQuitNow)
                 {
-                    ExitBtn.onClick.AddListener( ()=>UIManager.Instance.Hide(this));
+                    ExitBtn.onClick.AddListener(() => UIManager.Instance.Hide(this));
                 }
             }
         }
@@ -62,11 +64,11 @@ namespace GamePlay.UI.UIFramework
         /// 用于手柄，当窗口打开时默认选中哪一种元素
         /// </summary>
         public GameObject FirstSelectable;
+
         public Button ExitBtn;
 
         public virtual void Init(params object[] args)
         {
-            
         }
 
         public IEnumerator DoExit()
@@ -79,7 +81,7 @@ namespace GamePlay.UI.UIFramework
             }
             else
             {
-                if(_canQuitNow)
+                if (_canQuitNow)
                     UIManager.Instance.Hide(this);
             }
         }
@@ -89,26 +91,26 @@ namespace GamePlay.UI.UIFramework
             yield return new WaitForSeconds(time);
             UIManager.Instance.Hide(this);
         }
-        
-        
 
-        protected T GET<T>(BaseUI ui, T obj,string name,GET_TYPE type)where T:UnityEngine.Object
+
+        protected T GET<T>(BaseUI ui, T obj, string name, GET_TYPE type) where T : UnityEngine.Object
         {
-            return ui.GET(obj,name,type);
+            return ui.GET(obj, name, type);
             // return obj!=null ? obj : ui.transform.Find(name).GetComponent<T>();
         }
-        protected T GET<T>(T obj,string name,GET_TYPE type=GET_TYPE.Component)where T:UnityEngine.Object
+
+        protected T GET<T>(T obj, string name, GET_TYPE type = GET_TYPE.Component) where T : UnityEngine.Object
         {
             if (this.name.Equals(name))
             {
                 if (type == GET_TYPE.Component)
                 {
-                    T result = obj!=null ? obj : this.GetComponent<T>();
+                    T result = obj != null ? obj : this.GetComponent<T>();
                     return result;
                 }
-                else if(type==GET_TYPE.GameObject)
+                else if (type == GET_TYPE.GameObject)
                 {
-                    T result= obj != null ? obj : this.gameObject as T;
+                    T result = obj != null ? obj : this.gameObject as T;
                     return result;
                 }
             }
@@ -116,45 +118,41 @@ namespace GamePlay.UI.UIFramework
             {
                 if (type == GET_TYPE.Component)
                 {
-                    T result = obj!=null ? obj : transform.Find(name).GetComponent<T>();
+                    T result = obj != null ? obj : transform.Find(name).GetComponent<T>();
                     return result;
                 }
-                else if(type==GET_TYPE.GameObject)
+                else if (type == GET_TYPE.GameObject)
                 {
-                    T result= obj != null ? obj : transform.Find(name).gameObject as T;
+                    T result = obj != null ? obj : transform.Find(name).gameObject as T;
                     return result;
                 }
             }
-            
+
 
             return null;
         }
-        
-        
-        
+
+
         public virtual void OnEnter(params object[] args)
         {
             this.gameObject.SetActive(true);
             this.Init(args);
-            if(this is IUIAnimator)(this as IUIAnimator).OnEnterAnimator();
+            if (this is IUIAnimator) (this as IUIAnimator).OnEnterAnimator();
 
-            if(ExitBtn!=null)
+            if (ExitBtn != null)
             {
                 ExitBtn.onClick.RemoveAllListeners();
-                ExitBtn.onClick.AddListener( ()=>
-                {
-                    UIManager.Instance.Hide(this);
-                });
+                ExitBtn.onClick.AddListener(() => { UIManager.Instance.Hide(this); });
             }
-            
+
             // CanPlayerControlBefore = GlobalManager.Instance.CanPlayerControlled;
             // if (IsBlockPlayerControl) GlobalManager.Instance.CanPlayerControlled = false;
 
-            
+
             _cancelTriggers.AddRange(GetComponentsInChildren<CancelTrigger>());
             foreach (var cancelTrigger in _cancelTriggers)
             {
-                cancelTrigger.cancel = (o)=>StartCoroutine(DoExit());
+                cancelTrigger.cancel = (o) => StartCoroutine(DoExit());
             }
 
             if (FirstSelectable != null)
@@ -166,17 +164,15 @@ namespace GamePlay.UI.UIFramework
             {
                 StartCoroutine(TimeToExit(DisplayTime));
             }
-            
         }
 
         public virtual void OnExit()
         {
             // print("Onexit");
-            if(this is IUIAnimator)(this as IUIAnimator).OnExitAnimator();
+            if (this is IUIAnimator) (this as IUIAnimator).OnExitAnimator();
             else gameObject.SetActive(false);
 
             // GlobalManager.Instance.CanPlayerControlled = CanPlayerControlBefore;
-            
         }
 
         private GameObject currentSelectObj;
@@ -187,7 +183,6 @@ namespace GamePlay.UI.UIFramework
         public virtual void OnPause()
         {
             currentSelectObj = EventSystem.current.currentSelectedGameObject;
-            
         }
 
         /// <summary>
@@ -195,17 +190,22 @@ namespace GamePlay.UI.UIFramework
         /// </summary>
         public virtual void OnResume()
         {
-            if(currentSelectObj!=null)
+            gameObject.SetActive(true);
+
+            if (this is IUIAnimator)
+            {
+                print($"{this.GetType().Name} IUI Animator Resume");
+                (this as IUIAnimator).OnEnterAnimator();
+            }
+
+            if (currentSelectObj != null)
+            {
                 EventSystem.current.SetSelectedGameObject(currentSelectObj);
+            }
         }
 
         public virtual void OnRefresh(params object[] args)
         {
-            
         }
-        
     }
-    
-    
-    
 }

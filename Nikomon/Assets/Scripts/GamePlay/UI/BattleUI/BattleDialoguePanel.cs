@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using GamePlay.UI.UIFramework;
@@ -8,7 +9,7 @@ public class BattleDialoguePanel : BaseUI,IUIAnimator
 {
    public GameObject animObject;
    public Text dialogueText;
-   public List<string> dialogTextList = new List<string>();
+   [NonSerialized] public List<string> dialogTextList = new List<string>();
    public override UILayer Layer { get; set; } =  UILayer.PopupUI;
    public override void OnEnter(params object[] args)
    {

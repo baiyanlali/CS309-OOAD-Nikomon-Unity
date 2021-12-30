@@ -122,8 +122,8 @@ namespace GamePlay.UI.UtilUI
                     
                     ExitBtn.onClick.AddListener(() =>
                     {
-                        if(fadeType!=FadeType.Dialogue)
-                            UIManager.Instance.Hide(this);
+                        // if(fadeType!=FadeType.Dialogue)
+                        UIManager.Instance.Hide(this);
                         OnContinue?.Invoke();
                     });
                     
