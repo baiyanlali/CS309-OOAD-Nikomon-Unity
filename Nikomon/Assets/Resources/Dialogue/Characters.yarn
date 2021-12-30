@@ -70,6 +70,37 @@ title:battle_man
 <<start_battle wood>>
 ===
 
+title:Diana
+---
+<<if beated("Diana") is false>>
+嘉然:你好吖！欢迎来到南科大！
+->{$player}:我现在该些做什么啊？
+    嘉然:关注嘉然！顿顿解馋！
+->{$player}:我超！嘉然！
+    嘉然:...
+    ->{$player}:嘉然小姐，我真的好喜欢你啊！
+        嘉然:嘿嘿，那就和然然来一场紧张刺激的宝可梦对战吧！
+        <<start_battle Diana>>
+    ->{$player}:嘉然小姐，我可以做你的狗吗？
+        嘉然:可是....
+        嘉然:我更喜欢的是猫....
+        嘉然:出来吧，喵喵！
+        <<start_battle Diana>>
+<<else>>
+嘉然:Hello~有什么事吗？
+    ->{$player}:嘉然小姐，能为我跳支舞吗？
+        嘉然:嘿嘿，然然给你跳一个
+        
+        嘉然:猫
+        嘉然:中
+        嘉然:毒
+        <<play_anim Diana Victory>>
+    ->{$player}:我现在可以当嘉然小姐的狗了吗？
+        嘉然:唉.....出去找个班上吧...
+<<endif>>
+
+
+===
 
 title:???
 ---

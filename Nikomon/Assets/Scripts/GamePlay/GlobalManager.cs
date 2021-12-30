@@ -131,6 +131,7 @@ public class GlobalManager : MonoBehaviour
         runner.AddFunction("visited",(Func<string,bool>)visited);
         runner.AddFunction("beated",(Func<string,bool>)beated);
         runner.AddCommandHandler("start_battle",(Action<string>)startBattleFromDialogue);
+        runner.AddCommandHandler("play_anim",(Action<string,string>)playAnimation);
         runner.AddCommandHandler<int,int>("add_pokemon",addPokemon);
         runner.AddCommandHandler<string>("enter_scene",enterScene);
         runner.AddCommandHandler<string>("play_music",playMusic);
@@ -143,6 +144,9 @@ public class GlobalManager : MonoBehaviour
         }
         
         
+        void playAnimation(string name,string anim){
+            GameObject.Find(name).GetComponent<Animator>()?.Play(anim);
+        }
 
         bool beated(string name)
         {
