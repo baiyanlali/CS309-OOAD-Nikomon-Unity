@@ -6,9 +6,11 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
+using GamePlay.Utilities;
 using Newtonsoft.Json;
 using PokemonCore.Combat;
 using PokemonCore.Utility;
+using Unity.Networking.Transport;
 using UnityEditor;
 using UnityEngine.UI;
 
@@ -93,7 +95,7 @@ namespace PokemonCore.Network
                     var arr = (from d in usersBroadcast where d.Value.randomNum == maxRandom select d.Key).ToArray();
                     if (arr.Length != 1) throw new Exception("Error occured");
                     isHost = false;
-                    BecomeClient(arr[0], maxRandom);
+                    BecomeClient(arr[0], (ushort)maxRandom);
                     UnityEngine.Debug.Log("Become Client");
                 }
 
@@ -211,62 +213,89 @@ namespace PokemonCore.Network
         /// </summary>
         static void BecomeHost(int port)
         {
-            NetworkLocal.OnServerReceiveMessage = (data, client) =>
-            {
-                string str = Encoding.UTF8.GetString(data);
-                IPAddress clientAddress = ((IPEndPoint) client.RemoteEndPoint).Address;
-                UnityEngine.Debug.Log($"Server Receive Message from: {clientAddress.ToString()}");
-                NetworkLocal.SendToClients(str, clientAddress);
-                foreach (var s in ParseJson(str))
-                {
-                    if (string.IsNullOrEmpty(s) || string.IsNullOrWhiteSpace(s)) continue;
-                    UnityEngine.Debug.Log(s);
-                    Instruction ins = JsonConvert.DeserializeObject<Instruction>(s);
-                    Battle.Instance.ReceiveInstruction(ins, false);
-                }
-            };
+            
+            MonoSingleton<ServerBehaviour>.Instance.Init((ushort)port,OnReceiveMsg);
 
-            NetworkLocal.BuildHost(_trainersNum, port);
+            void OnReceiveMsg(string msg, NetworkConnection connection)
+            {
+                if (string.IsNullOrEmpty(msg) || string.IsNullOrWhiteSpace(msg)) return;
+                UnityEngine.Debug.Log(msg);
+                Instruction ins = JsonConvert.DeserializeObject<Instruction>(msg);
+                Battle.Instance.ReceiveInstruction(ins, false);
+                MonoSingleton<ServerBehaviour>.Instance.Broadcast(msg,connection);
+            }
+            
+            // NetworkLocal.OnServerReceiveMessage = (data, client) =>
+            // {
+            //     string str = Encoding.UTF8.GetString(data);
+            //     IPAddress clientAddress = ((IPEndPoint) client.RemoteEndPoint).Address;
+            //     UnityEngine.Debug.Log($"Server Receive Message from: {clientAddress.ToString()}");
+            //     NetworkLocal.SendToClients(str, clientAddress);
+            //     foreach (var s in ParseJson(str))
+            //     {
+            //         if (string.IsNullOrEmpty(s) || string.IsNullOrWhiteSpace(s)) continue;
+            //         UnityEngine.Debug.Log(s);
+            //         Instruction ins = JsonConvert.DeserializeObject<Instruction>(s);
+            //         Battle.Instance.ReceiveInstruction(ins, false);
+            //     }
+            // };
+
+            // NetworkLocal.BuildHost(_trainersNum, port);
         }
 
 
-        static void BecomeClient(IPAddress ipAddress, int port = -1)
+        static void BecomeClient(IPAddress ipAddress, ushort port = 30000)
         {
-            NetworkLocal.OnClientReceiveMessage = (data) =>
+            
+            MonoSingleton<ClientBehaviour>.Instance.Init(ipAddress.ToString(),port,OnRecevieMsg);
+
+            void OnRecevieMsg(string msg)
             {
-                string str = Encoding.UTF8.GetString(data);
-                UnityEngine.Debug.Log("Client Receive Message");
-                foreach (var s in ParseJson(str))
-                {
-                    if (string.IsNullOrWhiteSpace(s) || string.IsNullOrEmpty(s)) continue;
-                    UnityEngine.Debug.Log(s);
-                    Instruction ins = JsonConvert.DeserializeObject<Instruction>(s);
-                    Battle.Instance.ReceiveInstruction(ins, false);
-                }
-            };
-            NetworkLocal.StartClient(ipAddress, port);
+                if (string.IsNullOrWhiteSpace(msg) || string.IsNullOrEmpty(msg)) return;
+                UnityEngine.Debug.Log(msg);
+                Instruction ins = JsonConvert.DeserializeObject<Instruction>(msg);
+                Battle.Instance.ReceiveInstruction(ins, false);
+            }
+
+            // NetworkLocal.OnClientReceiveMessage = (data) =>
+            // {
+            //     string str = Encoding.UTF8.GetString(data);
+            //     UnityEngine.Debug.Log("Client Receive Message");
+            //     foreach (var s in ParseJson(str))
+            //     {
+            //         if (string.IsNullOrWhiteSpace(s) || string.IsNullOrEmpty(s)) continue;
+            //         UnityEngine.Debug.Log(s);
+            //         Instruction ins = JsonConvert.DeserializeObject<Instruction>(s);
+            //         Battle.Instance.ReceiveInstruction(ins, false);
+            //     }
+            // };
+            // NetworkLocal.StartClient(ipAddress, port);
             // new Thread().Start(ipAddress);
         }
 
         static void ServerSendInstruction(Instruction instruction)
         {
-            new Thread((o1) =>
-            {
-                string str = JsonConvert.SerializeObject(instruction) + "\n";
-                UnityEngine.Debug.Log($"Server send Instruction :{str}");
-                NetworkLocal.SendToClients(str);
-            }).Start();
+            // new Thread((o1) =>
+            // {
+            //     string str = JsonConvert.SerializeObject(instruction) + "\n";
+            //     UnityEngine.Debug.Log($"Server send Instruction :{str}");
+            //     NetworkLocal.SendToClients(str);
+            // }).Start();
+            string str = JsonConvert.SerializeObject(instruction);
+            MonoSingleton<ServerBehaviour>.Instance.Broadcast(str);
         }
 
         //TODO：不知道用线程能不能解决卡顿的问题
         static void ClientSendInstruction(Instruction instruction)
         {
-            new Thread(() =>
-            {
-                string str = JsonConvert.SerializeObject(instruction) + "\n";
-                UnityEngine.Debug.Log($"Client send Instruction :{str}");
-                NetworkLocal.SendToServer(str);
-            }).Start();
+            // new Thread(() =>
+            // {
+            //     string str = JsonConvert.SerializeObject(instruction) + "\n";
+            //     UnityEngine.Debug.Log($"Client send Instruction :{str}");
+            //     NetworkLocal.SendToServer(str);
+            // }).Start();
+            string str = JsonConvert.SerializeObject(instruction);
+            MonoSingleton<ClientBehaviour>.Instance.SendToServer(str);
         }
     }
 }

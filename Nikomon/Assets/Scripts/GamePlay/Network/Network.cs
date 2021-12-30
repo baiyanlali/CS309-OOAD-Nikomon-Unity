@@ -88,14 +88,14 @@ namespace PokemonCore.Network
     public static class NetworkLocal
     {
         private static UdpClient UDPsend;
-        public static Socket ServerSocket;
-        public static Socket ClientSocket;
+        // public static Socket ServerSocket;
+        // public static Socket ClientSocket;
         public static int BroadPort = 42424;
         public static int ServerPort = 42425;
         public static bool CanDetect = true;
-        private static List<Socket> Clients;
+        // private static List<Socket> Clients;
 
-        public static int TransMaxSize = 1024 * 1024 * 32;
+        // public static int TransMaxSize = 1024 * 1024 * 32;
 
         /// <summary>
         /// Include the host himself
@@ -203,134 +203,134 @@ namespace PokemonCore.Network
         /// <summary>
         /// 建立一个Host
         /// </summary>
-        public static void BuildHost(int players=2,int serverPort=-1)
-        {
-            if (serverPort == -1) serverPort = ServerPort;
-            maxPlayers = players;
-            ServerSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            UnityEngine.Debug.Log($"{GetAddressIP()},{serverPort},listen num : {maxPlayers-1}");
-            ServerSocket.Bind(new IPEndPoint(IPAddress.Parse(GetAddressIP()), serverPort));
-            ServerSocket.Listen(maxPlayers - 1);
-            Clients = new List<Socket>();
-            new Thread(ListenClientConnect).Start();
-        }
+        // public static void BuildHost(int players=2,int serverPort=-1)
+        // {
+        //     if (serverPort == -1) serverPort = ServerPort;
+        //     maxPlayers = players;
+        //     ServerSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+        //     UnityEngine.Debug.Log($"{GetAddressIP()},{serverPort},listen num : {maxPlayers-1}");
+        //     ServerSocket.Bind(new IPEndPoint(IPAddress.Parse(GetAddressIP()), serverPort));
+        //     ServerSocket.Listen(maxPlayers - 1);
+        //     Clients = new List<Socket>();
+        //     new Thread(ListenClientConnect).Start();
+        // }
 
         /// <summary>
         /// 链接client
         /// </summary>
-        static void ListenClientConnect()
-        {
-            while (currentPlayerNum < maxPlayers)
-            {
-                UnityEngine.Debug.Log($"Start to listen: {currentPlayerNum}/{maxPlayers}");
-                Socket client = ServerSocket.Accept();
-                currentPlayerNum++;
-                UnityEngine.Debug.Log($"Listened successfully: {currentPlayerNum}/{maxPlayers}");
-                Clients.Add(client);
-                Thread receiveThread = new Thread(ReceiveMessageFromClient);
-                receiveThread.Start(client);
-            }
-        }
+        // static void ListenClientConnect()
+        // {
+        //     while (currentPlayerNum < maxPlayers)
+        //     {
+        //         UnityEngine.Debug.Log($"Start to listen: {currentPlayerNum}/{maxPlayers}");
+        //         Socket client = ServerSocket.Accept();
+        //         currentPlayerNum++;
+        //         UnityEngine.Debug.Log($"Listened successfully: {currentPlayerNum}/{maxPlayers}");
+        //         Clients.Add(client);
+        //         Thread receiveThread = new Thread(ReceiveMessageFromClient);
+        //         receiveThread.Start(client);
+        //     }
+        // }
 
         /// <summary>
         /// 听取每个client的信息
         /// </summary>
         /// <param name="client"></param>
-        static void ReceiveMessageFromClient(object client)
-        {
-            Socket sock = client as Socket;
-            byte[] result = new byte[TransMaxSize];
-            while (true)
-            {
-                try
-                {
-                    var len = sock.Receive(result, result.Length, SocketFlags.None);
-                    if(len>0)
-                        OnServerReceiveMessage?.Invoke(result,sock);
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e);
-                    sock.Close();
-                    sock.Dispose();
-                }
-            }
-        }
+        // static void ReceiveMessageFromClient(object client)
+        // {
+        //     Socket sock = client as Socket;
+        //     byte[] result = new byte[TransMaxSize];
+        //     while (true)
+        //     {
+        //         try
+        //         {
+        //             var len = sock.Receive(result, result.Length, SocketFlags.None);
+        //             if(len>0)
+        //                 OnServerReceiveMessage?.Invoke(result,sock);
+        //         }
+        //         catch (Exception e)
+        //         {
+        //             Console.WriteLine(e);
+        //             sock.Close();
+        //             sock.Dispose();
+        //         }
+        //     }
+        // }
 
         /// <summary>
         /// 目前逻辑上不支持向指定的单个Client发送信息
         /// </summary>
         /// <param name="data"></param>
-        public static void SendToClients(string data)
-        {
-            foreach (var client in Clients.OrEmptyIfNull())
-            {
-                SendToClient(data, client);
-            }
-        }
+        // public static void SendToClients(string data)
+        // {
+        //     foreach (var client in Clients.OrEmptyIfNull())
+        //     {
+        //         SendToClient(data, client);
+        //     }
+        // }
         
         
-        public static void SendToClients(string data,IPAddress client_except)
-        {
-            foreach (var client in Clients.OrEmptyIfNull())
-            {
-                if (((IPEndPoint)client.LocalEndPoint).Address.ToString() == client_except.ToString()) continue;
-                SendToClient(data, client);
-            }
-        }
+        // public static void SendToClients(string data,IPAddress client_except)
+        // {
+        //     foreach (var client in Clients.OrEmptyIfNull())
+        //     {
+        //         if (((IPEndPoint)client.LocalEndPoint).Address.ToString() == client_except.ToString()) continue;
+        //         SendToClient(data, client);
+        //     }
+        // }
         
-        static void SendToClient(string data, Socket socket)
-        {
-            try
-            {
-                byte[] bytes = Encoding.UTF8.GetBytes(data);
-                socket.Send(bytes, SocketFlags.None);
-            }
-            catch (Exception e)
-            {
-                // Console.WriteLine(e);
-                throw;
-            }
-        }
+        // static void SendToClient(string data, Socket socket)
+        // {
+        //     try
+        //     {
+        //         byte[] bytes = Encoding.UTF8.GetBytes(data);
+        //         socket.Send(bytes, SocketFlags.None);
+        //     }
+        //     catch (Exception e)
+        //     {
+        //         // Console.WriteLine(e);
+        //         throw;
+        //     }
+        // }
 
         #endregion
 
         #region 当作client时用
         
         
-        public static void StartClient(object obj,int serverPort=-1)
-        {
-            if (serverPort == -1) serverPort = ServerPort;
-            Thread.Sleep(100);
-            IPAddress ipAddress=obj as IPAddress;
-            ClientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            UnityEngine.Debug.Log($"Start to connect to the host.{ipAddress},{serverPort}");
-            ClientSocket.Connect(new IPEndPoint(ipAddress,serverPort));
-            UnityEngine.Debug.Log("Connect to the host successfully!");
-            new Thread(ReceiveFromServer).Start();
-        }
+        // public static void StartClient(object obj,int serverPort=-1)
+        // {
+        //     if (serverPort == -1) serverPort = ServerPort;
+        //     Thread.Sleep(100);
+        //     IPAddress ipAddress=obj as IPAddress;
+        //     ClientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+        //     UnityEngine.Debug.Log($"Start to connect to the host.{ipAddress},{serverPort}");
+        //     ClientSocket.Connect(new IPEndPoint(ipAddress,serverPort));
+        //     UnityEngine.Debug.Log("Connect to the host successfully!");
+        //     new Thread(ReceiveFromServer).Start();
+        // }
         
         
 
-        public static void SendToServer(string strs)
-        {
-            if (ClientSocket == null) return;
-            byte[] data = Encoding.UTF8.GetBytes(strs);
-            // UnityEngine.Debug.Log($"Client Send to Server:{strs}");
-            ClientSocket.Send(data);
-        }
+        // public static void SendToServer(string strs)
+        // {
+        //     if (ClientSocket == null) return;
+        //     byte[] data = Encoding.UTF8.GetBytes(strs);
+        //     // UnityEngine.Debug.Log($"Client Send to Server:{strs}");
+        //     ClientSocket.Send(data);
+        // }
 
-        static void ReceiveFromServer()
-        {
-            if (ClientSocket == null) return;
-            while (true)
-            {
-                byte[] data = new byte[TransMaxSize];
-                int len = ClientSocket.Receive(data, SocketFlags.None);
-                if(len>0)
-                    OnClientReceiveMessage?.Invoke(data);
-            }
-        }
+        // static void ReceiveFromServer()
+        // {
+        //     if (ClientSocket == null) return;
+        //     while (true)
+        //     {
+        //         byte[] data = new byte[TransMaxSize];
+        //         int len = ClientSocket.Receive(data, SocketFlags.None);
+        //         if(len>0)
+        //             OnClientReceiveMessage?.Invoke(data);
+        //     }
+        // }
 
         #endregion
 

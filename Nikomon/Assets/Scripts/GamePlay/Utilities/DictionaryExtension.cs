@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace GamePlay.Utilities
@@ -10,7 +11,16 @@ namespace GamePlay.Utilities
             dic[key] = val;
             return dic;
         }
-        
+
+        public static void AddAndUseIfHas(this Dictionary<string, Action> dic, string key,Action val)
+        {
+            if (dic.ContainsKey(key))
+            {
+                dic[key]?.Invoke();
+            }
+            dic[key] = val;
+        }
+
 
 
         public static string GetAnimateName(this Animator animator, AnimatorStateInfo info)
