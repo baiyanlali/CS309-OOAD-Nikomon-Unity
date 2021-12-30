@@ -281,5 +281,6 @@ namespace GamePlay.UI.BattleUI
             OnChooseTarget?.Invoke(targets);
             UIManager.Instance.Hide(this);
         }
+
     }
 }

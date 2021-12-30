@@ -311,7 +311,7 @@ public class Pokemon : IPokemon, IEquatable<Pokemon>, IEqualityComparer<Pokemon>
         List<MoveData> moveDatas = new List<MoveData>();
         for (int i = level; i < Exp.level; i++)
         {
-            if (!_base.LevelMoves.TryGetValue(level, out List<int> moves)) continue;
+            if (!_base.LevelMoves.TryGetValue(i, out List<int> moves)) continue;
             moves.ForEach(m =>
             {
                 moveDatas.Add(Game.MovesData[m]);
@@ -355,6 +355,18 @@ public class Pokemon : IPokemon, IEquatable<Pokemon>, IEqualityComparer<Pokemon>
             moves[i] = new Move(moveData);
             break;
         }
+    }
+
+    public int MoveCount()
+    {
+        int count = 0;
+        for (int i = 0; i < moves.Length; i++)
+        {
+            if (moves[i] == null) break;
+            count++;
+        }
+
+        return count;
     }
 
     public void ReplaceMove(int index, MoveData moveData)

@@ -25,12 +25,13 @@ public class MovelearningUI : BaseUI
     public Text Type,Power,Accuracy;
     public Text Title;
     private bool judge = false;
+    public Action OnComplete;
     public override bool IsOnly { get; } = true;
 
     /// <summary>
     /// 
     /// </summary>
-    /// <param name="args">0 for Pokemon,1 for new movedata</
+    /// <param name="args">0 for Pokemon,1 for new movedata, 2 for oncomplete</param>
     /// 
     public override void OnEnter(params object[] args)
     {
@@ -41,7 +42,7 @@ public class MovelearningUI : BaseUI
         {
             _Pokemon=args[0] as Pokemon;
             _MoveData=args[1] as MoveData;
-            
+            OnComplete = args[2] as Action;
         }
 
         judge = true;
@@ -126,10 +127,16 @@ public class MovelearningUI : BaseUI
         {
             if(i == _Pokemon.moves.Length)
                 _moveElements[i].Init(new Move(_MoveData));
-            _moveElements[i].Init(_Pokemon.moves[i]);
+            else
+                _moveElements[i].Init(_Pokemon.moves[i]);
         }
         
-
+        ExitBtn.onClick.RemoveAllListeners();
+        ExitBtn.onClick.AddListener(() =>
+        {
+            UIManager.Instance.Hide(this);
+            OnComplete?.Invoke();
+        });
 
     }
 }

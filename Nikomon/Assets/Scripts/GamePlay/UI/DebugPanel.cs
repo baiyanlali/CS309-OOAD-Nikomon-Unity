@@ -44,10 +44,10 @@ public class DebugPanel :BaseUI
         });
     }
 
-    public override void OnExit()
-    {
-        luaEnv.Dispose();
-        base.OnExit();
-    }
+    // public override void OnExit()
+    // {
+    //     luaEnv.Dispose();
+    //     base.OnExit();
+    // }
 
 }

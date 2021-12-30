@@ -80,23 +80,21 @@ namespace GamePlay.UI.UtilUI
             pokenmons.SetActive(true);
             print(name);
             pokenmons.transform.Find(name).gameObject.SetActive(true);
-            // _radarTest.Init(Pokemon);
-            // content2.GetComponent<TriggerSelect>().onDeSelect = () =>
-            // {
-            //     _nametext.Init(Pokemon,trainer);
-            //     _radarTest.Init(Pokemon);
-            // };
-            // content2.GetComponent<TriggerSelect>().onSelect = () =>
-            // {
-            //     _radarTest.Init(Pokemon);
-            // };
-            // // _nametext.Init(Pokemon,trainer);
-            // _Content2.Init(Pokemon);
-            print(Pokemon.Name);
-            
             _radarTest.Init(Pokemon);
             _nametext.Init(Pokemon,trainer);
             _Content2.Init(Pokemon);
+
+            content2.GetComponent<TriggerSelect>().onDeSelect = () =>
+            {
+                _nametext.Init(Pokemon,trainer);
+                _radarTest.Init(Pokemon);
+            };
+            content2.GetComponent<TriggerSelect>().onSelect = () =>
+            {
+                _radarTest.Init(Pokemon);
+                _Content2.Init(Pokemon);
+            };
+
             // content2.GetComponent<TriggerSelect>().onDeSelect = () =>
             // {
             //     _nametext.Init(Pokemon,trainer);
@@ -107,6 +105,13 @@ namespace GamePlay.UI.UtilUI
             //     _radarTest.Init(Pokemon);
             //     _Content2.Init(Pokemon);
             // };
+            
+            
+            // print(Pokemon.Name);
+            //
+            // _radarTest.Init(Pokemon);
+            // _nametext.Init(Pokemon,trainer);
+            // _Content2.Init(Pokemon);
 
 
 

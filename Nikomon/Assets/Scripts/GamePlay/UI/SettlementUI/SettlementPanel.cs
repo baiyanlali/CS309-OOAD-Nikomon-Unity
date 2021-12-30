@@ -38,6 +38,8 @@ public class SettlementPanel : BaseUI
             _PokemonLevelUpStates = args[0] as List<PokemonLevelUpState>;
             OnComplete = args[1] as Action;
         }
+
+        if (_PokemonLevelUpStates.Count == 0) return;
         
         // _storeElements.Clear();
         // print(_PokemonLevelUpStates.Count - PokemonList.childCount);

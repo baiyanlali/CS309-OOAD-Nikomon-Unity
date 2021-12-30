@@ -30,7 +30,7 @@ namespace PokemonCore.Network
             _broadcastType = BroadcastType.SearchForBattle;
             _trainersNum = trainersNum;
             _pokemonsPerTrainer = pokemonsPerTrainer;
-            _randomNum = Game.Random.Next();
+            _randomNum = Game.Random.Next(20000,30000);
             NetworkLocal.StartToDetect();
             NetworkLocal.OnDetectBroadcast = OnDetectedPair;
             NetworkLocal.StartToBroadCast(new NetworkBroadcastData(BroadcastType.SearchForBattle, _randomNum, password,
