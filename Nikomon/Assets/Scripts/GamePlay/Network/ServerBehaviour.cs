@@ -12,14 +12,17 @@ namespace PokemonCore.Network
     {
         public NetworkDriver m_Driver;
         private NativeList<NetworkConnection> m_Connections;
-
+        
         public Action OnConnectionDropped;
 
         private bool isActive;
+        public Action<string> OnMsgReceived;
 
-        public void Init(ushort port,Action onConnectionDropped=null)
+        public void Init(ushort port,Action<string> onMsgReceived,Action onConnectionDropped=null)
         {
             OnConnectionDropped = onConnectionDropped;
+
+            this.OnMsgReceived = onMsgReceived;
             m_Driver = NetworkDriver.Create();
             var endpoint = NetworkEndPoint.AnyIpv4;
             endpoint.Port = port;
@@ -63,7 +66,7 @@ namespace PokemonCore.Network
         {
             DataStreamWriter writer;
             m_Driver.BeginSend(connection, out writer);
-            writer.WriteFixedString512(msg);
+            writer.WriteFixedString128(msg);
             m_Driver.EndSend(writer);
         }
 
@@ -91,6 +94,11 @@ namespace PokemonCore.Network
                 {
                     if (cmd == NetworkEvent.Type.Data)
                     {
+                        
+                        var value = stream.ReadFixedString128();
+                        UnityEngine.Debug.Log($"Got the value = {value.Value} back from client\n{m_Driver.RemoteEndPoint(m_Connections[i]).Address}" );
+                        
+                        OnMsgReceived?.Invoke(value.Value);
                         // uint number = stream.ReadUInt();
                         //
                         // UnityEngine.Debug.Log("Got " + number + " from the Client adding + 2 to it.");

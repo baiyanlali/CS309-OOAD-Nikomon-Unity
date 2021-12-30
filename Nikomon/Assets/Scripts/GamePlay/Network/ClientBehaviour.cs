@@ -12,13 +12,16 @@ namespace PokemonCore.Network
         private NetworkConnection m_Connection;
 
         public Action OnConnectionDropped;
+
+        public Action<string> OnMsgReceived;
         
 
         private bool isActive;
 
-        public void Init(string ip, ushort port, Action onConnectionDropped = null)
+        public void Init(string ip, ushort port,Action<string> onMessageReceived, Action onConnectionDropped = null)
         {
             OnConnectionDropped = onConnectionDropped;
+            this.OnMsgReceived = onMessageReceived;
             m_Driver = NetworkDriver.Create();
             NetworkEndPoint endpoint = NetworkEndPoint.Parse(ip, port);
 
@@ -37,7 +40,15 @@ namespace PokemonCore.Network
             }
             
         }
-        
+
+
+        public void SendToServer(string msg)
+        {
+            DataStreamWriter writer;
+            m_Driver.BeginSend(m_Connection, out writer);
+            writer.WriteFixedString128(msg);
+            m_Driver.EndSend(writer);
+        }
         
         void Update()
         {
@@ -71,6 +82,8 @@ namespace PokemonCore.Network
                 {
                     var value = stream.ReadFixedString128();
                     UnityEngine.Debug.Log("Got the value = " + value + " back from the server");
+                    
+                    OnMsgReceived?.Invoke(value.Value);
                     // m_Connection.Disconnect(m_Driver);
                     // m_Connection = default(NetworkConnection);
                 }
