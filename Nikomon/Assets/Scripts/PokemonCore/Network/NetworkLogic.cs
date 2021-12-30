@@ -214,7 +214,7 @@ namespace PokemonCore.Network
             NetworkLocal.OnServerReceiveMessage = (data, client) =>
             {
                 string str = Encoding.UTF8.GetString(data);
-                IPAddress clientAddress = ((IPEndPoint) client.LocalEndPoint).Address;
+                IPAddress clientAddress = ((IPEndPoint) client.RemoteEndPoint).Address;
                 UnityEngine.Debug.Log($"Server Receive Message from: {clientAddress.ToString()}");
                 NetworkLocal.SendToClients(str, clientAddress);
                 foreach (var s in ParseJson(str))
