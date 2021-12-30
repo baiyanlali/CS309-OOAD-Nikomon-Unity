@@ -82,7 +82,10 @@ namespace PokemonCore.Combat
         public override string ToString()
         {
             var pokemon = Game.battle.GetCombatPokemon(CombatPokemonID);
-            return $"From {Game.battle.getTrainerNameByID(pokemon.TrainerID)}: {pokemon.Name}----{command}-----{ID}";
+            if(pokemon!=null)
+                return $"From {Game.battle.getTrainerNameByID(pokemon.TrainerID)}: {pokemon.Name}----{command}-----{ID}";
+            else
+                return $"From {Game.battle.getTrainerNameByID(CombatPokemonID)}: {pokemon.Name}----{command}-----{ID}";
         }
     }
 
@@ -820,7 +823,12 @@ namespace PokemonCore.Combat
         public CombatPokemon GetCombatPokemon(int combatID)
         {
             var pokes = (from poke in Pokemons where poke.CombatID == combatID select poke).ToArray();
-            if (pokes.Length != 1) throw new Exception("你Combat ID 没写好，出问题了吧");
+            if (pokes.Length != 1)
+            {
+                UnityEngine.Debug.LogError($"一共{pokes.Length}个宝可梦被找到,你Combat ID 没写好，出问题了吧");
+                return null;
+                // throw new Exception();
+            }
             return pokes[0];
         }
 

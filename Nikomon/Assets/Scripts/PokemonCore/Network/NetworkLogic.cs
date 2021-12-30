@@ -264,7 +264,7 @@ namespace PokemonCore.Network
             new Thread(() =>
             {
                 string str = JsonConvert.SerializeObject(instruction) + "\n";
-                UnityEngine.Debug.Log($"Client send Instruction :{str}");
+                // UnityEngine.Debug.Log($"Client send Instruction :{str}");
                 NetworkLocal.SendToServer(str);
             }).Start();
         }
