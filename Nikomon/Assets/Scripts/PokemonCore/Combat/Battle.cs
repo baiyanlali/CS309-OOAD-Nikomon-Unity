@@ -458,10 +458,10 @@ namespace PokemonCore.Combat
                     if (dmg.target.HP > 0)
                         OnHitted?.Invoke(dmg.target);
                     Damages.Add(dmg);
+                    FieldEffect?.ForEach(effect => Pokemons?.ForEach(pokemon => effect?.OnDamaged(effect,dmg.sponsor,dmg.target)));
+
                 }
             }
-            
-            FieldEffect?.ForEach(effect => Pokemons?.ForEach(pokemon => effect?.OnDamaged(effect,dmg.sponsor,dmg.target)));
         }
         
 
