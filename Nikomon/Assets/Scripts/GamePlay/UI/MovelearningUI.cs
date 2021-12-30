@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using GamePlay;
+using GamePlay.Messages;
 using GamePlay.UI.BattleUI;
 using GamePlay.UI.UIFramework;
 using GamePlay.UI.UtilUI;
@@ -62,7 +63,8 @@ public class MovelearningUI : BaseUI
                     v.y = 1.1f;
                     v.z = 1.1f;
                     obj.transform.localScale = v;
-                    movecontent.text = obj.GetComponent<MoveElement>()._move._baseData.description;
+                    //movecontent.text = obj.GetComponent<MoveElement>()._move._baseData.description;
+                    movecontent.text = Messages.Get("Move" + obj.GetComponent<MoveElement>()._move.moveID);
                     Type.text = Game.TypesMap[obj.GetComponent<MoveElement>()._move._baseData.Type].Name;
                     Power.text = obj.GetComponent<MoveElement>()._move._baseData.Power.ToString();
                     Accuracy.text = obj.GetComponent<MoveElement>()._move._baseData.Accuracy.ToString();
