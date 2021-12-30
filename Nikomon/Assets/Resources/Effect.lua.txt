@@ -235,14 +235,15 @@ effect240={
     ID = 240,
     InnerName = 'Rainy',
     Round = 10,
-    EffectChance = 100,
-    onMoving=function(self,combatMove)
-        if combatMove.types.Name == 'Fire' then
+
+    OnMoving=function(self,combatMove)
+        print( combatMove.types.ID )
+        if combatMove.types.ID == 9 then
             combatMove.power = math.floor( combatMove.power * 0.8 )
             print(combatMove.move._baseData.innerName.."造成了低伤害...")
             Game.battle:Report('在雨中'..combatMove.move._baseData.innerName..'的伤害降低')
         end
-        if combatMove.types.Name == 'Water' then
+        if combatMove.types.ID == 10 then
             combatMove.power = math.floor( combatMove.power * 1.2 )
             print(combatMove.move._baseData.innerName.."造成了高伤害！")
             Game.battle:Report('在雨中'..combatMove.move._baseData.innerName..'的伤害提高')
