@@ -316,6 +316,7 @@ namespace PokemonCore.Network
         {
             if (ClientSocket == null) return;
             byte[] data = Encoding.UTF8.GetBytes(strs);
+            UnityEngine.Debug.Log($"Client Send to Server:{strs}");
             ClientSocket.Send(data);
         }
 
