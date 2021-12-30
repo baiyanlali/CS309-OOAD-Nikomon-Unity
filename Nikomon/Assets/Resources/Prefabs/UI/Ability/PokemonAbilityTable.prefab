@@ -1217,7 +1217,6 @@ GameObject:
   - component: {fileID: 2873968203472598137}
   - component: {fileID: 2836890807826187156}
   - component: {fileID: 8632658991023561889}
-  - component: {fileID: 130437268433652239}
   - component: {fileID: 4019844651889538725}
   m_Layer: 0
   m_Name: Camera_1
@@ -1273,7 +1272,7 @@ Camera:
     serializedVersion: 2
     m_Bits: 4294967295
   m_RenderingPath: -1
-  m_TargetTexture: {fileID: 8400000, guid: f017d64504860244d9f8f625060dc51b, type: 2}
+  m_TargetTexture: {fileID: 8400000, guid: 6ab5d64ab36e42c4496518031a55a8a6, type: 2}
   m_TargetDisplay: 0
   m_TargetEye: 3
   m_HDR: 1
@@ -1315,40 +1314,6 @@ MonoBehaviour:
   m_RequiresDepthTexture: 0
   m_RequiresColorTexture: 0
   m_Version: 2
---- !u!114 &130437268433652239
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2964819352080968014}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 72ece51f2901e7445ab60da3685d6b5f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_ShowDebugText: 0
-  m_ShowCameraFrustum: 1
-  m_IgnoreTimeScale: 0
-  m_WorldUpOverride: {fileID: 0}
-  m_UpdateMethod: 2
-  m_BlendUpdateMethod: 1
-  m_DefaultBlend:
-    m_Style: 1
-    m_Time: 2
-    m_CustomCurve:
-      serializedVersion: 2
-      m_Curve: []
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
-  m_CustomBlends: {fileID: 0}
-  m_CameraCutEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  m_CameraActivatedEvent:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!114 &4019844651889538725
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2602,6 +2567,7 @@ MonoBehaviour:
   pokenmons: {fileID: 7249715187014204316}
   movecontent: {fileID: 7012896896710254483}
   content2: {fileID: 1007591067409691158}
+  content3: {fileID: 0}
 --- !u!1 &7196496298940640264
 GameObject:
   m_ObjectHideFlags: 3
@@ -5020,7 +4986,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Texture: {fileID: 8400000, guid: f017d64504860244d9f8f625060dc51b, type: 2}
+  m_Texture: {fileID: 8400000, guid: 6ab5d64ab36e42c4496518031a55a8a6, type: 2}
   m_UVRect:
     serializedVersion: 2
     x: 0
@@ -8525,6 +8491,16 @@ PrefabInstance:
     m_RemovedComponents:
     - {fileID: 6727228420053063710, guid: e21608f763968e147807e0113ad16758, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: e21608f763968e147807e0113ad16758, type: 3}
+--- !u!1 &4163510880084606432 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6727228421827473605, guid: e21608f763968e147807e0113ad16758, type: 3}
+  m_PrefabInstance: {fileID: 7249715187406245157}
+  m_PrefabAsset: {fileID: 0}
+--- !u!224 &4163510880084606433 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 6727228421827473604, guid: e21608f763968e147807e0113ad16758, type: 3}
+  m_PrefabInstance: {fileID: 7249715187406245157}
+  m_PrefabAsset: {fileID: 0}
 --- !u!224 &7132425371823913047 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 461441507825988978, guid: e21608f763968e147807e0113ad16758, type: 3}
@@ -8533,16 +8509,6 @@ RectTransform:
 --- !u!1 &4163510881532400949 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 6727228420053063696, guid: e21608f763968e147807e0113ad16758, type: 3}
-  m_PrefabInstance: {fileID: 7249715187406245157}
-  m_PrefabAsset: {fileID: 0}
---- !u!224 &4163510880084606433 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 6727228421827473604, guid: e21608f763968e147807e0113ad16758, type: 3}
-  m_PrefabInstance: {fileID: 7249715187406245157}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &4163510880084606432 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 6727228421827473605, guid: e21608f763968e147807e0113ad16758, type: 3}
   m_PrefabInstance: {fileID: 7249715187406245157}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &7249715187433744656
