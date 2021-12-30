@@ -6,8 +6,7 @@ using UnityEngine;
 using UnityEngine.Assertions;
 using Debug = UnityEngine.Debug;
 
-namespace PokemonCore.Network
-{
+
     public class ServerBehaviour : MonoSingleton<ServerBehaviour>
     {
         public NetworkDriver m_Driver;
@@ -154,4 +153,3 @@ namespace PokemonCore.Network
             }
         }
     }
-}
