@@ -62,6 +62,7 @@ namespace GamePlay.UI
             {
                 InputField inputField = obj.GetComponent<InputField>();
                 code = inputField.text;
+                GlobalManager.Instance.StartNetworkBattle(2,levels[levelIndex],code);
             });
  
 

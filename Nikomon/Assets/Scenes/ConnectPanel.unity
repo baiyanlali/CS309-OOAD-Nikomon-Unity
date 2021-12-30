@@ -524,17 +524,6 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 7066033982656724266, guid: f70110dfdbf99fa449705a6285e6ee81, type: 3}
   m_PrefabInstance: {fileID: 8338343019676777754}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1276813049096831395 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 7066033982792613049, guid: f70110dfdbf99fa449705a6285e6ee81, type: 3}
-  m_PrefabInstance: {fileID: 8338343019676777754}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 708b71c9ebcb36049a9c73f3a47ed914, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &8338343019676777754
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -542,6 +531,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1070214535}
     m_Modifications:
+    - target: {fileID: 7066033981693982856, guid: f70110dfdbf99fa449705a6285e6ee81, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7066033982656724265, guid: f70110dfdbf99fa449705a6285e6ee81, type: 3}
       propertyPath: m_Name
       value: ConnectUI
@@ -630,9 +623,5 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7066033982656724270, guid: f70110dfdbf99fa449705a6285e6ee81, type: 3}
-      propertyPath: ExitBtn
-      value: 
-      objectReference: {fileID: 1276813049096831395}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f70110dfdbf99fa449705a6285e6ee81, type: 3}
