@@ -10,7 +10,7 @@ using UnityEngine.UI;
 
 namespace GamePlay.UI.BattleUI
 {
-    public class MovePanel : BaseUI
+    public class MovePanel : BaseUI,IUIAnimator
     {
         private GameObject MoveUIPrefab;
         private Move[] moveCache;
@@ -107,6 +107,24 @@ namespace GamePlay.UI.BattleUI
         {
             base.OnRefresh(args);
             moveCache = (args[0] as List<Move>)?.ToArray();
+        }
+
+        public void OnEnterAnimator()
+        {
+            gameObject.transform.localScale = Vector3.zero;
+            LeanTween.scale(gameObject,Vector3.one,0.3f).setOnComplete(() =>
+            {
+
+            });
+        }
+
+        public void OnExitAnimator()
+        {
+            gameObject.transform.localScale = Vector3.one;
+            LeanTween.scale(gameObject,Vector3.zero,0.3f).setOnComplete(() =>
+            {
+
+            });
         }
     }
 }

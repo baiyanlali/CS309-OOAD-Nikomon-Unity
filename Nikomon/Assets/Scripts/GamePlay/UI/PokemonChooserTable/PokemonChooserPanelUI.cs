@@ -8,7 +8,7 @@ using UnityEngine.UI;
 
 namespace GamePlay.UI.PokemonChooserTable
 {
-    public class PokemonChooserPanelUI : BaseUI
+    public class PokemonChooserPanelUI : BaseUI,IUIAnimator
     {
         private GameObject ChooserElement;
         private Trainer _trainer;
@@ -77,6 +77,24 @@ namespace GamePlay.UI.PokemonChooserTable
                 transform.GetChild(i).GetComponent<PokemonChooserElementUI>().UpdateData(_trainer.party[i]);
             }
             gameObject.SetActive(true);
+        }
+
+        public void OnEnterAnimator()
+        {
+            gameObject.transform.localScale = Vector3.zero;
+            LeanTween.scale(gameObject,Vector3.one,0.3f).setOnComplete(() =>
+            {
+
+            });
+        }
+
+        public void OnExitAnimator()
+        {
+            gameObject.transform.localScale = Vector3.one;
+            LeanTween.scale(gameObject,Vector3.zero,0.3f).setOnComplete(() =>
+            {
+
+            });
         }
     }
 }
