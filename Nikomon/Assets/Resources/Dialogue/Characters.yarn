@@ -1,6 +1,6 @@
 ﻿title:wood
 ---
-<<if has_beated("wood") is false>>
+<<if beated("wood") is false>>
     <<if visited("wood") is false>>
     伍德:你也要去南科大朝圣啊。 #line:08d9d52
     伍德:现在南科大仍是一片废墟，与世界其他地方没什么不同。 #line:0c55c4c
@@ -90,7 +90,7 @@ title:???
 
 title:dooor
 ---
-<<if has_beated("dooor") is false>>
+<<if beated("dooor") is false>>
 我知道你要去南科大，但是南科大不是谁想去就能去的。
 如果想去，就打败我吧。
 ->走上前一步
@@ -100,4 +100,22 @@ title:dooor
 你已经获得了去南科大的资格。再见。
 <<enter_scene nkd>>
 <<endif>>
+===
+
+title:joker
+---
+周可儿:...
+{$player}:...
+->你怎么不说话？
+    周可儿:...
+->...
+    周可儿:...
+===
+
+title:xuan
+---
+轩:我想去太空。
+轩:地球太无聊了。
+轩:但是去太空也需要争抢名额。
+轩:去太空也很无聊。
 ===
