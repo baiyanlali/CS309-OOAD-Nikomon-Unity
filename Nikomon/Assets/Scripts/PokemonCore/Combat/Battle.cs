@@ -347,10 +347,7 @@ namespace PokemonCore.Combat
             if (action is CombatMove)
             {
                 var c = action as CombatMove;
-                if (moveSuccess(c))
-                {
-                    
-                }
+                
                 FieldEffect?.ForEach(effect =>
                 {
                     if (effect.OnMoving == null)
@@ -412,10 +409,7 @@ namespace PokemonCore.Combat
 
         }
 
-        bool moveSuccess(CombatMove c)
-        {
-            return true;
-        }
+
         #endregion
 
         #region MoveAction
@@ -533,6 +527,13 @@ namespace PokemonCore.Combat
             {
                 // OnThisTurnEnd?.Invoke();
             }
+        }
+
+        public void InterruptAndEndBattle()
+        {
+            mBattleResults = BattleResults.Aborted;
+            NextMove();
+            OnBattleEnd?.Invoke(mBattleResults);
         }
 
         #endregion
@@ -834,6 +835,15 @@ namespace PokemonCore.Combat
             foreach (var target in cmove.Targets.OrEmptyIfNull())
             {
                 var t = target;
+
+                int posibility = 0;
+                if (target!=null) {posibility = (int)(cmove.Accuracy * cmove.Sponsor.SPE / target.SPE);}
+                UnityEngine.Debug.Log(posibility);
+                if (Game.Random.Next(101)>posibility)
+                {
+                    Report(target.pokemon._base.innerName+"闪避了攻击！");
+                    continue;
+                }
                 if (!Pokemons.Contains(target))
                 {
                     bool isAlly = alliesTrainers.Contains(Trainers[target.TrainerID]);

@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using GamePlay.Utilities;
 using PokemonCore.Attack.Data;
 using PokemonCore.Combat;
 using UnityEngine;
@@ -77,26 +79,44 @@ public class PokemonIndentity : MonoBehaviour, IInteractive
         if (move.move._baseData.Category == Category.Physical)
         {
             anim.SetTrigger(Attack);
-            completeList.Add("Fight_attack",onComplete);
+            // if (completeList.ContainsKey("Fight_attack"))
+            // {
+            //     completeList["Fight_attack"]?.Invoke();
+            // }
+            // completeList.AddOrReplace("Fight_attack",onComplete);
+            completeList.AddAndUseIfHas("Fight_attack",onComplete);
         }
         else
         {
             anim.SetTrigger(NoTouchAttack);
             //TODO: May cause twice
-            completeList.Add("Fight_attack",onComplete);
+            // if (completeList.ContainsKey("Fight_attack"))
+            // {
+            //     completeList["Fight_attack"]?.Invoke();
+            // }
+            // completeList.AddOrReplace("Fight_attack",onComplete);
+            completeList.AddAndUseIfHas("Fight_attack",onComplete);
+            // completeList.Add("Fight_attack",onComplete);
         }
     }
 
     public void BeHit(Action onComplete)
     {
         anim.SetTrigger(BeAttacked);
-        completeList.Add("Fight_be_attacked",onComplete);
+        // if (completeList.ContainsKey("Fight_be_attacked"))
+        // {
+        //     completeList["Fight_be_attacked"]?.Invoke();
+        // }
+        // completeList.AddOrReplace("Fight_attack",onComplete);
+        completeList.AddAndUseIfHas("Fight_attack",onComplete);
+        // completeList.Add("Fight_be_attacked",onComplete);
     }
 
     public void Faint(Action onComplete)
     {
         anim.SetTrigger(Lost);
-        completeList.Add("Fight_lost",onComplete);
+        completeList.AddAndUseIfHas("Fight_lost",onComplete);
+        // completeList.Add("Fight_lost",onComplete);
         LeanTween.scale(this.gameObject, Vector3.zero, 1.5f).setOnComplete(onComplete);
     }
 

@@ -75,33 +75,33 @@ public class BattleHandler : MonoBehaviour
         battle.ShowPokeMove += ShowPokeMove;
         battle.OnPokemonFainting += (combatPoke) =>
         {
-            EventPool.Schedule(() =>
-            {
+            // EventPool.Schedule(() =>
+            // {
                 BattleFieldHandler.Instance.OnPokemonFainting(combatPoke);
                 // if (Game.battle.MyPokemons.Contains(combatPoke))
                 //     UIManager.Instance.Show<BattleMenuPanel>(new List<bool>() {false, true, false, true});
-            });
+            // });
         };
         battle.OnReplacePokemon += (p1, p2) =>
         {
-            EventPool.Schedule(() =>
-            {
+            // EventPool.Schedule(() =>
+            // {
                 // BattleUIHandler.Instance.OnReplacePokemon(p1,p2);
                 UIManager.Instance.Refresh<BattleStatusPanel>();
                 BattleFieldHandler.Instance.OnReplacePokemon(p1, p2);
-            });
+            // });
         };
         // UIManager.Instance.Show<BattleUIPanel>(this);
 
         Game.battleReporter.OnReport += (o) =>
         {
-            EventPool.Schedule(() =>
-            {
+            // EventPool.Schedule(() =>
+            // {
                 // print(">>>>>>>>>>Show Dialogue Panel<<<<<<<");
                 print($"Dialogue Panel: {o}");
                 // UIManager.Instance.Show<DialogPanel>(o);
                 UIManager.Instance.Show<BattleDialoguePanel>(o);
-            });
+            // });
         };
         // BattleUIHandler.Instance.Init(this);
         BattleFieldHandler.Instance.Init(AlliesPokemons, OpponentPokemons);
@@ -112,7 +112,8 @@ public class BattleHandler : MonoBehaviour
         battle.OnMove += OnMove;
         battle.OnHit += OnHit;
         battle.OnHitted += OnHitted;
-        battle.OnOneMoveEnd += () => { EventPool.Schedule(() => BattleFieldHandler.Instance.OnOneMoveEnd());};
+        // battle.OnOneMoveEnd += () => { EventPool.Schedule(() => BattleFieldHandler.Instance.OnOneMoveEnd());};
+        battle.OnOneMoveEnd += () => { BattleFieldHandler.Instance.OnOneMoveEnd();};
         OppoPoke = OpponentPokemons[0];
         // print("Complete BattleHandler Init");
         // OnTurnBegin();
@@ -127,8 +128,8 @@ public class BattleHandler : MonoBehaviour
         // print(">>>>>>show move!<<<<<<<");
         // EventPool.Schedule(() => { BattleUIHandler.Instance.ShowMoves(poke);});
         CurrentPokemon = poke;
-        EventPool.Schedule(() =>
-        {
+        // EventPool.Schedule(() =>
+        // {
             var statusPanel = UIManager.Instance.GetUI<BattleStatusPanel>();
             if (statusPanel != null)
                 statusPanel.ActivePokemon(poke);
@@ -142,7 +143,7 @@ public class BattleHandler : MonoBehaviour
 
             UIManager.Instance.Show<BattleMenuPanel>();
             UIManager.Instance.Refresh<MovePanel>(poke.pokemon.moves.ToList());
-        });
+        // });
     }
 
     public void EndBattle(BattleResults results)
@@ -272,34 +273,34 @@ public class BattleHandler : MonoBehaviour
 
     public void OnHit(Damage dmg)
     {
-        EventPool.Schedule(() =>
-        {
+        // EventPool.Schedule(() =>
+        // {
             BattleFieldHandler.Instance.OnHit(dmg);
-        });
+        // });
     }
 
     public void OnHitted(CombatPokemon pokemon)
     {
-        EventPool.Schedule(() =>
-        {
+        // EventPool.Schedule(() =>
+        // {
             BattleFieldHandler.Instance.OnHitted(pokemon);
-        });
+        // });
     }
 
     public void OnMove(CombatAction move)
     {
-        EventPool.Schedule(() =>
-        {
+        // EventPool.Schedule(() =>
+        // {
             BattleFieldHandler.Instance.OnMove(move);
-        });
+        // });
     }
 
     public void OnTurnEnd()
     {
-        EventPool.Schedule(() =>
-        {
+        // EventPool.Schedule(() =>
+        // {
             BattleFieldHandler.Instance.OnTurnEnd();
-        });
+        // });
         // UnityEngine.Debug.Log("Turn End");
 
         // EventPool.Schedule(() => { BattleUIHandler.Instance.UpdateUI(this); });
@@ -309,11 +310,11 @@ public class BattleHandler : MonoBehaviour
     {
         // UnityEngine.Debug.Log("Your move");
 
-        EventPool.Schedule(() =>
-        {
+        // EventPool.Schedule(() =>
+        // {
             // BattleUIHandler.Instance.BattleUI.SetActive(true);
             UIManager.Instance.Show<BattleMenuPanel>();
-        });
+        // });
 
 
         // print($"Current Pokemon Index: {CurrentMyPokemonIndex}");
