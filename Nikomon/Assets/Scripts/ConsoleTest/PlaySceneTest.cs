@@ -11,9 +11,9 @@ public class PlaySceneTest : MonoBehaviour
     {
         #if UNITY_EDITOR
             GlobalManager.Instance.game.CreateNewSaveFile("text man",false);
-            Game.Instance.AddPokemon(new Pokemon(6,50));
-            Game.Instance.AddPokemon(new Pokemon(20,50));
-            Game.Instance.AddPokemon(new Pokemon(4,11));
+            Game.Instance.AddPokemon(new Pokemon(8,50));
+            Game.Instance.AddPokemon(new Pokemon(15,50));
+            Game.Instance.AddPokemon(new Pokemon(2,11));
             Game.Instance.AddPokemon(new Pokemon(1, 1));
             
             Game.trainer.RemovePokemon(0);

@@ -214,15 +214,20 @@ namespace PokemonCore.Network
         static void BecomeHost(int port)
         {
             
-            MonoSingleton<ServerBehaviour>.Instance.Init((ushort)port,OnReceiveMsg);
+            MonoSingleton<ServerBehaviour>.Instance.Init((ushort)port,OnReceiveMsg,OnDisconnect);
 
             void OnReceiveMsg(string msg, NetworkConnection connection)
             {
                 if (string.IsNullOrEmpty(msg) || string.IsNullOrWhiteSpace(msg)) return;
-                UnityEngine.Debug.Log(msg);
+                // UnityEngine.Debug.Log(msg);
                 Instruction ins = JsonConvert.DeserializeObject<Instruction>(msg);
                 Battle.Instance.ReceiveInstruction(ins, false);
                 MonoSingleton<ServerBehaviour>.Instance.Broadcast(msg,connection);
+            }
+
+            void OnDisconnect()
+            {
+                Battle.Instance.InterruptAndEndBattle();
             }
             
             // NetworkLocal.OnServerReceiveMessage = (data, client) =>
@@ -247,7 +252,7 @@ namespace PokemonCore.Network
         static void BecomeClient(IPAddress ipAddress, ushort port = 30000)
         {
             
-            MonoSingleton<ClientBehaviour>.Instance.Init(ipAddress.ToString(),port,OnRecevieMsg);
+            MonoSingleton<ClientBehaviour>.Instance.Init(ipAddress.ToString(),port,OnRecevieMsg,OnDisconnect);
 
             void OnRecevieMsg(string msg)
             {
@@ -255,6 +260,11 @@ namespace PokemonCore.Network
                 UnityEngine.Debug.Log(msg);
                 Instruction ins = JsonConvert.DeserializeObject<Instruction>(msg);
                 Battle.Instance.ReceiveInstruction(ins, false);
+            }
+
+            void OnDisconnect()
+            {
+                Battle.Instance.InterruptAndEndBattle();
             }
 
             // NetworkLocal.OnClientReceiveMessage = (data) =>

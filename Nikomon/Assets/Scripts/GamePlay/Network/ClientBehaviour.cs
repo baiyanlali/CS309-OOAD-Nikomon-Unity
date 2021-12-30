@@ -4,8 +4,7 @@ using Unity.Collections;
 using Unity.Networking.Transport;
 using UnityEngine;
 
-namespace PokemonCore.Network
-{
+
     public class ClientBehaviour : MonoSingleton<ClientBehaviour>
     {
         public NetworkDriver m_Driver;
@@ -111,4 +110,3 @@ namespace PokemonCore.Network
     }
     
     
-}

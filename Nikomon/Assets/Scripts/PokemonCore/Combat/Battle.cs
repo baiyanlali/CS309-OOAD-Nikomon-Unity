@@ -535,6 +535,13 @@ namespace PokemonCore.Combat
             }
         }
 
+        public void InterruptAndEndBattle()
+        {
+            mBattleResults = BattleResults.Aborted;
+            NextMove();
+            OnBattleEnd?.Invoke(mBattleResults);
+        }
+
         #endregion
 
         public void ReplacePokemons(List<Tuple<CombatPokemon, Pokemon>> list)

@@ -14,7 +14,7 @@ using Debug = UnityEngine.Debug;
         
         public Action OnConnectionDropped;
 
-        private bool isActive;
+        private bool isActive=false;
         public Action<string,NetworkConnection> OnMsgReceived;
 
         public void Init(ushort port,Action<string,NetworkConnection> onMsgReceived,Action onConnectionDropped=null)
