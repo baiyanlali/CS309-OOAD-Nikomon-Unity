@@ -18,7 +18,7 @@ public class BattleDialoguePanel : BaseUI,IUIAnimator
    public void OnEnterAnimator()
    {
       gameObject.transform.localScale = Vector3.zero;
-      LeanTween.scale(gameObject,Vector3.one,0.5f).setOnComplete(() =>
+      LeanTween.scale(gameObject,Vector3.one,0.3f).setOnComplete(() =>
       {
 
       });
@@ -27,7 +27,7 @@ public class BattleDialoguePanel : BaseUI,IUIAnimator
    public void OnExitAnimator()
    {
       gameObject.transform.localScale = Vector3.one;
-      LeanTween.scale(gameObject,Vector3.zero,0.5f).setOnComplete(() =>
+      LeanTween.scale(gameObject,Vector3.zero,0.3f).setOnComplete(() =>
       {
 
       });
