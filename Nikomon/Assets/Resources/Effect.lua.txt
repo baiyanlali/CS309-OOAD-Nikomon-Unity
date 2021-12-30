@@ -127,11 +127,11 @@ effect5={ --over!
     --25%无法使用技能
     
     OnMoving=function(self,combatMove)
-        Game.battle:Report('宝可梦被麻痹了！无法使用技能！')
         rand = CS.PokemonCore.Game.Random:Next(101)
         print("Paralysis: OnMoving",rand)
 
-        if rand<25 then
+        if rand<100 then
+            Game.battle:Report('宝可梦被麻痹了！无法使用技能！')
             print("Paralysis Succeed!")
             combatMove.Targets = nil
         end

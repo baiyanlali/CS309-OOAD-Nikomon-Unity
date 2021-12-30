@@ -63,6 +63,7 @@ public class BattleDialoguePanel : BaseUI,IUIAnimator
 
    public void OnExitAnimator()
    {
+      dialogTextList.Clear();
       gameObject.transform.localScale = Vector3.one;
       LeanTween.scale(gameObject,Vector3.zero,0.2f).setOnComplete(() =>
       {
