@@ -344,7 +344,18 @@ namespace PokemonCore.Combat
             if (action is CombatMove)
             {
                 var c = action as CombatMove;
-                FieldEffect?.ForEach(effect => effect.OnMoving(effect,c));
+                FieldEffect?.ForEach(effect =>
+                {
+                    if (effect.OnMoving == null)
+                    {
+                        
+                    }
+                    else
+                    {
+                        effect.OnMoving(effect, c);
+                    }
+                    
+                });
             
                 foreach (var effectInfo in c.move._baseData.EffectInfos.OrEmptyIfNull())
                 {
@@ -458,8 +469,14 @@ namespace PokemonCore.Combat
                     if (dmg.target.HP > 0)
                         OnHitted?.Invoke(dmg.target);
                     Damages.Add(dmg);
-                    FieldEffect?.ForEach(effect => Pokemons?.ForEach(pokemon => effect?.OnDamaged(effect,dmg.sponsor,dmg.target)));
-
+                    FieldEffect?.ForEach(effect => Pokemons?.ForEach(pokemon =>
+                    {
+                        if (effect.OnDamaged != null)
+                        {
+                            effect.OnDamaged(effect, dmg.sponsor, dmg.target); 
+                        }
+                    }
+                    ));
                 }
             }
         }
@@ -470,7 +487,16 @@ namespace PokemonCore.Combat
         /// </summary>
         void Moved()
         {
-            FieldEffect?.ForEach(effect => Pokemons?.ForEach(pokemon => effect?.OnMoved(effect,pokemon)));
+            
+            FieldEffect?.ForEach(effect => Pokemons?.ForEach(pokemon =>
+            {
+                if (effect.OnMoved != null)
+                {
+                    effect?.OnMoved(effect, pokemon); 
+                }
+                
+            }
+            ));
 
             foreach (CombatPokemon e in Pokemons)
             {

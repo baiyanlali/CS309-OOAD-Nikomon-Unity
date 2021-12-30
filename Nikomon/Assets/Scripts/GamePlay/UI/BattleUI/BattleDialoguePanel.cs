@@ -42,7 +42,7 @@ public class BattleDialoguePanel : BaseUI,IUIAnimator
          }
          Debug.Log("display"+dialogTextList[0]);
          dialogueText.text = dialogTextList[0];
-         yield return new WaitForSeconds(2);
+         yield return new WaitForSeconds(1);
          dialogTextList.RemoveAt(0);
       }
       UIManager.Instance.Hide(this);
