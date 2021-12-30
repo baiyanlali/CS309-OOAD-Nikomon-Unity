@@ -262,9 +262,13 @@ namespace GamePlay.UI.UIFramework
                 node.OnExit();
                 node = stack.Pop();
             }
-            
-            if(stack.Count>0)
+
+            if (stack.Count > 0)
+            {
                 stack.Peek().OnResume();
+                stack.Peek().transform.SetAsLastSibling();
+            }
+
         }
 
         
