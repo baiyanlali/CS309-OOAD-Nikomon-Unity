@@ -92,7 +92,9 @@ namespace GamePlay
             [typeof(EvolutionPanel)]="Prefabs/UI/EvolutionUI/EvolutionPanel",
             //Settlement
             [typeof(SettlementPanel)]="Prefabs/UI/SettlementUI/SettlementPanel",
-            [typeof(PokemonSettlement)]="Prefabs/UI/SettlementUI/PokemonSettlement"
+            [typeof(PokemonSettlement)]="Prefabs/UI/SettlementUI/PokemonSettlement",
+            //Connect
+            [typeof(ConnectPanel)]="Prefabs/UI/ConnectUI/ConnectUI",
             
             
         };

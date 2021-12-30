@@ -171,8 +171,9 @@ public class BattleHandler : MonoBehaviour
                     ExpBefore = new Experience(poke.Exp),
                     Pokemon = poke
                 });
-                var (evolutions, movesData) = Game.trainer.party[i].AddExperience(Game.trainer.party[i].Exp.NextLevelExp-
-                    Game.trainer.party[i].Exp.CurLevelExp);
+                var (evolutions, movesData) = Game.trainer.party[i].AddExperience((Game.trainer.party[i].Exp.NextLevelExp-
+                    Game.trainer.party[i].Exp.CurLevelExp)/2 + 1);
+                //var (evolutions, movesData) = Game.trainer.party[i].AddExperience(500000);
                 if (evolutions != null && evolutions.Count > 0)
                 {
                     pokesEvoluting.Add((poke._base, Game.PokemonsData[evolutions[0]], poke));
