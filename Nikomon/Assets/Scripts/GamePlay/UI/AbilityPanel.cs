@@ -25,6 +25,7 @@ namespace GamePlay.UI.UtilUI
         public GameObject pokenmons;
         public Text movecontent;
         public GameObject content2;
+        public GameObject content3;
         public override bool IsOnly { get; } = true;
 
         /// <summary>
@@ -33,7 +34,7 @@ namespace GamePlay.UI.UtilUI
         /// <param name="args">0 for trainer,1 for pokenmon</
         public override void OnEnter(params object[] args)
         {
-            //12.6开始改的！
+            movecontent.text = "";
             MoveElementPrefab = GameResources.SpawnPrefab(typeof(MoveElement));
             if (_moveElements.Count == 0)
             {
@@ -45,7 +46,7 @@ namespace GamePlay.UI.UtilUI
                     {
                         //TODO:技能描述！！！不好处理！！！！
                         // description;
-                        movecontent.text = obj.GetComponent<MoveElement>()._move._baseData.description;
+                        movecontent.text = Messages.Messages.Get("Move"+obj.GetComponent<MoveElement>()._move.moveID) ; //._move._baseData.description;
                         //movecontent.text = obj.name;
 
                     };
@@ -93,6 +94,11 @@ namespace GamePlay.UI.UtilUI
             {
                 _radarTest.Init(Pokemon);
                 _Content2.Init(Pokemon);
+            };
+            
+            content2.GetComponent<TriggerSelect>().onSelect = () =>
+            {
+               
             };
 
             // content2.GetComponent<TriggerSelect>().onDeSelect = () =>

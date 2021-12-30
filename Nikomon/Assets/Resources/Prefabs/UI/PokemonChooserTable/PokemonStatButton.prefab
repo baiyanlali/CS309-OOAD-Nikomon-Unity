@@ -310,8 +310,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4513493587877642717}
   - component: {fileID: 145142647963583903}
-  - component: {fileID: 4658729275116865064}
-  - component: {fileID: 8681167971403138842}
+  - component: {fileID: 1484244599862280929}
   m_Layer: 5
   m_Name: PokemonName
   m_TagString: Untagged
@@ -346,7 +345,7 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4506405405799765726}
   m_CullTransparentMesh: 1
---- !u!114 &4658729275116865064
+--- !u!114 &1484244599862280929
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -355,12 +354,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 4506405405799765726}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Script: {fileID: 11500000, guid: f34f9f4c13d6d7c4fad6e8836f326cc7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
-  m_RaycastTarget: 0
+  m_Color: {r: 0, g: 0, b: 0, a: 1}
+  m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -371,7 +370,7 @@ MonoBehaviour:
     m_FontSize: 30
     m_FontStyle: 0
     m_BestFit: 0
-    m_MinSize: 0
+    m_MinSize: 3
     m_MaxSize: 40
     m_Alignment: 3
     m_AlignByGeometry: 0
@@ -380,18 +379,7 @@ MonoBehaviour:
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: "\u8471\u6CB9\u997C"
---- !u!114 &8681167971403138842
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4506405405799765726}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a4469403ae6ce654a8ee38d743ff820d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  AutoTranslatedOnAwake: 1
 --- !u!1 &6119798471512503664
 GameObject:
   m_ObjectHideFlags: 0

@@ -23,7 +23,7 @@ public class PartyInPC : MonoBehaviour
         ChooserElement = GameResources.SpawnPrefab(typeof(PCParty));
 
         int pokes = trainer.bagPokemons;
-        
+        _pcManager.RefreshInformation(null);
         if (pokes < transform.childCount)
         {
             for (int i = pokes; i < transform.childCount; i++)

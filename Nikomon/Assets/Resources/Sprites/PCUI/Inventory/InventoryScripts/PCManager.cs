@@ -70,7 +70,7 @@ public class PCManager : BaseUI
                 obj.GetComponent<TriggerSelect>().onSelect = () =>
                 {
                     GameObjectdesc.SetActive(true);
-                    description.text = obj.GetComponent<MoveElement>()._move._baseData.description;
+                    description.text = Messages.Get("Move" + obj.GetComponent<MoveElement>()._move.moveID);
                     //description.text = obj.name;
 
                 };
@@ -108,61 +108,7 @@ public class PCManager : BaseUI
         OnRefresh();
         
     }
-    
-    // public override void OnEnter(params object[] args)
-    // {//12.6开始改的！
-    //     MoveElementPrefab = GameResources.SpawnPrefab(typeof(MoveElement));
-    //     if (_moveElements.Count == 0)
-    //     {
-    //         for (int i = 0; i < Game.MaxMovesPerPokemon; i++)
-    //         {
-    //             GameObject obj = Instantiate(MoveElementPrefab, MoveDetial);
-    //             
-    //             
-    //             
-    //             
-    //             obj.name = "Move" + i;
-    //             obj.GetComponent<TriggerSelect>().onSelect = () =>
-    //             {
-    //               
-    //                 // description;
-    //                 //description.text = obj.GetComponent<MoveElement>()._move._baseData.description;
-    //                 description.text = obj.name;
-    //
-    //             };
-    //             _moveElements.Add(obj.GetComponent<MoveElement>());
-    //         }
-    //     }
-    //     base.OnEnter(args);
-    //     if (args != null)
-    //     {
-    //         trainer=args[0] as Trainer;
-    //         pc = args[1] as PC;
-    //         judge = new bool[trainer.party.Length];
-    //         print(pc.Pokemons.Length * pc.pokemons.Length);//160
-    //         exchangeIndex = new bool[trainer.party.Length+pc.Pokemons.Length * pc.pokemons.Length];
-    //         for (int i = 0; i < judge.Length; i++)
-    //         {
-    //             judge[i] = false;
-    //         }
-    //         for (int i = 0; i < exchangeIndex.Length; i++)
-    //         {
-    //             exchangeIndex[i] = false;
-    //         }
-    //         // for (int i = 0; i < ifhasPokemon.Length; i++)
-    //         // {
-    //         //     ifhasPokemon[i] = false;
-    //         // }
-    //     }
-    //
-    //     
-    //     imageGrid.SetActive(true);
-    //     if (emptySlot == null)
-    //         emptySlot = GameResources.SpawnPrefab("Slot");
-    //
-    //     OnRefresh();
-    //     
-    // }
+
 
     private void OnEnable()
     {
@@ -202,35 +148,7 @@ public class PCManager : BaseUI
                     slots[i].GetComponent<Slot>().SetupSlot(pc.Pokemons[i],i,RefreshInformation,ShowInfo);
                 }
             }
-        // if (slots.Count == 0)
-        // {
-        //     for (int i = 0; i < pc.Pokemons.Length; i++)
-        //     {
-        //         
-        //         //刚进去的时候box是这样
-        //         slots.Add(Instantiate(emptySlot).GetComponent<Slot>());
-        //         //GameObject obj = slots[i].gameObject;
-        //         slots[i].name = "slot" + i.ToString();
-        //         slots[i].number = i;
-        //         slots[i].GetComponent<TriggerSelect>().onSelect = () =>
-        //         {
-        //             print(slots[i].number);
-        //             ShowInfo(true);
-        //             //RefreshInformation(slots[i].pokemon);
-        //             RefreshInformation(pc.Pokemons[slots[i].number]);
-        //         };
-        //         slots[i].transform.SetParent(imageGrid.transform);
-        //         slots[i].GetComponent<Slot>().SetupSlot(pc.Pokemons[i],i,RefreshInformation,ShowInfo);
-        //     }
-        // }
-        // else
-        // {
-        //     for (int i = 0; i < pc.Pokemons.Length; i++)
-        //     {
-        //         //换box的时候是这样
-        //         slots[i].GetComponent<Slot>().SetupSlot(pc.Pokemons[i],i,RefreshInformation,ShowInfo);
-        //     }
-        // }
+
 
         BoxTitle.text = pc.BoxNames[pc.ActiveBox];
         TableUI.Init(trainer,new []{"See ability", "Exchange","Holdings","Release","Put into box","Cancel"},HandleChooserTalbeUI);
@@ -246,22 +164,7 @@ public class PCManager : BaseUI
             case 0:
                 Debug.Log("查看信息");
                 UIManager.Instance.Show<AbilityPanel>(trainer,trainer.party[bagIndex]);
-                //TODO:应该是调出神奇的abilityUI面板！！！
-                // if (!judge[bagIndex] )
-                // {
-                //     RefreshInformationButton(bagIndex);
-                //     ShowInfo(true);
-                //     for (int i = 0; i < judge.Length; i++)
-                //     {
-                //         judge[i] = false;
-                //     }
-                //     judge[bagIndex] = true;
-                // }
-                // else
-                // {
-                //     ShowInfo(false);
-                //     judge[bagIndex] = false;
-                // }
+
                 break;
             case 1:
                 Debug.Log("交换");
