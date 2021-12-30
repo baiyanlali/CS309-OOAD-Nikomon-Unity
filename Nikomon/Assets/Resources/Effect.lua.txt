@@ -312,11 +312,16 @@ effect17={
     ID=17,
     InnerName='lowerATK',
     Round=3,
-    EffectLastType=CS.PokemonCore.Combat.Interface.EffectLastType.UNTIL_SWITCH_POKEMON,
     EffectChance=100,
-    
-    OnMoving=function(self,combatMove) 
-		combatMove.Sponsor.ATKStateChange.set(ATKStateChange.get() - 1)
+    OnMoving=function(self,combatMove)
+        if self.Round > 2 then
+            Game.battle:Report(combatMove.Sponsor.pokemon._base.innerName..'的攻击力降低了！')
+            combatMove.Sponsor.ATK = combatMove.Sponsor.ATK - 1
+        end
+		self.Round = self.Round-1
+    end,
+    OnEffectEnd=function(self,combatMove)
+        combatMove.Sponsor.ATK = combatMove.Sponsor.ATK + 1
     end
 }
 effect18={
