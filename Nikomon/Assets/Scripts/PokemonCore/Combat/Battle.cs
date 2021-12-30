@@ -390,6 +390,7 @@ namespace PokemonCore.Combat
                 OnMove?.Invoke(c);
                 return null;
             }
+            
             return null;
 
         }
