@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using GamePlay.Utilities;
 using Unity.Collections;
 using Unity.Networking.Transport;
@@ -10,7 +11,8 @@ using Debug = UnityEngine.Debug;
     public class ServerBehaviour : MonoSingleton<ServerBehaviour>
     {
         public NetworkDriver m_Driver;
-        private NativeList<NetworkConnection> m_Connections;
+        private List<NetworkConnection> m_Connections;
+        // private NativeList<NetworkConnection> m_Connections;
         
         public Action OnConnectionDropped;
 
@@ -30,7 +32,8 @@ using Debug = UnityEngine.Debug;
             else
                 m_Driver.Listen();
 
-            m_Connections = new NativeList<NetworkConnection>(4, Allocator.Persistent);
+            // m_Connections = new NativeList<NetworkConnection>(4, Allocator.Persistent);
+            m_Connections = new List<NetworkConnection>(4);
             isActive = true;
         }
 
@@ -40,7 +43,7 @@ using Debug = UnityEngine.Debug;
             {
                 isActive = false;
                 m_Driver.Dispose();
-                m_Connections.Dispose();
+                // m_Connections.Dispose();
             }
         }
 
@@ -71,7 +74,8 @@ using Debug = UnityEngine.Debug;
 
         public void Broadcast(string msg, NetworkConnection except)
         {
-            for (int i = 0; i < m_Connections.Length; i++)
+            // for (int i = 0; i < m_Connections.Length; i++)
+            for (int i = 0; i < m_Connections.Count; i++)
             {
                 if (m_Connections[i].IsCreated && m_Connections[i] != except)
                 {
@@ -83,7 +87,8 @@ using Debug = UnityEngine.Debug;
         
         public void Broadcast(string msg)
         {
-            for (int i = 0; i < m_Connections.Length; i++)
+            // for (int i = 0; i < m_Connections.Length; i++)
+            for (int i = 0; i < m_Connections.Count; i++)
             {
                 if (m_Connections[i].IsCreated)
                 {
@@ -96,7 +101,8 @@ using Debug = UnityEngine.Debug;
         private void UpdateMessagePump()
         {
             DataStreamReader stream;
-            for (int i = 0; i < m_Connections.Length; i++)
+            // for (int i = 0; i < m_Connections.Length; i++)
+            for (int i = 0; i < m_Connections.Count; i++)
             {
                 Assert.IsTrue(m_Connections[i].IsCreated);
 
@@ -132,7 +138,8 @@ using Debug = UnityEngine.Debug;
         void CleanUpConnections()
         {
             // CleanUpConnections
-            for (int i = 0; i < m_Connections.Length; i++)
+            // for (int i = 0; i < m_Connections.Length; i++)
+            for (int i = 0; i < m_Connections.Count; i++)
             {
                 if (!m_Connections[i].IsCreated)
                 {
