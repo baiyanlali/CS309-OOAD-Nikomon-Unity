@@ -16,9 +16,9 @@ namespace PokemonCore.Network
         public Action OnConnectionDropped;
 
         private bool isActive;
-        public Action<string> OnMsgReceived;
+        public Action<string,NetworkConnection> OnMsgReceived;
 
-        public void Init(ushort port,Action<string> onMsgReceived,Action onConnectionDropped=null)
+        public void Init(ushort port,Action<string,NetworkConnection> onMsgReceived,Action onConnectionDropped=null)
         {
             OnConnectionDropped = onConnectionDropped;
 
@@ -81,6 +81,18 @@ namespace PokemonCore.Network
                 }
             }
         }
+        
+        public void Broadcast(string msg)
+        {
+            for (int i = 0; i < m_Connections.Length; i++)
+            {
+                if (m_Connections[i].IsCreated)
+                {
+                    UnityEngine.Debug.Log($"Sending to client: {msg}, to {m_Connections[i].InternalId}");
+                    SendToClient(m_Connections[i],msg);
+                }
+            }
+        }
 
         private void UpdateMessagePump()
         {
@@ -98,7 +110,7 @@ namespace PokemonCore.Network
                         var value = stream.ReadFixedString128();
                         UnityEngine.Debug.Log($"Got the value = {value.Value} back from client\n{m_Driver.RemoteEndPoint(m_Connections[i]).Address}" );
                         
-                        OnMsgReceived?.Invoke(value.Value);
+                        OnMsgReceived?.Invoke(value.Value,m_Connections[i]);
                         // uint number = stream.ReadUInt();
                         //
                         // UnityEngine.Debug.Log("Got " + number + " from the Client adding + 2 to it.");
