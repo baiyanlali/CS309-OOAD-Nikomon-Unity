@@ -578,6 +578,7 @@ namespace PokemonCore.Combat
 
         public bool ReceiveInstruction(Instruction ins, bool fromUser = false)
         {
+            if (ins == null) return false;
             //判断有没有重复输入的
             if ((from instru in Instructions where ins.CombatPokemonID == instru.CombatPokemonID select instru)
                 .Count() != 0) return false;

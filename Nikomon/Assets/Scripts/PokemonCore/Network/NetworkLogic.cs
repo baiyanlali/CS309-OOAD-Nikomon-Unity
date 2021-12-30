@@ -236,7 +236,7 @@ namespace PokemonCore.Network
                 UnityEngine.Debug.Log("Client Receive Message");
                 foreach (var s in ParseJson(str))
                 {
-                    if (string.IsNullOrWhiteSpace(s)) continue;
+                    if (string.IsNullOrWhiteSpace(s) || string.IsNullOrEmpty(s)) continue;
                     UnityEngine.Debug.Log(s);
                     Instruction ins = JsonConvert.DeserializeObject<Instruction>(s);
                     Battle.Instance.ReceiveInstruction(ins, false);

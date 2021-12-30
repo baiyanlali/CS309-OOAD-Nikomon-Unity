@@ -26,7 +26,7 @@ namespace PokemonCore.Combat
 
         public int CombatID
         {
-            get => TrainerID * 100 + pokemon._base.ID +randomID ;
+            get => TrainerID * 100 + pokemon._base.ID + pokemon.Exp.Total/100; // +randomID ;
         }
 
         public Pokemon pokemon { get; private set; }

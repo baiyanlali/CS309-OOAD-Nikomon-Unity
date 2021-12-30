@@ -187,13 +187,14 @@ public class BattleHandler : MonoBehaviour
                                 {
                                     UIManager.Instance.PopAllUI(UILayer.MainUI);
                                     UIManager.Instance.PopAllUI(UILayer.NormalUI);
+                                    UIManager.Instance.PopAllUI(UILayer.PopupUI);
                                     GlobalManager.Instance.CanPlayerControlled = true;
                                     // BattleUIHandler.Instance.EndBattle();
                                     CurrentPokemon = null;
                                     return;
                                 }
 
-                                ;
+                                
                                 var evolve = pokesEvoluting[0];
                                 pokesEvoluting.RemoveAt(0);
 
@@ -214,6 +215,7 @@ public class BattleHandler : MonoBehaviour
                                 {
                                     UIManager.Instance.PopAllUI(UILayer.MainUI);
                                     UIManager.Instance.PopAllUI(UILayer.NormalUI);
+                                    UIManager.Instance.PopAllUI(UILayer.PopupUI);
                                     GlobalManager.Instance.CanPlayerControlled = true;
                                     // BattleUIHandler.Instance.EndBattle();
                                     CurrentPokemon = null;
@@ -221,6 +223,7 @@ public class BattleHandler : MonoBehaviour
                                 }
 
                                 var movesData = pokesMovesData[0];
+                                pokesMovesData.RemoveAt(0);
                                 if (movesData.Item1.MoveCount() < Game.MaxMovesPerPokemon)
                                 {
                                     movesData.Item1.AddMove(movesData.Item2);
