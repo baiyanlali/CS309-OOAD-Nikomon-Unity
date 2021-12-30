@@ -6,16 +6,16 @@ namespace GamePlay.Utilities
 {
     public static class DictionaryExtension
     {
-        public static Dictionary<TKey,TVal> AddOrReplace<TKey,TVal>(this Dictionary<TKey,TVal> dic,TKey key,TVal val)
+        public static void AddOrReplace<TKey,TVal>(this Dictionary<TKey,TVal> dic,TKey key,TVal val)
         {
             dic[key] = val;
-            return dic;
         }
 
         public static void AddAndUseIfHas(this Dictionary<string, Action> dic, string key,Action val)
         {
             if (dic.ContainsKey(key))
             {
+                Debug.Log("Anim:"+key+" has been invoked by a add and if has");
                 dic[key]?.Invoke();
             }
             dic[key] = val;

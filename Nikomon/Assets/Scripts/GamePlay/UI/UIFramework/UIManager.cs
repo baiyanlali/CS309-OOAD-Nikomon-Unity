@@ -100,20 +100,24 @@ namespace GamePlay.UI.UIFramework
             switch (ui.Layer)
             {
                 case UILayer.MainUI:
-                    _mainUI.Add(ui);
+                    if(!_mainUI.Contains(ui))
+                        _mainUI.Add(ui);
                     break;
                 case UILayer.NormalUI:
                     if(_normalStack.Count!=0)
                         _normalStack.Peek()?.OnPause();
-                    _normalStack.Push(ui);
+                    if(!_normalStack.Contains(ui))
+                        _normalStack.Push(ui);
                     break;
                 case UILayer.PopupUI:
                     if(_popStack.Count!=0)
                         _popStack.Peek()?.OnPause();
-                    _popStack.Push(ui);
+                    if(!_popStack.Contains(ui))
+                        _popStack.Push(ui);
                     break;
                 case UILayer.Top:
-                    _topUI.Add(ui);
+                    if(!_topUI.Contains(ui))
+                        _topUI.Add(ui);
                     break;
             }
         }

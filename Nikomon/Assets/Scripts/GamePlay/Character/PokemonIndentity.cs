@@ -108,7 +108,7 @@ public class PokemonIndentity : MonoBehaviour, IInteractive
         //     completeList["Fight_be_attacked"]?.Invoke();
         // }
         // completeList.AddOrReplace("Fight_attack",onComplete);
-        completeList.AddAndUseIfHas("Fight_attack",onComplete);
+        completeList.AddAndUseIfHas("Fight_be_attacked",onComplete);
         // completeList.Add("Fight_be_attacked",onComplete);
     }
 
@@ -180,6 +180,7 @@ public class PokemonIndentity : MonoBehaviour, IInteractive
         string anim = HashToAnimName[shortNameHash]=="Fight_no_touch_attack"?"Fight_attack":HashToAnimName[shortNameHash];
         if (completeList.TryGetValue(anim, out Action oncomplete))
         {
+            print($"Anim:{anim} has completed");
             oncomplete?.Invoke();
             completeList.Remove(anim);
         }

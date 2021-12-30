@@ -9,8 +9,8 @@ public class BattleDialoguePanel : BaseUI,IUIAnimator
 {
    public GameObject animObject;
    public Text dialogueText;
-   [NonSerialized] public List<string> dialogTextList = new List<string>();
-   public override UILayer Layer { get; set; } =  UILayer.PopupUI;
+   public List<string> dialogTextList = new List<string>();
+   public override UILayer Layer { get;set;  } =  UILayer.PopupUI;
    public override void OnEnter(params object[] args)
    {
       base.OnEnter(args);
