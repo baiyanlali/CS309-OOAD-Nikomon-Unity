@@ -28,30 +28,30 @@ namespace GamePlay.UI.PokemonChooserTable
             ChooserElement = GameResources.SpawnPrefab(typeof(PokemonChooserElementUI));
 
             List<Selectable> selectables = new List<Selectable>();
-        
+            selectables.Add(transform.GetChild(0).GetComponent<Selectable>());
             int pokes = trainer.bagPokemons;
         
-            if (pokes < transform.childCount)
+            if (pokes < transform.childCount - 1)
             {
-                for (int i = pokes; i < transform.childCount; i++)
+                for (int i = pokes; i < transform.childCount - 1; i++)
                 {
                     transform.GetChild(i).gameObject.SetActive(false);
                 }
             }
-            else if(pokes>transform.childCount)
+            else if(pokes>transform.childCount - 1)
             {
-                for (int i = transform.childCount; i < pokes; i++)
+                for (int i = transform.childCount - 1; i < pokes; i++)
                 {
                     Instantiate(ChooserElement, transform);
                 }
             }
         
-            for (int i = 0; i < Mathf.Min(pokes,transform.childCount); i++)
+            for (int i = 1; i < transform.childCount; i++)
             {
-                if (trainer.party[i] == null) break;
+                if (trainer.party[i-1] == null) break;
                 if (FirstSelectable == null) FirstSelectable = transform.GetChild(i).gameObject;
                 transform.GetChild(i).gameObject.SetActive(true);
-                transform.GetChild(i).GetComponent<PokemonChooserElementUI>().Init(trainer.party[i],i,chooses,actions);
+                transform.GetChild(i).GetComponent<PokemonChooserElementUI>().Init(trainer.party[i-1],i-1,chooses,actions);
                 selectables.Add(transform.GetChild(i).GetComponent<Selectable>());
             }
             
@@ -70,11 +70,11 @@ namespace GamePlay.UI.PokemonChooserTable
         public override void OnResume()
         {
             base.OnResume();
-            for (int i = 0; i < transform.childCount; i++)
+            for (int i = 1; i < transform.childCount; i++)
             {
-                if (_trainer.party[i] == null) break;
+                if (_trainer.party[i-1] == null) break;
                 transform.GetChild(i).gameObject.SetActive(true);
-                transform.GetChild(i).GetComponent<PokemonChooserElementUI>().UpdateData(_trainer.party[i]);
+                transform.GetChild(i).GetComponent<PokemonChooserElementUI>().UpdateData(_trainer.party[i-1]);
             }
             gameObject.SetActive(true);
         }

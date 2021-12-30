@@ -59,36 +59,28 @@ namespace GamePlay
             [typeof(PokemonChooserElementUI)] = "Prefabs/UI/PokemonChooserTable/PokemonStatButton", 
 
             //DialogueChooser
-            [typeof(DialogueChooserPanel)] = "Prefabs/UI/DialogChooser", 
-
+            [typeof(DialogueChooserPanel)] = "Prefabs/UI/DialogChooser",
             //TargetChooser
             [typeof(TargetChooserPanel)] = "Prefabs/UI/BattleUI/PokemonChooser", 
             [typeof(TargetChooserUI)] = "Prefabs/UI/BattleUI/TargetChooserElement", 
             [typeof(TargetChooserHandler)] = "Prefabs/UI/BattleUI/PokemonChooserElement",
-            
             //Battle
             [typeof(MovePanel)]="Prefabs/UI/BattleUI/MovePanel",
             [typeof(BattlePokemonStateUI)]="Prefabs/UI/BattleUI/PokemonState",
             [typeof(BattleStatusPanel)]="Prefabs/UI/BattleUI/BattleStatusPanel",
             [typeof(BattleMenuPanel)]="Prefabs/UI/BattleUI/BattleMenuUI",
             [typeof(BattleDialoguePanel)]="Prefabs/UI/BattleUI/BattleDialoguePanel",
-        
             [typeof(MoveElement)]="Prefabs/UI/BattleUI/MoveElement",
-
             //DebugTool
             [typeof(DebugPanel)]="Prefabs/UI/DebugTool",
-            
             //Dialogue
             [typeof(DialogPanel)]="Prefabs/UI/DialogPanel",
-            
             //PC
             [typeof(PCManager)]="Prefabs/UI/PC/PC",
             [typeof(PCParty)]="Prefabs/UI/PC/Party",
             [typeof(Slot)]="Prefabs/UI/PC/slot",
-            
             //Ability
             [typeof(AbilityPanel)]="Prefabs/UI/Ability/PokemonAbilityTable",
-            
             //Pokedex
             [typeof(PokedexPanel)]="Prefabs/UI/Pokemondex/Pokedex",
             [typeof(PokemondexElement)]="Prefabs/UI/Pokemondex/Pokemondex",

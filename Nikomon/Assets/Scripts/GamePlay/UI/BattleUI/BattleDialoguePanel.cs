@@ -43,7 +43,7 @@ public class BattleDialoguePanel : BaseUI,IUIAnimator
          }
          Debug.Log("display"+dialogTextList[0]);
          dialogueText.text = dialogTextList[0];
-         yield return new WaitForSeconds(2);
+         yield return new WaitForSeconds(1);
          dialogTextList.RemoveAt(0);
       }
       UIManager.Instance.Hide(this);
@@ -63,6 +63,7 @@ public class BattleDialoguePanel : BaseUI,IUIAnimator
 
    public void OnExitAnimator()
    {
+      dialogTextList.Clear();
       gameObject.transform.localScale = Vector3.one;
       LeanTween.scale(gameObject,Vector3.zero,0.2f).setOnComplete(() =>
       {

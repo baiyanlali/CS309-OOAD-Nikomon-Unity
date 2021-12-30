@@ -9,9 +9,9 @@ using UnityEngine.UI;
 public class TextTranslated : Text
 {
     public bool AutoTranslatedOnAwake = true;
-    protected override void Awake()
+    protected override void OnEnable()
     {
-        base.Awake();
+        base.OnEnable();
         if (!AutoTranslatedOnAwake) return;
         if(Application.isPlaying)
             text = Messages.Get(text);

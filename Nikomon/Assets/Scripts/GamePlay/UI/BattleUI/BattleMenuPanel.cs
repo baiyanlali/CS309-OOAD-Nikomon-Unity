@@ -146,6 +146,11 @@ namespace GamePlay.UI.BattleUI
 
         public void ToRun()
         {
+            if (currentPoke == null)
+            {
+                UIManager.Instance.Hide(this);
+                return;
+            }
             Instruction ins = new Instruction(currentPoke.CombatID, Command.Run, Game.trainer.id,
                 null);
             BuildInstrustruction(ins);
@@ -207,9 +212,15 @@ namespace GamePlay.UI.BattleUI
 
         public void OnEnterAnimator()
         {
-            LeanTween.scale(gameObject,Vector3.one,0.5f).setOnComplete(() =>
+            LeanTween.scale(gameObject,Vector3.one,0.5f)
+                .setOnStart(() =>
             {
-
+                gameObject.SetActive(false);
+                gameObject.SetActive(true);
+            })
+                .setOnComplete(() =>
+            {
+                gameObject.SetActive(true);
             });
         }
 
@@ -217,7 +228,7 @@ namespace GamePlay.UI.BattleUI
         {
             LeanTween.scale(gameObject,Vector3.zero,0.5f).setOnComplete(() =>
             {
-
+                gameObject.SetActive(false);
             });
         }
     }

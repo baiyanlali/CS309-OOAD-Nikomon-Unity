@@ -78,8 +78,8 @@ public class BattleHandler : MonoBehaviour
             EventPool.Schedule(() =>
             {
                 BattleFieldHandler.Instance.OnPokemonFainting(combatPoke);
-                if (Game.battle.MyPokemons.Contains(combatPoke))
-                    UIManager.Instance.Show<BattleMenuPanel>(new List<bool>() {false, true, false, true});
+                // if (Game.battle.MyPokemons.Contains(combatPoke))
+                //     UIManager.Instance.Show<BattleMenuPanel>(new List<bool>() {false, true, false, true});
             });
         };
         battle.OnReplacePokemon += (p1, p2) =>
@@ -155,6 +155,8 @@ public class BattleHandler : MonoBehaviour
 
     public void OnBattleFieldEnd(BattleResults results)
     {
+        UIManager.Instance.PopAllUI(UILayer.NormalUI);
+        UIManager.Instance.PopAllUI(UILayer.MainUI);
         if (results == BattleResults.Succeed || results == BattleResults.Captured)
         {
             List<PokemonLevelUpState> levelUpStates = new List<PokemonLevelUpState>();
@@ -169,7 +171,8 @@ public class BattleHandler : MonoBehaviour
                     ExpBefore = new Experience(poke.Exp),
                     Pokemon = poke
                 });
-                var (evolutions, movesData) = Game.trainer.party[i].AddExperience(500000);
+                var (evolutions, movesData) = Game.trainer.party[i].AddExperience(Game.trainer.party[i].Exp.NextLevelExp-
+                    Game.trainer.party[i].Exp.CurLevelExp);
                 if (evolutions != null && evolutions.Count > 0)
                 {
                     pokesEvoluting.Add((poke._base, Game.PokemonsData[evolutions[0]], poke));
@@ -202,6 +205,7 @@ public class BattleHandler : MonoBehaviour
                                     CurrentPokemon = null;
                                     return;
                                 }
+                                print(111);
 
                                 
                                 var evolve = pokesEvoluting[0];

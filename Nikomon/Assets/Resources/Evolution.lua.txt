@@ -11,9 +11,172 @@ EvolutionTemple={
 Evolution1={
     CheckEvolution = function(Pokemon)
         print("Check Evolution for pokemon 1")
+        if Pokemon.Level>=25 then
+            --return { 2 }
+            return { 2 }
+        end
+        return nil
+    end
+}
+
+
+Evolution2={
+    CheckEvolution = function(Pokemon)
+        print("Check Evolution for pokemon 2")
         if Pokemon.Level>=50 then
             --return { 2 }
-            return nil
+            return { 3 }
+        end
+        return nil
+    end
+}
+
+Evolution4={
+    CheckEvolution = function(Pokemon)
+        print("Check Evolution for pokemon 4")
+        if Pokemon.Level>=25 then
+            --return { 2 }
+            return { 5 }
+        end
+        return nil
+    end
+}
+
+Evolution5={
+    CheckEvolution = function(Pokemon)
+        print("Check Evolution for pokemon 5")
+        if Pokemon.Level>=50 then
+            return { 6 }
+        end
+        return nil
+    end
+}
+
+Evolution7={
+    CheckEvolution = function(Pokemon)
+        print("Check Evolution for pokemon 7")
+        if Pokemon.Level>=25 then
+            return { 8 }
+        end
+        return nil
+    end
+}
+
+Evolution8={
+    CheckEvolution = function(Pokemon)
+        print("Check Evolution for pokemon 8")
+        if Pokemon.Level>=50 then
+            return { 9 }
+        end
+        return nil
+    end
+}
+
+Evolution10={
+    CheckEvolution = function(Pokemon)
+        print("Check Evolution for pokemon 10")
+        if Pokemon.Level>=25 then
+            return { 11 }
+        end
+        return nil
+    end
+}
+
+Evolution11={
+    CheckEvolution = function(Pokemon)
+        print("Check Evolution for pokemon 11")
+        if Pokemon.Level>=50 then
+            return { 12 }
+        end
+        return nil
+    end
+}
+
+Evolution13={
+    CheckEvolution = function(Pokemon)
+        print("Check Evolution for pokemon 13")
+        if Pokemon.Level>=25 then
+            return { 14 }
+        end
+        return nil
+    end
+}
+
+Evolution14={
+    CheckEvolution = function(Pokemon)
+        print("Check Evolution for pokemon 14")
+        if Pokemon.Level>=50 then
+            return { 15 }
+        end
+        return nil
+    end
+}
+
+Evolution16={
+    CheckEvolution = function(Pokemon)
+        print("Check Evolution for pokemon 16")
+        if Pokemon.Level>=25 then
+            return { 17 }
+        end
+        return nil
+    end
+}
+
+Evolution17={
+    CheckEvolution = function(Pokemon)
+        print("Check Evolution for pokemon 17")
+        if Pokemon.Level>=50 then
+            return { 18 }
+        end
+        return nil
+    end
+}
+
+Evolution19={
+    CheckEvolution = function(Pokemon)
+        print("Check Evolution for pokemon 19")
+        if Pokemon.Level>=40 then
+            return { 20 }
+        end
+        return nil
+    end
+}
+
+Evolution21={
+    CheckEvolution = function(Pokemon)
+        print("Check Evolution for pokemon 21")
+        if Pokemon.Level>=40 then
+            return { 22 }
+        end
+        return nil
+    end
+}
+
+Evolution23={
+    CheckEvolution = function(Pokemon)
+        print("Check Evolution for pokemon 23")
+        if Pokemon.Level>=40 then
+            return { 24 }
+        end
+        return nil
+    end
+}
+
+Evolution25={
+    CheckEvolution = function(Pokemon)
+        print("Check Evolution for pokemon 25")
+        if Pokemon.Level>=70 then
+            return { 26 }
+        end
+        return nil
+    end
+}
+
+Evolution27={
+    CheckEvolution = function(Pokemon)
+        print("Check Evolution for pokemon 27")
+        if Pokemon.Level>=40 then
+            return { 28 }
         end
         return nil
     end
