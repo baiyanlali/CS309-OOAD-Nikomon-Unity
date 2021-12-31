@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using GamePlay.UI.BagSystem;
 using GamePlay.UI.UIFramework;
+using PokemonCore;
 using PokemonCore.Combat;
 using PokemonCore.Inventory;
 using UnityEngine;
