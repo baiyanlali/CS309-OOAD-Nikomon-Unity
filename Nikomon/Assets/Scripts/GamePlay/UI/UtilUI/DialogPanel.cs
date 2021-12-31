@@ -99,6 +99,7 @@ namespace GamePlay.UI.UtilUI
             {
                 // print("To report");
                 OnReport(currentReport);
+                ExitBtn.onClick.RemoveAllListeners();
             }
         }
 

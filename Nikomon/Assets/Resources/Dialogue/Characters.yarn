@@ -121,17 +121,16 @@ title:???
     <<add_pokemon 4>>
 ===
 
-title:dooor
+title:wod
 ---
-<<if beated("dooor") is false>>
+<<if beated("wod") is false>>
 我知道你要去南科大，但是南科大不是谁想去就能去的。 #line:07769e3 
 如果想去，就打败我吧。 #line:042c063 
 ->走上前一步 #line:0b6b6b4 
-    <<start_battle dooor>>
+    <<start_battle wod>>
 ->假装在接电话，趁机走掉 #line:0b40040 
 <<else>>
 你已经获得了去南科大的资格。再见。 #line:0877f96 
-<<enter_scene nkd>>
 <<endif>>
 ===
 
