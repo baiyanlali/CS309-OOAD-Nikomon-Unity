@@ -12,8 +12,6 @@ using GamePlay.UI.UtilUI;
 using PokemonCore;
 using PokemonCore.Character;
 using PokemonCore.Combat;
-using PokemonCore.Inventory;
-using UnityEditor.VersionControl;
 using UnityEngine.EventSystems;
 using Debug = UnityEngine.Debug;
 
