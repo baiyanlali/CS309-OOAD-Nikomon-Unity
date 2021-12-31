@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using GamePlay;
 using GamePlay.UI.UIFramework;
 using GamePlay.UI.UtilUI;
+using PokemonCore;
 using PokemonCore.Attack.Data;
 using PokemonCore.Combat;
 using PokemonCore.Inventory;
@@ -42,6 +43,7 @@ public class BagContentElementUI : MonoBehaviour
         _button.onClick.RemoveAllListeners();
         _button.onClick.AddListener(() =>
         {
+            Game.bag.Decrease(item,1);
             UIManager.Instance.Show<DialogueChooserPanel>(options, new Vector2(0,1),(Action<int>)((index)=>action(index,item)),transform as RectTransform);
         });
     }

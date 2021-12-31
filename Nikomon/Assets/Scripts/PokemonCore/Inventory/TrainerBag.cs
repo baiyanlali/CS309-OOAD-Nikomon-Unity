@@ -74,6 +74,10 @@ namespace PokemonCore.Inventory
         {
             if (nums > Items[item]) return false;
             Items[item] -= nums;
+            if (Items[item] == 0)
+            {
+                Items.Remove(item);
+            }
             return true;
         }
         

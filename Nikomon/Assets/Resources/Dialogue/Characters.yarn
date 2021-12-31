@@ -95,8 +95,10 @@ title:Diana
         嘉然:中
         嘉然:毒
         <<play_anim Diana Victory>>
+        <<wait 4>>
+        <<play_anim Diana Idle>>
     ->{$player}:我现在可以当嘉然小姐的狗了吗？
-        嘉然:唉.....出去找个班上吧...
+        嘉然:唉.....出去找个班上吧...😅😅😅
 <<endif>>
 
 
@@ -137,10 +139,11 @@ title:joker
 ---
 周可儿:... #line:00532fe 
 {$player}:... #line:09d9a78 
-->你怎么不说话？ #line:053efde 
+->你怎么站在角落？ #line:053efde 
     周可儿:... #line:06e20e4 
-->... #line:017e2cb 
-    周可儿:... #line:0d239a1 
+->小哥头发有些长啊？ #line:017e2cb 
+    周可儿:别搁这扯了，快进商店吧... #line:0d239a1 
+    <<enter_store joker>>
 ===
 
 title:xuan
