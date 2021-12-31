@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,7 +38,7 @@ public class MoveLearningTest : MonoBehaviour
 
 
         //StartCoroutine(StartTest());
-        UIManager.Instance.Show<MovelearningUI>(AIfanfan,movedata[4]);
+        UIManager.Instance.Show<MovelearningUI>(AIfanfan,movedata[4],(Action)(() => { }));
 
     }
 }

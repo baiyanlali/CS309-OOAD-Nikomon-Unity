@@ -250,7 +250,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pokeImage: {fileID: 3078430859882219232}
-  pokeName: {fileID: 3078430860585395364}
+  pokeName: {fileID: 0}
   trainerName: {fileID: 3078430861190929167}
   toggle: {fileID: 3078430860534657239}
 --- !u!1 &3078430860585395362
@@ -263,7 +263,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3078430860585395363}
   - component: {fileID: 3078430860585395365}
-  - component: {fileID: 3078430860585395364}
+  - component: {fileID: 1384800446702933886}
   m_Layer: 5
   m_Name: PokemonName
   m_TagString: Untagged
@@ -298,7 +298,7 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3078430860585395362}
   m_CullTransparentMesh: 1
---- !u!114 &3078430860585395364
+--- !u!114 &1384800446702933886
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -307,11 +307,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 3078430860585395362}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Script: {fileID: 11500000, guid: f34f9f4c13d6d7c4fad6e8836f326cc7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
+  m_Color: {r: 0, g: 0, b: 0, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -322,9 +322,9 @@ MonoBehaviour:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
     m_FontSize: 25
     m_FontStyle: 0
-    m_BestFit: 0
-    m_MinSize: 0
-    m_MaxSize: 30
+    m_BestFit: 1
+    m_MinSize: 2
+    m_MaxSize: 40
     m_Alignment: 3
     m_AlignByGeometry: 0
     m_RichText: 1
@@ -332,6 +332,7 @@ MonoBehaviour:
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: Chammander
+  AutoTranslatedOnAwake: 1
 --- !u!1 &3078430861015061894
 GameObject:
   m_ObjectHideFlags: 0
