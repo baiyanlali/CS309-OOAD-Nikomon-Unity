@@ -182,6 +182,7 @@ namespace PokemonCore
             AddPokemon(new Pokemon(1,50));
             bag = new TrainerBag();
             bag.Add(ItemsData[(Item.Tag.PokeBalls,0)]);
+            trainer.Money = 3000;
             pc = new PC();
             // SaveData(slot);
         }
