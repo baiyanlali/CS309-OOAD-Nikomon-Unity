@@ -16,7 +16,7 @@ public class PlaySceneTest : MonoBehaviour
             Game.Instance.AddPokemon(new Pokemon(25,50));
             Game.Instance.AddPokemon(new Pokemon(20,50));
             Game.Instance.AddPokemon(new Pokemon(4,11));
-            Game.Instance.AddPokemon(new Pokemon(1, 1));
+            Game.Instance.AddPokemon(new Pokemon(1, 24));
             
             Game.trainer.RemovePokemon(0);
             Game.bag.Add((Item.Tag.Medicine,0)); // (Tag,ItemID)
