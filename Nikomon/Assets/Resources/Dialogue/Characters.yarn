@@ -95,8 +95,10 @@ title:Diana
         嘉然:中
         嘉然:毒
         <<play_anim Diana Victory>>
+        <<wait 4>>
+        <<play_anim Diana Idle>>
     ->{$player}:我现在可以当嘉然小姐的狗了吗？
-        嘉然:唉.....出去找个班上吧...
+        嘉然:唉.....出去找个班上吧...😅😅😅
 <<endif>>
 
 
@@ -119,17 +121,16 @@ title:???
     <<add_pokemon 4>>
 ===
 
-title:dooor
+title:wod
 ---
-<<if beated("dooor") is false>>
+<<if beated("wod") is false>>
 我知道你要去南科大，但是南科大不是谁想去就能去的。 #line:07769e3 
 如果想去，就打败我吧。 #line:042c063 
 ->走上前一步 #line:0b6b6b4 
-    <<start_battle dooor>>
+    <<start_battle wod>>
 ->假装在接电话，趁机走掉 #line:0b40040 
 <<else>>
 你已经获得了去南科大的资格。再见。 #line:0877f96 
-<<enter_scene nkd>>
 <<endif>>
 ===
 
@@ -137,10 +138,16 @@ title:joker
 ---
 周可儿:... #line:00532fe 
 {$player}:... #line:09d9a78 
-->你怎么不说话？ #line:053efde 
+->你怎么站在角落？ #line:053efde 
     周可儿:... #line:06e20e4 
-->... #line:017e2cb 
-    周可儿:... #line:0d239a1 
+    <<if visited("joker") is false>>
+    周可儿:你还是选另外一个选项吧...
+    <<else>>
+    周可儿:不是告诉你选另外一个了吗...
+    <<endif>>
+->小哥头发有些长啊？ #line:017e2cb 
+    周可儿:别搁这扯没用的了，快进商店吧... #line:0d239a1 
+    <<enter_store joker>>
 ===
 
 title:xuan

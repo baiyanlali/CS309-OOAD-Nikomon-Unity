@@ -4,6 +4,7 @@ using System.Runtime.CompilerServices;
 using GamePlay;
 using GamePlay.Core;
 using GamePlay.Messages;
+using GamePlay.UI.BagSystem;
 using GamePlay.UI.SaveUI;
 using GamePlay.UI.UIFramework;
 using PokemonCore;
@@ -132,6 +133,7 @@ public class GlobalManager : MonoBehaviour
         runner.AddFunction("beated",(Func<string,bool>)beated);
         runner.AddCommandHandler("start_battle",(Action<string>)startBattleFromDialogue);
         runner.AddCommandHandler("play_anim",(Action<string,string>)playAnimation);
+        runner.AddCommandHandler("enter_store",(Action<string>)enter_store);
         runner.AddCommandHandler<int,int>("add_pokemon",addPokemon);
         runner.AddCommandHandler<string>("enter_scene",enterScene);
         runner.AddCommandHandler<string>("play_music",playMusic);
@@ -141,6 +143,11 @@ public class GlobalManager : MonoBehaviour
         {
             // print("Add visited:(node)");
             return visitedNode.Contains(node);
+        }
+
+        void enter_store(string name)
+        {
+            UIManager.Instance.Show<StorePanelUI>(Game.trainer,Game.bag);
         }
         
         
