@@ -141,8 +141,13 @@ title:joker
 {$player}:... #line:09d9a78 
 ->你怎么站在角落？ #line:053efde 
     周可儿:... #line:06e20e4 
+    <<if visited("joker") is false>>
+    周可儿:你还是选另外一个选项吧...
+    <<else>>
+    周可儿:不是告诉你选另外一个了吗...
+    <<endif>>
 ->小哥头发有些长啊？ #line:017e2cb 
-    周可儿:别搁这扯了，快进商店吧... #line:0d239a1 
+    周可儿:别搁这扯没用的了，快进商店吧... #line:0d239a1 
     <<enter_store joker>>
 ===
 
