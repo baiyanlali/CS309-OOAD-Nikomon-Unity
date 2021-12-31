@@ -179,7 +179,7 @@ namespace PokemonCore
         public void CreateNewSaveFile(string name, bool isMale)
         {
             trainer = new Trainer(name, isMale);
-            // AddPokemon(new Pokemon(1,50));
+            AddPokemon(new Pokemon(1,50));
             bag = new TrainerBag();
             bag.Add(ItemsData[(Item.Tag.PokeBalls,0)]);
             pc = new PC();

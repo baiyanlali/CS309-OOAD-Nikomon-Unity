@@ -254,7 +254,6 @@ public class GlobalManager : MonoBehaviour
     {
         Config = data.Settings;
         game.LoadSaveFile(data.GameState);
-        
         SceneManager.LoadScene(data.SceneLoaded);
         location = data.PlayerPosition.ToVec3();
         SceneManager.sceneLoaded +=  OnLoadedFromSave;
