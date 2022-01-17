@@ -14,9 +14,7 @@ public class PlayerMovement : MonoBehaviour
     public Transform GazeTransform;
     public float GazeDistance;
     [SerializeField] private Animator animator;
-
-    public InputActionAsset InputActionAsset;
-
+    
     private GameObject VirtualController;
 
     private Rigidbody rigid;
@@ -51,7 +49,7 @@ public class PlayerMovement : MonoBehaviour
         }
 
 
-        if (GlobalManager.Instance.Config.UseVirtualControl) VirtualController?.SetActive(true);
+        // if (GlobalManager.Instance.Config.UseVirtualControl) VirtualController?.SetActive(true);
         this.move = nicoInput.move;
         Movement();
         if (nicoInput.menu)
