@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using GamePlay;
+using GamePlay.Character;
 using GamePlay.Core;
 using GamePlay.Messages;
 using GamePlay.UI.BagSystem;
@@ -222,7 +223,7 @@ public class GlobalManager : MonoBehaviour
     {
         var state = game.GetSave;
         Vector3 position=Vector3.zero;
-        var player = FindObjectOfType<PlayerMovement>();
+        var player = FindObjectOfType<Player>();
         if (player != null)
             position = player.transform.position;
         //TODO

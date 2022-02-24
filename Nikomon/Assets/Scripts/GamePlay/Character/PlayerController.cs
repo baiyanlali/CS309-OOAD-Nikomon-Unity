@@ -1,13 +1,14 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using GamePlay.Character;
 using GamePlay.UI.UIFramework;
 using UnityEngine;
 using UnityEngine.UI;
 
 [RequireComponent(typeof(CharacterController))]
 [RequireComponent(typeof(Animator))]
-public class PlayerController : MonoBehaviour
+public class PlayerController : Player
 {
     public NicomonInputSystem nicoInput;
     private Animator _animator;
@@ -132,5 +133,22 @@ public class PlayerController : MonoBehaviour
             _characterController = GetComponent<CharacterController>();
         }
         Gizmos.DrawLine(transform.position + Vector3.up * 0.5f,transform.position + Vector3.up * 0.5f - (Vector3.up * (0.5f+_characterController.stepOffset)));
+    }
+    
+    
+    private void OnCollisionEnter(Collision other)
+    {
+        if (GlobalManager.isBattling) return;
+        IInteractive interactive = other.gameObject.GetComponent<IInteractive>();
+        interactive?.OnInteractive(this.gameObject);
+        
+    }
+
+
+    private void OnControllerColliderHit(ControllerColliderHit hit)
+    {
+        if (GlobalManager.isBattling) return;
+        IInteractive interactive = hit.gameObject.GetComponent<IInteractive>();
+        interactive?.OnInteractive(this.gameObject);
     }
 }

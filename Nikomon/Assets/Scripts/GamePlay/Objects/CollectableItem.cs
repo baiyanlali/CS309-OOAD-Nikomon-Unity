@@ -20,6 +20,11 @@ namespace GamePlay.Objects
             Destroy(this.gameObject);
         }
 
+        private void OnTriggerEnter(Collider other)
+        {
+            
+        }
+
         public void OnInteractive(GameObject obj)
         {
             this.OnInteractive();

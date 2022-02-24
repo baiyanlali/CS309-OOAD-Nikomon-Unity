@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Cinemachine;
 using GamePlay;
+using GamePlay.Character;
 using GamePlay.UI.BattleUI;
 using GamePlay.UI.UIFramework;
 using PokemonCore;
@@ -365,16 +366,16 @@ public class BattleFieldHandler : MonoBehaviour
         {
             case BattleResults.Succeed:
             case BattleResults.Captured:
-                FindObjectOfType<PlayerMovement>().GetComponent<Animator>().Play("Victory");
+                FindObjectOfType<Player>().GetComponent<Animator>().Play("Victory");
                 break;
             case BattleResults.Failed:
-                FindObjectOfType<PlayerMovement>().GetComponent<Animator>().Play("Defeat");
+                FindObjectOfType<Player>().GetComponent<Animator>().Play("Defeat");
                 break;
         }
         
         DefaultCamera.Priority = 9;
         ConcentrateCamera.Priority = 13;
-        ConcentrateCamera.LookAt = FindObjectOfType<PlayerMovement>().HeadTrans;
+        // ConcentrateCamera.LookAt = FindObjectOfType<PlayerMovement>().HeadTrans;
         yield return new WaitForSeconds(2f);
         ConcentrateCamera.Priority = 9;
         for (int i = 0; i < allyPosition.childCount; i++)

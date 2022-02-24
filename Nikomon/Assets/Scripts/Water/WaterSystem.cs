@@ -13,7 +13,8 @@ public class WaterSystem : MonoBehaviour
     private void OnTriggerStay(Collider other)
     {
         Rigidbody rigidbody = other.gameObject.GetComponent<Rigidbody>();
-        rigidbody?.AddForce(Vector3.up * Mathf.Abs(other.transform.position.y - transform.position.y) * rigidbody.mass * 10,
+        if(rigidbody!=null)
+            rigidbody.AddForce(Vector3.up * Mathf.Abs(other.transform.position.y - transform.position.y) * rigidbody.mass * 10,
             ForceMode.Force);
     }
     

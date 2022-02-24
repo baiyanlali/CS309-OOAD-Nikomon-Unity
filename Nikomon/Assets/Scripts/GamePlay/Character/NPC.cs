@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using GamePlay.Character;
 using GamePlay.UI.UIFramework;
 using GamePlay.UI.UtilUI;
 using PokemonCore.Combat;
@@ -36,6 +37,12 @@ public class NPC : MonoBehaviour, IInteractive
     }
 
 
+    private void OnCollisionEnter(Collision other)
+    {
+        OnInteractive(other.gameObject);
+    }
+
+
     public void OnInteractive()
     {
         // DialogHandler.Instance.InitBattle(null);
@@ -44,7 +51,7 @@ public class NPC : MonoBehaviour, IInteractive
 
     public void OnInteractive(GameObject obj)
     {
-        if (obj.GetComponent<PlayerMovement>() != null)
+        if (obj.GetComponent<Player>() != null)
         {
             transform.LookAt(obj.transform,Vector3.up);
             if (!string.IsNullOrEmpty(dialogueNode))
@@ -55,9 +62,9 @@ public class NPC : MonoBehaviour, IInteractive
     public void StartBattle()
     {
         UIManager.Instance.Hide<DialogPanel>();
-        FindObjectOfType<PlayerMovement>().transform.position = transform.position + transform.forward * 8;
+        FindObjectOfType<Player>().transform.position = transform.position + transform.forward * 8;
         GameObject.Find("BattleField").transform.position = transform.position + transform.forward * 4f;
-        GameObject.FindGameObjectWithTag("BattleField").transform.rotation = FindObjectOfType<PlayerMovement>().transform.rotation;
+        GameObject.FindGameObjectWithTag("BattleField").transform.rotation = FindObjectOfType<Player>().transform.rotation;
         GlobalManager.Instance.StartBattle(this);
     }
 }

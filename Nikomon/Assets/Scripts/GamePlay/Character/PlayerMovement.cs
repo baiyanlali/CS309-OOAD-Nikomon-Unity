@@ -1,10 +1,11 @@
 
+using GamePlay.Character;
 using GamePlay.UI.UIFramework;
 using UnityEngine;
 using UnityEngine.Animations.Rigging;
 using UnityEngine.InputSystem;
 
-public class PlayerMovement : MonoBehaviour
+public class PlayerMovement : Player
 {
     public NicomonInputSystem nicoInput;
     public float InteractDepth = 5f;
@@ -165,11 +166,7 @@ public class PlayerMovement : MonoBehaviour
         if (GlobalManager.isBattling) return;
         IInteractive interactive = other.gameObject.GetComponent<IInteractive>();
         interactive?.OnInteractive(this.gameObject);
-
-        // if (other.gameObject.CompareTag("Ground"))
-        // {
-        //     animator.SetBool("IsGround",true);
-        // }
+        
     }
 
     private void OnCollisionExit(Collision other)

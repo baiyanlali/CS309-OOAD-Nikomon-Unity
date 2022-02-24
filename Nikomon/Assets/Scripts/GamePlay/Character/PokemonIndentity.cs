@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using GamePlay.Character;
 using GamePlay.Utilities;
 using PokemonCore.Attack.Data;
 using PokemonCore.Combat;
@@ -32,6 +33,12 @@ public class PokemonIndentity : MonoBehaviour, IInteractive
         // isBattling = false;
     }
 
+
+    private void OnCollisionEnter(Collision other)
+    {
+        if(other.gameObject.GetComponent<Player>()!=null)
+            OnInteractive(other.gameObject);
+    }
 
     public void OnInteractive()
     {
