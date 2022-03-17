@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.Remoting.Contexts;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class NicomonInputSystem : MonoBehaviour
 {
@@ -11,6 +12,7 @@ public class NicomonInputSystem : MonoBehaviour
 
     private NicomonInput nicomonInput;
 
+    // public InputActionMap ;
     public NicomonInput NicomonInput => nicomonInput;
 
     public Vector2 move { get; private set; }

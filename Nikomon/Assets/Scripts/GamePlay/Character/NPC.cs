@@ -41,8 +41,8 @@ public class NPC : MonoBehaviour, IInteractive
     {
         OnInteractive(other.gameObject);
     }
-
-
+    
+    
     public void OnInteractive()
     {
         // DialogHandler.Instance.InitBattle(null);
@@ -51,11 +51,14 @@ public class NPC : MonoBehaviour, IInteractive
 
     public void OnInteractive(GameObject obj)
     {
+        var runner = FindObjectOfType<DialogueRunner>();
+
         if (obj.GetComponent<Player>() != null)
         {
-            transform.LookAt(obj.transform,Vector3.up);
+            // transform.LookAt(obj.transform,Vector3.up);
             if (!string.IsNullOrEmpty(dialogueNode))
-                FindObjectOfType<DialogueRunner>().StartDialogue(dialogueNode);
+                if(runner.CurrentNodeName != dialogueNode)
+                    runner.StartDialogue(dialogueNode);
         }
     }
 
@@ -67,4 +70,10 @@ public class NPC : MonoBehaviour, IInteractive
         GameObject.FindGameObjectWithTag("BattleField").transform.rotation = FindObjectOfType<Player>().transform.rotation;
         GlobalManager.Instance.StartBattle(this);
     }
+    
+    
+    // protected void LateUpdate()
+    // {
+    //     transform.localEulerAngles = new Vector3(0, 0, transform.localEulerAngles.z);
+    // }
 }

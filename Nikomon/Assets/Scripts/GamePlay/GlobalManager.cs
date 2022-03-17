@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using Cinemachine;
 using GamePlay;
 using GamePlay.Character;
 using GamePlay.Core;
@@ -63,9 +64,17 @@ public class GlobalManager : MonoBehaviour
         }
         set
         {
-            if(value)NicomonInputSystem.Instance.NicomonInput.Player.Enable();
+            if(value)
+            {
+                
+                NicomonInputSystem.Instance.NicomonInput.Player.Enable();
+                CinemachineProvider.InputEnabled = true;
+            }
             else
+            {
                 NicomonInputSystem.Instance.NicomonInput.Player.Disable();
+                CinemachineProvider.InputEnabled = false;
+            }
         }
     }
     
