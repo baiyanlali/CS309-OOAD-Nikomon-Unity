@@ -60,6 +60,8 @@ public class DialogueView : DialogueViewBase
 
     public override void DialogueComplete()
     {
+        UIManager.Instance.Hide<DialogPanel>();
+        UIManager.Instance.Hide<DialogueChooserPanel>();
         GlobalManager.Instance.CanPlayerControlled = true;
     }
 }
