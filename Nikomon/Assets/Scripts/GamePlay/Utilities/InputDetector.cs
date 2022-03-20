@@ -13,8 +13,6 @@ public class InputDetector : MonoBehaviour
         if (Application.isMobilePlatform)
         {
             UIManager.Instance.Show<VirtualControllerPanel>();
-            Button btn;
-            // btn.navigation
         }
     }
 

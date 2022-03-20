@@ -31,10 +31,10 @@ namespace GamePlay.UI.MainMenuUI
         public override void Init(params object[] args)
         {
             base.Init();
-            if (SaveSlots.Count == 0)
-            {
-                SaveSlots.AddRange(gameObject.GetComponentsInChildren<SaveSlotUI>());
-            }
+            // if (SaveSlots.Count == 0)
+            // {
+            //     SaveSlots.AddRange(gameObject.GetComponentsInChildren<SaveSlotUI>());
+            // }
 
             for (int i = 0; i < SaveSlots.Count; i++)
             {
