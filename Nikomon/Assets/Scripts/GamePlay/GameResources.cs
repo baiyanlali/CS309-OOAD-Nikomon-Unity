@@ -96,6 +96,7 @@ namespace GamePlay
             //Connect
             [typeof(ConnectPanel)]="Prefabs/UI/ConnectUI/ConnectUI",
             
+            [typeof(VirtualControllerPanel)] = "Prefabs/UI/VirtualControllerPanel"
             
         };
     }
