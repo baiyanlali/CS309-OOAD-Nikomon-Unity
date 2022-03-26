@@ -21,7 +21,8 @@ public class SaveContentUI : TabContent
             SaveSlots[i].GetComponent<Button>().onClick.AddListener(() =>
             {
                 if(SaveSlots[index].HasFile==true)
-                    GlobalManager.Instance.InitGameWithDataIndex(index);
+                    // GlobalManager.Instance.InitGameWithDataIndex(index);
+                    GlobalManager.Instance.InitGameWithData(datas[index]);
             });
         }
     }

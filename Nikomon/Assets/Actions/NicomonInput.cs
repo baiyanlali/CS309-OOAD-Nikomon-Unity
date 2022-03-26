@@ -312,17 +312,6 @@ public class @NicomonInput : IInputActionCollection, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""cae6764b-6bf8-4e73-8b88-a83afc9b0a10"",
-                    ""path"": ""<Touchscreen>/delta"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Touch"",
-                    ""action"": ""Look"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
                     ""id"": ""0a436d29-6e90-411e-98c8-49564a0a3494"",
                     ""path"": ""<Keyboard>/escape"",
                     ""interactions"": """",

@@ -12,10 +12,12 @@ public class LoadSceneManager : MonoBehaviour
     public static string nextSceneName = "";
     public SpriteRenderer sr;
     public Image image;
+    public static Action onComplete;
         
         
     private void Start()
     {
+        DontDestroyOnLoad(this.gameObject);
         // print(nextSceneID);
         if (nextSceneID != -1)
         {
@@ -43,6 +45,11 @@ public class LoadSceneManager : MonoBehaviour
             
             yield return null;
         }
+
+        yield return null;
+        onComplete?.Invoke();
+        onComplete = null;
+        DestroyImmediate(this.gameObject);
     }
     IEnumerator LoadLeaver(string name)
     {
@@ -55,5 +62,11 @@ public class LoadSceneManager : MonoBehaviour
             
             yield return null;
         }
+        
+        yield return null;
+        onComplete?.Invoke();
+        onComplete = null;
+        
+        DestroyImmediate(this.gameObject);
     }
 }

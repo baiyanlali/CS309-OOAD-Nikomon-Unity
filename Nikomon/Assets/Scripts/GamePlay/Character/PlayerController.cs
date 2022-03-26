@@ -58,12 +58,18 @@ public class PlayerController : Player
         }
     }
 
+    public void Teleport(Vector3 position)
+    {
+        this._characterController.enabled = false;
+        transform.position = position;
+        this._characterController.enabled = true;
+    }
+
     private void Movement()
     {
         Vector2 move = nicoInput.move;
         if (move != Vector2.zero)
         {
-            
             float cameraForward =
                 Camera.main.transform.rotation.eulerAngles.y;
             float theta = 0;
@@ -80,10 +86,7 @@ public class PlayerController : Player
 
             if (math.abs(transform.rotation.eulerAngles.y - (cameraForward + theta)) > 1f)
             {
-                LeanTween.value(this.gameObject, (Vector3 o) =>
-                    {
-                        transform.rotation = Quaternion.Euler(o);
-                    }, 
+                LeanTween.value(this.gameObject, (Vector3 o) => { transform.rotation = Quaternion.Euler(o); },
                     transform.rotation.eulerAngles,
                     Quaternion.Euler(0, cameraForward + theta, 0).eulerAngles,
                     0.1f
@@ -93,10 +96,10 @@ public class PlayerController : Player
             {
                 transform.rotation = Quaternion.Euler(0, cameraForward + theta, 0);
             }
-            
+
             // 
             // rigid.angularVelocity = Vector3.zero;
-            
+
             _animator.SetBool("IsWalking", true);
         }
         else
@@ -125,8 +128,9 @@ public class PlayerController : Player
         else
         {
             //避免出现下很大的台阶时判断为跳跃的情况
-            Ray ray = new Ray(transform.position + Vector3.up * 0.5f,-Vector3.up);
-            if (Physics.Raycast(ray, out var hit, 0.5f+_characterController.stepOffset, Physics.AllLayers, QueryTriggerInteraction.Ignore))
+            Ray ray = new Ray(transform.position + Vector3.up * 0.5f, -Vector3.up);
+            if (Physics.Raycast(ray, out var hit, 0.5f + _characterController.stepOffset, Physics.AllLayers,
+                QueryTriggerInteraction.Ignore))
             {
                 _isGround = true;
                 movement = Vector3.ProjectOnPlane(_animator.deltaPosition, hit.normal);
@@ -139,7 +143,7 @@ public class PlayerController : Player
 
 
         _animator.SetBool("IsGround", _isGround);
-        
+
         _isGround = _characterController.isGrounded;
     }
 
@@ -150,16 +154,17 @@ public class PlayerController : Player
         {
             _characterController = GetComponent<CharacterController>();
         }
-        Gizmos.DrawLine(transform.position + Vector3.up * 0.5f,transform.position + Vector3.up * 0.5f - (Vector3.up * (0.5f+_characterController.stepOffset)));
+
+        Gizmos.DrawLine(transform.position + Vector3.up * 0.5f,
+            transform.position + Vector3.up * 0.5f - (Vector3.up * (0.5f + _characterController.stepOffset)));
     }
-    
-    
+
+
     private void OnCollisionEnter(Collision other)
     {
         if (GlobalManager.isBattling) return;
         IInteractive interactive = other.gameObject.GetComponent<IInteractive>();
         interactive?.OnInteractive(this.gameObject);
-        
     }
 
 

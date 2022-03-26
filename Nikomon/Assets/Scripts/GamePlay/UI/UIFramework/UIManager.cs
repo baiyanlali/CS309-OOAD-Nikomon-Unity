@@ -182,6 +182,9 @@ namespace GamePlay.UI.UIFramework
                 _topUI.Remove(tmp);
                 tmp.OnExit();
             }
+            
+            if(_normalStack.Count==0 && _popStack.Count == 0 && _topUI.Count==0 && _mainUI.Count==0 && Application.isMobilePlatform)
+                Instance.Show<VirtualControllerPanel>();
         }
         
         public void PopAllUI(UILayer layer)
@@ -201,6 +204,8 @@ namespace GamePlay.UI.UIFramework
                     mainUI.OnExit();
                 }
                 _mainUI.Clear();
+                if(Application.isMobilePlatform)
+                    Instance.Show<VirtualControllerPanel>();
             }else if (layer == UILayer.Top)
             {
                 foreach (var topUI in _topUI)

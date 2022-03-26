@@ -24,11 +24,11 @@ public class SaveSlotUI : MonoBehaviour
 
     public void Init()
     {
-        this.GET(ref Title, nameof(Title));
-        this.GET(ref LastTimeSaved, nameof(LastTimeSaved));
-        this.GET(ref Name, nameof(Name));
-        this.GET(ref Money, nameof(Money));
-        this.GET(ref PokemonParty, nameof(PokemonParty));
+        // this.GET(ref Title, nameof(Title));
+        // this.GET(ref LastTimeSaved, nameof(LastTimeSaved));
+        // this.GET(ref Name, nameof(Name));
+        // this.GET(ref Money, nameof(Money));
+        // this.GET(ref PokemonParty, nameof(PokemonParty));
         // Title = this.GET(Title,nameof(Title),GET_TYPE.Component);
         // LastTimeSaved = GET(LastTimeSaved,nameof(LastTimeSaved),GET_TYPE.Component);
         // Name = GET(Name,nameof(Name),GET_TYPE.Component);

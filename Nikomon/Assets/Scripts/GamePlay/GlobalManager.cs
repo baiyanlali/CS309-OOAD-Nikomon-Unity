@@ -232,7 +232,7 @@ public class GlobalManager : MonoBehaviour
     {
         var state = game.GetSave;
         Vector3 position=Vector3.zero;
-        var player = FindObjectOfType<Player>();
+        var player = FindObjectOfType<PlayerController>();
         if (player != null)
             position = player.transform.position;
         //TODO
@@ -261,19 +261,29 @@ public class GlobalManager : MonoBehaviour
     /// 这里只是完成Game的数据初始化
     /// </summary>
     /// <param name="index"></param>
-    public void InitGameWithDataIndex(int index)
-    {
-        var data = LoadSaveData(index);
-        InitGameWithData(data);
-    }
+    // public void InitGameWithDataIndex(int index)
+    // {
+    //     var data = LoadSaveData(index);
+    //     InitGameWithData(data);
+    // }
 
     public void InitGameWithData(SaveData data)
     {
         Config = data.Settings;
         game.LoadSaveFile(data.GameState);
-        SceneManager.LoadScene(data.SceneLoaded);
+        // SceneManager.LoadScene(data.SceneLoaded);
         location = data.PlayerPosition.ToVec3();
-        SceneManager.sceneLoaded +=  OnLoadedFromSave;
+        // SceneManager.sceneLoaded +=  OnLoadedFromSave;
+        SceneTransmitor.LoadSceneID(data.SceneLoaded, () =>
+        {
+            GetComponent<InMemoryVariableStorage>().SetValue("$player",Game.trainer.name);
+            
+            FindObjectOfType<PlayerController>().Teleport(location);
+            // FindObjectOfType<PlayerController>().transform.position = location;
+            print("Scene load complete!");
+            // GameObject.FindWithTag("Player").transform.position = location;
+            // SceneManager.sceneLoaded -=  OnLoadedFromSave;
+        });
     }
 
     private Vector3 location;
