@@ -53,7 +53,7 @@ namespace GamePlay.UI.BagSystem
                             _Scrollbar.GetComponent<Scrollbar>().value -= 0.1f;
                         if (_Scrollbar.GetComponent<Scrollbar>().value > 0.86)
                             _Scrollbar.GetComponent<Scrollbar>().value += 0.03f;
-                        print(_Scrollbar.GetComponent<Scrollbar>().value);
+                        // print(_Scrollbar.GetComponent<Scrollbar>().value);
                         Vector3 v = new Vector3();
                         v.x = 1.1f;
                         v.y = 1.1f;

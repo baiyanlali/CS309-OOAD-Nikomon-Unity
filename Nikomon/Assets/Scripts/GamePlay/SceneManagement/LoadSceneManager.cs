@@ -28,9 +28,11 @@ public class LoadSceneManager : MonoBehaviour
             StartCoroutine(LoadLeaver(nextSceneName));
         }
     }
-    void Update () {
-        image.sprite = sr.sprite;
-    }
+    // void Update () {
+    //     image.sprite = sr.sprite;
+    // }
+    
+    
     IEnumerator LoadLeaver(int index)
     {
         yield return new WaitForSeconds(0.7f);
@@ -42,6 +44,7 @@ public class LoadSceneManager : MonoBehaviour
         while (!operation.isDone)
         {
             text.text = String.Format("{0:N1} ", operation.progress * 111.111111) + "%";
+            // text.text = String.Format("{0:C1} ", operation.progress * 111.111111) + "%";
             
             yield return null;
         }
@@ -53,12 +56,17 @@ public class LoadSceneManager : MonoBehaviour
     }
     IEnumerator LoadLeaver(string name)
     {
+        yield return new WaitForSeconds(0.7f);
+        text.text = String.Format("{0:N1} ", 0.5 * 111.111111) + "%";
+        yield return new WaitForSeconds(0.7f);
+        text.text = String.Format("{0:N1} ", 0.7 * 111.111111) + "%";
         //yield return new WaitForSeconds(100);
         AsyncOperation operation = SceneManager.LoadSceneAsync(name);                                                                                               
         //operation.allowSceneActivation = false;
         while (!operation.isDone)
         {
             text.text = String.Format("{0:N1} ", operation.progress * 111.111111) + "%";
+            // text.text = String.Format("{0:C1} ", operation.progress * 111.111111) + "%";
             
             yield return null;
         }
