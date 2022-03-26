@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using GamePlay.Character;
 using GamePlay.UI.UIFramework;
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -76,7 +77,24 @@ public class PlayerController : Player
             }
 
             theta = Mathf.Rad2Deg * theta;
-            transform.rotation = Quaternion.Euler(0, cameraForward + theta, 0);
+
+            if (math.abs(transform.rotation.eulerAngles.y - (cameraForward + theta)) > 1f)
+            {
+                LeanTween.value(this.gameObject, (Vector3 o) =>
+                    {
+                        transform.rotation = Quaternion.Euler(o);
+                    }, 
+                    transform.rotation.eulerAngles,
+                    Quaternion.Euler(0, cameraForward + theta, 0).eulerAngles,
+                    0.1f
+                );
+            }
+            else
+            {
+                transform.rotation = Quaternion.Euler(0, cameraForward + theta, 0);
+            }
+            
+            // 
             // rigid.angularVelocity = Vector3.zero;
             
             _animator.SetBool("IsWalking", true);
