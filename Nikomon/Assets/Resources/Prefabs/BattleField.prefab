@@ -183,8 +183,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1955514479}
-  m_LocalRotation: {x: 0.070993066, y: -0.3143569, z: 0.023582285, w: 0.94635284}
-  m_LocalPosition: {x: 1.1499996, y: 0.59, z: -2.540001}
+  m_LocalRotation: {x: 0.07099314, y: -0.3143569, z: 0.023582306, w: 0.9463528}
+  m_LocalPosition: {x: 1.1499939, y: 0.59000015, z: -2.5399933}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1789694834}
@@ -258,6 +258,36 @@ Transform:
   - {fileID: 1750395635}
   m_Father: {fileID: 9216753853322018224}
   m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &3246073231136853150
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 282984330746328148}
+  m_Layer: 0
+  m_Name: PokeTrainer
+  m_TagString: Untagged
+  m_Icon: {fileID: 2974397684917235467, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &282984330746328148
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3246073231136853150}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: -3.56}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 9216753853322018224}
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8450681243639261102
 GameObject:
@@ -414,6 +444,7 @@ Transform:
   - {fileID: 9216753855000155647}
   - {fileID: 9216753854712903745}
   - {fileID: 5037486759609194660}
+  - {fileID: 282984330746328148}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -429,6 +460,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aff5fd6ee24eee04daf0302266be62a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Director: {fileID: 0}
   TargetGroup: {fileID: 1750395634}
   DefaultCamera: {fileID: 1955514480}
   ConcentrateCamera: {fileID: 8340122997592842247}
@@ -453,6 +485,16 @@ PlayableDirector:
   - key: {fileID: -4736914938912386371, guid: b1fbc77e41a20ef4aa9d3a82246411e4, type: 2}
     value: {fileID: 0}
   - key: {fileID: -54501282537850283, guid: b1fbc77e41a20ef4aa9d3a82246411e4, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: 2992598495147632504, guid: b1fbc77e41a20ef4aa9d3a82246411e4, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: 1261540206093246043, guid: b1fbc77e41a20ef4aa9d3a82246411e4, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: 1795529026980785750, guid: b1fbc77e41a20ef4aa9d3a82246411e4, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: -6215738789995796422, guid: b1fbc77e41a20ef4aa9d3a82246411e4, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: -2990483360297333588, guid: b1fbc77e41a20ef4aa9d3a82246411e4, type: 2}
     value: {fileID: 0}
   m_ExposedReferences:
     m_References: []

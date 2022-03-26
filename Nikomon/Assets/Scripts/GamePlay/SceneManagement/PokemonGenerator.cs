@@ -15,12 +15,12 @@ public class PokemonGenerator : MonoBehaviour
 
     public int maxPokemonNum;
 
-    private List<PokemonIndentity> pokemonIndentities;
+    private List<PokemonIdentity> pokemonIndentities;
     void Start()
     {
         Pokemons = Game.PokemonsData.Keys.ToArray();
         
-        pokemonIndentities = new List<PokemonIndentity>();
+        pokemonIndentities = new List<PokemonIdentity>();
         for (int i = 0; i < Pokemons.Length; i++)
         {
             Pokemon pokemon = new Pokemon(Pokemons[i], Random.Range(minLevel, maxLevel + 1));
@@ -36,7 +36,7 @@ public class PokemonGenerator : MonoBehaviour
 
             if (poke != null)
             {
-                var identity = poke.gameObject.AddComponent<PokemonIndentity>();
+                var identity = poke.gameObject.AddComponent<PokemonIdentity>();
                 identity.pokemon = pokemon;
                 pokemonIndentities.Add(identity);
             }

@@ -73,7 +73,7 @@ public class PlayerMovement : Player
         {
             foreach (var collider1 in colliders)
             {
-                if (collider1.GetComponent<PokemonIndentity>() != null)
+                if (collider1.GetComponent<PokemonIdentity>() != null)
                 {
                     GazeRig.weight = Mathf.Lerp(GazeRig.weight, 1f, 0.5f);
                     var capsuleCollider = (collider1 as CapsuleCollider); //get the height of pokemon

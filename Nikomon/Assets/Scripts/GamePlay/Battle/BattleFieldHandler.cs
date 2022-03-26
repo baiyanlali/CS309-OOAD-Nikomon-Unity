@@ -59,8 +59,11 @@ public class BattleFieldHandler : MonoBehaviour
 
     public Action<Damage> OnHitAnim; 
     public Action<Damage> OnHittedAnim;
-    public Action<PokemonIndentity> OnPokemonFaintAnim;
-    public Action<PokemonIndentity,PokemonIndentity> OnReplacePokemonAnim;
+    public Action<PokemonIdentity> OnPokemonFaintAnim;
+    public Action<PokemonIdentity,PokemonIdentity> OnReplacePokemonAnim;
+
+    [Header("Pokemon Battle Timeline Asset")]
+    public TimelineAsset StartBattleTimeline;
     public static BattleFieldHandler Instance
     {
         get
@@ -88,52 +91,31 @@ public class BattleFieldHandler : MonoBehaviour
         sInstance = battle.GetComponent<BattleFieldHandler>();
     }
 
-    private Dictionary<int, PokemonIndentity> dics;
+    private Dictionary<int, PokemonIdentity> dics;
 
-    public Dictionary<int, PokemonIndentity> FieldPokemonIndentities
+    public Dictionary<int, PokemonIdentity> FieldPokemonIdentities
     {
         get => dics;
     }
 
+    private List<CombatPokemon> allies, oppos;
     public void Init(List<CombatPokemon> allies, List<CombatPokemon> oppos)
     {
         Director = GetComponent<PlayableDirector>();
         TimeSequences = new Queue<TimeSequence>();
 
-        dics = new Dictionary<int, PokemonIndentity>();
+        dics = new Dictionary<int, PokemonIdentity>();
         DefaultCamera.Priority = 12;
-        for (int i = 0; i < allies.Count; i++)
-        {
-            var allyID = allies[i].pokemon.ID;
-            
-            // TimeSequences.Enqueue(new TimeSequence(allies[i],TimeSequence.SequenceTag.EnterScene,null));
 
-            float offset = CalculatePointPosition(allies.Count, i + 1, padding);
-            GameObject obj = null;
-            if (GameResources.Pokemons[allyID].Length == 1)
-            {
-                obj = Instantiate(GameResources.Pokemons[allyID][0], allyPosition);
-            }
-            else if (GameResources.Pokemons[allyID].Length == 2)
-            {
-                if (allies[i].pokemon.isMale)
-                {
-                    obj = Instantiate(GameResources.Pokemons[allyID][0], allyPosition);
-                }
-                else
-                {
-                    obj = Instantiate(GameResources.Pokemons[allyID][1], allyPosition);
-                }
-            }
+        this.allies = allies;
+        this.oppos = oppos;
 
-            PokemonIndentity indentity = obj.AddComponent<PokemonIndentity>();
-            indentity.InitBattle(false);
-            dics.Add(allies[i].CombatID, indentity);
-            // Destroy(obj.GetComponent<Rigidbody>());
-            obj.transform.localPosition = Vector3.right * offset;
-            TargetGroup.AddMember(obj.transform, 1, 5);
-        }
+        Director.playableAsset = StartBattleTimeline;
+        Director.Play();
 
+        UIManager.Instance.Hide<BattleStatusPanel>();
+        
+        
         for (int i = 0; i < oppos.Count; i++)
         {
             var oppoID = oppos[i].pokemon.ID;
@@ -157,14 +139,13 @@ public class BattleFieldHandler : MonoBehaviour
                 }
             }
 
-            var identity = obj.AddComponent<PokemonIndentity>();
+            var identity = obj.AddComponent<PokemonIdentity>();
             identity.InitBattle(true);
             dics.Add(oppos[i].CombatID, identity);
             // Destroy(obj.GetComponent<Rigidbody>());
             obj.transform.localPosition = Vector3.right * offset;
             TargetGroup.AddMember(obj.transform, 1, 5);
             
-            Director.Play();
         }
     }
 
@@ -273,6 +254,41 @@ public class BattleFieldHandler : MonoBehaviour
     public void OnReleasePokemonEnd()
     {
         UIManager.Instance.Show<BattleStatusPanel>(BattleHandler.Instance);
+        
+        
+        for (int i = 0; i < allies.Count; i++)
+        {
+            var allyID = allies[i].pokemon.ID;
+            
+            // TimeSequences.Enqueue(new TimeSequence(allies[i],TimeSequence.SequenceTag.EnterScene,null));
+
+            float offset = CalculatePointPosition(allies.Count, i + 1, padding);
+            GameObject obj = null;
+            if (GameResources.Pokemons[allyID].Length == 1)
+            {
+                obj = Instantiate(GameResources.Pokemons[allyID][0], allyPosition);
+            }
+            else if (GameResources.Pokemons[allyID].Length == 2)
+            {
+                if (allies[i].pokemon.isMale)
+                {
+                    obj = Instantiate(GameResources.Pokemons[allyID][0], allyPosition);
+                }
+                else
+                {
+                    obj = Instantiate(GameResources.Pokemons[allyID][1], allyPosition);
+                }
+            }
+
+            PokemonIdentity identity = obj.AddComponent<PokemonIdentity>();
+            identity.InitBattle(false);
+            dics.Add(allies[i].CombatID, identity);
+            // Destroy(obj.GetComponent<Rigidbody>());
+            obj.transform.localPosition = Vector3.right * offset;
+            TargetGroup.AddMember(obj.transform, 1, 5);
+        }
+
+        
     }
     
     public void OnAnimEnd(string endAnim)
@@ -337,13 +353,13 @@ public class BattleFieldHandler : MonoBehaviour
             LeanTween.scale(obj, scaleOrigin , 1.5f).setOnComplete(() =>
             {
                 dics.Remove(p1.CombatID);
-                PokemonIndentity indentity = obj.AddComponent<PokemonIndentity>();
+                PokemonIdentity identity = obj.AddComponent<PokemonIdentity>();
                 // Destroy(obj.GetComponent<Rigidbody>());
                 // obj.GetComponent<Rigidbody>().detectCollisions = false;
                 // obj.GetComponent<Rigidbody>().useGravity=false;
                 // obj.GetComponent<Rigidbody>().isKinematic = true;
-                indentity.InitBattle(false);
-                dics.Add(p2.CombatID, indentity);
+                identity.InitBattle(false);
+                dics.Add(p2.CombatID, identity);
                 UIManager.Instance.Refresh<BattleStatusPanel>();
                 Destroy(trans.gameObject);
                 ConcentrateCamera.Priority = 9;

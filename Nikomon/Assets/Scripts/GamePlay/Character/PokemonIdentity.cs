@@ -9,7 +9,7 @@ using PokemonCore.Combat;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-public class PokemonIndentity : MonoBehaviour, IInteractive
+public class PokemonIdentity : MonoBehaviour, IInteractive
 {
     enum AnimMode
     {
@@ -170,6 +170,9 @@ public class PokemonIndentity : MonoBehaviour, IInteractive
         // rigid.freezeRotation = true;
         anim.SetBool(IsAppear, false);
         anim.SetTrigger(StartBattle);
+        
+        Destroy(GetComponent<Rigidbody>());
+        Destroy(GetComponent<Collider>());
     }
 
     public void EndBattle()

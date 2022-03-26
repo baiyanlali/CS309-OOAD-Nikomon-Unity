@@ -84,7 +84,7 @@ namespace GamePlay
             //Pokedex
             [typeof(PokedexPanel)]="Prefabs/UI/Pokemondex/Pokedex",
             [typeof(PokemondexElement)]="Prefabs/UI/Pokemondex/Pokemondex",
-            //Movelearing
+            //Move learning
             [typeof(MovelearningUI)]="Prefabs/UI/MoveLearning/MoveLearnPanel",
             //Setting
             [typeof(SettingUI)]="Prefabs/UI/SettingUI/SettingPanel",

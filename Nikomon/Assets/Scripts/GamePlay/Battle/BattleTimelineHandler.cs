@@ -35,12 +35,12 @@ public class BattleTimelineHandler : MonoBehaviour
 
     public void Sponsor()
     {
-        _fieldHandler.FieldPokemonIndentities[dmg.sponsor.CombatID].DoMove(dmg.combatMove,null);
+        _fieldHandler.FieldPokemonIdentities[dmg.sponsor.CombatID].DoMove(dmg.combatMove,null);
     }
 
     public void Target()
     {
-        _fieldHandler.FieldPokemonIndentities[dmg.target.CombatID].BeHit(null);
+        _fieldHandler.FieldPokemonIdentities[dmg.target.CombatID].BeHit(null);
     }
     
 }

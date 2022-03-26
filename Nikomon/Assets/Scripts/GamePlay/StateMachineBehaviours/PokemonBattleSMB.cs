@@ -7,26 +7,26 @@ namespace GamePlay.StateMachineBehaviours
 {
     public class PokemonBattleSMB : StateMachineBehaviour
     {
-        public PokemonIndentity pokemonIndentity;
+        public PokemonIdentity pokemonIdentity;
         public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo,
             int layerIndex)
         {
-            pokemonIndentity=pokemonIndentity? pokemonIndentity: animator.gameObject.GetComponentInParent<PokemonIndentity>();
+            pokemonIdentity=pokemonIdentity? pokemonIdentity: animator.gameObject.GetComponentInParent<PokemonIdentity>();
             // Debug.Log($">>>>>{pokemonIndentity.name}  enter:{name} {animator.GetAnimateName(stateInfo)}");
             
-            if(pokemonIndentity!=null)
-                pokemonIndentity.OnAnimStart();
+            if(pokemonIdentity!=null)
+                pokemonIdentity.OnAnimStart();
         }
 
         public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo,
             int layerIndex)
         {
-            pokemonIndentity=pokemonIndentity? pokemonIndentity: animator.gameObject.GetComponentInParent<PokemonIndentity>();
+            pokemonIdentity=pokemonIdentity? pokemonIdentity: animator.gameObject.GetComponentInParent<PokemonIdentity>();
             // Debug.Log($"<<<<<{pokemonIndentity.name} exit:{name} {animator.GetAnimateName(stateInfo)}");
-            if (pokemonIndentity != null)
+            if (pokemonIdentity != null)
             {
                 
-                pokemonIndentity.OnAnimEnd(stateInfo.shortNameHash);
+                pokemonIdentity.OnAnimEnd(stateInfo.shortNameHash);
             }
         }
 
