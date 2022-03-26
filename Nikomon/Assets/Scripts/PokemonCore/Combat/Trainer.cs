@@ -22,7 +22,7 @@ namespace PokemonCore.Combat
 
         private int money;
 
-        [JsonIgnore]
+        // [JsonIgnore]
         public int Money
         {
             get
