@@ -39,7 +39,7 @@ public class NPC : MonoBehaviour, IInteractive
 
     private void OnCollisionEnter(Collision other)
     {
-        OnInteractive(other.gameObject);
+        // OnInteractive(other.gameObject);
     }
     
     
@@ -53,21 +53,40 @@ public class NPC : MonoBehaviour, IInteractive
     {
         var runner = FindObjectOfType<DialogueRunner>();
 
-        if (obj.GetComponent<Player>() != null)
+        if (obj.GetComponent<PlayerController>() != null)
         {
-            // transform.LookAt(obj.transform,Vector3.up);
+            transform.LookAt(obj.transform,Vector3.up);
+            obj.transform.LookAt(this.transform, Vector3.up);
             if (!string.IsNullOrEmpty(dialogueNode))
-                if(runner.CurrentNodeName != dialogueNode)
+                if (runner.CurrentNodeName != dialogueNode)
+                {
+                    // transform.rotation.SetLookRotation(obj.transform.position,Vector3.up);
+                    // obj.transform.rotation.SetLookRotation(transform.position,Vector3.up);
+                    FindObjectOfType<CameraDirector>().SetTargetCinemachine(this.gameObject,obj);
+                    UIManager.Instance.PopAllUI(UILayer.MainUI);
                     runner.StartDialogue(dialogueNode);
+                    runner.onDialogueComplete.AddListener(() =>
+                    {
+                        FindObjectOfType<CameraDirector>().ResetTargetCinemachine();
+                    });
+                }
         }
     }
 
     public void StartBattle()
     {
-        UIManager.Instance.Hide<DialogPanel>();
-        FindObjectOfType<Player>().transform.position = transform.position + transform.forward * 8;
-        GameObject.Find("BattleField").transform.position = transform.position + transform.forward * 4f;
-        GameObject.FindGameObjectWithTag("BattleField").transform.rotation = FindObjectOfType<Player>().transform.rotation;
+        // UIManager.Instance.Hide<DialogPanel>();
+        UIManager.Instance.PopAllUI(UILayer.MainUI);
+        var transform1 = transform;
+        var player = FindObjectOfType<PlayerController>();
+        player.Teleport(transform1.position + transform1.forward * 8);
+        player.FaceTo(this.transform.position,Vector3.up);
+        // FindObjectOfType<PlayerController>().transform.position = transform.position + transform.forward * 8;
+        var battleField = FindObjectOfType<BattleFieldHandler>();
+        battleField.transform.position = transform1.position + transform1.forward * 4f;
+        battleField.transform.rotation = FindObjectOfType<PlayerController>().transform.rotation;
+        // GameObject.Find("BattleField").transform.position = transform.position + transform.forward * 4f;
+        // GameObject.FindGameObjectWithTag("BattleField").transform.rotation = FindObjectOfType<PlayerController>().transform.rotation;
         GlobalManager.Instance.StartBattle(this);
     }
     

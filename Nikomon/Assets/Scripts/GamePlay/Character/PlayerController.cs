@@ -9,7 +9,7 @@ using UnityEngine.UI;
 
 [RequireComponent(typeof(CharacterController))]
 [RequireComponent(typeof(Animator))]
-public class PlayerController : Player
+public class PlayerController : MonoBehaviour
 {
     public NicomonInputSystem nicoInput;
     private Animator _animator;
@@ -62,6 +62,20 @@ public class PlayerController : Player
     {
         this._characterController.enabled = false;
         transform.position = position;
+        this._characterController.enabled = true;
+    }
+
+    public void FaceTo(Vector3 position, Vector3 axis)
+    {
+        this._characterController.enabled = false;
+        transform.LookAt(position,axis);
+        this._characterController.enabled = true;
+    }
+
+    public void SetRotation(Quaternion rotation)
+    {
+        this._characterController.enabled = false;
+        transform.rotation = rotation;
         this._characterController.enabled = true;
     }
 
@@ -148,30 +162,30 @@ public class PlayerController : Player
     }
 
 
-    private void OnDrawGizmos()
-    {
-        if (_characterController == null)
-        {
-            _characterController = GetComponent<CharacterController>();
-        }
-
-        Gizmos.DrawLine(transform.position + Vector3.up * 0.5f,
-            transform.position + Vector3.up * 0.5f - (Vector3.up * (0.5f + _characterController.stepOffset)));
-    }
+    // private void OnDrawGizmos()
+    // {
+    //     // if (_characterController == null)
+    //     // {
+    //     //     _characterController = GetComponent<CharacterController>();
+    //     // }
+    //     //
+    //     // Gizmos.DrawLine(transform.position + Vector3.up * 0.5f,
+    //     //     transform.position + Vector3.up * 0.5f - (Vector3.up * (0.5f + _characterController.stepOffset)));
+    // }
 
 
     private void OnCollisionEnter(Collision other)
     {
         if (GlobalManager.isBattling) return;
-        IInteractive interactive = other.gameObject.GetComponent<IInteractive>();
-        interactive?.OnInteractive(this.gameObject);
+        // IInteractive interactive = other.gameObject.GetComponent<IInteractive>();
+        // interactive?.OnInteractive(this.gameObject);
     }
 
 
     private void OnControllerColliderHit(ControllerColliderHit hit)
     {
         if (GlobalManager.isBattling) return;
-        IInteractive interactive = hit.gameObject.GetComponent<IInteractive>();
-        interactive?.OnInteractive(this.gameObject);
+        // IInteractive interactive = hit.gameObject.GetComponent<IInteractive>();
+        // interactive?.OnInteractive(this.gameObject);
     }
 }

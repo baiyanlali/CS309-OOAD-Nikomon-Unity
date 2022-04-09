@@ -36,7 +36,7 @@ public class PokemonIdentity : MonoBehaviour, IInteractive
 
     private void OnCollisionEnter(Collision other)
     {
-        if(other.gameObject.GetComponent<Player>()!=null)
+        if(other.gameObject.GetComponent<PlayerController>()!=null)
             OnInteractive(other.gameObject);
     }
 

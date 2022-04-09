@@ -7,7 +7,7 @@ public class WaterSystem : MonoBehaviour
 {
     private void OnTriggerEnter(Collider other)
     {
-        other.gameObject.GetComponent<PlayerMovement>()?.CheckWater(true);
+        // other.gameObject.GetComponent<PlayerController>()?.CheckWater(true);
     }
 
     private void OnTriggerStay(Collider other)
@@ -21,6 +21,6 @@ public class WaterSystem : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        other.gameObject.GetComponent<PlayerMovement>()?.CheckWater(false);
+        // other.gameObject.GetComponent<PlayerMovement>()?.CheckWater(false);
     }
 }

@@ -382,10 +382,10 @@ public class BattleFieldHandler : MonoBehaviour
         {
             case BattleResults.Succeed:
             case BattleResults.Captured:
-                FindObjectOfType<Player>().GetComponent<Animator>().Play("Victory");
+                FindObjectOfType<PlayerController>().GetComponent<Animator>().Play("Victory");
                 break;
             case BattleResults.Failed:
-                FindObjectOfType<Player>().GetComponent<Animator>().Play("Defeat");
+                FindObjectOfType<PlayerController>().GetComponent<Animator>().Play("Defeat");
                 break;
         }
         

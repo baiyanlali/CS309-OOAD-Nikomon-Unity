@@ -28,7 +28,7 @@ public class DialogueView : DialogueViewBase
         }
 
         // preText = dialogueLine.Text.Text;
-        UIManager.Instance.Show<DialogPanel>(dialogueLine.Text.Text,
+        UIManager.Instance.Show<DialogPanel>(dialogueLine,
             DialogPanel.FadeType.Dialogue,(Action)FinishedDebug);
     }
 

@@ -43,11 +43,12 @@ namespace GamePlay
 
 
             /*-----------------UI-------------------*/
-            [typeof(UIManager)] = "Prefabs/UI/UIManager", 
+            [typeof(UIManager)] = "Prefabs/UI/UIManager",
             [typeof(MainMenuUI)] = "Prefabs/UI/MainMenu/MainMenu", 
             [typeof(StartMenuUI)] = "Prefabs/UI/MainMenu/StartMenu", 
             [typeof(SavePanelUI)] = "Prefabs/UI/MainMenu/SavePanelUI", 
             [typeof(ConfirmPanel)] = "Prefabs/UI/UtilUI/ConfirmPanel", 
+            [typeof(InformPanel)] = "Prefabs/UI/UtilUI/InformPanel", 
             //bag
             [typeof(BagPanelUI)] = "Prefabs/UI/BagSystem/BagTable", 
             [typeof(BagContentElementUI)] = "Prefabs/UI/BagSystem/BagContentElement", 
@@ -96,7 +97,9 @@ namespace GamePlay
             //Connect
             [typeof(ConnectPanel)]="Prefabs/UI/ConnectUI/ConnectUI",
             
-            [typeof(VirtualControllerPanel)] = "Prefabs/UI/VirtualControllerPanel"
+            [typeof(VirtualControllerPanel)] = "Prefabs/UI/VirtualControllerPanel",
+            
+            [typeof(InteractPanel)]="Prefabs/UI/UtilUI/InteractPanel"
             
         };
     }

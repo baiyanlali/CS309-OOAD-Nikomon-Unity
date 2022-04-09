@@ -16,14 +16,7 @@ namespace GamePlay.UI.UtilUI
         public override bool IsOnly => false;
         // public override bool IsBlockPlayerControl => true;
         public float TweenTime=0.2f;
-
-        public override void Init(params object[] args)
-        {
-            base.Init(args);
-            Text = GET(Text,nameof(Text),GET_TYPE.Component);
-            Submit = GET(Submit,nameof(Submit),GET_TYPE.Component);
-            Cancel = GET(Cancel,nameof(Cancel),GET_TYPE.Component);
-        }
+        
 
         /// <summary>
         /// 

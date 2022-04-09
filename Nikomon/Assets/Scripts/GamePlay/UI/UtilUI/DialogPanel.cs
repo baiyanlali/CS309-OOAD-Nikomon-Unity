@@ -5,6 +5,7 @@ using System.Text;
 using GamePlay.UI.UIFramework;
 using UnityEngine;
 using UnityEngine.UI;
+using Yarn.Unity;
 
 namespace GamePlay.UI.UtilUI
 {
@@ -16,9 +17,11 @@ namespace GamePlay.UI.UtilUI
             Automatic,
             Dialogue
         }
+
+        public Text NameText;
         public Text DialogText;
-        private Queue<string> reports;
-        private string currentReport;
+        private Queue<LocalizedLine> reports;
+        private LocalizedLine currentReport;
         public GameObject ShowNext;
         private bool isDrawing = false;
         public Action<string> OnDialogFinished;
@@ -43,7 +46,7 @@ namespace GamePlay.UI.UtilUI
             if(args!=null&&args.Length>=1)
             {
                 
-                currentReport = (string) args[0];
+                currentReport = (LocalizedLine) args[0];
                 if (args.Length >= 2)
                     fadeType = (FadeType) args[1];
                 else
@@ -58,7 +61,7 @@ namespace GamePlay.UI.UtilUI
                 }
             }
             
-            reports ??= new Queue<string>();
+            reports ??= new Queue<LocalizedLine>();
             if (DialogText == null)
             {
                 DialogText = gameObject.GetComponentInChildren<Text>();
@@ -69,8 +72,8 @@ namespace GamePlay.UI.UtilUI
                 ShowNext = transform.Find("ShowNext").gameObject;
             }
 
-            if (currentReport == null || string.IsNullOrEmpty(currentReport))
-                currentReport = "";
+            // if (currentReport == null || string.IsNullOrEmpty(currentReport))
+            //     currentReport = "";
             isDrawing = false;
         }
 
@@ -158,8 +161,9 @@ namespace GamePlay.UI.UtilUI
             UIManager.Instance.Hide(this);
         }
         
-        private void OnReport(string report)
+        private void OnReport(LocalizedLine report)
         {
+            
             reports.Enqueue(report);
 
             if (reports.Count == 1)
@@ -177,8 +181,20 @@ namespace GamePlay.UI.UtilUI
             OnFinishDrawing();
         }
         
-        IEnumerator DrawDialog(string str)
+        IEnumerator DrawDialog(LocalizedLine line)
         {
+            if (string.IsNullOrEmpty(line.CharacterName))
+            {
+                NameText.transform.parent.gameObject.SetActive(false);
+            }
+            else
+            {
+                NameText.transform.parent.gameObject.SetActive(true);
+                NameText.text = line.CharacterName;
+            }
+
+            string str = line.TextWithoutCharacterName.Text;
+            
             // print($"Start Coroutine {str}");
             isDrawing = true;
             StringBuilder sb = new StringBuilder();
