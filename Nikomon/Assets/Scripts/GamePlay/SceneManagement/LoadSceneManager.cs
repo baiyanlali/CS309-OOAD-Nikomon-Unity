@@ -28,9 +28,9 @@ public class LoadSceneManager : MonoBehaviour
             StartCoroutine(LoadLeaver(nextSceneName));
         }
     }
-    // void Update () {
-    //     image.sprite = sr.sprite;
-    // }
+    void Update () {
+        image.sprite = sr.sprite;
+    }
     
     
     IEnumerator LoadLeaver(int index)
