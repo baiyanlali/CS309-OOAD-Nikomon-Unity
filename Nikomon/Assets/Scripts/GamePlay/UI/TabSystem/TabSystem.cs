@@ -21,7 +21,7 @@ public class TabSystem : MonoBehaviour
     // private bool HaveEnterScope = false;
 
 
-    private void Start()
+    private void Awake()
     {
         if (hasInit) return;
         hasInit = true;
@@ -111,7 +111,7 @@ public class TabSystem : MonoBehaviour
     
     
 
-    void OnChoose(TabElement element)
+    public void OnChoose(TabElement element)
     {
         if (element == CurrentTabElement) return;
         
