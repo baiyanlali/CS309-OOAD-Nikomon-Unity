@@ -7,9 +7,10 @@ using UnityEngine;
 public class PlaySceneTest : MonoBehaviour
 {
     // Start is called before the first frame update
+#if UNITY_EDITOR
+
     void Awake()
     {
-        #if UNITY_EDITOR
             GlobalManager.Instance.game.CreateNewSaveFile("text man",false);
             
             Game.Instance.AddPokemon(new Pokemon(6,50));
@@ -22,8 +23,8 @@ public class PlaySceneTest : MonoBehaviour
             Game.bag.Add((Item.Tag.Medicine,0)); // (Tag,ItemID)
             Game.bag.Add((Item.Tag.Medicine,1)); // (Tag,ItemID)
             Game.bag.Add((Item.Tag.Medicine,6)); // (Tag,ItemID)
-        #endif
     }
+#endif
 
     // Update is called once per frame
     void Update()

@@ -35,7 +35,7 @@ namespace GamePlay.UI.UtilUI
             OKBtn.onClick.AddListener(() =>
             {
                 UIManager.Instance.Hide(this);
-                OK.Invoke();
+                OK?.Invoke();
             });
         }
 

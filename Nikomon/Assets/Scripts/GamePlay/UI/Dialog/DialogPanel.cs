@@ -9,7 +9,7 @@ using Yarn.Unity;
 
 namespace GamePlay.UI.UtilUI
 {
-    public class DialogPanel:BaseUI
+    public class DialogPanel : BaseUI
     {
         public enum FadeType
         {
@@ -26,12 +26,12 @@ namespace GamePlay.UI.UtilUI
         private bool isDrawing = false;
         public Action<string> OnDialogFinished;
         public RectTransform DialogueAttachment;
-        public float TextSpeed=0.01f;
+        public float TextSpeed = 0.01f;
         public float PauseTime = 1f;
 
-        public override UILayer Layer  => UILayer.NormalUI;
+        public override UILayer Layer => UILayer.NormalUI;
 
-        public FadeType fadeType=FadeType.Button;
+        public FadeType fadeType = FadeType.Button;
 
         public Action OnContinue;
 
@@ -43,9 +43,8 @@ namespace GamePlay.UI.UtilUI
         {
             // print("On Init");
             base.Init(args);
-            if(args!=null&&args.Length>=1)
+            if (args != null && args.Length >= 1)
             {
-                
                 currentReport = (LocalizedLine) args[0];
                 if (args.Length >= 2)
                     fadeType = (FadeType) args[1];
@@ -53,6 +52,7 @@ namespace GamePlay.UI.UtilUI
                 {
                     fadeType = FadeType.Button;
                 }
+
                 if (args.Length >= 3)
                     OnContinue = args[2] as Action;
                 else
@@ -60,7 +60,7 @@ namespace GamePlay.UI.UtilUI
                     OnContinue = null;
                 }
             }
-            
+
             reports ??= new Queue<LocalizedLine>();
             if (DialogText == null)
             {
@@ -87,6 +87,7 @@ namespace GamePlay.UI.UtilUI
             {
                 return;
             }
+
             // print("On Enter");
             base.OnEnter(args);
             // print(currentReport);
@@ -98,12 +99,15 @@ namespace GamePlay.UI.UtilUI
             // StopAllCoroutines();
 
             // DialogText.text = currentReport;
-            if(args!=null&&args.Length>=1)
+            if (args != null && args.Length >= 1)
             {
                 // print("To report");
                 OnReport(currentReport);
                 ExitBtn.onClick.RemoveAllListeners();
             }
+#if UNITY_ANDROID || UNITY_IPHONE
+            UIManager.Instance.Hide<VirtualControllerPanel>();
+#endif
         }
 
         public override void OnRefresh(params object[] args)
@@ -118,20 +122,20 @@ namespace GamePlay.UI.UtilUI
             if (reports.Count == 0)
             {
                 OnDialogFinished?.Invoke("");
-                if(fadeType==FadeType.Automatic)
+                if (fadeType == FadeType.Automatic)
                     StartCoroutine(PauseAndHide());
                 else
                 {
                     ExitBtn.onClick.RemoveAllListeners();
-                    
+
                     ExitBtn.onClick.AddListener(() =>
                     {
                         // if(fadeType!=FadeType.Dialogue)
                         UIManager.Instance.Hide(this);
                         OnContinue?.Invoke();
                     });
-                    
                 }
+
                 // gameObject.SetActive(false);
                 return;
             }
@@ -152,7 +156,6 @@ namespace GamePlay.UI.UtilUI
                     StartCoroutine(DrawDialog(currentReport));
                 });
             }
-            
         }
 
         IEnumerator PauseAndHide()
@@ -160,10 +163,9 @@ namespace GamePlay.UI.UtilUI
             yield return new WaitForSeconds(PauseTime);
             UIManager.Instance.Hide(this);
         }
-        
+
         private void OnReport(LocalizedLine report)
         {
-            
             reports.Enqueue(report);
 
             if (reports.Count == 1)
@@ -177,10 +179,10 @@ namespace GamePlay.UI.UtilUI
             StopAllCoroutines();
             DialogText.text = str;
             isDrawing = false;
-            
+
             OnFinishDrawing();
         }
-        
+
         IEnumerator DrawDialog(LocalizedLine line)
         {
             if (string.IsNullOrEmpty(line.CharacterName))
@@ -194,7 +196,7 @@ namespace GamePlay.UI.UtilUI
             }
 
             string str = line.TextWithoutCharacterName.Text;
-            
+
             // print($"Start Coroutine {str}");
             isDrawing = true;
             StringBuilder sb = new StringBuilder();

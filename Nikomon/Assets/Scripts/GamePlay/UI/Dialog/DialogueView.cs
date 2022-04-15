@@ -17,16 +17,14 @@ public class DialogueView : DialogueViewBase
     // public string preText;
     public override void RunLine(LocalizedLine dialogueLine, Action onDialogueLineFinished)
     {
+
         // bool canPlayerControlled = GlobalManager.Instance.CanPlayerControlled;
         // GlobalManager.Instance.CanPlayerControlled = false;
         void FinishedDebug()
         {
-            // print("Ready for next line!");
             onDialogueLineFinished?.Invoke();
-            // GlobalManager.Instance.CanPlayerControlled = canPlayerControlled;
-            // ReadyForNextLine();
         }
-
+        
         // preText = dialogueLine.Text.Text;
         UIManager.Instance.Show<DialogPanel>(dialogueLine,
             DialogPanel.FadeType.Dialogue,(Action)FinishedDebug);
@@ -34,7 +32,9 @@ public class DialogueView : DialogueViewBase
 
     public override void RunOptions(DialogueOption[] dialogueOptions, Action<int> onOptionSelected)
     {
-        print("Now run options!");
+        UIManager.Instance.Hide<VirtualControllerPanel>();
+
+        // print("Now run options!");
         // bool canPlayerControlled = GlobalManager.Instance.CanPlayerControlled;
         // GlobalManager.Instance.CanPlayerControlled = false;
         

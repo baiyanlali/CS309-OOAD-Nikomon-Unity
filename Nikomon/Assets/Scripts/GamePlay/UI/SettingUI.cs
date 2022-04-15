@@ -22,7 +22,7 @@ namespace GamePlay.UI
         private int LanguageIndex;
         private int voice = -1; 
         private int VoiceIndex;
-        public override bool IsOnly { get; } = true;
+        // public override bool IsOnly { get; } = true;
         
         
         public override void OnEnter(params object[] args)

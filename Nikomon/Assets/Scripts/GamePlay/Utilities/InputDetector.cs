@@ -7,18 +7,10 @@ using UnityEngine.UI;
 
 public class InputDetector : MonoBehaviour
 {
-    // Start is called before the first frame update
+#if UNITY_ANDROID || UNITY_IPHONE
     void Start()
     {
-        if (Application.isMobilePlatform)
-        {
-            UIManager.Instance.Show<VirtualControllerPanel>();
-        }
+        UIManager.Instance.Show<VirtualControllerPanel>();
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+#endif
 }

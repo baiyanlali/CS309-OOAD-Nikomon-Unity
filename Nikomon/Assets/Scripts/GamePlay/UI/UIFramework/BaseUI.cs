@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using GamePlay.Utilities;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
@@ -92,12 +93,7 @@ namespace GamePlay.UI.UIFramework
             UIManager.Instance.Hide(this);
         }
 
-
-        protected T GET<T>(BaseUI ui, T obj, string name, GET_TYPE type) where T : UnityEngine.Object
-        {
-            return ui.GET(obj, name, type);
-            // return obj!=null ? obj : ui.transform.Find(name).GetComponent<T>();
-        }
+        
 
         protected T GET<T>(T obj, string name, GET_TYPE type = GET_TYPE.Component) where T : UnityEngine.Object
         {
@@ -164,6 +160,8 @@ namespace GamePlay.UI.UIFramework
             {
                 StartCoroutine(TimeToExit(DisplayTime));
             }
+            
+            gameObject.GetOrAddComponent<CanvasGroup>().interactable = true;
         }
 
         public virtual void OnExit()
@@ -183,6 +181,7 @@ namespace GamePlay.UI.UIFramework
         public virtual void OnPause()
         {
             currentSelectObj = EventSystem.current.currentSelectedGameObject;
+            gameObject.GetOrAddComponent<CanvasGroup>().interactable = false;
         }
 
         /// <summary>
@@ -191,11 +190,13 @@ namespace GamePlay.UI.UIFramework
         public virtual void OnResume()
         {
             gameObject.SetActive(true);
+            
+            gameObject.GetOrAddComponent<CanvasGroup>().interactable = true;
 
             if (this is IUIAnimator)
             {
                 print($"{this.GetType().Name} IUI Animator Resume");
-                (this as IUIAnimator).OnEnterAnimator();
+                (this as IUIAnimator)?.OnEnterAnimator();
             }
 
             if (currentSelectObj != null)

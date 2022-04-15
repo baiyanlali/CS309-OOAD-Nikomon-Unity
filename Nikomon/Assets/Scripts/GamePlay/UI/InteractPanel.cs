@@ -40,6 +40,11 @@ namespace GamePlay.UI
         public void Update()
         {
             Debug.Assert(Camera.main != null, "Camera.main != null");
+            if (FollowTarget == null)
+            {
+                UIManager.Instance.Hide<InteractPanel>();
+                return;
+            }
             var position = Camera.main.WorldToScreenPoint(FollowTarget.position);
             transform.position = position;
             if (NicomonInputSystem.Instance.accept==true && OnTrigger != null)

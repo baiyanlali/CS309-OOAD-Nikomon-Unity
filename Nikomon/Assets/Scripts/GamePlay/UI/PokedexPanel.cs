@@ -18,7 +18,7 @@ public class PokedexPanel : BaseUI
     private List<PokemondexElement> _pokemondexElements=new List<PokemondexElement>();
     public GameObject pokenmons;
     public Transform _Scrollbar;
-    public override bool IsOnly { get; } = true;
+    // public override bool IsOnly { get; } = true;
 
     /// <summary>
     /// 

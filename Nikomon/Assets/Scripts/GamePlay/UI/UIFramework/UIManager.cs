@@ -12,11 +12,12 @@ namespace GamePlay.UI.UIFramework
     public enum UILayer
     {
         MainUI,
-        NormalUI,//仅有这个有stack层数
+        NormalUI, //仅有这个有stack层数
         PopupUI,
-        Top//用于保存状态（转圈圈啥的
+        Top //用于保存状态（转圈圈啥的
     }
-    public class UIManager:MonoBehaviour
+
+    public class UIManager : MonoBehaviour
     {
         private static UIManager _instance;
 
@@ -33,7 +34,6 @@ namespace GamePlay.UI.UIFramework
             }
         }
 
-        
 
         private static void CreateUIManager()
         {
@@ -50,9 +50,11 @@ namespace GamePlay.UI.UIFramework
         protected Dictionary<Type, BaseUI> _uiDics = new Dictionary<Type, BaseUI>();
 
         private Stack<BaseUI> _normalStack = new Stack<BaseUI>();
+
         private Stack<BaseUI> _popStack = new Stack<BaseUI>();
+
         //主界面上可能会有许多个UI元素
-        private List<BaseUI> _mainUI=new List<BaseUI>();
+        private List<BaseUI> _mainUI = new List<BaseUI>();
         private List<BaseUI> _topUI = new List<BaseUI>();
 
         public Transform MainUIParent;
@@ -90,39 +92,37 @@ namespace GamePlay.UI.UIFramework
                     PopAllUI(UILayer.PopupUI);
                 }
             };
-
         }
-        
-        
-        
+
+
         public void PushUI(BaseUI ui)
         {
             switch (ui.Layer)
             {
                 case UILayer.MainUI:
-                    if(!_mainUI.Contains(ui))
+                    if (!_mainUI.Contains(ui))
                         _mainUI.Add(ui);
                     break;
                 case UILayer.NormalUI:
-                    if(_normalStack.Count!=0)
+                    if (_normalStack.Count != 0)
                         _normalStack.Peek()?.OnPause();
-                    if(!_normalStack.Contains(ui))
+                    if (!_normalStack.Contains(ui))
                         _normalStack.Push(ui);
                     break;
                 case UILayer.PopupUI:
-                    if(_popStack.Count!=0)
+                    if (_popStack.Count != 0)
                         _popStack.Peek()?.OnPause();
-                    if(!_popStack.Contains(ui))
+                    if (!_popStack.Contains(ui))
                         _popStack.Push(ui);
                     break;
                 case UILayer.Top:
-                    if(!_topUI.Contains(ui))
+                    if (!_topUI.Contains(ui))
                         _topUI.Add(ui);
                     break;
             }
         }
 
-        public void Show<T>(params object[] args)where T:BaseUI
+        public void Show<T>(params object[] args) where T : BaseUI
         {
             BaseUI curUI;
             if (_uiDics.ContainsKey(typeof(T)))
@@ -134,23 +134,23 @@ namespace GamePlay.UI.UIFramework
                 GameObject tmp = GameResources.SpawnPrefab(typeof(T));
                 // if(tmp.GetComponent<RectTransform>())
                 // curUI = Instantiate(tmp,tmp.transform.position,tmp.transform.rotation).GetComponent<BaseUI>();
-                
-                curUI = Instantiate(tmp,GetUIParent(tmp.GetComponent<BaseUI>().Layer)).GetComponent<BaseUI>();
+
+                curUI = Instantiate(tmp, GetUIParent(tmp.GetComponent<BaseUI>().Layer)).GetComponent<BaseUI>();
                 curUI.name = curUI.name.Replace("(Clone)", "");
                 tmp = null;
-                _uiDics.AddOrReplace(typeof(T),curUI);
+                _uiDics.AddOrReplace(typeof(T), curUI);
             }
-            if(curUI.IsOnly)
+
+            if (curUI.IsOnly)
                 PopAllUI(curUI.Layer);
             PushUI(curUI);
-            
-            curUI.transform.SetParent(GetUIParent(curUI.Layer),false);
-            
+
+            curUI.transform.SetParent(GetUIParent(curUI.Layer), false);
+
             curUI.transform.SetAsLastSibling();
             // curUI.Init();
-            
-            curUI.OnEnter(args);
 
+            curUI.OnEnter(args);
         }
 
         public void Hide<T>() where T : BaseUI
@@ -162,31 +162,34 @@ namespace GamePlay.UI.UIFramework
             }
         }
 
-        public void Hide<T>(T obj)where T:BaseUI
+        public void Hide<T>(T obj) where T : BaseUI
         {
             var tmp = obj as BaseUI;
-            _uiDics.AddOrReplace(tmp.GetType(),tmp);
+            _uiDics.AddOrReplace(tmp.GetType(), tmp);
             if (_normalStack.Contains(tmp))
             {
-                PopUIUntil(tmp,_normalStack);
-            }else if (_popStack.Contains(tmp))
+                PopUIUntil(tmp, _normalStack);
+            }
+            else if (_popStack.Contains(tmp))
             {
                 PopUIUntil(tmp, _popStack);
             }
-            else if(_mainUI.Contains(tmp))
+            else if (_mainUI.Contains(tmp))
             {
                 _mainUI.Remove(tmp);
                 tmp.OnExit();
-            }else if (_topUI.Contains(tmp))
+            }
+            else if (_topUI.Contains(tmp))
             {
                 _topUI.Remove(tmp);
                 tmp.OnExit();
             }
-            
-            if(_normalStack.Count==0 && _popStack.Count == 0 && _topUI.Count==0 && _mainUI.Count==0 && Application.isMobilePlatform)
+#if UNITY_ANDROID || UNITY_IPHONE
+            if (_normalStack.Count == 0 && _popStack.Count == 0 && _topUI.Count == 0 && _mainUI.Count == 0)
                 Instance.Show<VirtualControllerPanel>();
+#endif
         }
-        
+
         public void PopAllUI(UILayer layer)
         {
             if (layer == UILayer.NormalUI)
@@ -203,36 +206,45 @@ namespace GamePlay.UI.UIFramework
                 {
                     mainUI.OnExit();
                 }
+
                 _mainUI.Clear();
-                if(Application.isMobilePlatform)
+                if (Application.isMobilePlatform)
                     Instance.Show<VirtualControllerPanel>();
-            }else if (layer == UILayer.Top)
+            }
+            else if (layer == UILayer.Top)
             {
                 foreach (var topUI in _topUI)
                 {
                     topUI.OnExit();
                 }
+
                 _topUI.Clear();
             }
+#if UNITY_ANDROID || UNITY_IPHONE
+            if (_normalStack.Count == 0 && _popStack.Count == 0 && _mainUI.Count == 0 && _topUI.Count == 0)
+            {
+                if (GlobalManager.Instance.Config.UseVirtualControl)
+                    Show<VirtualControllerPanel>();
+            }
+#endif
         }
 
-        public void Refresh<T>(params object[] args)where T:BaseUI
+        public void Refresh<T>(params object[] args) where T : BaseUI
         {
             Type type = typeof(T);
             if (!_uiDics.ContainsKey(type))
             {
-                
                 GameObject tmp = GameResources.SpawnPrefab(typeof(T));
                 // if(tmp.GetComponent<RectTransform>())
                 // curUI = Instantiate(tmp,tmp.transform.position,tmp.transform.rotation).GetComponent<BaseUI>();
-                
-                var curUI = Instantiate(tmp,GetUIParent(tmp.GetComponent<BaseUI>().Layer)).GetComponent<BaseUI>();
+
+                var curUI = Instantiate(tmp, GetUIParent(tmp.GetComponent<BaseUI>().Layer)).GetComponent<BaseUI>();
                 curUI.name = curUI.name.Replace("(Clone)", "");
                 tmp = null;
-                _uiDics.AddOrReplace(typeof(T),curUI);
+                _uiDics.AddOrReplace(typeof(T), curUI);
                 curUI.gameObject.SetActive(false);
             }
-            
+
             _uiDics[type].OnRefresh(args);
         }
 
@@ -247,13 +259,13 @@ namespace GamePlay.UI.UIFramework
             return null;
             // throw new Exception($"no such ui {type} found");
         }
-        
+
         /// <summary>
         /// 弹出ui，直到until弹出为止
         /// </summary>
         /// <param name="until"></param>
         /// <param name="stack"></param>
-        public void PopUIUntil(BaseUI until,Stack<BaseUI> stack)
+        public void PopUIUntil(BaseUI until, Stack<BaseUI> stack)
         {
             if (!stack.Contains(until)) return;
             BaseUI node = stack.Pop();
@@ -262,7 +274,7 @@ namespace GamePlay.UI.UIFramework
                 if (node == until)
                 {
                     node.OnExit();
-                    if(stack.Count>0)
+                    if (stack.Count > 0)
                         stack.Peek().OnResume();
                     return;
                 }
@@ -277,18 +289,16 @@ namespace GamePlay.UI.UIFramework
                 stack.Peek().OnResume();
                 stack.Peek().transform.SetAsLastSibling();
             }
-
         }
 
-        
+
         void PopUIUntilNone(Stack<BaseUI> stack)
         {
-            while (stack.Count>0)
+            while (stack.Count > 0)
             {
                 BaseUI node = stack.Pop();
                 node.OnExit();
             }
         }
-
     }
 }

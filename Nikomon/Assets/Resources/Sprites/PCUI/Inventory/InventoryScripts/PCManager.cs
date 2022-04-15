@@ -21,7 +21,7 @@ public class PCManager : BaseUI
     public PC pc;
     public Trainer trainer;
 
-    public override bool IsOnly => true;
+    // public override bool IsOnly => true;
 
     public Text BoxTitle;
 
