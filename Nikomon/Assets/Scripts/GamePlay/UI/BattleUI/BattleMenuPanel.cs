@@ -15,12 +15,12 @@ using UnityEngine.UI;
 
 namespace GamePlay.UI.BattleUI
 {
-    public class BattleMenuPanel : BaseUI,IUIAnimator
+    public class BattleMenuPanel : BaseUI, IUIAnimator
     {
-        private Button Fight;
-        private Button Pokemon;
-        private Button Bag;
-        private Button Run;
+        public Button Fight;
+        public Button Pokemon;
+        public Button Bag;
+        public Button Run;
 
         private readonly string[] PokemonChooses = new[] {"Switch", "Show Ability", "Cancel"};
         private readonly string[] BagChooses = new[] {"Use", "Cancel"};
@@ -34,21 +34,23 @@ namespace GamePlay.UI.BattleUI
             switch (chooseIndex)
             {
                 case 0: //Switch
-                    
-                    if (Game.trainer.party[bagIndex] == null || Game.trainer.pokemonOnTheBattle[bagIndex] || Game.trainer.party[bagIndex].HP<=0) return;
+
+                    if (Game.trainer.party[bagIndex] == null || Game.trainer.pokemonOnTheBattle[bagIndex] ||
+                        Game.trainer.party[bagIndex].HP <= 0) return;
                     Instruction ins = new Instruction(currentPoke.CombatID, Command.SwitchPokemon, bagIndex,
                         null);
                     BuildInstrustruction(ins);
-                    
+
                     break;
 
                 case 1: //Show Ability
-                    UIManager.Instance.Show<AbilityPanel>(Game.trainer,Game.trainer.party[bagIndex]);
+                    UIManager.Instance.Show<AbilityPanel>(Game.trainer, Game.trainer.party[bagIndex]);
                     break;
                 case 2: //Cancel
                     // UIManager.Instance.Hide(this);
                     break;
             }
+
             UIManager.Instance.Hide<PokemonChooserPanelUI>();
         }
 
@@ -59,12 +61,13 @@ namespace GamePlay.UI.BattleUI
                 case 0:
                     // UIManager.Instance.Show<TargetChooserPanel>();
                     //TODO:实现更复杂的效果
-                    UseItem(item,BattleHandler.Instance.OpponentPokemons[0].CombatID);
+                    UseItem(item, BattleHandler.Instance.OpponentPokemons[0].CombatID);
                     UIManager.Instance.Hide<BagPanelUI>();
                     break;
                 case 1:
                     break;
             }
+
             UIManager.Instance.Hide<BagPanelUI>();
         }
 
@@ -73,7 +76,7 @@ namespace GamePlay.UI.BattleUI
             base.Init(args);
 
             bool[] canUse;
-            if (args == null || args.Length==0)
+            if (args == null || args.Length == 0)
             {
                 canUse = new[] {true, true, true, true};
             }
@@ -81,11 +84,6 @@ namespace GamePlay.UI.BattleUI
             {
                 canUse = (args[0] as List<bool>)?.ToArray();
             }
-
-            Fight = GET(Fight, nameof(Fight));
-            Pokemon = GET(Pokemon, nameof(Pokemon));
-            Bag = GET(Bag, nameof(Bag));
-            Run = GET(Run, nameof(Run));
 
             if (canUse != null)
             {
@@ -117,16 +115,19 @@ namespace GamePlay.UI.BattleUI
             //Init Bag
             Bag.onClick.AddListener(() =>
             {
-                UIManager.Instance.Show<BagPanelUI>(Game.bag, BagChooses.ToList(), (Action<int,Item>) HandleItem);
+                UIManager.Instance.Show<BagPanelUI>(Game.bag, BagChooses.ToList(), (Action<int, Item>) HandleItem);
             });
 
 
             //Init Run
             Run.onClick.AddListener(ToRun);
+#if UNITY_ANDROID||UNITY_IPHONE
+            UIManager.Instance.Hide<VirtualControllerPanel>();
+#endif
         }
 
         private CombatPokemon currentPoke => BattleHandler.Instance.CurrentPokemon;
-        
+
 
         public void UseItem(Item item, int target)
         {
@@ -151,6 +152,7 @@ namespace GamePlay.UI.BattleUI
                 UIManager.Instance.Hide(this);
                 return;
             }
+
             Instruction ins = new Instruction(currentPoke.CombatID, Command.Run, Game.trainer.id,
                 null);
             BuildInstrustruction(ins);
@@ -186,6 +188,7 @@ namespace GamePlay.UI.BattleUI
                     null
                 );
             }
+
             void OnChooseTarget(List<int> targets, int index)
             {
                 UIManager.Instance.Hide<TargetChooserPanel>();
@@ -197,12 +200,10 @@ namespace GamePlay.UI.BattleUI
                 UIManager.Instance.Hide<MovePanel>();
                 BuildInstrustruction(instruction);
             }
-            
-            
+
+
             // UIManager.Instance.Refresh<DialogPanel>();
         }
-
-        
 
 
         public void BuildInstrustruction(Instruction instruction)
@@ -212,24 +213,18 @@ namespace GamePlay.UI.BattleUI
 
         public void OnEnterAnimator()
         {
-            LeanTween.scale(gameObject,Vector3.one,0.5f)
+            LeanTween.scale(gameObject, Vector3.one, 0.5f)
                 .setOnStart(() =>
-            {
-                gameObject.SetActive(false);
-                gameObject.SetActive(true);
-            })
-                .setOnComplete(() =>
-            {
-                gameObject.SetActive(true);
-            });
+                {
+                    gameObject.SetActive(false);
+                    gameObject.SetActive(true);
+                })
+                .setOnComplete(() => { gameObject.SetActive(true); });
         }
 
         public void OnExitAnimator()
         {
-            LeanTween.scale(gameObject,Vector3.zero,0.5f).setOnComplete(() =>
-            {
-                gameObject.SetActive(false);
-            });
+            LeanTween.scale(gameObject, Vector3.zero, 0.5f).setOnComplete(() => { gameObject.SetActive(false); });
         }
     }
 }
